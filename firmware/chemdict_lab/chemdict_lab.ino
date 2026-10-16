@@ -2,7 +2,8 @@
   ChemDict Lab firmware v0.1.0 — Arduino UNO R4 WiFi
 
   - USB 시리얼(115200)과 BLE(Nordic UART 방식)로 같은 JSON 한 줄 메시지를 보냅니다.
-  - 아날로그 A0~A3 고정 배정 + DS18B20(D2) + Modulino Thermo(Qwiic, 0x44) 자동 인식
+  - 아날로그 A0~A3: 앱에서 센서 종류를 지정(PORT 명령), 설정은 EEPROM에 저장
+  - DS18B20(D2) + Modulino Thermo(Qwiic, 0x44) 자동 인식
   - 2점 보정값은 EEPROM에 저장됩니다.
   - 센서가 없어도 DEMO ON 명령으로 가짜 데이터를 보낼 수 있습니다.
 
@@ -18,7 +19,7 @@
 #include <OneWire.h>
 #include <DallasTemperature.h>
 
-#define FW_VERSION "0.1.0"
+#define FW_VERSION "0.2.0"
 #define BOARD_NAME "UNO R4 WiFi"
 
 // ---------- 핀·상수 ----------
@@ -30,37 +31,54 @@ const uint8_t HS3003_ADDR = 0x44;
 const unsigned long MIN_INTERVAL_MS = 100;
 const size_t BLE_CHUNK = 20;
 
-// ---------- 아날로그 채널 ----------
-struct AnalogChannel {
-  const char* id;
-  const char* name;
-  const char* unit;
-  uint8_t pin;
-  const char* src;
-  float defSlope;   // 값 = slope * V + offset
-  float defOffset;
-  uint8_t decimals;
-};
-
-AnalogChannel analogCh[4] = {
-  { "pH", "pH",     "",  A0, "A0", -5.70f, 21.34f, 2 },
-  { "L",  "빛",     "%", A1, "A1", 20.0f,  0.0f,   1 },
-  { "EC", "전도도", "V", A2, "A2", 1.0f,   0.0f,   3 },
-  { "V",  "전압",   "V", A3, "A3", 1.0f,   0.0f,   3 },
-};
+// ---------- 아날로그 포트 ----------
+// 센서 종류(type)와 변환식(값 = slope × 전압 + offset)은 앱이 PORT 명령으로 정합니다.
+// 종류별 이름·단위·기본 변환식은 protocol/sensors.json 이 기준입니다.
+const uint8_t analogPins[4] = { A0, A1, A2, A3 };
+const char* analogSrc[4] = { "A0", "A1", "A2", "A3" };
+const uint8_t TYPE_LEN = 8;
 
 // ---------- EEPROM 설정 ----------
-const uint32_t SETTINGS_MAGIC = 0xC4E3D1C7;
+const uint32_t SETTINGS_MAGIC = 0xC4E3D1C8;  // v0.2 (구조가 바뀌면 값을 바꿔 초기화)
+struct PortSetting {
+  char type[TYPE_LEN];  // "pH", "L", "EC", "V", "TL", "P", "RAW", "OFF"
+  float slope;
+  float offset;
+  uint8_t calValid;
+};
 struct Settings {
   uint32_t magic;
   uint8_t station;
-  uint8_t calValid[4];
-  float slope[4];
-  float offset[4];
+  PortSetting port[4];
   float tempOffset;      // DS18B20 1점 보정
   uint8_t tempCalValid;
 };
 Settings settings;
+
+void setPort(int i, const char* type, float slope, float offset) {
+  strncpy(settings.port[i].type, type, TYPE_LEN - 1);
+  settings.port[i].type[TYPE_LEN - 1] = 0;
+  settings.port[i].slope = slope;
+  settings.port[i].offset = offset;
+  settings.port[i].calValid = 0;
+}
+
+bool portOn(int i) {
+  return strcmp(settings.port[i].type, "OFF") != 0;
+}
+
+// 같은 종류가 두 포트에 있으면 두 번째부터 "pH_A1"처럼 포트 이름을 붙임
+String portId(int i) {
+  String id = settings.port[i].type;
+  for (int j = 0; j < i; j++) {
+    if (portOn(j) && strcmp(settings.port[j].type, settings.port[i].type) == 0) {
+      id += "_";
+      id += analogSrc[i];
+      break;
+    }
+  }
+  return id;
+}
 
 // 2점 보정 중간값 (RAM)
 float calV1[4];
@@ -100,11 +118,10 @@ void loadSettings() {
   if (settings.magic != SETTINGS_MAGIC) {
     settings.magic = SETTINGS_MAGIC;
     settings.station = 1;
-    for (int i = 0; i < 4; i++) {
-      settings.calValid[i] = 0;
-      settings.slope[i] = analogCh[i].defSlope;
-      settings.offset[i] = analogCh[i].defOffset;
-    }
+    setPort(0, "pH", -5.70f, 21.34f);
+    setPort(1, "L", 20.0f, 0.0f);
+    setPort(2, "EC", 1000.0f, 0.0f);
+    setPort(3, "V", 1.0f, 0.0f);
     settings.tempOffset = 0;
     settings.tempCalValid = 0;
     EEPROM.put(0, settings);
@@ -164,9 +181,10 @@ void detectSensors() {
   hasHS3003 = (Wire1.endTransmission() == 0);
 }
 
-String sensorJson(const char* id, const char* name, const char* unit, const char* src, bool cal) {
-  return String("{\"id\":") + jsonStr(id) + ",\"name\":" + jsonStr(name) + ",\"unit\":" + jsonStr(unit) +
-         ",\"src\":" + jsonStr(src) + ",\"cal\":" + (cal ? "true" : "false") + "}";
+String sensorJson(const String& id, const char* type, const char* src, bool cal) {
+  // name·unit은 앱이 protocol/sensors.json 에서 type으로 찾습니다 (여기서는 type을 그대로 넣음)
+  return String("{\"id\":\"") + id + "\",\"type\":" + jsonStr(type) + ",\"name\":" + jsonStr(type) +
+         ",\"unit\":\"\",\"src\":" + jsonStr(src) + ",\"cal\":" + (cal ? "true" : "false") + "}";
 }
 
 void sendHello() {
@@ -175,19 +193,21 @@ void sendHello() {
              ",\"interval\":" + intervalMs + ",\"running\":" + (running ? "true" : "false") + ",\"sensors\":[";
   bool first = true;
   for (int i = 0; i < 4; i++) {
+    if (!portOn(i)) continue;
     if (!first) s += ",";
-    s += sensorJson(analogCh[i].id, analogCh[i].name, analogCh[i].unit, analogCh[i].src, settings.calValid[i]);
+    s += sensorJson(portId(i), settings.port[i].type, analogSrc[i], settings.port[i].calValid);
     first = false;
   }
   if (hasDS || demo) {
-    s += ",";
-    s += sensorJson("T", "온도", "°C", demo && !hasDS ? "demo" : "onewire", settings.tempCalValid);
+    if (!first) s += ",";
+    s += sensorJson("T", "T", demo && !hasDS ? "demo" : "onewire", settings.tempCalValid);
+    first = false;
   }
   if (hasHS3003) {
+    if (!first) s += ",";
+    s += sensorJson("TA", "TA", "i2c:0x44", false);
     s += ",";
-    s += sensorJson("TA", "기온", "°C", "i2c:0x44", false);
-    s += ",";
-    s += sensorJson("RH", "습도", "%", "i2c:0x44", false);
+    s += sensorJson("RH", "RH", "i2c:0x44", false);
   }
   s += "]}";
   sendLine(s);
@@ -204,8 +224,11 @@ float readVoltage(uint8_t pin) {
 }
 
 float analogValue(int i, float volt) {
-  return settings.slope[i] * volt + settings.offset[i];
+  return settings.port[i].slope * volt + settings.port[i].offset;
 }
+
+// 데모 모드: 종류별 그럴듯한 값
+float demoAnalog(const char* type, float t);
 
 bool readHS3003(float& tempC, float& rh) {
   Wire1.beginTransmission(HS3003_ADDR);
@@ -238,6 +261,16 @@ float demoTemp(float t) {
   return T + demoNoise(0.05f);
 }
 
+float demoAnalog(const char* type, float t) {
+  if (!strcmp(type, "pH")) return demoPH(t);
+  if (!strcmp(type, "L")) return 50.0f + 10.0f * sin(t / 10.0f) + demoNoise(0.5f);
+  if (!strcmp(type, "EC")) return 1200.0f + 2.0f * t + demoNoise(5.0f);
+  if (!strcmp(type, "V")) return 1.10f + demoNoise(0.005f);
+  if (!strcmp(type, "TL")) return demoTemp(t);
+  if (!strcmp(type, "P")) return 101.3f + 0.5f * t + demoNoise(0.3f);
+  return 2.5f + demoNoise(0.01f);
+}
+
 void tick() {
   float t = (millis() - startMs) / 1000.0f;
   String s = String("{\"type\":\"d\",\"t\":") + String(t, 2) + ",\"v\":{";
@@ -252,19 +285,14 @@ void tick() {
     first = false;
   };
 
-  if (demo) {
-    add("pH", demoPH(t), 2);
-    add("L", 50.0f + 10.0f * sin(t / 10.0f) + demoNoise(0.5f), 1);
-    add("EC", 1.2f + 0.002f * t + demoNoise(0.01f), 3);
-    add("V", 1.10f + demoNoise(0.005f), 3);
-    add("T", hasDS ? lastDS : demoTemp(t), 2);
-  } else {
-    for (int i = 0; i < 4; i++) {
-      float volt = readVoltage(analogCh[i].pin);
-      add(analogCh[i].id, analogValue(i, volt), analogCh[i].decimals);
-    }
-    if (hasDS) add("T", lastDS, 2);
+  for (int i = 0; i < 4; i++) {
+    if (!portOn(i)) continue;
+    String id = portId(i);
+    float v = demo ? demoAnalog(settings.port[i].type, t) : analogValue(i, readVoltage(analogPins[i]));
+    add(id.c_str(), v, 3);
   }
+  if (hasDS) add("T", lastDS, 2);
+  else if (demo) add("T", demoTemp(t), 2);
 
   if (hasHS3003) {
     float ta, rh;
@@ -292,22 +320,32 @@ void pollDS() {
 // =====================================================================
 int analogIndex(const String& id) {
   for (int i = 0; i < 4; i++)
-    if (id.equals(analogCh[i].id)) return i;
+    if (portOn(i) && id.equals(portId(i))) return i;
   return -1;
 }
 
-void sendCal(int i) {
-  sendLine(String("{\"type\":\"cal\",\"id\":") + jsonStr(analogCh[i].id) + ",\"slope\":" + String(settings.slope[i], 4) +
-           ",\"offset\":" + String(settings.offset[i], 4) + ",\"points\":2}");
+int portIndexByName(const String& name) {
+  for (int i = 0; i < 4; i++)
+    if (name.equalsIgnoreCase(analogSrc[i])) return i;
+  return -1;
 }
 
+void sendCal(const String& id, float slope, float offset, int points) {
+  sendLine(String("{\"type\":\"cal\",\"id\":\"") + id + "\",\"slope\":" + String(slope, 4) +
+           ",\"offset\":" + String(offset, 4) + ",\"points\":" + points + "}");
+}
+
+// CAL <id> 1 <ref> → CAL <id> 2 <ref> : 2점 보정
+// CAL <id> OFS <ref>                  : 1점(영점) 보정 — 지금 값이 ref가 되도록 절편만 이동
+// CAL <id> CLEAR                      : 보정 지우기 (PORT로 받은 기본 변환식은 앱이 다시 보냄)
 void handleCal(String args[], int argc) {
-  if (argc < 3) { sendErr("CAL", "usage: CAL <id> <1|2|CLEAR> [value]"); return; }
+  if (argc < 3) { sendErr("CAL", "usage: CAL <id> <1|2|OFS|CLEAR> [value]"); return; }
   String id = args[1];
   String step = args[2];
+  step.toUpperCase();
 
   if (id.equals("T")) {
-    if (step.equalsIgnoreCase("CLEAR")) {
+    if (step == "CLEAR") {
       settings.tempOffset = 0; settings.tempCalValid = 0; saveSettings(); sendAck("CAL");
       return;
     }
@@ -316,17 +354,16 @@ void handleCal(String args[], int argc) {
     settings.tempOffset = args[3].toFloat() - raw;
     settings.tempCalValid = 1;
     saveSettings();
-    sendLine(String("{\"type\":\"cal\",\"id\":\"T\",\"slope\":1,\"offset\":") + String(settings.tempOffset, 3) + ",\"points\":1}");
+    sendCal("T", 1, settings.tempOffset, 1);
     return;
   }
 
   int i = analogIndex(id);
   if (i < 0) { sendErr("CAL", "unknown sensor"); return; }
+  PortSetting& p = settings.port[i];
 
-  if (step.equalsIgnoreCase("CLEAR")) {
-    settings.calValid[i] = 0;
-    settings.slope[i] = analogCh[i].defSlope;
-    settings.offset[i] = analogCh[i].defOffset;
+  if (step == "CLEAR") {
+    p.calValid = 0;
     calHasP1[i] = false;
     saveSettings();
     sendAck("CAL");
@@ -335,34 +372,56 @@ void handleCal(String args[], int argc) {
   if (argc < 4) { sendErr("CAL", "missing reference value"); return; }
 
   float ref = args[3].toFloat();
-  float volt = readVoltage(analogCh[i].pin);
+  float volt = readVoltage(analogPins[i]);
 
-  if (step.equals("1")) {
+  if (step == "OFS") {
+    float now = analogValue(i, volt);
+    p.offset += ref - now;
+    p.calValid = 1;
+    saveSettings();
+    sendCal(id, p.slope, p.offset, 1);
+  } else if (step == "1") {
     calV1[i] = volt; calRef1[i] = ref; calHasP1[i] = true;
     sendAck("CAL");
-  } else if (step.equals("2")) {
+  } else if (step == "2") {
     if (!calHasP1[i]) { sendErr("CAL", "record point 1 first"); return; }
     float dv = volt - calV1[i];
     if (fabs(dv) < 0.005f) { sendErr("CAL", "points too close"); return; }
-    settings.slope[i] = (ref - calRef1[i]) / dv;
-    settings.offset[i] = calRef1[i] - settings.slope[i] * calV1[i];
-    settings.calValid[i] = 1;
+    p.slope = (ref - calRef1[i]) / dv;
+    p.offset = calRef1[i] - p.slope * calV1[i];
+    p.calValid = 1;
     calHasP1[i] = false;
     saveSettings();
-    sendCal(i);
+    sendCal(id, p.slope, p.offset, 2);
   } else {
-    sendErr("CAL", "step must be 1, 2 or CLEAR");
+    sendErr("CAL", "step must be 1, 2, OFS or CLEAR");
   }
+}
+
+// PORT <A0~A3> <type> [slope offset]  /  PORT <A0~A3> OFF
+void handlePort(String args[], int argc) {
+  if (argc < 3) { sendErr("PORT", "usage: PORT <A0-A3> <type> [slope offset]"); return; }
+  int i = portIndexByName(args[1]);
+  if (i < 0) { sendErr("PORT", "port must be A0-A3"); return; }
+  String type = args[2];
+  if (type.length() >= TYPE_LEN) { sendErr("PORT", "type too long"); return; }
+  float slope = argc > 3 ? args[3].toFloat() : 1.0f;
+  float offset = argc > 4 ? args[4].toFloat() : 0.0f;
+  setPort(i, type.c_str(), slope, offset);
+  calHasP1[i] = false;
+  saveSettings();
+  sendAck("PORT");
+  sendHello();
 }
 
 void handleCommand(String line) {
   line.trim();
   if (line.length() == 0) return;
 
-  String args[6];
+  String args[8];
   int argc = 0;
   int pos = 0;
-  while (argc < 6 && pos < (int)line.length()) {
+  while (argc < 8 && pos < (int)line.length()) {
     int sp = line.indexOf(' ', pos);
     if (sp < 0) sp = line.length();
     if (sp > pos) args[argc++] = line.substring(pos, sp);
@@ -392,6 +451,8 @@ void handleCommand(String line) {
     sendHello();
   } else if (cmd == "CAL") {
     handleCal(args, argc);
+  } else if (cmd == "PORT") {
+    handlePort(args, argc);
   } else if (cmd == "STATION") {
     int n = argc > 1 ? args[1].toInt() : 0;
     if (n < 1 || n > 8) { sendErr("STATION", "1-8"); return; }

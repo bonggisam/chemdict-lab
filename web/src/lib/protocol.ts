@@ -2,6 +2,7 @@
 
 export interface SensorInfo {
   id: string;
+  type?: string;
   name: string;
   unit: string;
   src: string;
@@ -62,16 +63,29 @@ export class LineAssembler {
   }
 }
 
+export interface EventSpec {
+  label: string;        // 예: NaOH 부피
+  unit: string;         // 예: mL
+  start: number;        // 첫 값
+  step: number;         // 다음 값 제안 간격
+  scale?: 'linear' | 'log';
+}
+
+export type AnalysisTool = 'stats' | 'fit' | 'equivalence' | 'plateau';
+
 export interface Experiment {
   id: string;
   order: number;
   title: string;
   subject: string;
   standards: string[];
-  sensors: string[];
+  sensors: string[];           // 센서 종류(type). '*' = 모든 센서
+  mode?: 'time' | 'event';     // time: 일정 간격 자동 기록, event: 버튼을 누를 때 기록
+  event?: EventSpec;
   intervalMs: number;
   x: { label: string; unit: string };
   y: { sensor: string; label: string; unit?: string; min?: number; max?: number }[];
   markers: { enabled: boolean; label: string; prompt: string };
+  analysis?: AnalysisTool[];
   steps: string[];
 }

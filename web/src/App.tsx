@@ -1,11 +1,16 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Chart } from './components/Chart';
+import { Measure } from './components/Measure';
+import { SensorSetup } from './components/SensorSetup';
+import { CalibrationSheet } from './components/CalibrationSheet';
 import { experiments } from './lib/experiments';
-import { parseLine, type BoardMsg, type Experiment, type HelloMsg, type SensorInfo } from './lib/protocol';
+import { parseLine, type BoardMsg, type Experiment, type HelloMsg } from './lib/protocol';
 import { BleTransport, SerialTransport, SimTransport, hasBluetooth, hasSerial, type Transport } from './lib/transports';
-import { saveCSV, toCSV, type Marker, type Row } from './lib/csv';
+import { analogTypes, resolveSensor } from './lib/sensors';
+import { isStable } from './lib/analysis';
+import { newRun, type Row, type Run } from './lib/runs';
 
 type Screen = 'connect' | 'pick' | 'measure';
+type CalMsg = { id: string; slope: number; offset: number; points: number };
 
 export default function App() {
   const transportRef = useRef<Transport | null>(null);
@@ -16,14 +21,20 @@ export default function App() {
   const [exp, setExp] = useState<Experiment | null>(null);
   const [running, setRunning] = useState(false);
   const [intervalMs, setIntervalMs] = useState(1000);
-  const [rows, setRows] = useState<Row[]>([]);
-  const [markers, setMarkers] = useState<Marker[]>([]);
-  const [markerNote, setMarkerNote] = useState('');
+  const [runs, setRunsState] = useState<Run[]>([]);
+  const [activeId, setActiveIdState] = useState('');
   const [toast, setToast] = useState<{ kind: 'ok' | 'err'; text: string } | null>(null);
-  const [calOpen, setCalOpen] = useState(false);
-  const [calStep, setCalStep] = useState(0);
-  const [clearArmed, setClearArmed] = useState(false);
-  const runningRef = useRef(false);
+  const [setupOpen, setSetupOpen] = useState(false);
+  const [cal, setCal] = useState<{ id?: string } | null>(null);
+  const [lastCal, setLastCal] = useState<CalMsg | null>(null);
+  const [calRows, setCalRows] = useState<Row[]>([]);
+
+  // 메시지 처리기에서 최신 상태를 읽기 위한 ref
+  const recordingRef = useRef(false);   // 측정(run)에 기록 중
+  const calibratingRef = useRef(false); // 보정 화면용 미리보기 측정 중
+  const activeIdRef = useRef('');
+  const setActiveId = (id: string) => { activeIdRef.current = id; setActiveIdState(id); };
+  const setRuns = useCallback((fn: (r: Run[]) => Run[]) => setRunsState(fn), []);
 
   const say = useCallback((kind: 'ok' | 'err', text: string) => {
     setToast({ kind, text });
@@ -35,16 +46,23 @@ export default function App() {
       case 'hello':
         setHello(m);
         break;
-      case 'd':
-        if (runningRef.current) setRows((r) => [...r, { t: m.t, v: m.v }]);
+      case 'd': {
+        const row = { t: m.t, v: m.v };
+        if (recordingRef.current) {
+          const id = activeIdRef.current;
+          setRunsState((rs) => rs.map((r) => (r.id === id ? { ...r, rows: [...r.rows, row] } : r)));
+        } else if (calibratingRef.current) {
+          setCalRows((rs) => [...rs.slice(-40), row]);
+        }
         break;
+      }
       case 'ack':
-        if (m.cmd === 'START') { runningRef.current = true; setRunning(true); }
-        if (m.cmd === 'STOP') { runningRef.current = false; setRunning(false); }
+        if (m.cmd === 'START' && recordingRef.current) setRunning(true);
+        if (m.cmd === 'STOP') setRunning(false);
         break;
       case 'cal':
-        say('ok', `${m.id} 보정 완료 · 기울기 ${m.slope}, 절편 ${m.offset}`);
-        setCalStep(3);
+        setLastCal(m);
+        say('ok', '보정 완료 · 보드에 저장했습니다.');
         transportRef.current?.send('HELLO');
         break;
       case 'err':
@@ -59,7 +77,8 @@ export default function App() {
     t.onClose = () => {
       if (transportRef.current !== t) return;
       transportRef.current = null;
-      runningRef.current = false;
+      recordingRef.current = false;
+      calibratingRef.current = false;
       setRunning(false);
       setHello(null);
       setConnLabel('');
@@ -72,7 +91,7 @@ export default function App() {
       transportRef.current = t;
       setConnLabel(t.label);
       await t.send('HELLO');
-      setScreen('pick');
+      setScreen(exp ? 'measure' : 'pick');
     } catch (e) {
       const msg = e instanceof Error ? e.message : String(e);
       if (!/cancel|No port selected|User cancelled/i.test(msg)) say('err', `연결하지 못했습니다: ${msg}`);
@@ -84,7 +103,8 @@ export default function App() {
   const disconnect = async () => {
     const t = transportRef.current;
     transportRef.current = null;
-    runningRef.current = false;
+    recordingRef.current = false;
+    calibratingRef.current = false;
     setRunning(false);
     setHello(null);
     setConnLabel('');
@@ -94,67 +114,82 @@ export default function App() {
 
   useEffect(() => () => { transportRef.current?.disconnect(); }, []);
 
-  const send = (cmd: string) => transportRef.current?.send(cmd);
+  const send = useCallback((cmd: string) => { transportRef.current?.send(cmd); }, []);
 
-  const sensorMap = useMemo(() => {
-    const m: Record<string, SensorInfo> = {};
-    hello?.sensors.forEach((s) => (m[s.id] = s));
-    return m;
-  }, [hello]);
+  const sensors = useMemo(() => (hello?.sensors ?? []).map(resolveSensor), [hello]);
+  const available = (e: Experiment) => e.sensors.includes('*') || e.sensors.every((t) => sensors.some((s) => s.type === t || s.id === t));
 
-  const available = (e: Experiment) => e.sensors.includes('*') || e.sensors.every((id) => sensorMap[id]);
+  // ---- 센서 설정
+  const setPort = (port: string, type: string) => {
+    if (type === 'OFF') { send(`PORT ${port} OFF`); return; }
+    const spec = analogTypes.find((t) => t.type === type);
+    send(`PORT ${port} ${type} ${spec?.slope ?? 1} ${spec?.offset ?? 0}`);
+  };
+  const clearCal = (id: string) => {
+    const s = sensors.find((x) => x.id === id);
+    if (s && /^A\d$/.test(s.src)) setPort(s.src, s.type); // 기본 변환식으로 되돌림
+    else send(`CAL ${id} CLEAR`);
+  };
 
-  const chartSpecs = useMemo(() => {
-    if (!exp) return [];
-    if (exp.y.length) {
-      return exp.y.map((y) => ({ sensor: y.sensor, label: y.label, unit: y.unit ?? sensorMap[y.sensor]?.unit, min: y.min, max: y.max }));
-    }
-    return (hello?.sensors ?? []).map((s) => ({ sensor: s.id, label: s.name, unit: s.unit, min: undefined, max: undefined }));
-  }, [exp, hello, sensorMap]);
-
-  const exportIds = chartSpecs.map((c) => c.sensor);
-
+  // ---- 실험·측정
   const pickExperiment = (e: Experiment) => {
+    const mode = e.mode ?? 'time';
+    const r = newRun(mode, 0);
     setExp(e);
     setIntervalMs(e.intervalMs);
-    setRows([]);
-    setMarkers([]);
+    setRuns(() => [r]);
+    setActiveId(r.id);
     setScreen('measure');
   };
 
   const start = () => {
-    if (rows.length) setRows([]);
-    setMarkers([]);
-    send(`START ${intervalMs}`);
-  };
-  const stop = () => send('STOP');
-
-  const addMarker = () => {
     if (!exp) return;
-    const t = rows.length ? rows[rows.length - 1].t : 0;
-    const note = markerNote.trim() || exp.markers.label;
-    setMarkers((m) => [...m, { t, note }]);
-    setMarkerNote('');
+    let id = activeIdRef.current;
+    const cur = runs.find((r) => r.id === id);
+    // 시간 기록 모드에서 이미 데이터가 있으면 새 측정으로 (이전 측정은 비교용으로 남김)
+    if (cur && cur.mode === 'time' && cur.rows.length) {
+      const r = newRun('time', runs.length);
+      r.prediction = cur.rows.length ? [] : cur.prediction;
+      setRuns((rs) => [...rs, r]);
+      id = r.id;
+      setActiveId(id);
+    } else if (cur && cur.mode === 'event') {
+      // 값 입력 모드는 같은 측정에 계속 추가 (안정 판정용 자동 기록만 새로)
+      setRuns((rs) => rs.map((r) => (r.id === id ? { ...r, rows: [] } : r)));
+    }
+    calibratingRef.current = false;
+    recordingRef.current = true;
+    if (transportRef.current?.kind === 'sim') send(exp.mode === 'event' ? `SIMX ${exp.event?.start ?? 0}` : 'SIMX');
+    send(`START ${exp.mode === 'event' ? exp.intervalMs : intervalMs}`);
+  };
+  const stop = () => {
+    recordingRef.current = false;
+    send('STOP');
   };
 
-  const exportCSV = async () => {
-    if (!exp || !rows.length) return;
-    const names: Record<string, string> = {};
-    chartSpecs.forEach((c) => (names[c.sensor] = c.unit ? `${c.label}(${c.unit})` : c.label));
-    const d = new Date();
-    const stamp = `${d.getFullYear()}${pad(d.getMonth() + 1)}${pad(d.getDate())}-${pad(d.getHours())}${pad(d.getMinutes())}`;
-    const station = hello?.station ? `_st${hello.station}` : '';
-    await saveCSV(toCSV(rows, exportIds, names, markers), `chemdict_${exp.id}${station}_${stamp}.csv`);
+  // ---- 보정 화면: 측정 중이 아니면 미리보기 측정을 켬
+  const openCal = (id?: string) => {
+    setLastCal(null);
+    setCal({ id });
+    if (!recordingRef.current) {
+      calibratingRef.current = true;
+      setCalRows([]);
+      send('START 500');
+    }
   };
-
-  const clearData = () => {
-    if (!clearArmed && rows.length) { setClearArmed(true); window.setTimeout(() => setClearArmed(false), 3000); return; }
-    setRows([]); setMarkers([]); setClearArmed(false);
+  const closeCal = () => {
+    setCal(null);
+    if (calibratingRef.current) { calibratingRef.current = false; send('STOP'); }
   };
-
-  const calRecord = (n: 1 | 2, ref: string) => {
-    send(`CAL pH ${n} ${ref}`);
-    if (n === 1) setCalStep(2);
+  const calSource: Row[] = recordingRef.current ? (runs.find((r) => r.id === activeId)?.rows ?? []) : calRows;
+  const liveValue = (id: string) => {
+    for (let i = calSource.length - 1; i >= Math.max(0, calSource.length - 5); i--) if (typeof calSource[i].v[id] === 'number') return calSource[i].v[id];
+    return undefined;
+  };
+  const liveStable = (id: string) => {
+    const s = sensors.find((x) => x.id === id);
+    const vals = calSource.slice(-6).map((r) => r.v[id]).filter((v): v is number => typeof v === 'number');
+    return vals.length ? isStable(vals, s?.spec?.stableBand ?? 0.05) : null;
   };
 
   const unsupported = !hasSerial() && !hasBluetooth();
@@ -212,21 +247,24 @@ export default function App() {
               </label>
             )}
           </div>
-          <p className="lede">
-            인식된 센서:{' '}
-            {hello ? hello.sensors.map((s) => <span key={s.id} className="chip">{s.name}{s.cal ? ' ✓보정' : ''}</span>) : '불러오는 중…'}
-          </p>
+
+          {hello ? <SensorSetup sensors={sensors} disabled={false} onSetPort={setPort} /> : <p className="note">센서 정보를 불러오는 중…</p>}
+
+          <div className="row-head sub">
+            <h2>실험</h2>
+            <button className="ghost" disabled={!sensors.some((s) => s.spec && s.spec.cal.kind !== 'none')} onClick={() => openCal()}>센서 보정</button>
+          </div>
           <div className="cards">
             {experiments.map((e) => {
               const ok = available(e);
               return (
                 <button key={e.id} className="card" disabled={!ok} onClick={() => pickExperiment(e)}>
-                  <span className="subject">{e.subject}</span>
+                  <span className="subject">{e.subject}{e.mode === 'event' ? ' · 값 입력' : ''}</span>
                   <b>{e.title}</b>
                   {e.standards.length > 0 && <span className="codes">{e.standards.map((s) => `[${s}]`).join(' ')}</span>}
                   <span className="need">
-                    {e.sensors.includes('*') ? '모든 센서' : e.sensors.map((id) => sensorMap[id]?.name ?? id).join(' · ')}
-                    {!ok && ' — 센서 없음'}
+                    {e.sensors.includes('*') ? '모든 센서' : e.sensors.map((t) => analogTypes.find((a) => a.type === t)?.name ?? sensors.find((s) => s.type === t)?.displayName ?? t).join(' · ')}
+                    {!ok && ' — 위에서 센서를 연결하세요'}
                   </span>
                 </button>
               );
@@ -236,95 +274,51 @@ export default function App() {
       )}
 
       {screen === 'measure' && exp && (
-        <main className="wide">
-          <div className="row-head">
-            <div>
-              <button className="ghost back" disabled={running} onClick={() => setScreen('pick')}>← 실험 목록</button>
-              <h1>{exp.title}</h1>
-            </div>
-            <div className="controls">
-              <label className="interval">
-                간격
-                <select value={intervalMs} disabled={running} onChange={(e) => setIntervalMs(Number(e.target.value))}>
-                  {[200, 500, 1000, 2000, 5000].map((ms) => <option key={ms} value={ms}>{ms / 1000}초</option>)}
-                </select>
-              </label>
-              {!running
-                ? <button className="primary" onClick={start}>측정 시작</button>
-                : <button className="danger" onClick={stop}>정지</button>}
-            </div>
-          </div>
-
-          <details className="steps">
-            <summary>실험 순서 보기</summary>
-            <ol>{exp.steps.map((s, i) => <li key={i}>{s}</li>)}</ol>
-          </details>
-
-          <div className="charts">
-            {chartSpecs.map((c) => (
-              <Chart key={c.sensor} rows={rows} sensor={c.sensor} label={c.label} unit={c.unit} min={c.min} max={c.max} markers={markers} />
-            ))}
-          </div>
-
-          <div className="toolbar">
-            {exp.markers.enabled && (
-              <div className="marker">
-                <input
-                  id="marker-note"
-                  value={markerNote}
-                  placeholder={exp.markers.prompt}
-                  onChange={(e) => setMarkerNote(e.target.value)}
-                  onKeyDown={(e) => { if (e.key === 'Enter') addMarker(); }}
-                />
-                <button onClick={addMarker} disabled={!running && !rows.length}>{exp.markers.label}</button>
-              </div>
-            )}
-            <div className="actions">
-              {sensorMap['pH'] && <button className="ghost" disabled={running} onClick={() => { setCalOpen(true); setCalStep(1); }}>pH 보정</button>}
-              <button className="ghost" onClick={clearData} disabled={running || !rows.length}>{clearArmed ? '한 번 더 누르면 지워집니다' : '데이터 지우기'}</button>
-              <button className="primary" onClick={exportCSV} disabled={!rows.length}>CSV 내보내기</button>
-            </div>
-          </div>
-
-          {markers.length > 0 && (
-            <ul className="marker-list">
-              {markers.map((m, i) => <li key={i}><span>{m.t.toFixed(1)} s</span>{m.note}</li>)}
-            </ul>
-          )}
-          <p className="note">측정 {rows.length}개 · 표시 {markers.length}개</p>
-        </main>
+        <Measure
+          exp={exp}
+          sensors={sensors}
+          runs={runs}
+          setRuns={setRuns}
+          activeId={activeId}
+          setActiveId={setActiveId}
+          running={running}
+          intervalMs={intervalMs}
+          setIntervalMs={setIntervalMs}
+          onStart={start}
+          onStop={stop}
+          onBack={() => setScreen('pick')}
+          onOpenSetup={() => setSetupOpen(true)}
+          onOpenCal={openCal}
+          say={say}
+          onEventX={(x) => { if (transportRef.current?.kind === 'sim') send(`SIMX ${x}`); }}
+          station={hello?.station}
+        />
       )}
 
-      {calOpen && (
-        <div className="sheet-backdrop" onClick={() => setCalOpen(false)}>
-          <div className="sheet" role="dialog" aria-label="pH 보정" onClick={(e) => e.stopPropagation()}>
-            <h2>pH 2점 보정</h2>
-            <ol className="cal-steps">
-              <li className={calStep === 1 ? 'on' : calStep > 1 ? 'done' : ''}>
-                <p>센서를 증류수로 헹구고 <b>pH 7 완충 용액</b>에 담그세요. 값이 멈추면 누르세요.</p>
-                <button className="primary" disabled={calStep !== 1} onClick={() => calRecord(1, '7.00')}>pH 7.00 기록</button>
-              </li>
-              <li className={calStep === 2 ? 'on' : calStep > 2 ? 'done' : ''}>
-                <p>다시 헹군 뒤 <b>pH 4 완충 용액</b>에 담그세요. 값이 멈추면 누르세요.</p>
-                <button className="primary" disabled={calStep !== 2} onClick={() => calRecord(2, '4.00')}>pH 4.00 기록</button>
-              </li>
-              <li className={calStep === 3 ? 'on done' : ''}>
-                <p>보정값이 보드에 저장됩니다. 다음부터는 다시 하지 않아도 됩니다.</p>
-              </li>
-            </ol>
-            <div className="sheet-actions">
-              <button className="ghost" onClick={() => { send('CAL pH CLEAR'); setCalStep(1); }}>보정 초기화</button>
-              <button onClick={() => setCalOpen(false)}>{calStep === 3 ? '완료' : '닫기'}</button>
-            </div>
+      {setupOpen && (
+        <div className="sheet-backdrop" onClick={() => setSetupOpen(false)}>
+          <div className="sheet wide-sheet" onClick={(e) => e.stopPropagation()}>
+            <SensorSetup sensors={sensors} disabled={running} onSetPort={setPort} />
+            <div className="sheet-actions"><span /><button onClick={() => setSetupOpen(false)}>닫기</button></div>
           </div>
         </div>
+      )}
+
+      {cal && (
+        <CalibrationSheet
+          sensors={sensors}
+          initialId={cal.id}
+          live={liveValue}
+          stable={liveStable}
+          running={running || calibratingRef.current}
+          lastCal={lastCal}
+          send={send}
+          onClear={clearCal}
+          onClose={closeCal}
+        />
       )}
 
       {toast && <div className={`toast ${toast.kind}`} role="status">{toast.text}</div>}
     </div>
   );
-}
-
-function pad(n: number) {
-  return n.toString().padStart(2, '0');
 }

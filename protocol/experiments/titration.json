@@ -3,16 +3,50 @@
   "order": 5,
   "title": "식초 속 아세트산은 몇 %",
   "subject": "화학",
-  "standards": ["12화학04-03", "12화학04-04", "12반응01-03"],
-  "sensors": ["pH"],
-  "intervalMs": 1000,
-  "x": { "label": "시간", "unit": "s" },
-  "y": [{ "sensor": "pH", "label": "pH", "min": 0, "max": 14 }],
-  "markers": { "enabled": true, "label": "부피 기록", "prompt": "지금까지 넣은 NaOH 부피(mL)" },
+  "standards": [
+    "12화학04-03",
+    "12화학04-04",
+    "12반응01-03"
+  ],
+  "sensors": [
+    "pH"
+  ],
+  "intervalMs": 500,
+  "x": {
+    "label": "NaOH 부피",
+    "unit": "mL"
+  },
+  "y": [
+    {
+      "sensor": "pH",
+      "label": "pH",
+      "min": 0,
+      "max": 14
+    }
+  ],
+  "markers": {
+    "enabled": false,
+    "label": "",
+    "prompt": ""
+  },
   "steps": [
-    "묽힌 식초 10 mL에 pH 센서를 담급니다.",
-    "NaOH 표준 용액을 1 mL씩 넣고 섞은 뒤 '부피 기록'을 누릅니다.",
+    "묽힌 식초 10 mL에 pH 센서를 담그고 측정을 시작합니다.",
+    "값이 '안정'이 되면 부피 0 mL로 '값 기록'을 누릅니다.",
+    "NaOH 표준 용액을 1 mL씩 넣고 섞은 뒤, 넣은 총 부피를 입력하고 기록합니다.",
     "pH가 급하게 변하는 구간에서는 0.2 mL씩 넣습니다.",
-    "부피–pH 그래프에서 당량점을 찾습니다."
+    "'당량점 찾기'로 당량점 부피와 반당량점 pH(≈ pKa)를 확인합니다."
+  ],
+  "mode": "event",
+  "event": {
+    "label": "NaOH 부피",
+    "unit": "mL",
+    "start": 0,
+    "step": 1,
+    "scale": "linear"
+  },
+  "analysis": [
+    "stats",
+    "equivalence",
+    "fit"
   ]
 }
