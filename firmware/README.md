@@ -1,0 +1,39 @@
+# ChemDict Lab 펌웨어 — UNO R4 WiFi
+
+## 처음 올리기 (교사, 보드마다 한 번)
+
+1. Arduino IDE 2 설치
+2. **보드 매니저**에서 `Arduino UNO R4 Boards` 설치
+3. **라이브러리 매니저**에서 설치: `ArduinoBLE`, `OneWire`, `DallasTemperature`
+4. `chemdict_lab/chemdict_lab.ino` 열기 → 보드 `Arduino UNO R4 WiFi` 선택 → 업로드
+5. 시리얼 모니터(115200, 줄 끝: 새 줄)를 열면 `{"type":"hello",...}` 한 줄이 보입니다.
+
+## 바로 시험하기 (센서 없이)
+
+시리얼 모니터에 차례로 입력:
+
+```
+DEMO ON
+START 1000
+STOP
+```
+
+## 모둠 번호 정하기
+
+```
+STATION 3
+```
+보드를 다시 켜면 블루투스 이름이 `ChemDict-03`이 됩니다.
+
+## 배선
+
+| 센서 | 연결 |
+|---|---|
+| pH 모듈 출력 | A0 |
+| 빛(광센서) | A1 |
+| 전도도 | A2 |
+| 전압 측정 | A3 (5 V 이하만!) |
+| DS18B20 데이터 | D2 (4.7 kΩ 풀업, 모듈형은 내장) |
+| Modulino Thermo | Qwiic 단자 |
+
+전체 명령과 메시지 형식은 `protocol/PROTOCOL.md`를 보세요.

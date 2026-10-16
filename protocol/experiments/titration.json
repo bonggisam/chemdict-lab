@@ -1,0 +1,18 @@
+{
+  "id": "titration",
+  "order": 5,
+  "title": "식초 속 아세트산은 몇 %",
+  "subject": "화학",
+  "standards": ["12화학04-03", "12화학04-04", "12반응01-03"],
+  "sensors": ["pH"],
+  "intervalMs": 1000,
+  "x": { "label": "시간", "unit": "s" },
+  "y": [{ "sensor": "pH", "label": "pH", "min": 0, "max": 14 }],
+  "markers": { "enabled": true, "label": "부피 기록", "prompt": "지금까지 넣은 NaOH 부피(mL)" },
+  "steps": [
+    "묽힌 식초 10 mL에 pH 센서를 담급니다.",
+    "NaOH 표준 용액을 1 mL씩 넣고 섞은 뒤 '부피 기록'을 누릅니다.",
+    "pH가 급하게 변하는 구간에서는 0.2 mL씩 넣습니다.",
+    "부피–pH 그래프에서 당량점을 찾습니다."
+  ]
+}

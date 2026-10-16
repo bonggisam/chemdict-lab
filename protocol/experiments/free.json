@@ -1,0 +1,16 @@
+{
+  "id": "free",
+  "order": 0,
+  "title": "자유 측정",
+  "subject": "공통",
+  "standards": [],
+  "sensors": ["*"],
+  "intervalMs": 1000,
+  "x": { "label": "시간", "unit": "s" },
+  "y": [],
+  "markers": { "enabled": true, "label": "표시", "prompt": "메모를 입력하세요" },
+  "steps": [
+    "연결된 모든 센서 값을 기록합니다.",
+    "필요할 때 '표시' 버튼으로 그 순간에 메모를 남기세요."
+  ]
+}
