@@ -5,3 +5,7 @@ dist/
 xcuserdata/
 DerivedData/
 *.tsbuildinfo
+
+# XcodeGen 이 만드는 파일
+apple/*.xcodeproj/
+apple/ChemDictLab/Info.plist
