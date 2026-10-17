@@ -106,7 +106,9 @@ export default function App() {
       setScreen(exp ? 'measure' : 'pick');
     } catch (e) {
       const msg = e instanceof Error ? e.message : String(e);
-      if (!/cancel|No port selected|User cancelled/i.test(msg)) say('err', `연결하지 못했습니다: ${msg}`);
+      if (/cancel|No port selected|User cancelled/i.test(msg)) { /* 사용자가 선택 창을 닫음 */ }
+      else if (/open|busy|in use|NetworkError|InvalidState/i.test(msg)) say('err', '다른 프로그램이 보드를 쓰고 있습니다. Arduino IDE의 시리얼 모니터를 닫고 다시 연결하세요.');
+      else say('err', `연결하지 못했습니다: ${msg}`);
     } finally {
       setBusy(false);
     }
