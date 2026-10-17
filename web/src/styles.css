@@ -35,7 +35,7 @@ button.ghost { background: transparent; }
 .app { min-height: 100vh; padding: env(safe-area-inset-top) max(16px, env(safe-area-inset-right)) env(safe-area-inset-bottom) max(16px, env(safe-area-inset-left)); }
 .top { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; padding: 14px 0; border-bottom: 1px solid var(--line); max-width: 1100px; margin: 0 auto; }
 .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 18px; }
-.logo { width: 32px; height: 32px; border-radius: 8px; background: var(--accent); color: var(--accent-ink); display: grid; place-items: center; font-size: 18px; }
+.logo { width: 36px; height: 36px; border-radius: 50%; display: block; flex: none; }
 .conn { display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--muted); }
 .conn .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--ok); }
 .conn button { min-height: 44px; padding: 6px 12px; }

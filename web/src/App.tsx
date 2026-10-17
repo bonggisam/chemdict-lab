@@ -354,7 +354,7 @@ export default function App() {
     <div className="app">
       <header className="top">
         <div className="brand">
-          <span className="logo" aria-hidden="true">⚗</span>
+          <img className="logo" src={`${import.meta.env.BASE_URL}logo-128.png`} alt="" width={32} height={32} />
           <span>ChemDict Lab</span>
         </div>
         <nav className="top-nav stepper" aria-label="단계">
