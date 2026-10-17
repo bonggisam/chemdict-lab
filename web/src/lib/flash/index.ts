@@ -1,3 +1,4 @@
+import { t } from '../i18n';
 // 웹앱에서 보드에 ChemDict 측정 프로그램(펌웨어)을 올립니다. Web Serial만 쓰므로 크롬·엣지에서 동작.
 import { parseHex } from './hex';
 import { SerialIO } from './io';
@@ -49,7 +50,7 @@ export class FlashError extends Error {
 
 export async function flashBoard(port: SerialPort, target: FlashTarget, progress: Progress) {
   const res = await fetch(`${import.meta.env.BASE_URL}firmware/${target.file}`);
-  if (!res.ok) throw new FlashError('other', '펌웨어 파일을 받지 못했습니다. 인터넷 연결을 확인하세요.');
+  if (!res.ok) throw new FlashError('other', t('펌웨어 파일을 받지 못했습니다. 인터넷 연결을 확인하세요.'));
   const image = parseHex(await res.text());
 
   let lastErr: unknown;
@@ -58,7 +59,7 @@ export async function flashBoard(port: SerialPort, target: FlashTarget, progress
     try {
       await io.open(baud);
     } catch {
-      throw new FlashError('busy', '다른 프로그램이 보드를 쓰고 있습니다.');
+      throw new FlashError('busy', t('다른 프로그램이 보드를 쓰고 있습니다.'));
     }
     try {
       if (target.proto === 'stk500v2') {
@@ -74,11 +75,11 @@ export async function flashBoard(port: SerialPort, target: FlashTarget, progress
       lastErr = e;
       await io.close();
       const m = e instanceof Error ? e.message : String(e);
-      if (m === 'VERIFY') throw new FlashError('verify', '쓴 내용을 확인하다 다른 값이 나왔습니다.');
+      if (m === 'VERIFY') throw new FlashError('verify', t('쓴 내용을 확인하다 다른 값이 나왔습니다.'));
       if (!/NOSYNC|timeout/.test(m)) throw new FlashError('other', m);
     }
   }
-  throw new FlashError('nosync', lastErr instanceof Error ? lastErr.message : '보드가 응답하지 않습니다.');
+  throw new FlashError('nosync', lastErr instanceof Error ? lastErr.message : t('보드가 응답하지 않습니다.'));
 }
 
 /** "0.2.2" < "0.3.0" */

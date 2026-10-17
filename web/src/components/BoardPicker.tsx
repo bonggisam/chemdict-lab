@@ -1,6 +1,7 @@
 import { boards, type Board } from '../lib/guide';
+import { t, tk } from '../lib/i18n';
 
-const FW_LABEL = { verified: '실제 확인', compiled: '사용 가능', none: '준비 중' } as const;
+const FW_LABEL = { verified: tk('실제 확인'), compiled: tk('사용 가능'), none: tk('준비 중') } as const;
 
 interface Props {
   board: Board;
@@ -15,15 +16,15 @@ export function BoardPicker({ board, detectedId, onPick }: Props) {
   const btn = (b: Board) => (
     <button key={b.id} role="radio" aria-checked={b.id === board.id} className={b.id === board.id ? 'on' : ''} disabled={b.firmware === 'none'} onClick={() => onPick(b.id)}>
       <b>{b.name}</b>
-      <span className={`fw ${b.firmware}`}>{b.id === detectedId ? '✓ 연결됨' : `${b.ble ? 'USB·블루투스' : 'USB'} · ${FW_LABEL[b.firmware]}`}</span>
+      <span className={`fw ${b.firmware}`}>{b.id === detectedId ? t('✓ 연결됨') : `${b.ble ? t('USB·블루투스') : 'USB'} · ${t(FW_LABEL[b.firmware])}`}</span>
     </button>
   );
   return (
     <div>
-      <div className="board-pick" role="radiogroup" aria-label="보드 종류">{main.map(btn)}</div>
+      <div className="board-pick" role="radiogroup" aria-label={t('보드 종류')}>{main.map(btn)}</div>
       {later.length > 0 && (
         <details className="advanced">
-          <summary>그 밖의 보드 ({later.length}종, 준비 중)</summary>
+          <summary>{t('그 밖의 보드 ({n}종, 준비 중)', { n: later.length })}</summary>
           <div className="board-pick">{later.map(btn)}</div>
         </details>
       )}

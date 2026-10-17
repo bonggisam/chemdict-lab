@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { breadboard, type BBCircuit } from '../lib/guide';
+import { t } from '../lib/i18n';
+import { courseName } from '../lib/l10n';
 
 /** 브레드보드 그림: 구조 설명용(highlight) 또는 회로(circuit) */
 
@@ -55,7 +57,7 @@ export function BreadboardDiagram({ circuit, highlight, title }: Props) {
         {pins.length > 0 && (
           <g>
             <rect x="14" y="40" width="104" height={Math.max(80, pins.length * 40 + 20)} rx="10" className="bb-board" />
-            <text x="66" y="34" textAnchor="middle" className="bb-label">보드</text>
+            <text x="66" y="34" textAnchor="middle" className="bb-label">{t('보드')}</text>
             {pins.map((p) => (
               <g key={p}>
                 <rect x="96" y={pinY(p) - 7} width="22" height="14" rx="2" className="bb-pin" />
@@ -92,10 +94,10 @@ export function BreadboardDiagram({ circuit, highlight, title }: Props) {
         {ROWS.map((r) => <text key={r} x="164" y={rowY(r) + 4} textAnchor="end" className="bb-num">{r}</text>)}
         {highlight && (
           <>
-            <text x={colX(5) + 16} y={rowY('c') + 4} className="bb-note">a~e 세로 5칸이 한 줄로 이어짐</text>
-            <text x={colX(12) + 16} y={rowY('h') + 4} className="bb-note">f~j도 따로 한 줄 (가운데 홈 건너편과는 안 이어짐)</text>
-            <text x={colX(8)} y={RAIL_Y['T+'] - 13} className="bb-note">+ 줄은 가로로 길게 이어짐 (보드 5V)</text>
-            <text x={colX(8)} y={RAIL_Y['T-'] + 20} className="bb-note">− 줄 (보드 GND)</text>
+            <text x={colX(5) + 16} y={rowY('c') + 4} className="bb-note">{t('a~e 세로 5칸이 한 줄로 이어짐')}</text>
+            <text x={colX(12) + 16} y={rowY('h') + 4} className="bb-note">{t('f~j도 따로 한 줄 (가운데 홈 건너편과는 안 이어짐)')}</text>
+            <text x={colX(8)} y={RAIL_Y['T+'] - 13} className="bb-note">{t('+ 줄은 가로로 길게 이어짐 (보드 5V)')}</text>
+            <text x={colX(8)} y={RAIL_Y['T-'] + 20} className="bb-note">{t('− 줄 (보드 GND)')}</text>
           </>
         )}
 
@@ -103,7 +105,7 @@ export function BreadboardDiagram({ circuit, highlight, title }: Props) {
         {hasBat && (
           <g>
             <rect x={batX} y={batY} width="100" height="34" rx="6" className="bb-bat" />
-            <text x={batX + 50} y={batY + 22} textAnchor="middle" className="bb-label">전지</text>
+            <text x={batX + 50} y={batY + 22} textAnchor="middle" className="bb-label">{t('전지')}</text>
             <text x={batX + 24} y={batY - 4} textAnchor="middle" className="bb-pin-text">+</text>
             <text x={batX + 76} y={batY - 4} textAnchor="middle" className="bb-pin-text">−</text>
           </g>
@@ -142,8 +144,8 @@ export function BreadboardDiagram({ circuit, highlight, title }: Props) {
               {p.kind === 'cap' && <rect x={mx - 10} y={my - 11} width="20" height="22" rx="4" fill="#1e3a8a" stroke="#1e40af" />}
               {p.kind === 'pot' && <rect x={mx - 12} y={my - 12} width="24" height="24" rx="4" fill="#3b82f6" stroke="#1d4ed8" />}
               <text x={mx} y={my - 16} textAnchor="middle" className="bb-part">{p.label}</text>
-              {p.kind === 'led' && <text x={x1} y={y1 + 16} textAnchor="middle" className="bb-num">긴 다리 +</text>}
-              {p.kind === 'cap' && <text x={x2} y={y2 + 16} textAnchor="middle" className="bb-num">띠 −</text>}
+              {p.kind === 'led' && <text x={x1} y={y1 + 16} textAnchor="middle" className="bb-num">{t('긴 다리 +')}</text>}
+              {p.kind === 'cap' && <text x={x2} y={y2 + 16} textAnchor="middle" className="bb-num">{t('띠 −')}</text>}
             </g>
           );
         })}
@@ -164,7 +166,7 @@ export function BreadboardDiagram({ circuit, highlight, title }: Props) {
           );
         })}
       </svg>
-      <figcaption className="note">개념도입니다. 열 번호는 예시이며, 같은 줄 관계만 지키면 다른 열에 꽂아도 됩니다.</figcaption>
+      <figcaption className="note">{t('개념도입니다. 열 번호는 예시이며, 같은 줄 관계만 지키면 다른 열에 꽂아도 됩니다.')}</figcaption>
     </figure>
   );
 }
@@ -176,21 +178,21 @@ export function BreadboardGuide({ initial, experiments }: { initial?: string; ex
   return (
     <div className="bb-guide">
       <p>{breadboard.intro}</p>
-      <h3>브레드보드의 구조</h3>
-      <BreadboardDiagram highlight title="브레드보드 구조: 이어진 칸" />
+      <h3>{t('브레드보드의 구조')}</h3>
+      <BreadboardDiagram highlight title={t('브레드보드 구조: 이어진 칸')} />
       <ul>{breadboard.structure.map((s) => <li key={s}>{s}</li>)}</ul>
       <div className="caution">
-        <h3>꽂을 때 규칙</h3>
+        <h3>{t('꽂을 때 규칙')}</h3>
         <ul>{breadboard.rules.map((s) => <li key={s}>{s}</li>)}</ul>
       </div>
-      <h3>자주 쓰는 저항</h3>
+      <h3>{t('자주 쓰는 저항')}</h3>
       <table className="wire-table bb-res">
-        <thead><tr><th>값</th><th>색띠 (4줄)</th><th>쓰는 곳</th></tr></thead>
+        <thead><tr><th>{t('값')}</th><th>{t('색띠 (4줄)')}</th><th>{t('쓰는 곳')}</th></tr></thead>
         <tbody>{breadboard.resistors.map((r) => <tr key={r.value}><td><b>{r.value}</b></td><td>{r.bands}</td><td>{r.use}</td></tr>)}</tbody>
       </table>
 
-      <h3 id="bb-circuits">회로 만들기</h3>
-      <div className="cat-chips" role="tablist" aria-label="회로">
+      <h3 id="bb-circuits">{t('회로 만들기')}</h3>
+      <div className="cat-chips" role="tablist" aria-label={t('회로')}>
         {breadboard.circuits.map((x) => (
           <button key={x.id} role="tab" aria-selected={x.id === cid} className={x.id === cid ? 'on' : ''} onClick={() => setCid(x.id)}>{x.name.split(' (')[0]}</button>
         ))}
@@ -199,16 +201,16 @@ export function BreadboardGuide({ initial, experiments }: { initial?: string; ex
       <p className="note">{c.what}</p>
       <div className="guide-cols bb-cols">
         <ol className="wire-steps">{c.steps.map((s) => <li key={s}>{s}</li>)}</ol>
-        <BreadboardDiagram circuit={c} title={`${c.name} 브레드보드 연결 그림`} />
+        <BreadboardDiagram circuit={c} title={t('{name} 브레드보드 연결 그림', { name: c.name })} />
       </div>
       {c.caution && <p className="caution strong">{c.caution}</p>}
 
       {experiments && experiments.length > 0 && (
         <>
-          <h3>브레드보드가 필요한 실험 ({experiments.length}개)</h3>
+          <h3>{t('브레드보드가 필요한 실험 ({n}개)', { n: experiments.length })}</h3>
           <ul className="bb-exps">
             {experiments.map((e) => (
-              <li key={e.id}><span className={`badge ${e.need === 'required' ? 'need' : ''}`}>{e.need === 'required' ? '필요' : '있으면 편함'}</span> <b>{e.title}</b>{e.course ? <span className="note"> · {e.course}</span> : null} — {e.why}</li>
+              <li key={e.id}><span className={`badge ${e.need === 'required' ? 'need' : ''}`}>{e.need === 'required' ? t('필요') : t('있으면 편함')}</span> <b>{e.title}</b>{e.course ? <span className="note"> · {courseName(e.course)}</span> : null} — {e.why}</li>
             ))}
           </ul>
         </>

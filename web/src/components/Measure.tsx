@@ -14,6 +14,7 @@ import type { XSeries } from '../lib/xlsx';
 import { breadboardFor } from '../lib/guide';
 import { BreadboardNote } from './PartWiring';
 import { InfoSheet } from './InfoSheet';
+import { t, tk } from '../lib/i18n';
 import { infoRows, infoSummary, type ExpInfo } from '../lib/info';
 
 interface Props {
@@ -99,7 +100,7 @@ export function Measure(p: Props) {
   const xSpec = xSensor ? allCharts.find((c) => c.sensor.id === xSensor.id) : undefined;
   const charts = xSensor ? allCharts.filter((c) => c.sensor.id !== xSensor.id) : allCharts;
   const xUnit = xSensor ? (xSpec?.unit ?? xSensor.displayUnit) : mode === 'event' ? ev?.unit ?? '' : 's';
-  const xName = xSensor ? (xSpec?.label ?? xSensor.displayName) : mode === 'event' && ev ? ev.label : '시간';
+  const xName = xSensor ? (xSpec?.label ?? xSensor.displayName) : mode === 'event' && ev ? ev.label : t('시간');
   const xTitle = `${xName}(${xUnit})`;
   const xLabel = `${xName} (${xUnit})`;
   const visibleRuns = runs.filter((r) => r.visible);
@@ -143,7 +144,7 @@ export function Measure(p: Props) {
   }, [visibleRuns, anaId, anaChart, selection, mode, ev, fitSel, showArea, xSensor, smoothWin]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const activeAna = analysis?.find((a) => a.run.id === active?.id) ?? analysis?.[0];
-  const fitName = (r: FitResult) => MODELS.find((m) => m.id === r.model)!.name;
+  const fitName = (r: FitResult) => t(MODELS.find((m) => m.id === r.model)!.name);
   const fitFn = (r: FitResult) => (logX ? (x: number) => r.f(Math.log10(x)) : r.f);
 
   const overlaysFor = (sensorId: string): Overlays | undefined => {
@@ -155,15 +156,15 @@ export function Measure(p: Props) {
       o.curve = { f: fitFn(activeAna.fit), x0: Math.min(...xs), x1: Math.max(...xs), label: `${equation(activeAna.fit)}  (R² ${activeAna.fit.r2.toFixed(3)})` };
     }
     if (activeAna.area !== null && pts.length > 1) {
-      o.area = { pts, color: `--s${activeAna.run.colorIndex + 1}`, label: `넓이 ${sig(activeAna.area)} ${anaChart?.unit ?? ''}·${xUnit}` };
+      o.area = { pts, color: `--s${activeAna.run.colorIndex + 1}`, label: t('넓이 {v}', { v: `${sig(activeAna.area)} ${anaChart?.unit ?? ''}·${xUnit}` }) };
     }
     if (showEq && activeAna.eq) {
-      o.vlines = [{ x: activeAna.eq.x, label: `당량점 ${fmt(activeAna.eq.x)} ${ev?.unit ?? ''}` }];
-      if (activeAna.eq.halfY !== null) o.vlines.push({ x: activeAna.eq.halfX, label: `반당량점 pH ${fmt(activeAna.eq.halfY)}` });
+      o.vlines = [{ x: activeAna.eq.x, label: t('당량점 {v}', { v: `${fmt(activeAna.eq.x)} ${ev?.unit ?? ''}` }) }];
+      if (activeAna.eq.halfY !== null) o.vlines.push({ x: activeAna.eq.halfX, label: t('반당량점 pH {v}', { v: fmt(activeAna.eq.halfY) }) });
     }
     if (showPlateau && activeAna.plateau) {
       const pl = activeAna.plateau;
-      o.hband = { x0: pl.x0, x1: pl.x1, y: pl.mean, label: `평탄 구간 평균 ${fmt(pl.mean)} ${anaChart?.unit ?? ''}` };
+      o.hband = { x0: pl.x0, x1: pl.x1, y: pl.mean, label: t('평탄 구간 평균 {v}', { v: `${fmt(pl.mean)} ${anaChart?.unit ?? ''}` }) };
     }
     return o;
   };
@@ -191,16 +192,16 @@ export function Measure(p: Props) {
   const recordEvent = () => {
     if (!active) return;
     const x = Number(eventX);
-    if (!isFinite(x)) { p.say('err', `${ev?.label ?? '값'}을 숫자로 입력하세요.`); return; }
-    if (ev?.scale === 'log' && x <= 0) { p.say('err', '로그 눈금에서는 0보다 큰 값만 쓸 수 있습니다.'); return; }
+    if (!isFinite(x)) { p.say('err', t('{label}을(를) 숫자로 입력하세요.', { label: ev?.label ?? t('값') })); return; }
+    if (ev?.scale === 'log' && x <= 0) { p.say('err', t('로그 눈금에서는 0보다 큰 값만 쓸 수 있습니다.')); return; }
     const v: Record<string, number> = {};
     for (const s of sensors) {
       const vals = recentValues(active, s.id, 1.0);
       if (vals.length) v[s.id] = Number((vals.reduce((a, b) => a + b, 0) / vals.length).toFixed(s.decimals + 1));
     }
-    if (!Object.keys(v).length) { p.say('err', '아직 받은 값이 없습니다. 측정을 시작했는지 확인하세요.'); return; }
-    const t = active.rows[active.rows.length - 1]?.t ?? 0;
-    setRuns((rs) => rs.map((r) => (r.id === active.id ? { ...r, events: [...r.events, { x, v, t }] } : r)));
+    if (!Object.keys(v).length) { p.say('err', t('아직 받은 값이 없습니다. 측정을 시작했는지 확인하세요.')); return; }
+    const tNow = active.rows[active.rows.length - 1]?.t ?? 0;
+    setRuns((rs) => rs.map((r) => (r.id === active.id ? { ...r, events: [...r.events, { x, v, t: tNow }] } : r)));
     const next = ev?.scale === 'log' ? x * (ev?.step ?? 10) : x + (ev?.step ?? 1);
     setEventX(String(Number(next.toFixed(4))));
     p.onEventX?.(next);
@@ -220,9 +221,9 @@ export function Measure(p: Props) {
 
   const addMarker = () => {
     if (!active) return;
-    const t = active.rows[active.rows.length - 1]?.t ?? 0;
+    const tNow = active.rows[active.rows.length - 1]?.t ?? 0;
     const note = markerNote.trim() || exp.markers.label;
-    setRuns((rs) => rs.map((r) => (r.id === active.id ? { ...r, markers: [...r.markers, { t, note }] } : r)));
+    setRuns((rs) => rs.map((r) => (r.id === active.id ? { ...r, markers: [...r.markers, { t: tNow, note }] } : r)));
     setMarkerNote('');
   };
 
@@ -276,36 +277,36 @@ export function Measure(p: Props) {
   const baseName = `chemdict_${exp.id}${p.station ? `_st${p.station}` : ''}_${stamp()}`;
   const dataRuns = visibleRuns.filter((r) => r.rows.length || r.events.length);
 
-  const summaryHead = ['측정', '개수', '평균', '최소', '최대', '표준편차', '변화량 Δ',
-    ...(fitSel !== 'off' ? ['함수', 'R²'] : []), ...(showArea ? ['넓이'] : []),
-    ...(showEq ? ['당량점', '반당량점 pH'] : []), ...(showPlateau ? ['평탄 구간'] : [])];
+  const summaryHead = [t('측정'), t('개수'), t('평균'), t('최소'), t('최대'), t('표준편차'), t('변화량 Δ'),
+    ...(fitSel !== 'off' ? [t('함수'), 'R²'] : []), ...(showArea ? [t('넓이')] : []),
+    ...(showEq ? [t('당량점'), t('반당량점 pH')] : []), ...(showPlateau ? [t('평탄 구간')] : [])];
   const summaryRows = (analysis ?? []).map(({ run, st, fit, area: ar, eq, plateau }) => [
     run.name, String(st?.n ?? 0), st ? fmt(st.mean) : '—', st ? fmt(st.min) : '—', st ? fmt(st.max) : '—', st ? fmt(st.sd) : '—', st ? fmt(st.dy) : '—',
     ...(fitSel !== 'off' ? [fit ? `${fitName(fit)}: ${equation(fit)}` : '—', fit ? fit.r2.toFixed(4) : '—'] : []),
     ...(showArea ? [ar !== null ? `${sig(ar)} ${anaChart?.unit ?? ''}·${xUnit}` : '—'] : []),
-    ...(showEq ? [eq ? `${fmt(eq.x)} ${ev?.unit ?? ''} (pH ${fmt(eq.y)})` : '뚜렷한 급변 없음', eq?.halfY != null ? fmt(eq.halfY) : '—'] : []),
-    ...(showPlateau ? [plateau ? `${fmt(plateau.mean)} ${anaChart?.unit ?? ''} (${fmt(plateau.x0)}~${fmt(plateau.x1)} s)` : '없음'] : []),
+    ...(showEq ? [eq ? `${fmt(eq.x)} ${ev?.unit ?? ''} (pH ${fmt(eq.y)})` : t('뚜렷한 급변 없음'), eq?.halfY != null ? fmt(eq.halfY) : '—'] : []),
+    ...(showPlateau ? [plateau ? `${fmt(plateau.mean)} ${anaChart?.unit ?? ''} (${fmt(plateau.x0)}~${fmt(plateau.x1)} s)` : t('없음')] : []),
   ]);
 
   const buildReport = (): Report => {
     const meta = [
-      mode === 'event' ? `값 입력 · ${ev?.label}` : `시간 기록 · 간격 ${intervalText(p.intervalMs)}`,
-      ...(selection ? [`해석 구간 ${fmt(Math.min(...selection))}~${fmt(Math.max(...selection))} ${xUnit}`] : []),
+      mode === 'event' ? t('값 입력 · {label}', { label: ev?.label ?? '' }) : t('시간 기록 · 간격 {v}', { v: intervalText(p.intervalMs) }),
+      ...(selection ? [t('해석 구간 {v}', { v: `${fmt(Math.min(...selection))}~${fmt(Math.max(...selection))} ${xUnit}` })] : []),
     ];
-    const head = [mode === 'event' ? `${ev?.label ?? 'x'}(${ev?.unit ?? ''})` : '시간(s)', ...cols.map((c) => c.title), ...(calcTitle ? [calcTitle] : []), '해석 제외'];
+    const head = [mode === 'event' ? `${ev?.label ?? 'x'}(${ev?.unit ?? ''})` : t('시간(s)'), ...cols.map((c) => c.title), ...(calcTitle ? [calcTitle] : []), t('해석 제외')];
     const rRuns = dataRuns.map((run) => ({
       name: run.name, colorIndex: run.colorIndex, head,
-      rows: numericTable(run).map((r) => [...r.cells.map((v) => (typeof v === 'number' && !isFinite(v) ? null : v)), r.excluded ? '제외' : null]),
+      rows: numericTable(run).map((r) => [...r.cells.map((v) => (typeof v === 'number' && !isFinite(v) ? null : v)), r.excluded ? t('제외') : null]),
     }));
     const colOf = (id: string) => 1 + cols.findIndex((c) => c.id === id);
     const notes: string[] = [];
     for (const a of analysis ?? []) {
       if (!dataRuns.includes(a.run)) continue;
-      if (a.fit) notes.push(`${a.run.name} — ${fitName(a.fit)}: ${equation(a.fit)}${logX ? ' (x = log 가로축)' : ''}, R² = ${a.fit.r2.toFixed(4)}`);
-      if (a.area !== null) notes.push(`${a.run.name} — 곡선 아래 넓이: ${sig(a.area)} ${anaChart?.unit ?? ''}·${xUnit}`);
+      if (a.fit) notes.push(`${a.run.name} — ${fitName(a.fit)}: ${equation(a.fit)}${logX ? t(' (x = log 가로축)') : ''}, R² = ${a.fit.r2.toFixed(4)}`);
+      if (a.area !== null) notes.push(t('{name} — 곡선 아래 넓이: {v}', { name: a.run.name, v: `${sig(a.area)} ${anaChart?.unit ?? ''}·${xUnit}` }));
     }
-    if (smoothWin > 1) notes.push(`그래프는 ${smoothWin}점 이동 평균으로 부드럽게 한 값입니다.`);
-    if (dataRuns.some((r) => r.excluded?.length)) notes.push('‘해석 제외’ 표시한 점은 그래프와 해석에서 뺐습니다.');
+    if (smoothWin > 1) notes.push(t('그래프는 {n}점 이동 평균으로 부드럽게 한 값입니다.', { n: smoothWin }));
+    if (dataRuns.some((r) => r.excluded?.length)) notes.push(t('‘해석 제외’ 표시한 점은 그래프와 해석에서 뺐습니다.'));
     return {
       title: exp.title,
       meta,
@@ -331,10 +332,10 @@ export function Measure(p: Props) {
   };
 
   const doExport = async (k: ExportKind) => {
-    if (!dataRuns.length) { p.say('err', '저장할 데이터가 없습니다.'); return; }
+    if (!dataRuns.length) { p.say('err', t('저장할 데이터가 없습니다.')); return; }
     if (k === 'csv') {
       const q = (x: string) => (/[",\n]/.test(x) ? `"${x.replace(/"/g, '""')}"` : x);
-      const head = [['실험', exp.title], ...infoRows(p.info, dataRuns, p.station)].map((r) => r.map(q).join(',')).join('\n');
+      const head = [[t('실험'), exp.title], ...infoRows(p.info, dataRuns, p.station)].map((r) => r.map(q).join(',')).join('\n');
       const body = runsCSV(dataRuns, cols, xTitle).replace(/^\uFEFF/, '');
       saveFile(new Blob(['\uFEFF' + head + '\n\n' + body], { type: 'text/csv;charset=utf-8' }), `${baseName}.csv`);
       return;
@@ -348,14 +349,14 @@ export function Measure(p: Props) {
       saveFile(await reportPdf(r), `${baseName}.pdf`);
     } else {
       saveFile(reportXlsx(r), `${baseName}.xlsx`);
-      if (k === 'numbers') p.say('ok', 'Numbers에서 이 .xlsx 파일을 열면 표와 그래프가 그대로 나옵니다.');
+      if (k === 'numbers') p.say('ok', t('Numbers에서 이 .xlsx 파일을 열면 표와 그래프가 그대로 나옵니다.'));
     }
   };
   const copyTable = async () => {
     if (!active) return;
     const tsv = toTSV(runTable(active, cols, xTitle));
-    try { await navigator.clipboard.writeText(tsv); p.say('ok', '표를 복사했습니다. Numbers나 엑셀에 붙여넣으세요.'); }
-    catch { p.say('err', '이 브라우저에서는 복사가 막혀 있습니다. CSV로 저장하세요.'); }
+    try { await navigator.clipboard.writeText(tsv); p.say('ok', t('표를 복사했습니다. Numbers나 엑셀에 붙여넣으세요.')); }
+    catch { p.say('err', t('이 브라우저에서는 복사가 막혀 있습니다. CSV로 저장하세요.')); }
   };
 
   const hasData = !!active && (active.rows.length > 0 || active.events.length > 0);
@@ -366,56 +367,56 @@ export function Measure(p: Props) {
     <main className="wide measure">
       <div className="row-head">
         <div>
-          <button className="ghost back" disabled={running} onClick={p.onBack}>← 실험 목록</button>
+          <button className="ghost back" disabled={running} onClick={p.onBack}>← {t('실험 목록')}</button>
           <h1>{exp.title}</h1>
-          <span className="mode-badge">{mode === 'event' ? `값 입력 모드 · ${ev?.label}` : '시간 기록 모드'}</span>
+          <span className="mode-badge">{mode === 'event' ? t('값 입력 모드 · {label}', { label: ev?.label ?? '' }) : t('시간 기록 모드')}</span>
         </div>
         <div className="controls">
           {mode === 'time' && <IntervalPicker value={p.intervalMs} disabled={running} onChange={p.setIntervalMs} />}
           {!running
-            ? <button className="primary" onClick={p.onStart}>측정 시작</button>
-            : <button className="danger" onClick={p.onStop}>정지</button>}
+            ? <button className="primary" onClick={p.onStart}>{t('측정 시작')}</button>
+            : <button className="danger" onClick={p.onStop}>{t('정지')}</button>}
         </div>
       </div>
       {mode === 'time' && p.intervalMs >= 2000 && !running && (
-        <p className="note">간격이 길면 그래프 점이 드문드문 찍힙니다. 온습도(DHT)는 2초, 이산화탄소(SCD4x)는 5초보다 짧으면 같은 값이 반복됩니다.</p>
+        <p className="note">{t('간격이 길면 그래프 점이 드문드문 찍힙니다. 온습도(DHT)는 2초, 이산화탄소(SCD4x)는 5초보다 짧으면 같은 값이 반복됩니다.')}</p>
       )}
 
       <div className="info-bar">
-        <span><b>실험 정보</b> {infoSummary(p.info) || <span className="note">모둠·이름·날짜 (선택) — 저장할 때 함께 남습니다</span>}</span>
-        <button className="ghost" onClick={() => setInfoOpen(true)}>{infoSummary(p.info) ? '수정' : '입력'}</button>
+        <span><b>{t('실험 정보')}</b> {infoSummary(p.info) || <span className="note">{t('모둠·이름·날짜 (선택) — 저장할 때 함께 남습니다')}</span>}</span>
+        <button className="ghost" onClick={() => setInfoOpen(true)}>{infoSummary(p.info) ? t('수정') : t('입력')}</button>
       </div>
 
       {/* 측정 목록 */}
       <div className="runs">
         {runs.map((r) => (
           <div key={r.id} className={`run ${r.id === active?.id ? 'active' : ''}`}>
-            <input type="checkbox" aria-label={`${r.name} 그래프에 표시`} checked={r.visible} onChange={(e) => patchRun(r.id, { visible: e.target.checked })} />
+            <input type="checkbox" aria-label={t('{name} 그래프에 표시', { name: r.name })} checked={r.visible} onChange={(e) => patchRun(r.id, { visible: e.target.checked })} />
             <i style={{ background: `var(--s${r.colorIndex + 1})` }} />
             {renaming === r.id ? (
               <input className="rename" autoFocus defaultValue={r.name}
                 onBlur={(e) => { patchRun(r.id, { name: e.target.value.trim() || r.name }); setRenaming(null); }}
                 onKeyDown={(e) => { if (e.key === 'Enter') (e.target as HTMLInputElement).blur(); }} />
             ) : (
-              <button className="run-name" disabled={running} onClick={() => (r.id === active?.id ? setRenaming(r.id) : setActiveId(r.id))} title={r.id === active?.id ? '이름 바꾸기' : '이 측정 선택'}>
+              <button className="run-name" disabled={running} onClick={() => (r.id === active?.id ? setRenaming(r.id) : setActiveId(r.id))} title={r.id === active?.id ? t('이름 바꾸기') : t('이 측정 선택')}>
                 {r.name}
               </button>
             )}
-            <span className="run-count">{r.mode === 'event' ? `${r.events.length}점` : `${r.rows.length}개`}</span>
-            <button className="x" disabled={running} onClick={() => removeRun(r.id)} aria-label={`${r.name} 삭제`}>{armedDelete === r.id ? '삭제?' : '×'}</button>
+            <span className="run-count">{r.mode === 'event' ? t('{n}점', { n: r.events.length }) : t('{n}개', { n: r.rows.length })}</span>
+            <button className="x" disabled={running} onClick={() => removeRun(r.id)} aria-label={t('{name} 삭제', { name: r.name })}>{armedDelete === r.id ? t('삭제?') : '×'}</button>
           </div>
         ))}
-        <button className="ghost add-run" disabled={running} onClick={addRun}>+ 새 측정</button>
+        <button className="ghost add-run" disabled={running} onClick={addRun}>+ {t('새 측정')}</button>
       </div>
 
       <details className="steps">
-        <summary>실험 순서 보기</summary>
+        <summary>{t('실험 순서 보기')}</summary>
         <ol>{exp.steps.map((s, i) => <li key={i}>{s}</li>)}</ol>
       </details>
       {bb && <BreadboardNote need={bb.need} why={bb.why} circuit={bb.circuit} />}
 
       {charts.length === 0 && (
-        <p className="note warn">이 실험에 필요한 센서({exp.sensors.join(', ')})가 연결되어 있지 않습니다. <button className="link" onClick={p.onOpenGuide}>연결 안내</button> · <button className="link" onClick={p.onOpenSetup}>센서 연결 설정</button></p>
+        <p className="note warn">{t('이 실험에 필요한 센서({list})가 연결되어 있지 않습니다.', { list: exp.sensors.join(', ') })} <button className="link" onClick={p.onOpenGuide}>{t('연결 안내')}</button> · <button className="link" onClick={p.onOpenSetup}>{t('센서 연결 설정')}</button></p>
       )}
 
       {/* 값 입력 모드: 기록 막대 */}
@@ -424,38 +425,38 @@ export function Measure(p: Props) {
           <label htmlFor="event-x">{ev.label}</label>
           <input id="event-x" inputMode="decimal" value={eventX} onChange={(e) => setEventX(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter') recordEvent(); }} />
           <span className="unit">{ev.unit}</span>
-          <button className="primary" disabled={!running} onClick={recordEvent}>값 기록</button>
-          <span className="note">{running ? '값이 ‘안정’이 되면 누르세요. 최근 1초 평균을 기록합니다.' : '먼저 측정 시작을 누르세요.'}</span>
+          <button className="primary" disabled={!running} onClick={recordEvent}>{t('값 기록')}</button>
+          <span className="note">{running ? t('값이 ‘안정’이 되면 누르세요. 최근 1초 평균을 기록합니다.') : t('먼저 측정 시작을 누르세요.')}</span>
         </div>
       )}
 
       {/* 그래프 도구 */}
       {charts.length > 0 && (
-        <div className="graph-tools" role="toolbar" aria-label="그래프 도구">
-          <div className="seg" role="radiogroup" aria-label="그래프에서 할 일">
-            {([['select', '구간 선택'], ['read', '값 읽기'], ['tangent', '접선']] as const).map(([k, l]) => (
-              <button key={k} role="radio" aria-checked={tool === k} className={tool === k ? 'on' : ''} onClick={() => setTool(k)}>{l}</button>
+        <div className="graph-tools" role="toolbar" aria-label={t('그래프 도구')}>
+          <div className="seg" role="radiogroup" aria-label={t('그래프에서 할 일')}>
+            {([['select', tk('구간 선택')], ['read', tk('값 읽기')], ['tangent', tk('접선')]] as const).map(([k, l]) => (
+              <button key={k} role="radio" aria-checked={tool === k} className={tool === k ? 'on' : ''} onClick={() => setTool(k)}>{t(l)}</button>
             ))}
           </div>
           {zoom
-            ? <button className="ghost" onClick={() => setZoom(null)}>전체 보기</button>
-            : <button className="ghost" disabled={!selection} onClick={() => { if (selection) { setZoom([Math.min(...selection), Math.max(...selection)]); } }}>선택 구간 확대</button>}
-          <label className="mini">표시
+            ? <button className="ghost" onClick={() => setZoom(null)}>{t('전체 보기')}</button>
+            : <button className="ghost" disabled={!selection} onClick={() => { if (selection) { setZoom([Math.min(...selection), Math.max(...selection)]); } }}>{t('선택 구간 확대')}</button>}
+          <label className="mini">{t('표시')}
             <select value={style} onChange={(e) => setStyle(e.target.value as Style)}>
-              <option value="auto">자동</option><option value="line">선</option><option value="points">점</option><option value="both">선+점</option>
+              <option value="auto">{t('자동')}</option><option value="line">{t('선')}</option><option value="points">{t('점')}</option><option value="both">{t('선+점')}</option>
             </select>
           </label>
           {otherSensors.length > 1 && (
-            <label className="mini">가로축
+            <label className="mini">{t('가로축')}
               <select value={xAxis} onChange={(e) => setXAxis(e.target.value)}>
-                <option value="">시간</option>
+                <option value="">{t('시간')}</option>
                 {otherSensors.map((c) => <option key={c.sensor.id} value={c.sensor.id}>{c.label}</option>)}
               </select>
             </label>
           )}
-          <label className="mini">부드럽게
+          <label className="mini">{t('부드럽게')}
             <select value={smoothWin} onChange={(e) => setSmoothWin(Number(e.target.value))}>
-              <option value={1}>끔</option><option value={3}>약하게 (3점)</option><option value={5}>보통 (5점)</option><option value={9}>강하게 (9점)</option>
+              <option value={1}>{t('끔')}</option><option value={3}>{t('약하게 (3점)')}</option><option value={5}>{t('보통 (5점)')}</option><option value={9}>{t('강하게 (9점)')}</option>
             </select>
           </label>
         </div>
@@ -491,7 +492,7 @@ export function Measure(p: Props) {
         ))}
         {showDeriv && anaChart && (
           <Chart
-            title={`${anaChart.label} 변화율`}
+            title={t('{name} 변화율', { name: anaChart.label })}
             unit={`${anaChart.unit}/${xUnit}`}
             series={visibleRuns.map((r) => ({ id: r.id, name: r.name, color: `--s${r.colorIndex + 1}`, pts: derivPts(r), points: false }))}
             xLabel={xLabel}
@@ -517,18 +518,18 @@ export function Measure(p: Props) {
           </div>
         )}
         <div className="actions">
-          <button className="ghost" onClick={p.onOpenGuide}>연결 안내</button>
-          <button className="ghost" disabled={running} onClick={p.onOpenSetup}>센서 설정</button>
-          <button className="ghost" disabled={!sensors.some((s) => s.spec && s.spec.cal.kind !== 'none')} onClick={() => p.onOpenCal(charts[0]?.sensor.id)}>보정</button>
+          <button className="ghost" onClick={p.onOpenGuide}>{t('연결 안내')}</button>
+          <button className="ghost" disabled={running} onClick={p.onOpenSetup}>{t('센서 설정')}</button>
+          <button className="ghost" disabled={!sensors.some((s) => s.spec && s.spec.cal.kind !== 'none')} onClick={() => p.onOpenCal(charts[0]?.sensor.id)}>{t('보정')}</button>
           {charts.length > 0 && !xSensor && (
             drawing
-              ? <button className="ghost" onClick={() => setDrawing(false)}>그리기 취소</button>
+              ? <button className="ghost" onClick={() => setDrawing(false)}>{t('그리기 취소')}</button>
               : active?.prediction.length || runs.some((r) => r.prediction.length)
-                ? <button className="ghost" onClick={() => setRuns((rs) => rs.map((r) => ({ ...r, prediction: [] })))}>예측 지우기</button>
-                : <button className="ghost" onClick={() => setDrawing(true)}>예측 그리기</button>
+                ? <button className="ghost" onClick={() => setRuns((rs) => rs.map((r) => ({ ...r, prediction: [] })))}>{t('예측 지우기')}</button>
+                : <button className="ghost" onClick={() => setDrawing(true)}>{t('예측 그리기')}</button>
           )}
-          <button className="ghost" onClick={() => setShowTable((v) => !v)}>{showTable ? '표 닫기' : '표 보기'}</button>
-          <button className="primary" disabled={!dataRuns.length} onClick={() => setExportOpen(true)}>저장하기</button>
+          <button className="ghost" onClick={() => setShowTable((v) => !v)}>{showTable ? t('표 닫기') : t('표 보기')}</button>
+          <button className="primary" disabled={!dataRuns.length} onClick={() => setExportOpen(true)}>{t('저장하기')}</button>
         </div>
       </div>
 
@@ -536,43 +537,43 @@ export function Measure(p: Props) {
       {anaChart && analysis && (
         <section className="analysis">
           <div className="ana-head">
-            <h2>데이터 해석</h2>
+            <h2>{t('데이터 해석')}</h2>
             {charts.length > 1 && (
-              <select id="ana-sensor" value={anaId} onChange={(e) => setAnaSensor(e.target.value)} aria-label="해석할 센서">
+              <select id="ana-sensor" value={anaId} onChange={(e) => setAnaSensor(e.target.value)} aria-label={t('해석할 센서')}>
                 {charts.map((c) => <option key={c.sensor.id} value={c.sensor.id}>{c.label}</option>)}
               </select>
             )}
             <span className="note">
-              {selection ? `선택 구간 ${fmt(Math.min(...selection))} ~ ${fmt(Math.max(...selection))} ${xUnit}` : '전체 구간 (그래프를 드래그하면 그 구간만 계산)'}
+              {selection ? t('선택 구간 {v}', { v: `${fmt(Math.min(...selection))} ~ ${fmt(Math.max(...selection))} ${xUnit}` }) : t('전체 구간 (그래프를 드래그하면 그 구간만 계산)')}
             </span>
-            {selection && <button className="link" onClick={() => setSelection(null)}>선택 해제</button>}
+            {selection && <button className="link" onClick={() => setSelection(null)}>{t('선택 해제')}</button>}
           </div>
 
           <div className="ana-tools">
-            <label className="fit-pick">함수 찾기
+            <label className="fit-pick">{t('함수 찾기')}
               <select value={fitSel} onChange={(e) => setFitSel(e.target.value as ModelId | 'off')}>
-                <option value="off">끔</option>
-                <option value="auto">자동 (가장 잘 맞는 것)</option>
-                {MODELS.map((m) => <option key={m.id} value={m.id}>{m.name} · {m.form}</option>)}
+                <option value="off">{t('끔')}</option>
+                <option value="auto">{t('자동 (가장 잘 맞는 것)')}</option>
+                {MODELS.map((m) => <option key={m.id} value={m.id}>{t(m.name)} · {m.form}</option>)}
               </select>
             </label>
-            <label><input type="checkbox" checked={showArea} onChange={(e) => setShowArea(e.target.checked)} /> 넓이 (적분)</label>
-            <label><input type="checkbox" checked={showDeriv} onChange={(e) => setShowDeriv(e.target.checked)} /> 변화율 그래프</label>
-            {tools.includes('equivalence') && mode === 'event' && <label><input type="checkbox" checked={showEq} onChange={(e) => setShowEq(e.target.checked)} /> 당량점 찾기</label>}
-            {tools.includes('plateau') && mode === 'time' && !xSensor && <label><input type="checkbox" checked={showPlateau} onChange={(e) => setShowPlateau(e.target.checked)} /> 평탄 구간 찾기</label>}
+            <label><input type="checkbox" checked={showArea} onChange={(e) => setShowArea(e.target.checked)} /> {t('넓이 (적분)')}</label>
+            <label><input type="checkbox" checked={showDeriv} onChange={(e) => setShowDeriv(e.target.checked)} /> {t('변화율 그래프')}</label>
+            {tools.includes('equivalence') && mode === 'event' && <label><input type="checkbox" checked={showEq} onChange={(e) => setShowEq(e.target.checked)} /> {t('당량점 찾기')}</label>}
+            {tools.includes('plateau') && mode === 'time' && !xSensor && <label><input type="checkbox" checked={showPlateau} onChange={(e) => setShowPlateau(e.target.checked)} /> {t('평탄 구간 찾기')}</label>}
           </div>
 
           {activeAna?.fit && (
             <div className="fit-card">
               <div className="fit-eq">
-                <span className="note">{activeAna.run.name} · {fitName(activeAna.fit)}{logX ? ' (x = log 가로축)' : ''}</span>
+                <span className="note">{activeAna.run.name} · {fitName(activeAna.fit)}{logX ? t(' (x = log 가로축)') : ''}</span>
                 <b>{equation(activeAna.fit)}</b>
-                <span>R² = {activeAna.fit.r2.toFixed(4)} · 오차(RMSE) {sig(activeAna.fit.rmse)} · 점 {activeAna.fit.n}개</span>
+                <span>{t('R² = {r2} · 오차(RMSE) {rmse} · 점 {n}개', { r2: activeAna.fit.r2.toFixed(4), rmse: sig(activeAna.fit.rmse), n: activeAna.fit.n })}</span>
               </div>
-              <p className="note">{MODELS.find((m) => m.id === activeAna.fit!.model)?.use}</p>
+              <p className="note">{t(MODELS.find((m) => m.id === activeAna.fit!.model)?.use ?? '')}</p>
               {fitSel === 'auto' && activeAna.cands.length > 1 && (
                 <div className="cands">
-                  <span className="note">다른 후보:</span>
+                  <span className="note">{t('다른 후보:')}</span>
                   {activeAna.cands.slice(1).map((c) => (
                     <button key={c.model} className="chip-btn" onClick={() => setFitSel(c.model)}>{fitName(c)} (R² {c.r2.toFixed(3)})</button>
                   ))}
@@ -580,7 +581,7 @@ export function Measure(p: Props) {
               )}
             </div>
           )}
-          {fitSel !== 'off' && !activeAna?.fit && <p className="note warn">이 데이터에는 이 함수를 맞출 수 없습니다 (점이 너무 적거나 0·음수 값).</p>}
+          {fitSel !== 'off' && !activeAna?.fit && <p className="note warn">{t('이 데이터에는 이 함수를 맞출 수 없습니다 (점이 너무 적거나 0·음수 값).')}</p>}
 
           <div className="ana-table">
             <table>
@@ -604,19 +605,19 @@ export function Measure(p: Props) {
       {showTable && active && (
         <section className="data-table">
           <div className="ana-head">
-            <h2>{active.name} 표</h2>
-            <label className="mini">계산 열
+            <h2>{t('{name} 표', { name: active.name })}</h2>
+            <label className="mini">{t('계산 열')}
               <select value={calc} onChange={(e) => setCalc(e.target.value as CalcId)}>
-                {CALCS.filter((c) => !c.tempOnly || isTemp).map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
+                {CALCS.filter((c) => !c.tempOnly || isTemp).map((c) => <option key={c.id} value={c.id}>{t(c.name)}</option>)}
               </select>
             </label>
-            {calc !== 'none' && anaCol && <span className="note">기준: {anaCol.title}</span>}
-            {!!active.excluded?.length && <button className="link" onClick={() => patchRun(active.id, { excluded: [] })}>제외 {active.excluded.length}개 모두 되돌리기</button>}
-            <button className="link" disabled={!hasData} onClick={copyTable}>표 복사</button>
+            {calc !== 'none' && anaCol && <span className="note">{t('기준: {name}', { name: anaCol.title })}</span>}
+            {!!active.excluded?.length && <button className="link" onClick={() => patchRun(active.id, { excluded: [] })}>{t('제외 {n}개 모두 되돌리기', { n: active.excluded.length })}</button>}
+            <button className="link" disabled={!hasData} onClick={copyTable}>{t('표 복사')}</button>
           </div>
-          <p className="note">튀는 값은 ‘제외’를 눌러 그래프와 해석에서 뺄 수 있습니다 (데이터는 지워지지 않음).</p>
+          <p className="note">{t('튀는 값은 ‘제외’를 눌러 그래프와 해석에서 뺄 수 있습니다 (데이터는 지워지지 않음).')}</p>
           <DataTable
-            head={[mode === 'event' ? xTitle : '시간(s)', ...cols.map((c) => c.title), ...(calcTitle ? [calcTitle] : [])]}
+            head={[mode === 'event' ? xTitle : t('시간(s)'), ...cols.map((c) => c.title), ...(calcTitle ? [calcTitle] : [])]}
             rows={numericTable(active)}
             decimals={[mode === 'event' ? 4 : 2, ...cols.map((c) => c.decimals)]}
             calcCol={!!calcTitle}
@@ -653,15 +654,15 @@ function DataTable({ head, rows, decimals, calcCol, onToggle, onDelete }: {
               <tr key={r.idx} className={r.excluded ? 'excluded' : ''}>
                 {r.cells.map((v, j) => <td key={j}>{cell(v, j)}</td>)}
                 <td className="row-acts">
-                  <button className="link" onClick={() => onToggle(r.idx)}>{r.excluded ? '되돌리기' : '제외'}</button>
-                  {onDelete && <button className="link" onClick={() => onDelete(r.idx)}>삭제</button>}
+                  <button className="link" onClick={() => onToggle(r.idx)}>{r.excluded ? t('되돌리기') : t('제외')}</button>
+                  {onDelete && <button className="link" onClick={() => onDelete(r.idx)}>{t('삭제')}</button>}
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
-      {rows.length > LIMIT && <p className="note">최근 {LIMIT}개만 보여 줍니다. 전체는 저장하기로 내보내세요.</p>}
+      {rows.length > LIMIT && <p className="note">{t('최근 {n}개만 보여 줍니다. 전체는 저장하기로 내보내세요.', { n: LIMIT })}</p>}
     </>
   );
 }
@@ -672,13 +673,13 @@ function Interpret({ fit, area: ar, deriv, tool, showEq, showPlateau, mode, logX
 }) {
   const tips: string[] = [];
   if (fit) tips.push(logX
-    ? '로그 눈금에서 직선이면: 기울기는 "가로축 값이 10배 될 때 세로축 변화량"입니다. 강산 희석이라면 pH가 약 1씩 오르는지 보세요.'
-    : '함수 찾기: R²가 1에 가까울수록 잘 맞습니다. ‘자동’은 가장 잘 맞는 식을 고르되, 식이 복잡하면 R²가 확실히 좋아야 고릅니다. 실험 원리에 맞는 식인지 꼭 함께 생각하세요.');
-  if (tool === 'tangent') tips.push(`접선: 그 순간의 변화 속도(${unit}/${xUnit})입니다. ${mode === 'time' ? '반응 초기와 나중의 기울기를 비교해 반응 속도 변화를 봅니다.' : ''}`);
-  if (ar) tips.push(`넓이: 곡선과 가로축 사이 넓이(${unit}·${xUnit})입니다. 선택 구간만 계산하려면 그래프를 드래그하세요.`);
-  if (deriv) tips.push('변화율 그래프: 값이 가장 빨리 변하는 곳이 봉우리로 나타납니다. 적정에서는 봉우리 위치가 당량점입니다.');
-  if (showEq) tips.push('당량점: pH가 가장 급하게 변하는 곳입니다. 이 부피로 시료의 몰 농도를 계산하세요. 약산이라면 반당량점의 pH가 pKa와 같습니다.');
-  if (showPlateau) tips.push('평탄 구간: 값이 거의 변하지 않는 가장 긴 구간입니다. 냉각 곡선에서는 이 온도가 어는점입니다.');
-  if (!tips.length) tips.push('그래프를 드래그해 구간을 고르면 그 구간의 평균·변화량을 계산합니다. 함수 찾기·접선·넓이로 해석해 보세요.');
+    ? t('로그 눈금에서 직선이면: 기울기는 "가로축 값이 10배 될 때 세로축 변화량"입니다. 강산 희석이라면 pH가 약 1씩 오르는지 보세요.')
+    : t('함수 찾기: R²가 1에 가까울수록 잘 맞습니다. ‘자동’은 가장 잘 맞는 식을 고르되, 식이 복잡하면 R²가 확실히 좋아야 고릅니다. 실험 원리에 맞는 식인지 꼭 함께 생각하세요.'));
+  if (tool === 'tangent') tips.push(t('접선: 그 순간의 변화 속도({u})입니다.', { u: `${unit}/${xUnit}` }) + (mode === 'time' ? ' ' + t('반응 초기와 나중의 기울기를 비교해 반응 속도 변화를 봅니다.') : ''));
+  if (ar) tips.push(t('넓이: 곡선과 가로축 사이 넓이({u})입니다. 선택 구간만 계산하려면 그래프를 드래그하세요.', { u: `${unit}·${xUnit}` }));
+  if (deriv) tips.push(t('변화율 그래프: 값이 가장 빨리 변하는 곳이 봉우리로 나타납니다. 적정에서는 봉우리 위치가 당량점입니다.'));
+  if (showEq) tips.push(t('당량점: pH가 가장 급하게 변하는 곳입니다. 이 부피로 시료의 몰 농도를 계산하세요. 약산이라면 반당량점의 pH가 pKa와 같습니다.'));
+  if (showPlateau) tips.push(t('평탄 구간: 값이 거의 변하지 않는 가장 긴 구간입니다. 냉각 곡선에서는 이 온도가 어는점입니다.'));
+  if (!tips.length) tips.push(t('그래프를 드래그해 구간을 고르면 그 구간의 평균·변화량을 계산합니다. 함수 찾기·접선·넓이로 해석해 보세요.'));
   return <ul className="tips">{tips.map((t, i) => <li key={i}>{t}</li>)}</ul>;
 }

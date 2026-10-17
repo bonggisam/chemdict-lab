@@ -1,3 +1,4 @@
+import { t } from '../i18n';
 // STK500v2 — Mega 2560 부트로더 (avrdude -c wiring 과 같은 순서)
 import { SerialIO, sleep } from './io';
 
@@ -20,13 +21,13 @@ class V2 {
       if (s === 0x1b) break;
     }
     const [rseq, lh, ll, tok] = await this.io.read(4, timeoutMs);
-    if (tok !== 0x0e) throw new Error('응답 형식 오류');
+    if (tok !== 0x0e) throw new Error(t('응답 형식 오류'));
     const len = (lh << 8) | ll;
     const rb = await this.io.read(len + 1, timeoutMs);
     const cks = [0x1b, rseq, lh, ll, tok, ...rb.slice(0, len)].reduce((a, x) => a ^ x, 0);
-    if (cks !== rb[len]) throw new Error('응답 체크섬 오류');
+    if (cks !== rb[len]) throw new Error(t('응답 체크섬 오류'));
     const ans = rb.slice(0, len);
-    if (ans[0] !== body[0] || ans[1] !== 0x00) throw new Error(`부트로더 거부 (명령 ${body[0].toString(16)})`);
+    if (ans[0] !== body[0] || ans[1] !== 0x00) throw new Error(t('부트로더 거부 (명령 {cmd})', { cmd: body[0].toString(16) }));
     return ans;
   }
 

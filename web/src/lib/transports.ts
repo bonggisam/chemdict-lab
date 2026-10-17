@@ -1,4 +1,5 @@
 import { LineAssembler } from './protocol';
+import { t } from './i18n';
 
 export type TransportKind = 'serial' | 'ble' | 'sim';
 
@@ -103,7 +104,7 @@ export class SerialTransport implements Transport {
 // ---------------------------------------------------------------- Bluetooth (Web Bluetooth)
 export class BleTransport implements Transport {
   kind: TransportKind = 'ble';
-  label = '블루투스';
+  label = t('블루투스');
   onLine: (line: string) => void = noop;
   onClose: () => void = noop;
   private device: BluetoothDevice | null = null;
@@ -115,7 +116,7 @@ export class BleTransport implements Transport {
       filters: [{ namePrefix: 'ChemDict' }, { services: [NUS_SERVICE] }],
       optionalServices: [NUS_SERVICE],
     });
-    this.label = this.device.name ?? '블루투스';
+    this.label = this.device.name ?? t('블루투스');
     this.device.addEventListener('gattserverdisconnected', () => this.onClose());
     const server = await this.device.gatt!.connect();
     const service = await server.getPrimaryService(NUS_SERVICE);
@@ -153,7 +154,7 @@ interface SimPort { type: string; cal: boolean; offsetAdj: number }
 
 export class SimTransport implements Transport {
   kind: TransportKind = 'sim';
-  label = '시뮬레이터';
+  label = t('시뮬레이터');
   onLine: (line: string) => void = noop;
   onClose: () => void = noop;
   private timer: number | null = null;

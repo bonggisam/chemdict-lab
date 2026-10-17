@@ -1,4 +1,5 @@
-import { wiring, type Board, type Part } from '../lib/guide';
+import { hasQwiic, wiring, type Board, type Part } from '../lib/guide';
+import { t } from '../lib/i18n';
 
 /** 보드 × 센서 배선 개념도 (protocol/guide.json의 연결 방식으로 그림, 실제 핀 위치와 다를 수 있음) */
 
@@ -14,7 +15,7 @@ interface Props {
 
 export function WiringDiagram({ board, part }: Props) {
   const { connector, cable, wires } = wiring(board, part);
-  const hasQ = !board.qwiic.startsWith('없음');
+  const hasQ = hasQwiic(board);
   const shown = cable ? [] : wires;
   const n = shown.length;
 
@@ -37,7 +38,7 @@ export function WiringDiagram({ board, part }: Props) {
 
   return (
     <figure className="wiring">
-      <svg viewBox={`0 0 640 ${H}`} role="img" aria-label={`${board.name}에 ${part.name} 연결 그림`}>
+      <svg viewBox={`0 0 640 ${H}`} role="img" aria-label={t('{board}에 {part} 연결 그림', { board: board.name, part: part.name })}>
         {/* 보드 */}
         <rect x={bx} y={by} width={bw} height={bh} rx="14" fill="#0e7c86" />
         <rect x={bx - 14} y={by + 76} width="26" height="44" rx="4" fill="#9aa5b1" />
@@ -92,11 +93,11 @@ export function WiringDiagram({ board, part }: Props) {
             <path d={`M${bx + bw} ${by + 113} C ${bx + bw + 70} ${by + 113}, ${sx - 70} ${sy + 70}, ${sx} ${sy + 70}`} stroke="#a1a1aa" strokeWidth="11" />
             <path d={`M${bx + bw} ${by + 113} C ${bx + bw + 70} ${by + 113}, ${sx - 70} ${sy + 70}, ${sx} ${sy + 70}`} stroke="#27272a" strokeWidth="7" />
             <rect x={sx} y={sy + 59} width="26" height="22" rx="3" fill="#f4f4f5" stroke="#52525b" />
-            <text x={(bx + bw + sx) / 2} y={by + 70} textAnchor="middle" className="dg-label">Qwiic 케이블</text>
+            <text x={(bx + bw + sx) / 2} y={by + 70} textAnchor="middle" className="dg-label">{t('Qwiic 케이블')}</text>
           </g>
         )}
       </svg>
-      <figcaption>개념도입니다. 실제 핀 위치는 보드에 인쇄된 이름을 보고 찾으세요.</figcaption>
+      <figcaption>{t('개념도입니다. 실제 핀 위치는 보드에 인쇄된 이름을 보고 찾으세요.')}</figcaption>
     </figure>
   );
 }

@@ -371,3 +371,14 @@ details.bb-note summary { cursor: pointer; min-height: 32px; }
 .info-grid input, .info-grid textarea { font: inherit; font-weight: 400; min-height: 44px; border: 1px solid var(--field); border-radius: 8px; padding: 8px 10px; background: var(--surface); color: var(--ink); }
 .info-left { display: flex; gap: 8px; flex-wrap: wrap; }
 .info-sheet .sheet-actions { flex-wrap: wrap; gap: 8px; }
+
+/* ---- 언어 고르기 */
+.lang-pick { display: inline-flex; align-items: center; gap: 4px; font-size: 14px; }
+.lang-pick select { min-height: 44px; border: 1px solid var(--field); border-radius: 8px; background: var(--surface); color: var(--ink); padding: 0 8px; }
+
+/* 긴 언어(독일어 등)에서 가로로 넘치지 않게 */
+.seg { flex-wrap: wrap; }
+.seg button { white-space: normal; min-width: 0; }
+.level-seg button { flex: 1 1 auto; }
+.stepper button { min-width: 0; }
+.stepper .t { white-space: normal; line-height: 1.2; text-align: left; overflow-wrap: anywhere; }

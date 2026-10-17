@@ -1,3 +1,4 @@
+import { t } from './i18n';
 import type { Pt } from './analysis';
 
 export interface Row { t: number; v: Record<string, number> }
@@ -23,7 +24,7 @@ export function newRun(mode: 'time' | 'event', index: number): Run {
   seq += 1;
   return {
     id: `run-${Date.now()}-${seq}`,
-    name: `측정 ${index + 1}`,
+    name: t('측정 {n}', { n: index + 1 }),
     mode,
     colorIndex: index % 5,
     visible: true,
@@ -90,7 +91,7 @@ function markerNotes(run: Run): Map<number, string> {
 
 /** 한 측정을 표로 (Numbers·엑셀 붙여넣기용) */
 export function runTable(run: Run, cols: Column[], xTitle: string): string[][] {
-  const head = [run.mode === 'event' ? xTitle : '시간(s)', ...cols.map((c) => c.title)];
+  const head = [run.mode === 'event' ? xTitle : t('시간(s)'), ...cols.map((c) => c.title)];
   const body: string[][] = [];
   if (run.mode === 'event') {
     [...run.events].sort((a, b) => a.x - b.x).forEach((e) => {
@@ -103,7 +104,7 @@ export function runTable(run: Run, cols: Column[], xTitle: string): string[][] {
       if (run.markers.length) row.push(notes.get(i) ?? '');
       body.push(row);
     });
-    if (run.markers.length) head.push('표시');
+    if (run.markers.length) head.push(t('표시'));
   }
   return [head, ...body];
 }
@@ -115,7 +116,7 @@ export function runsCSV(runs: Run[], cols: Column[], xTitle: string): string {
     const table = runTable(run, cols, xTitle);
     table.forEach((row, i) => {
       if (i === 0 && k > 0) return; // 머리글은 한 번만
-      lines.push([i === 0 ? '측정' : run.name, ...row].map(esc).join(','));
+      lines.push([i === 0 ? t('측정') : run.name, ...row].map(esc).join(','));
     });
   });
   return '﻿' + lines.join('\n');

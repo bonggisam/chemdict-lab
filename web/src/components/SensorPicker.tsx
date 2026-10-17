@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { categories, partSupported, parts, type Board, type Part } from '../lib/guide';
 import { typeInfo } from '../lib/sensors';
+import { t } from '../lib/i18n';
+import { catName } from '../lib/l10n';
 
 interface Props {
   board: Board;
@@ -15,23 +17,23 @@ export function SensorPicker({ board, connectedTypes, onPick }: Props) {
 
   return (
     <div className="sensor-picker">
-      <div className="cat-chips" role="tablist" aria-label="센서 분류">
+      <div className="cat-chips" role="tablist" aria-label={t('센서 분류')}>
         {['전체', ...categories].map((c) => (
-          <button key={c} role="tab" aria-selected={c === cat} className={c === cat ? 'on' : ''} onClick={() => setCat(c)}>{c}</button>
+          <button key={c} role="tab" aria-selected={c === cat} className={c === cat ? 'on' : ''} onClick={() => setCat(c)}>{c === '전체' ? t('전체') : catName(c)}</button>
         ))}
       </div>
       <div className="sensor-cards">
         {list.map((p) => {
           const ok = partSupported(board, p);
-          const on = !p.analogType && p.provides.every((t) => connectedTypes.includes(t));
+          const on = !p.analogType && p.provides.every((ty) => connectedTypes.includes(ty));
           return (
             <button key={p.id} className={`sensor-card ${ok ? '' : 'dim'}`} onClick={() => onPick(p)}>
               <b>{p.name}</b>
-              <span className="measures">{p.provides.map((t) => typeInfo(t)?.name ?? t).join(' · ')}</span>
+              <span className="measures">{p.provides.map((ty) => typeInfo(ty)?.name ?? ty).join(' · ')}</span>
               <span className="badges">
-                {on && <span className="badge ok">✓ 연결됨</span>}
-                {!ok && <span className="badge">이 보드 미지원</span>}
-                {ok && p.support === 'verified' && <span className="badge">실제 확인</span>}
+                {on && <span className="badge ok">{t('✓ 연결됨')}</span>}
+                {!ok && <span className="badge">{t('이 보드 미지원')}</span>}
+                {ok && p.support === 'verified' && <span className="badge">{t('실제 확인')}</span>}
               </span>
             </button>
           );
