@@ -4,12 +4,13 @@ interface Props {
   sensors: ResolvedSensor[];
   disabled: boolean;
   onSetPort: (port: string, type: string) => void;
+  onRescan?: () => void;
 }
 
 const PORTS = ['A0', 'A1', 'A2', 'A3'];
 
 /** 아날로그 포트마다 꽂은 센서 종류를 고르고, 디지털 센서는 자동 인식 결과를 보여 줌 */
-export function SensorSetup({ sensors, disabled, onSetPort }: Props) {
+export function SensorSetup({ sensors, disabled, onSetPort, onRescan }: Props) {
   const digital = sensors.filter((s) => !/^A\d$/.test(s.src));
   return (
     <section className="setup">
@@ -46,6 +47,7 @@ export function SensorSetup({ sensors, disabled, onSetPort }: Props) {
       </div>
       <div className="digital">
         <span className="note">자동 인식</span>
+        {onRescan && <button className="ghost small" disabled={disabled} onClick={onRescan}>센서 다시 찾기</button>}
         {digital.length === 0 && <span className="note">디지털 센서 없음 (DS18B20은 D2, Modulino는 Qwiic 단자)</span>}
         {digital.map((s) => (
           <span key={s.id} className="chip">

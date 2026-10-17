@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Measure } from './components/Measure';
 import { SensorSetup } from './components/SensorSetup';
 import { CalibrationSheet } from './components/CalibrationSheet';
+import { Guide } from './components/Guide';
 import { experiments } from './lib/experiments';
 import { parseLine, type BoardMsg, type Experiment, type HelloMsg } from './lib/protocol';
 import { BleTransport, SerialTransport, SimTransport, hasBluetooth, hasSerial, type Transport } from './lib/transports';
@@ -9,7 +10,7 @@ import { analogTypes, resolveSensor } from './lib/sensors';
 import { isStable } from './lib/analysis';
 import { newRun, type Row, type Run } from './lib/runs';
 
-type Screen = 'connect' | 'pick' | 'measure';
+type Screen = 'connect' | 'pick' | 'measure' | 'guide';
 type CalMsg = { id: string; slope: number; offset: number; points: number };
 
 export default function App() {
@@ -28,6 +29,9 @@ export default function App() {
   const [cal, setCal] = useState<{ id?: string } | null>(null);
   const [lastCal, setLastCal] = useState<CalMsg | null>(null);
   const [calRows, setCalRows] = useState<Row[]>([]);
+  const [guideFrom, setGuideFrom] = useState<{ screen: Screen; expId?: string }>({ screen: 'connect' });
+  const openGuide = (expId?: string) => { setGuideFrom({ screen: screen === 'guide' ? 'connect' : screen, expId }); setScreen('guide'); };
+  const rescan = () => { transportRef.current?.send('HELLO'); say('ok', '센서를 다시 찾았습니다.'); };
 
   // 메시지 처리기에서 최신 상태를 읽기 위한 ref
   const recordingRef = useRef(false);   // 측정(run)에 기록 중
@@ -82,7 +86,9 @@ export default function App() {
       setRunning(false);
       setHello(null);
       setConnLabel('');
-      setScreen('connect');
+      // 연결 안내를 보는 중이면 화면을 유지 (센서를 꽂으려고 USB를 뽑는 경우)
+      setScreen((sc) => (sc === 'guide' ? sc : 'connect'));
+      setGuideFrom((g) => ({ ...g, screen: 'connect' }));
       say('err', '연결이 끊어졌습니다. 케이블이나 블루투스를 확인하고 다시 연결하세요.');
     };
     setBusy(true);
@@ -201,6 +207,10 @@ export default function App() {
           <span className="logo" aria-hidden="true">⚗</span>
           <span>ChemDict Lab</span>
         </div>
+        <nav className="top-nav">
+          <button className={screen !== 'guide' ? 'on' : ''} onClick={() => screen === 'guide' && setScreen(guideFrom.screen)}>실험</button>
+          <button className={screen === 'guide' ? 'on' : ''} onClick={() => screen !== 'guide' && openGuide(exp?.id)}>연결 안내</button>
+        </nav>
         {connLabel && (
           <div className="conn">
             <span className="dot" aria-hidden="true" />
@@ -214,6 +224,7 @@ export default function App() {
         <main className="center">
           <h1>보드를 연결하세요</h1>
           <p className="lede">USB 케이블로 꽂거나 블루투스로 찾으면, 연결된 센서를 자동으로 불러옵니다.</p>
+          <p className="lede small">센서를 처음 꽂는다면 <button className="link" onClick={() => openGuide()}>연결 안내</button>를 먼저 보세요.</p>
           <div className="connect-grid">
             <button className="big" disabled={!hasSerial() || busy} onClick={() => connect('serial')}>
               <b>USB로 연결</b>
@@ -248,7 +259,7 @@ export default function App() {
             )}
           </div>
 
-          {hello ? <SensorSetup sensors={sensors} disabled={false} onSetPort={setPort} /> : <p className="note">센서 정보를 불러오는 중…</p>}
+          {hello ? <SensorSetup sensors={sensors} disabled={false} onSetPort={setPort} onRescan={rescan} /> : <p className="note">센서 정보를 불러오는 중…</p>}
 
           <div className="row-head sub">
             <h2>실험</h2>
@@ -289,16 +300,30 @@ export default function App() {
           onBack={() => setScreen('pick')}
           onOpenSetup={() => setSetupOpen(true)}
           onOpenCal={openCal}
+          onOpenGuide={() => openGuide(exp.id)}
           say={say}
           onEventX={(x) => { if (transportRef.current?.kind === 'sim') send(`SIMX ${x}`); }}
           station={hello?.station}
         />
       )}
 
+      {screen === 'guide' && (
+        <Guide
+          experiments={experiments}
+          initialExpId={guideFrom.expId}
+          boardName={hello?.board}
+          sensors={sensors}
+          connected={!!hello}
+          onRescan={rescan}
+          onBack={() => setScreen(guideFrom.screen)}
+          backLabel={guideFrom.screen === 'measure' ? '측정으로' : guideFrom.screen === 'pick' ? '실험 고르기' : '연결 화면'}
+        />
+      )}
+
       {setupOpen && (
         <div className="sheet-backdrop" onClick={() => setSetupOpen(false)}>
           <div className="sheet wide-sheet" onClick={(e) => e.stopPropagation()}>
-            <SensorSetup sensors={sensors} disabled={running} onSetPort={setPort} />
+            <SensorSetup sensors={sensors} disabled={running} onSetPort={setPort} onRescan={rescan} />
             <div className="sheet-actions"><span /><button onClick={() => setSetupOpen(false)}>닫기</button></div>
           </div>
         </div>

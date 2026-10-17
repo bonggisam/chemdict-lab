@@ -87,5 +87,13 @@ export interface Experiment {
   y: { sensor: string; label: string; unit?: string; min?: number; max?: number }[];
   markers: { enabled: boolean; label: string; prompt: string };
   analysis?: AnalysisTool[];
+  setup?: ExperimentSetup;     // 연결 안내 (protocol/guide.json의 parts를 참조)
   steps: string[];
+}
+
+export interface ExperimentSetup {
+  parts: string[];       // guide.json parts[].id
+  materials: string[];
+  attach: string[];      // 실험 장치에 센서를 붙이는 방법
+  cautions: string[];
 }

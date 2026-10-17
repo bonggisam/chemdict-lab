@@ -8,6 +8,16 @@
 4. `chemdict_lab/chemdict_lab.ino` 열기 → 보드 `Arduino UNO R4 WiFi` 선택 → 업로드
 5. 시리얼 모니터(115200, 줄 끝: 새 줄)를 열면 `{"type":"hello",...}` 한 줄이 보입니다.
 
+### 다른 보드 (시험용, 실제 보드 확인 전)
+
+| 보드 | 보드 매니저 | 라이브러리 | 연결 |
+|---|---|---|---|
+| UNO R4 WiFi (기준) | Arduino UNO R4 Boards | ArduinoBLE, OneWire, DallasTemperature | USB·블루투스 |
+| UNO R4 Minima | Arduino UNO R4 Boards | OneWire, DallasTemperature | USB만 |
+| UNO R3 | Arduino AVR Boards | OneWire, DallasTemperature | USB만 (메모리가 작아 시험용) |
+
+보드 종류는 펌웨어가 자동으로 구분합니다. 센서 연결 방법은 앱의 **연결 안내** 탭을 보세요.
+
 ## 바로 시험하기 (센서 없이)
 
 시리얼 모니터에 차례로 입력:

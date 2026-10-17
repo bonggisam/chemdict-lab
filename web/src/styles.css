@@ -174,3 +174,46 @@ button.link { border: 0; background: none; color: var(--accent); padding: 0 4px;
 .cal-steps .row { display: flex; gap: 8px; }
 .cal-steps input { width: 100px; min-height: 44px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); padding: 0 10px; }
 .ok-text { color: var(--ok); font-size: 14px; }
+
+/* ---------- 상단 탭 · 연결 안내 ---------- */
+.top-nav { display: flex; gap: 4px; background: var(--tint); padding: 4px; border-radius: 10px; }
+.top-nav button { border: none; background: transparent; min-height: 36px; padding: 6px 14px; font-weight: 600; color: var(--muted); }
+.top-nav button.on { background: var(--surface); color: var(--ink); box-shadow: 0 1px 2px rgba(0,0,0,.08); }
+.lede.small { font-size: 15px; }
+button.link { border: none; background: none; padding: 0; min-height: 0; color: var(--accent); text-decoration: underline; font-weight: 600; }
+button.small { min-height: 34px; padding: 4px 12px; font-size: 14px; }
+.guide-block { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px 20px; margin-top: 16px; }
+.guide-block h2 { font-size: 19px; margin: 0 0 10px; }
+.guide-block h3 { font-size: 15px; margin: 14px 0 6px; color: var(--muted); }
+.guide-block ol, .guide-block ul { margin: 0; padding-left: 22px; }
+.guide-block li { margin: 4px 0; }
+.guide-block .row-head.sub { margin: 0; }
+.guide-block select { min-height: 44px; border: 1px solid var(--line); border-radius: 8px; padding: 6px 10px; background: var(--surface); max-width: 100%; }
+.board-pick { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 8px; }
+.board-pick button { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; text-align: left; padding: 12px 14px; }
+.board-pick button.on { border-color: var(--accent); background: var(--tint); box-shadow: inset 0 0 0 1px var(--accent); }
+.fw { font-size: 12px; font-weight: 600; padding: 1px 8px; border-radius: 99px; }
+.fw.supported { color: var(--ok); background: color-mix(in srgb, var(--ok) 12%, transparent); }
+.fw.partial { color: var(--mark); background: color-mix(in srgb, var(--mark) 12%, transparent); }
+.fw.none { color: var(--muted); background: var(--tint); }
+.board-facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 8px 16px; margin: 14px 0 6px; }
+.board-facts div { border-left: 3px solid var(--line); padding-left: 10px; }
+.board-facts dt { font-size: 12px; color: var(--muted); }
+.board-facts dd { margin: 0; font-weight: 600; font-size: 15px; }
+.ok-note { color: var(--ok); font-weight: 600; }
+.warn-text { color: var(--mark); font-weight: 600; }
+.guide-cols { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: 20px; align-items: start; }
+@media (max-width: 760px) { .guide-cols { grid-template-columns: 1fr; } }
+.detect { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-top: 14px; }
+.caution { margin-top: 14px; padding: 10px 14px 12px; border-radius: 8px; background: color-mix(in srgb, var(--mark) 8%, transparent); border-left: 4px solid var(--mark); }
+.caution.strong { background: color-mix(in srgb, var(--danger) 9%, transparent); border-left-color: var(--danger); }
+.caution h3 { margin-top: 0; color: var(--ink); }
+.wiring { margin: 0; }
+.wiring svg { width: 100%; height: auto; display: block; }
+.wiring figcaption { font-size: 13px; color: var(--muted); margin-top: 4px; }
+.dg-board { fill: #fff; font-size: 17px; font-weight: 700; }
+.dg-pin-on { fill: #e6f6f7; font-size: 12px; font-weight: 600; }
+.dg-small { fill: var(--muted); font-size: 12px; }
+.dg-label { fill: var(--ink); font-size: 14px; font-weight: 600; }
+.dg-term { fill: var(--ink); font-size: 13px; font-weight: 600; }
+.dg-part { fill: var(--tint); stroke: var(--accent); stroke-width: 2; }

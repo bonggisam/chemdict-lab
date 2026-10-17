@@ -1,9 +1,13 @@
 /*
-  ChemDict Lab firmware v0.1.0 — Arduino UNO R4 WiFi
+  ChemDict Lab firmware v0.2.1
+  기준 보드: Arduino UNO R4 WiFi (USB + 블루투스)
+  시험용:   UNO R4 Minima, UNO R3 (USB만, 실제 보드 확인 전)
 
   - USB 시리얼(115200)과 BLE(Nordic UART 방식)로 같은 JSON 한 줄 메시지를 보냅니다.
   - 아날로그 A0~A3: 앱에서 센서 종류를 지정(PORT 명령), 설정은 EEPROM에 저장
-  - DS18B20(D2) + Modulino Thermo(Qwiic, 0x44) 자동 인식
+  - DS18B20(D2) + Modulino Thermo 자동 인식
+      구형 HS3003 = 0x44, 신형(V0.5~) GXHT30 = 0x45 (SHT3x 방식)
+  - HELLO를 받으면(측정 중이 아닐 때) 센서를 다시 찾습니다.
   - 2점 보정값은 EEPROM에 저장됩니다.
   - 센서가 없어도 DEMO ON 명령으로 가짜 데이터를 보낼 수 있습니다.
 
@@ -13,21 +17,42 @@
   통신 규칙: protocol/PROTOCOL.md
 */
 
+// ---------- 보드별 차이 ----------
+#if defined(ARDUINO_UNOR4_WIFI)
+  #define HAS_BLE 1
+  #define QWIIC Wire1          // Qwiic 단자 (3.3 V)
+  #define BOARD_NAME "UNO R4 WiFi"
+  #define ADC_BITS 14
+#elif defined(ARDUINO_UNOR4_MINIMA)
+  #define HAS_BLE 0
+  #define QWIIC Wire           // SDA·SCL 핀
+  #define BOARD_NAME "UNO R4 Minima"
+  #define ADC_BITS 14
+#elif defined(ARDUINO_AVR_UNO)
+  #define HAS_BLE 0
+  #define QWIIC Wire           // A4(SDA)·A5(SCL)
+  #define BOARD_NAME "UNO R3"
+  #define ADC_BITS 10
+#else
+  #error "UNO R4 WiFi, UNO R4 Minima, UNO R3 중 하나를 선택하세요."
+#endif
+
+#if HAS_BLE
 #include <ArduinoBLE.h>
+#endif
 #include <Wire.h>
 #include <EEPROM.h>
 #include <OneWire.h>
 #include <DallasTemperature.h>
 
-#define FW_VERSION "0.2.0"
-#define BOARD_NAME "UNO R4 WiFi"
+#define FW_VERSION "0.2.1"
 
 // ---------- 핀·상수 ----------
 const int ONEWIRE_PIN = 2;
 const float VREF = 5.0;
-const int ADC_BITS = 14;
-const float ADC_MAX = 16383.0;
-const uint8_t HS3003_ADDR = 0x44;
+const float ADC_MAX = (1L << ADC_BITS) - 1;
+const uint8_t HS3003_ADDR = 0x44;   // Modulino Thermo 구형
+const uint8_t GXHT30_ADDR = 0x45;   // Modulino Thermo 신형 (SHT3x 방식)
 const unsigned long MIN_INTERVAL_MS = 100;
 const size_t BLE_CHUNK = 20;
 
@@ -89,7 +114,7 @@ bool calHasP1[4] = { false, false, false, false };
 OneWire oneWire(ONEWIRE_PIN);
 DallasTemperature ds(&oneWire);
 bool hasDS = false;
-bool hasHS3003 = false;
+uint8_t thermoAddr = 0;   // 0 = 없음, 0x44 또는 0x45
 float lastDS = NAN;
 
 // ---------- 측정 상태 ----------
@@ -100,11 +125,13 @@ unsigned long startMs = 0;
 unsigned long lastTickMs = 0;
 
 // ---------- BLE ----------
+#if HAS_BLE
 BLEService uartService("6E400001-B5A3-F393-E0A9-E50E24DCCA9E");
 BLECharacteristic rxChar("6E400002-B5A3-F393-E0A9-E50E24DCCA9E", BLEWrite | BLEWriteWithoutResponse, BLE_CHUNK);
 BLECharacteristic txChar("6E400003-B5A3-F393-E0A9-E50E24DCCA9E", BLENotify, BLE_CHUNK);
 bool bleOk = false;
 String bleName;
+#endif
 
 // ---------- 입력 버퍼 ----------
 String serialBuf;
@@ -138,6 +165,7 @@ void saveSettings() {
 // =====================================================================
 void sendLine(const String& line) {
   Serial.println(line);
+#if HAS_BLE
   if (bleOk && BLE.connected() && txChar.subscribed()) {
     String full = line + "\n";
     size_t n = full.length();
@@ -147,6 +175,7 @@ void sendLine(const String& line) {
       BLE.poll();
     }
   }
+#endif
 }
 
 String jsonStr(const char* s) {
@@ -176,9 +205,13 @@ void detectSensors() {
     ds.requestTemperatures();
   }
 
-  Wire1.begin();
-  Wire1.beginTransmission(HS3003_ADDR);
-  hasHS3003 = (Wire1.endTransmission() == 0);
+  QWIIC.begin();
+  thermoAddr = 0;
+  const uint8_t addrs[2] = { HS3003_ADDR, GXHT30_ADDR };
+  for (uint8_t a : addrs) {
+    QWIIC.beginTransmission(a);
+    if (QWIIC.endTransmission() == 0) { thermoAddr = a; break; }
+  }
 }
 
 String sensorJson(const String& id, const char* type, const char* src, bool cal) {
@@ -203,11 +236,12 @@ void sendHello() {
     s += sensorJson("T", "T", demo && !hasDS ? "demo" : "onewire", settings.tempCalValid);
     first = false;
   }
-  if (hasHS3003) {
+  if (thermoAddr || demo) {
+    const char* src = thermoAddr == HS3003_ADDR ? "i2c:0x44" : thermoAddr == GXHT30_ADDR ? "i2c:0x45" : "demo";
     if (!first) s += ",";
-    s += sensorJson("TA", "TA", "i2c:0x44", false);
+    s += sensorJson("TA", "TA", src, false);
     s += ",";
-    s += sensorJson("RH", "RH", "i2c:0x44", false);
+    s += sensorJson("RH", "RH", src, false);
   }
   s += "]}";
   sendLine(s);
@@ -231,16 +265,50 @@ float analogValue(int i, float volt) {
 float demoAnalog(const char* type, float t);
 
 bool readHS3003(float& tempC, float& rh) {
-  Wire1.beginTransmission(HS3003_ADDR);
-  if (Wire1.endTransmission() != 0) return false;
+  QWIIC.beginTransmission(HS3003_ADDR);
+  if (QWIIC.endTransmission() != 0) return false;
   delay(40);  // 측정 대기
-  if (Wire1.requestFrom(HS3003_ADDR, (uint8_t)4) != 4) return false;
-  uint8_t b0 = Wire1.read(), b1 = Wire1.read(), b2 = Wire1.read(), b3 = Wire1.read();
+  if (QWIIC.requestFrom(HS3003_ADDR, (uint8_t)4) != 4) return false;
+  uint8_t b0 = QWIIC.read(), b1 = QWIIC.read(), b2 = QWIIC.read(), b3 = QWIIC.read();
   uint16_t rawH = ((uint16_t)(b0 & 0x3F) << 8) | b1;
   uint16_t rawT = (((uint16_t)b2 << 8) | b3) >> 2;
   rh = rawH / 16383.0f * 100.0f;
   tempC = rawT / 16383.0f * 165.0f - 40.0f;
   return true;
+}
+
+// SHT3x 방식 CRC-8 (다항식 0x31, 초기값 0xFF)
+uint8_t crc8(const uint8_t* d, int n) {
+  uint8_t c = 0xFF;
+  for (int i = 0; i < n; i++) {
+    c ^= d[i];
+    for (int b = 0; b < 8; b++) c = (c & 0x80) ? (uint8_t)((c << 1) ^ 0x31) : (uint8_t)(c << 1);
+  }
+  return c;
+}
+
+// GXHT30 (Modulino Thermo V0.5~): 단발 측정, 높은 반복도
+bool readGXHT30(float& tempC, float& rh) {
+  QWIIC.beginTransmission(GXHT30_ADDR);
+  QWIIC.write(0x24);
+  QWIIC.write(0x00);
+  if (QWIIC.endTransmission() != 0) return false;
+  delay(20);
+  if (QWIIC.requestFrom(GXHT30_ADDR, (uint8_t)6) != 6) return false;
+  uint8_t d[6];
+  for (int i = 0; i < 6; i++) d[i] = QWIIC.read();
+  if (crc8(d, 2) != d[2] || crc8(d + 3, 2) != d[5]) return false;
+  uint16_t rawT = ((uint16_t)d[0] << 8) | d[1];
+  uint16_t rawH = ((uint16_t)d[3] << 8) | d[4];
+  tempC = -45.0f + 175.0f * rawT / 65535.0f;
+  rh = 100.0f * rawH / 65535.0f;
+  return true;
+}
+
+bool readThermo(float& tempC, float& rh) {
+  if (thermoAddr == HS3003_ADDR) return readHS3003(tempC, rh);
+  if (thermoAddr == GXHT30_ADDR) return readGXHT30(tempC, rh);
+  return false;
 }
 
 // 데모 데이터: 적정 곡선(pH), 냉각 곡선(T)
@@ -259,6 +327,19 @@ float demoTemp(float t) {
   else T = -0.06f * (t - 220.0f);                           // 다시 하강
   if (T < -10) T = -10;
   return T + demoNoise(0.05f);
+}
+
+// 데모: 실내 기온·습도, 40초마다 입김(습도 급상승 후 서서히 회복)
+float demoHumidity(float t) {
+  float phase = fmod(t, 40.0f);
+  float bump = phase > 10.0f ? 35.0f * exp(-(phase - 10.0f) / 6.0f) : 0.0f;
+  return 45.0f + bump + demoNoise(0.3f);
+}
+
+float demoAirTemp(float t) {
+  float phase = fmod(t, 40.0f);
+  float bump = phase > 10.0f ? 1.2f * exp(-(phase - 10.0f) / 8.0f) : 0.0f;
+  return 23.5f + bump + demoNoise(0.05f);
 }
 
 float demoAnalog(const char* type, float t) {
@@ -294,12 +375,15 @@ void tick() {
   if (hasDS) add("T", lastDS, 2);
   else if (demo) add("T", demoTemp(t), 2);
 
-  if (hasHS3003) {
+  if (thermoAddr) {
     float ta, rh;
-    if (readHS3003(ta, rh)) {
+    if (readThermo(ta, rh)) {
       add("TA", ta, 2);
       add("RH", rh, 1);
     }
+  } else if (demo) {
+    add("TA", demoAirTemp(t), 2);
+    add("RH", demoHumidity(t), 1);
   }
 
   s += "}}";
@@ -431,6 +515,7 @@ void handleCommand(String line) {
   cmd.toUpperCase();
 
   if (cmd == "HELLO") {
+    if (!running) detectSensors();  // 센서를 새로 꽂았을 때 "센서 다시 찾기"
     sendHello();
   } else if (cmd == "START") {
     unsigned long ms = argc > 1 ? (unsigned long)args[1].toInt() : 1000;
@@ -476,6 +561,7 @@ void readSerial() {
   }
 }
 
+#if HAS_BLE
 void onRxWritten(BLEDevice, BLECharacteristic ch) {
   int n = ch.valueLength();
   const uint8_t* data = ch.value();
@@ -498,6 +584,7 @@ void onBleDisconnect(BLEDevice) {
   bleBuf = "";
   BLE.advertise();
 }
+#endif
 
 // =====================================================================
 void setup() {
@@ -505,11 +592,14 @@ void setup() {
   unsigned long t0 = millis();
   while (!Serial && millis() - t0 < 1500) {}
 
+#if ADC_BITS > 10
   analogReadResolution(ADC_BITS);
+#endif
   randomSeed(analogRead(A5));
   loadSettings();
   detectSensors();
 
+#if HAS_BLE
   bleName = String("ChemDict-0") + settings.station;
   if (BLE.begin()) {
     BLE.setLocalName(bleName.c_str());
@@ -524,12 +614,15 @@ void setup() {
     BLE.advertise();
     bleOk = true;
   }
+#endif
 
   sendHello();
 }
 
 void loop() {
+#if HAS_BLE
   if (bleOk) BLE.poll();
+#endif
   readSerial();
   pollDS();
 

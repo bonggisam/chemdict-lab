@@ -172,6 +172,8 @@ export class SimTransport implements Transport {
       .filter(({ p }) => p.type !== 'OFF')
       .map(({ p, i }) => ({ id: this.portId(i), type: p.type, name: p.type, unit: '', src: `A${i}`, cal: p.cal }));
     sensors.push({ id: 'T', type: 'T', name: 'T', unit: '', src: 'demo', cal: false });
+    sensors.push({ id: 'TA', type: 'TA', name: 'TA', unit: '', src: 'demo', cal: false });
+    sensors.push({ id: 'RH', type: 'RH', name: 'RH', unit: '', src: 'demo', cal: false });
     this.emit({ type: 'hello', fw: 'sim', board: '시뮬레이터', station: 0, demo: true, interval: this.interval, running: this.timer !== null, sensors });
   }
 
@@ -199,6 +201,9 @@ export class SimTransport implements Transport {
         return T + this.noise(0.04);
       }
       case 'P': return 101.3 + 0.5 * t + this.noise(0.3);
+      // 펌웨어 데모와 같음: 40초마다 입김 → 습도 급상승 후 회복
+      case 'RH': { const ph = t % 40; return 45 + (ph > 10 ? 35 * Math.exp(-(ph - 10) / 6) : 0) + this.noise(0.3); }
+      case 'TA': { const ph = t % 40; return 23.5 + (ph > 10 ? 1.2 * Math.exp(-(ph - 10) / 8) : 0) + this.noise(0.05); }
       default: return 2.5 + this.noise(0.01);
     }
   }
@@ -210,6 +215,8 @@ export class SimTransport implements Transport {
       if (p.type !== 'OFF') v[this.portId(i)] = Number((this.value(p.type, t) + p.offsetAdj).toFixed(3));
     });
     v.T = Number(this.value('T', t).toFixed(2));
+    v.TA = Number(this.value('TA', t).toFixed(2));
+    v.RH = Number(this.value('RH', t).toFixed(1));
     this.emit({ type: 'd', t: Number(t.toFixed(2)), v });
   }
 

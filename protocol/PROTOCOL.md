@@ -1,4 +1,4 @@
-# ChemDict Lab 통신 규칙 v1.1
+# ChemDict Lab 통신 규칙 v1.2
 
 보드(UNO R4 WiFi)와 앱(웹앱, 애플 앱)이 주고받는 약속입니다. USB 시리얼과 블루투스(BLE) 모두 **같은 내용**을 씁니다.
 
@@ -28,7 +28,7 @@ BLE는 한 번에 보낼 수 있는 길이가 짧습니다. 보드는 한 줄을
 ### hello — 연결 직후, 그리고 `HELLO` 명령을 받았을 때
 
 ```json
-{"type":"hello","fw":"0.2.0","board":"UNO R4 WiFi","station":3,"demo":false,
+{"type":"hello","fw":"0.2.1","board":"UNO R4 WiFi","station":3,"demo":false,
  "sensors":[
   {"id":"pH","type":"pH","name":"pH","unit":"","src":"A0","cal":true},
   {"id":"L","type":"L","name":"L","unit":"","src":"A1","cal":false},
@@ -40,7 +40,8 @@ BLE는 한 번에 보낼 수 있는 길이가 짧습니다. 보드는 한 줄을
 - `sensors`: 보드가 지금 읽을 수 있는 센서 목록. 앱은 이 목록으로 화면을 만듭니다.
 - `type`: 센서 종류. **이름·단위·소수 자리·보정 방법은 앱이 `protocol/sensors.json`에서 찾습니다.** (보드는 `name`에 type을 그대로 넣음)
 - `id`: 데이터 메시지의 키. 보통 type과 같고, 같은 종류가 두 포트에 있으면 두 번째부터 `pH_A2`처럼 포트가 붙습니다.
-- `src`: 센서가 연결된 곳 (`A0`~`A3`, `onewire`, `i2c:0x44` 등)
+- `board`: 보드 이름 (`UNO R4 WiFi`, `UNO R4 Minima`, `UNO R3`). 앱의 연결 안내가 이 이름으로 보드를 자동 선택합니다.
+- `src`: 센서가 연결된 곳 (`A0`~`A3`, `onewire`, `i2c:0x44`, `i2c:0x45`, 데모면 `demo`)
 - `cal`: 저장된 보정값이 있는지 여부
 
 ### d — 측정 데이터 (측정 중 반복)
@@ -69,7 +70,7 @@ BLE는 한 번에 보낼 수 있는 길이가 짧습니다. 보드는 한 줄을
 
 | 명령 | 뜻 |
 |---|---|
-| `HELLO` | hello 메시지를 다시 보내 달라 |
+| `HELLO` | 측정 중이 아니면 센서를 다시 찾은 뒤 hello를 보냄 (앱의 "센서 다시 찾기") |
 | `START <ms>` | `<ms>` 밀리초 간격으로 측정 시작 (최소 100, 기본 1000) |
 | `STOP` | 측정 정지 |
 | `DEMO ON` / `DEMO OFF` | 데모 모드 켜기/끄기 (센서 없이 가짜 데이터) |
@@ -108,8 +109,10 @@ CAL pH 2 4.00     ← pH 4 완충 용액에 담근 상태에서
 | 연결 | 센서 id | 이름 | 인식 방법 |
 |---|---|---|---|
 | D2 (OneWire) | `T` | 온도 | DS18B20 장치 검색 |
-| Qwiic (Wire1) 0x44 | `TA` | 기온 | Modulino Thermo (HS3003) 응답 |
-| Qwiic (Wire1) 0x44 | `RH` | 습도 | 위와 같음 |
+| Qwiic 0x44 | `TA`, `RH` | 기온, 습도 | Modulino Thermo 구형 (HS3003) |
+| Qwiic 0x45 | `TA`, `RH` | 기온, 습도 | Modulino Thermo 신형 V0.5~ (GXHT30, SHT3x 방식) |
+
+Qwiic 버스: UNO R4 WiFi는 Qwiic 단자(`Wire1`, 3.3 V), UNO R4 Minima·R3는 SDA·SCL 핀(`Wire`). 데모 모드에서는 `T`, `TA`, `RH`도 가짜 값을 보냅니다.
 
 ## 6. 실험 템플릿
 
@@ -139,9 +142,18 @@ CAL pH 2 4.00     ← pH 4 완충 용액에 담근 상태에서
   - `event`: 보드는 계속 측정하고, 학생이 `값 기록`을 누를 때 최근 1초 평균을 입력값(`event`)과 함께 한 점으로 기록. 가로축은 입력값 (적정 부피, 희석 배수 등).
 - `event.scale`: `log`이면 가로축을 로그 눈금으로 그리고, 다음 값 제안은 `× step`.
 - `markers`: 시간 모드에서 그 순간에 메모를 붙이는 기능.
+- `setup`: 연결 안내 — `parts`(`protocol/guide.json`의 부품 id), `materials`(준비물), `attach`(실험 장치에 붙이는 방법), `cautions`(실험할 때 주의). 없으면 앱이 필요한 센서로 부품을 추정하고 부착 안내는 "준비 중"으로 표시.
 - `analysis`: 해석 도구 — `stats`(구간 통계), `fit`(직선 맞춤), `equivalence`(당량점·반당량점), `plateau`(평탄 구간, 예: 어는점).
 
-## 7. 시뮬레이터 전용 명령
+## 7. 연결 안내 (`protocol/guide.json`)
+
+보드 종류별 연결 방법과 주의할 점을 적은 파일입니다. 웹앱과 애플 앱이 같은 파일을 읽습니다.
+
+- `common`: 모든 실험 공통 규칙
+- `boards[]`: `id`, `name`, `match`(hello의 board 이름과 맞춰 볼 문자열), `firmware`(`supported`·`partial`·`none`), USB·블루투스·핀 전압·아날로그·Qwiic 정보, `connectors.{qwiic,onewire,analog}`의 연결 순서와 주의
+- `parts[]`: 부품 — `provides`(센서 종류), `connector`, `items`(준비물), `cautions`
+
+## 8. 시뮬레이터 전용 명령
 
 웹앱의 "보드 없이 체험"만 이해하는 명령입니다. 실제 보드는 `unknown command`로 답합니다.
 

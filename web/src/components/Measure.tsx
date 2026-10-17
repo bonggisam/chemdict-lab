@@ -21,6 +21,7 @@ interface Props {
   onBack: () => void;
   onOpenSetup: () => void;
   onOpenCal: (id?: string) => void;
+  onOpenGuide: () => void;
   say: (kind: 'ok' | 'err', text: string) => void;
   onEventX?: (nextX: number) => void;
   station?: number;
@@ -253,7 +254,7 @@ export function Measure(p: Props) {
       </details>
 
       {charts.length === 0 && (
-        <p className="note warn">이 실험에 필요한 센서({exp.sensors.join(', ')})가 연결되어 있지 않습니다. <button className="link" onClick={p.onOpenSetup}>센서 연결 설정</button></p>
+        <p className="note warn">이 실험에 필요한 센서({exp.sensors.join(', ')})가 연결되어 있지 않습니다. <button className="link" onClick={p.onOpenGuide}>연결 안내</button> · <button className="link" onClick={p.onOpenSetup}>센서 연결 설정</button></p>
       )}
 
       {/* 값 입력 모드: 기록 막대 */}
@@ -312,6 +313,7 @@ export function Measure(p: Props) {
           </div>
         )}
         <div className="actions">
+          <button className="ghost" onClick={p.onOpenGuide}>연결 안내</button>
           <button className="ghost" disabled={running} onClick={p.onOpenSetup}>센서 설정</button>
           <button className="ghost" disabled={!sensors.some((s) => s.spec && s.spec.cal.kind !== 'none')} onClick={() => p.onOpenCal(charts[0]?.sensor.id)}>보정</button>
           {charts.length > 0 && (
