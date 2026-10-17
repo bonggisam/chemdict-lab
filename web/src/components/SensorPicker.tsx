@@ -19,13 +19,13 @@ export function SensorPicker({ board, connectedTypes, onPick }: Props) {
     <div className="sensor-picker">
       <div className="cat-chips" role="tablist" aria-label={t('센서 분류')}>
         {['전체', ...categories].map((c) => (
-          <button key={c} role="tab" aria-selected={c === cat} className={c === cat ? 'on' : ''} onClick={() => setCat(c)}>{c}</button>
+          <button key={c} role="tab" aria-selected={c === cat} className={c === cat ? 'on' : ''} onClick={() => setCat(c)}>{c === '전체' ? t('전체') : catName(c)}</button>
         ))}
       </div>
       <div className="sensor-cards">
         {list.map((p) => {
           const ok = partSupported(board, p);
-          const on = !p.analogType && p.provides.every((t) => connectedTypes.includes(t));
+          const on = !p.analogType && p.provides.every((ty) => connectedTypes.includes(ty));
           return (
             <button key={p.id} className={`sensor-card ${ok ? '' : 'dim'}`} onClick={() => onPick(p)}>
               <b>{p.name}</b>
