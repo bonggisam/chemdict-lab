@@ -8,11 +8,11 @@
 4. `chemdict_lab/chemdict_lab.ino` 열기 → 보드 `Arduino UNO R4 WiFi` 선택 → 업로드
 5. 시리얼 모니터(115200, 줄 끝: 새 줄)를 열면 `{"type":"hello",...}` 한 줄이 보입니다.
 
-### 다른 보드 (시험용, 실제 보드 확인 전)
+### 보드별 준비 (R4 WiFi는 2026-10-17 실제 보드 확인: 프로그램 45%, 메모리 38%)
 
 | 보드 | 보드 매니저 | 라이브러리 | 연결 |
 |---|---|---|---|
-| UNO R4 WiFi (기준) | Arduino UNO R4 Boards | ArduinoBLE, OneWire, DallasTemperature | USB·블루투스 |
+| UNO R4 WiFi (기준) | Arduino UNO R4 Boards 1.6.0 | ArduinoBLE 2.1.0, OneWire 2.3.8, DallasTemperature 4.0.6 (확인한 버전) | USB·블루투스 |
 | UNO R4 Minima | Arduino UNO R4 Boards | OneWire, DallasTemperature | USB만 |
 | UNO R3 | Arduino AVR Boards | OneWire, DallasTemperature | USB만 (메모리가 작아 시험용) |
 
