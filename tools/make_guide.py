@@ -93,7 +93,7 @@ CONNECTORS = {
         dict(term="저항 다른 쪽", pin="GND", color="black")],
         resistor=dict(between=["A", "GND"], value="10 kΩ"),
         steps=["센서 다른 쪽 다리와 A0을 잇는 선에서 10 kΩ 저항을 GND로 연결합니다 (브레드보드 사용)."],
-        cautions=[]),
+        cautions=[], breadboard=dict(need="required", why="센서와 10 kΩ 저항을 한 줄에서 이어야 합니다.", circuit="divider")),
     "probe": dict(name="전압 측정 2선", wires=[
         dict(term="(+) 극", pin="A", color="red"), dict(term="(−) 극", pin="GND", color="black")],
         steps=["악어 클립 선으로 전지의 (+)극을 A0, (−)극을 GND에 연결합니다."],
@@ -104,12 +104,13 @@ CONNECTORS = {
         dict(term="DATA (노랑)", pin="ONEWIRE", color="yellow")],
         resistor=dict(between=["PWR", "ONEWIRE"], value="4.7 kΩ"),
         steps=["4.7 kΩ 저항을 DATA와 VCC 사이에 연결합니다. 터미널 어댑터 보드를 쓰면 저항이 들어 있어 생략합니다."],
-        cautions=["저항이 없으면 센서가 인식되지 않습니다."]),
+        cautions=["저항이 없으면 센서가 인식되지 않습니다."],
+        breadboard=dict(need="recommended", why="4.7 kΩ 저항을 끼우거나 센서 여러 개를 나란히 꽂을 때 씁니다. 저항이 든 어댑터 보드에 센서 1개만 쓰면 필요 없습니다.", circuit="pullup")),
     "dht": dict(name="디지털 3선", wires=[
         dict(term="GND (−)", pin="GND", color="black"), dict(term="VCC (+)", pin="PWR", color="red"),
         dict(term="DATA (S·OUT)", pin="DHT", color="yellow")],
         steps=["핀이 4개인 센서(모듈 아님)는 DATA와 VCC 사이에 10 kΩ 저항을 연결합니다. 3번 핀은 비워 둡니다."],
-        cautions=[]),
+        cautions=[], breadboard=dict(need="recommended", why="핀 4개짜리 센서(모듈 아님)는 10 kΩ 저항을 끼우려면 브레드보드가 필요합니다. 3핀 모듈은 필요 없습니다.", circuit="pullup")),
     "qwiic": dict(name="Qwiic 케이블", cable=True, wires=[
         dict(term="GND (검정)", pin="GND", color="black"), dict(term="3.3V (빨강)", pin="PWR3", color="red"),
         dict(term="SDA (파랑)", pin="SDA", color="blue"), dict(term="SCL (노랑)", pin="SCL", color="yellow")],
@@ -138,7 +139,8 @@ CONNECTORS = {
     "ultrasonic": dict(name="초음파 4선", wires=[
         dict(term="VCC", pin="PWR", color="red"), dict(term="TRIG", pin="TRIG", color="yellow"),
         dict(term="ECHO", pin="ECHO", color="green"), dict(term="GND", pin="GND", color="black")],
-        steps=[], cautions=["3.3 V 보드에서는 ECHO 신호(5 V)를 저항 분압으로 낮춰 연결합니다."]),
+        steps=[], cautions=["3.3 V 보드에서는 ECHO 신호(5 V)를 저항 분압으로 낮춰 연결합니다."],
+        breadboard=dict(need="recommended", why="센서 핀이 보드에 바로 닿지 않으면 브레드보드에 꽂고 점퍼선으로 연결합니다.", circuit=None)),
 }
 
 # ---------------------------------------------------------------- 센서
@@ -305,9 +307,69 @@ TROUBLES = [
                 "노트북이 절전 모드에 들어가지 않게 합니다."]),
 ]
 
+# ---------------------------------------------------------------- 브레드보드
+# 구멍 이름: 열 번호 + 행 글자 (예: "c5"), 전원 줄: "T+:5"(위 + 줄, 5열 옆), "T-:5"
+# 보드 핀: "pin:5V", "pin:GND", "pin:A0", "pin:A1", "pin:D2"
+def wire(a, b, color): return dict(a=a, b=b, color=color)
+def comp(kind, label, legs): return dict(kind=kind, label=label, legs=legs)
+
+BREADBOARD = dict(
+    intro="브레드보드는 납땜 없이 부품과 선을 꽂아 회로를 만드는 판입니다. 저항을 끼우거나, 센서 여러 개를 같은 선에 나란히 꽂거나, 전압·전류를 재는 회로를 만들 때 씁니다.",
+    structure=[
+        "가운데 홈을 기준으로 위쪽 a~e, 아래쪽 f~j 다섯 구멍이 세로 한 줄로 이어져 있습니다 (그림의 초록 칸).",
+        "가로로 옆 칸끼리는 이어져 있지 않습니다. 가운데 홈 건너편(e와 f)도 이어지지 않습니다.",
+        "위·아래 끝의 긴 줄(빨강 +, 파랑 −)은 가로로 길게 이어집니다. 보드의 5V를 + 줄, GND를 − 줄에 꽂아 전원 줄로 씁니다.",
+        "긴 브레드보드는 전원 줄이 가운데에서 끊긴 것도 있습니다. 양쪽을 쓰려면 짧은 선으로 이어 줍니다.",
+    ],
+    rules=[
+        "선을 꽂거나 뺄 때는 USB를 먼저 뽑습니다.",
+        "보드 5V → + 줄, GND → − 줄을 먼저 꽂습니다. 3.3 V 센서만 쓸 때는 5V 대신 3.3V를 꽂습니다.",
+        "부품의 두 다리를 같은 세로 줄에 꽂으면 그 부품은 회로에서 빠집니다. 다리는 서로 다른 줄에 꽂습니다.",
+        "저항은 방향이 없습니다. LED는 긴 다리(+), 전해 축전기는 띠 없는 쪽 다리(+)가 + 방향입니다.",
+        "+ 줄과 − 줄을 선 하나로 바로 잇지 않습니다 (합선).",
+        "선 색을 정해 두면 실수가 줄어듭니다: 빨강 = 5V, 검정 = GND, 그 밖의 색 = 신호.",
+        "구멍 끝까지 꾹 눌러 꽂습니다. 헐거우면 값이 튀거나 센서가 인식되지 않습니다.",
+    ],
+    resistors=[
+        dict(value="100 Ω", bands="갈색 · 검정 · 갈색 · 금색", use="전류 재기(기준저항), LED"),
+        dict(value="220 Ω", bands="빨강 · 빨강 · 갈색 · 금색", use="LED 보호"),
+        dict(value="4.7 kΩ", bands="노랑 · 보라 · 빨강 · 금색", use="DS18B20 온도 센서"),
+        dict(value="10 kΩ", bands="갈색 · 검정 · 주황 · 금색", use="빛·힘 센서, 서미스터, DHT 4핀"),
+    ],
+    circuits=[
+        dict(id="divider", name="분압 회로 (빛 센서 LDR · 힘 센서 FSR · 서미스터)",
+             what="센서와 10 kΩ 저항을 한 줄에서 만나게 하고, 그 줄의 전압을 A0으로 읽습니다.",
+             steps=["보드 5V → + 줄, GND → − 줄.", "+ 줄 → 6열로 빨간 선.", "센서 다리를 6열과 9열에 꽂습니다.", "10 kΩ 저항을 9열과 13열에 꽂습니다.", "13열 → − 줄로 검은 선.", "9열(센서와 저항이 만나는 줄) → 보드 A0."],
+             wires=[wire("pin:5V", "T+:2", "red"), wire("pin:GND", "T-:3", "black"), wire("T+:6", "a6", "red"), wire("a13", "T-:13", "black"), wire("pin:A0", "a9", "green")],
+             parts=[comp("sensor", "센서", ["c6", "c9"]), comp("resistor", "10 kΩ", ["d9", "d13"])]),
+        dict(id="pullup", name="온도 센서 여러 개 + 4.7 kΩ (DS18B20)",
+             what="센서의 GND·VCC·DATA 선을 같은 세 줄에 나란히 꽂고, VCC와 DATA 줄 사이에 4.7 kΩ을 하나만 끼웁니다.",
+             steps=["보드 5V → + 줄, GND → − 줄.", "8열 → − 줄, 10열 → + 줄로 선을 잇습니다.", "센서 1의 검정·빨강·노랑 선을 8·10·12열에 꽂습니다.", "센서 2도 같은 8·10·12열의 다른 구멍에 꽂습니다.", "4.7 kΩ 저항을 10열과 12열에 꽂습니다 (하나면 충분).", "12열 → 보드 D2."],
+             wires=[wire("pin:5V", "T+:2", "red"), wire("pin:GND", "T-:3", "black"), wire("T-:8", "a8", "black"), wire("T+:10", "a10", "red"), wire("pin:D2", "a12", "yellow")],
+             parts=[comp("resistor", "4.7 kΩ", ["b10", "b12"]), comp("probe", "온도 센서 1", ["d8", "d10", "d12"]), comp("probe", "온도 센서 2", ["e8", "e10", "e12"])]),
+        dict(id="series-ref", name="전압·전류 재기 (측정 저항 + 기준저항 100 Ω)",
+             what="소자와 기준저항을 직렬로 잇습니다. 기준저항 전압(A1) ÷ 100 Ω = 전류, A0 − A1 = 소자 전압입니다.",
+             steps=["보드 GND → − 줄. 전지(−)도 − 줄에 꽂아 보드와 GND를 같게 합니다.", "전지(+) → 4열.", "측정 저항 R을 4열과 9열에 꽂습니다.", "100 Ω 저항을 9열과 14열에 꽂습니다.", "14열 → − 줄.", "4열 → A0, 9열 → A1."],
+             wires=[wire("pin:GND", "T-:3", "black"), wire("bat:+", "c4", "red"), wire("bat:-", "T-:18", "black"), wire("a14", "T-:14", "black"), wire("pin:A0", "a4", "green"), wire("pin:A1", "a9", "orange")],
+             parts=[comp("resistor", "측정 R", ["b4", "b9"]), comp("resistor", "100 Ω", ["c9", "c14"])],
+             caution="전지는 5 V 이하(1.5 V × 3개까지)만 씁니다. A0·A1에는 0~5 V만 들어가야 합니다."),
+        dict(id="led", name="LED 켜는 전압 재기 (가변저항 + LED + 100 Ω)",
+             what="가변저항으로 전압을 조금씩 올리며 LED 전압(A0 − A1)과 전류(A1 ÷ 100 Ω)를 잽니다.",
+             steps=["보드 5V → + 줄, GND → − 줄.", "가변저항 세 다리를 4·6·8열에 꽂고, 4열 → + 줄, 8열 → − 줄.", "LED 긴 다리를 6열(가운데 다리 줄), 짧은 다리를 10열에 꽂습니다.", "100 Ω 저항을 10열과 15열에, 15열 → − 줄.", "6열 → A0, 10열 → A1."],
+             wires=[wire("pin:5V", "T+:2", "red"), wire("pin:GND", "T-:3", "black"), wire("T+:4", "a4", "red"), wire("a8", "T-:8", "black"), wire("a15", "T-:15", "black"), wire("pin:A0", "a6", "green"), wire("pin:A1", "a10", "orange")],
+             parts=[comp("pot", "가변저항", ["c4", "c6", "c8"]), comp("led", "LED", ["e6", "e10"]), comp("resistor", "100 Ω", ["c10", "c15"])]),
+        dict(id="rc", name="축전기 충전·방전 (10 kΩ + 1000 µF)",
+             what="5 V로 저항을 거쳐 축전기를 충전하고, 축전기 전압을 A0으로 잽니다. 5 V 선을 GND로 옮기면 방전됩니다.",
+             steps=["보드 5V → + 줄, GND → − 줄.", "+ 줄 → 5열 (충전 선). 방전할 때는 이 선을 − 줄로 옮깁니다.", "10 kΩ 저항을 5열과 10열에 꽂습니다.", "축전기 + 다리를 10열, − 다리(띠 쪽)를 13열에 꽂고, 13열 → − 줄.", "10열 → A0."],
+             wires=[wire("pin:5V", "T+:2", "red"), wire("pin:GND", "T-:3", "black"), wire("T+:5", "a5", "red"), wire("a13", "T-:13", "black"), wire("pin:A0", "a10", "green")],
+             parts=[comp("resistor", "10 kΩ", ["c5", "c10"]), comp("cap", "1000 µF", ["d10", "d13"])],
+             caution="전해 축전기는 방향이 바뀌면 부풀거나 터질 수 있습니다. 띠가 있는 다리를 − 줄 쪽에 꽂습니다."),
+    ],
+)
+
 ORDER = ["온도", "온습도", "기압·압력", "기체", "빛·색", "물·용액", "무게·거리·힘", "전기·소리"]
 
-out = dict(version=2, common=COMMON, categories=ORDER, boards=BOARDS, connectors=CONNECTORS, parts=PARTS, troubles=TROUBLES,
+out = dict(version=2, common=COMMON, categories=ORDER, boards=BOARDS, connectors=CONNECTORS, parts=PARTS, troubles=TROUBLES, breadboard=BREADBOARD,
            planned=["MH-Z19B 이산화탄소 (UART)", "PMS7003 미세먼지", "Modulino Distance·Light·Movement",
                     "Nano ESP32·Nano 33·GIGA·UNO Q 펌웨어"])
 path = pathlib.Path(__file__).resolve().parent.parent / "protocol" / "guide.json"

@@ -334,3 +334,31 @@ label.mini select, .fit-pick select { min-height: 44px; border: 1px solid var(--
 .exp-detail h3 { margin: 0 0 2px; }
 .exp-detail .std { margin: 6px 0; font-size: 14px; }
 .pubs { margin: 6px 0 0; padding-left: 18px; font-size: 14px; }
+
+/* ---- 브레드보드 */
+.bb-figure { margin: 8px 0; }
+.bb-figure svg { width: 100%; height: auto; max-width: 760px; display: block; }
+.bb-body { fill: #f4f1ea; stroke: #d6d0c4; }
+.bb-gap { fill: #e2ddd2; }
+.bb-hole { fill: #9b958a; }
+.bb-hl { fill: rgba(22, 163, 74, 0.28); stroke: #16a34a; }
+.bb-hl.rail { fill: rgba(220, 38, 38, 0.15); stroke: #dc2626; }
+.bb-board { fill: #0b6e79; }
+.bb-pin { fill: #e5e7eb; stroke: #9ca3af; }
+.bb-pin-text { font-size: 13px; font-weight: 700; fill: var(--ink); }
+.bb-board + text, .bb-label { font-size: 13px; font-weight: 600; fill: var(--ink); }
+.bb-num { font-size: 10px; fill: #78716c; }
+.bb-rail-text { font-size: 14px; font-weight: 700; }
+.bb-note { font-size: 12px; fill: #166534; font-weight: 700; paint-order: stroke; stroke: #f4f1ea; stroke-width: 4px; }
+.bb-part { font-size: 12px; font-weight: 700; fill: #3f3f46; paint-order: stroke; stroke: #f4f1ea; stroke-width: 4px; }
+.bb-probe, .bb-bat { fill: #fff; stroke: #71717a; }
+.bb-guide h3 { margin: 18px 0 6px; }
+.bb-res td, .bb-res th { padding: 6px 10px; text-align: left; }
+.bb-cols { align-items: start; }
+details.bb-note { border: 1px solid var(--line); border-left: 4px solid var(--accent); border-radius: 8px; padding: 8px 12px; margin: 10px 0; background: var(--surface); }
+details.bb-note.required { border-left-color: var(--mark); }
+details.bb-note summary { cursor: pointer; min-height: 32px; }
+.bb-exps { padding-left: 0; list-style: none; display: flex; flex-direction: column; gap: 6px; font-size: 14px; }
+.badge.need { color: var(--mark); font-weight: 600; }
+.badge.bb { color: var(--mark); }
+@media (prefers-color-scheme: dark) { .bb-body { fill: #e9e4d8; } .bb-pin-text, .bb-label, .bb-board + text { fill: #e4ebf2; } .bb-probe + text, .bb-bat + text { fill: #111; } }

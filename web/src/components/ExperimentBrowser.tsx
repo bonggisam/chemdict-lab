@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import type { Experiment } from '../lib/protocol';
 import { typeInfo } from '../lib/sensors';
+import { breadboardFor } from '../lib/guide';
 
 const LEVELS = ['전체', '중학교', '고1 공통', '고2·3 선택'] as const;
 type Level = typeof LEVELS[number];
@@ -65,6 +66,7 @@ export function ExperimentBrowser({ experiments, connectedTypes, selectedId, onP
             {e.standards.length > 0 && <span className="codes">{e.standards.map((s) => `[${s}]`).join(' ')}</span>}
             <span className="badges">
               {connectedTypes && (ready(e) ? <span className="badge ok">✓ 바로 측정</span> : <span className="badge">센서 연결 필요</span>)}
+              {breadboardFor(e)?.need === 'required' && <span className="badge bb">브레드보드</span>}
               {e.textbooks?.length ? <span className="badge pub" title={e.textbooks.map((t) => `${t.publisher} ${t.course}: ${t.note}`).join('\n')}>교과서 {[...new Set(e.textbooks.map((t) => t.publisher))].join('·')}</span> : null}
             </span>
           </button>

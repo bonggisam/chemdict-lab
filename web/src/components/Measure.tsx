@@ -11,6 +11,8 @@ import { CALCS, calcColumn, round, type CalcId } from '../lib/calc';
 import { newRun, recentValues, runTable, runsCSV, saveFile, seriesPoints, toTSV, type Run } from '../lib/runs';
 import { reportImage, reportPdf, reportXlsx, type Report } from '../lib/report';
 import type { XSeries } from '../lib/xlsx';
+import { breadboardFor } from '../lib/guide';
+import { BreadboardNote } from './PartWiring';
 
 interface Props {
   exp: Experiment;
@@ -45,6 +47,7 @@ export function Measure(p: Props) {
   const tools = exp.analysis ?? ['stats', 'fit'];
   const active = runs.find((r) => r.id === activeId) ?? runs[0];
   const logX = mode === 'event' && ev?.scale === 'log';
+  const bb = breadboardFor(exp);
 
   // ---- 그래프 상태
   const [selection, setSelection] = useState<[number, number] | null>(null);
@@ -395,6 +398,7 @@ export function Measure(p: Props) {
         <summary>실험 순서 보기</summary>
         <ol>{exp.steps.map((s, i) => <li key={i}>{s}</li>)}</ol>
       </details>
+      {bb && <BreadboardNote need={bb.need} why={bb.why} circuit={bb.circuit} />}
 
       {charts.length === 0 && (
         <p className="note warn">이 실험에 필요한 센서({exp.sensors.join(', ')})가 연결되어 있지 않습니다. <button className="link" onClick={p.onOpenGuide}>연결 안내</button> · <button className="link" onClick={p.onOpenSetup}>센서 연결 설정</button></p>

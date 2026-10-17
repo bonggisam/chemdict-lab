@@ -64,5 +64,10 @@
       "뜨거운 물·가열 기구에 데지 않게 장갑을 끼고, 센서 선이 열원에 닿지 않게 합니다."
     ]
   },
-  "textbooks": []
+  "textbooks": [],
+  "breadboard": {
+    "need": "recommended",
+    "why": "온도 센서 2개 이상을 같은 줄에 나란히 꽂습니다 (센서 1개면 필요 없음).",
+    "circuit": "pullup"
+  }
 }

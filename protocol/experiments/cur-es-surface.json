@@ -67,5 +67,10 @@
     ],
     "cautions": []
   },
-  "textbooks": []
+  "textbooks": [],
+  "breadboard": {
+    "need": "recommended",
+    "why": "온도 센서 2개 이상을 같은 줄에 나란히 꽂습니다 (센서 1개면 필요 없음).",
+    "circuit": "pullup"
+  }
 }

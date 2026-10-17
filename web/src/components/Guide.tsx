@@ -1,7 +1,9 @@
 import { useMemo, useState } from 'react';
 import type { Experiment } from '../lib/protocol';
 import type { ResolvedSensor } from '../lib/sensors';
-import { commonRules, partById, partsFor, planned, troubles, type Board, type Part } from '../lib/guide';
+import { breadboardFor, commonRules, partById, partsFor, planned, troubles, type Board, type Part } from '../lib/guide';
+import { BreadboardGuide } from './Breadboard';
+import { BreadboardNote } from './PartWiring';
 import { PartWiring } from './PartWiring';
 import { SensorPicker } from './SensorPicker';
 import { ExperimentBrowser } from './ExperimentBrowser';
@@ -25,7 +27,7 @@ interface Props {
 /** 3단계: 센서 연결 방법 + 문제 해결 */
 export function Guide({ experiments, board, initialExpId, initialPartId, initialTab, sensors, connected, onRescan, onChangeBoard, onBack, backLabel }: Props) {
   const [tab, setTab] = useState<'wire' | 'help'>(initialTab ?? 'wire');
-  const [by, setBy] = useState<'sensor' | 'exp'>(initialExpId && !initialPartId ? 'exp' : 'sensor');
+  const [by, setBy] = useState<'sensor' | 'exp' | 'bb'>(initialExpId && !initialPartId ? 'exp' : 'sensor');
   const [partId, setPartId] = useState<string | undefined>(initialPartId);
   const [expId, setExpId] = useState(initialExpId ?? experiments.find((e) => e.setup)?.id ?? experiments[0]?.id);
   const exp = experiments.find((e) => e.id === expId) ?? experiments[0];
@@ -34,7 +36,7 @@ export function Guide({ experiments, board, initialExpId, initialPartId, initial
   const [expPart, setExpPart] = useState<string | undefined>();
   const chosenExpPart = setup?.choose ? (expParts.find((p) => p.id === expPart) ?? expParts[0]) : undefined;
 
-  const shown: Part[] = by === 'sensor'
+  const shown: Part[] = by === 'bb' ? [] : by === 'sensor'
     ? [partById(partId ?? '')].filter((p): p is Part => !!p)
     : chosenExpPart ? [chosenExpPart] : expParts;
 
@@ -97,9 +99,12 @@ export function Guide({ experiments, board, initialExpId, initialPartId, initial
           <div className="seg" role="tablist" aria-label="찾는 방법">
             <button role="tab" aria-selected={by === 'sensor'} className={by === 'sensor' ? 'on' : ''} onClick={() => setBy('sensor')}>센서로 찾기</button>
             <button role="tab" aria-selected={by === 'exp'} className={by === 'exp' ? 'on' : ''} onClick={() => setBy('exp')}>실험으로 찾기</button>
+            <button role="tab" aria-selected={by === 'bb'} className={by === 'bb' ? 'on' : ''} onClick={() => setBy('bb')}>브레드보드</button>
           </div>
         </div>
-        {by === 'sensor' ? (
+        {by === 'bb' ? (
+          <BreadboardGuide experiments={experiments.flatMap((e) => { const b = breadboardFor(e); return b ? [{ id: e.id, title: e.title, why: b.why, need: b.need, course: e.course }] : []; }).sort((a, b) => (a.need === b.need ? 0 : a.need === 'required' ? -1 : 1))} />
+        ) : by === 'sensor' ? (
           <SensorPicker board={board} connectedTypes={connectedTypes} onPick={(p) => setPartId(p.id)} />
         ) : (
           <>
@@ -109,6 +114,7 @@ export function Guide({ experiments, board, initialExpId, initialPartId, initial
                 <h3>{exp.title}</h3>
                 <p className="note">{[exp.level, exp.course, exp.area].filter(Boolean).join(' · ')}</p>
                 {exp.standards.map((s, i) => <p key={s} className="std"><b>[{s}]</b> {exp.standardTexts?.[i] ?? ''}</p>)}
+                {(() => { const b = breadboardFor(exp); return b ? <BreadboardNote need={b.need} why={b.why} circuit={b.circuit} /> : null; })()}
                 {exp.textbooks?.length ? (
                   <ul className="pubs">{exp.textbooks.map((t, i) => <li key={i}><b>{t.publisher}</b> {t.course} — {t.note}{t.sure !== 'confirmed' ? ` (${t.sure === 'mentioned' ? '자료 언급' : '비슷한 활동'})` : ''}</li>)}</ul>
                 ) : null}
@@ -125,7 +131,7 @@ export function Guide({ experiments, board, initialExpId, initialPartId, initial
           </>
         )}
         {by === 'sensor' && !partId && <p className="note">위에서 센서를 누르면 아래에 연결 방법이 나옵니다.</p>}
-        <p className="note">준비 중: {planned.join(', ')}</p>
+        {by !== 'bb' && <p className="note">준비 중: {planned.join(', ')}</p>}
       </section>
 
       {shown.map((p, i) => {

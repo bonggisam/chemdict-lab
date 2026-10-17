@@ -77,5 +77,10 @@
       "note": "열의 전도 비교 (열화상 카메라, 교사 블로그)",
       "sure": "similar"
     }
-  ]
+  ],
+  "breadboard": {
+    "need": "recommended",
+    "why": "온도 센서 2개 이상을 같은 줄에 나란히 꽂습니다 (센서 1개면 필요 없음).",
+    "circuit": "pullup"
+  }
 }

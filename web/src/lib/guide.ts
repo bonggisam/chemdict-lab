@@ -30,6 +30,7 @@ export interface Connector {
   wires: Wire[];
   cable?: boolean;                              // Qwiic 케이블 하나로 연결 가능
   resistor?: { between: [PinRole, PinRole]; value: string };
+  breadboard?: BBNeed;
   steps: string[];
   cautions: string[];
 }
@@ -54,6 +55,27 @@ export const boards = guide.boards as unknown as Board[];
 export const connectors = guide.connectors as unknown as Record<string, Connector>;
 export const parts = guide.parts as unknown as Part[];
 export const planned: string[] = guide.planned;
+export interface BBNeed { need: 'required' | 'recommended'; why: string; circuit: string | null }
+export interface BBCircuit {
+  id: string; name: string; what: string; steps: string[]; caution?: string;
+  wires: { a: string; b: string; color: string }[];
+  parts: { kind: 'resistor' | 'sensor' | 'led' | 'cap' | 'pot' | 'probe'; label: string; legs: string[] }[];
+}
+export interface BreadboardInfo {
+  intro: string; structure: string[]; rules: string[];
+  resistors: { value: string; bands: string; use: string }[];
+  circuits: BBCircuit[];
+}
+export const breadboard = guide.breadboard as unknown as BreadboardInfo;
+
+/** 실험에 브레드보드가 필요한지: 실험에 적힌 것 → 없으면 쓰는 센서의 연결 방식으로 */
+export function breadboardFor(e: Experiment): BBNeed | null {
+  if (e.breadboard) return e.breadboard;
+  const ps = partsFor(e.sensors.filter((s) => s !== '*'), e.setup?.parts);
+  const needs = ps.map((p) => connectors[p.connector].breadboard).filter((b): b is BBNeed => !!b && b.need === 'required');
+  return needs[0] ?? null;
+}
+
 export interface Trouble { id: string; title: string; steps: string[] }
 export const troubles = guide.troubles as Trouble[];
 

@@ -96,6 +96,7 @@ export interface Experiment {
   summary?: string;            // 한 줄 소개
   textbooks?: { publisher: string; course: string; note: string; sure: 'confirmed' | 'mentioned' | 'similar' }[];
   standardTexts?: string[];    // 성취기준 문장 (standards와 같은 순서)
+  breadboard?: { need: 'required' | 'recommended'; why: string; circuit: string | null };
 }
 
 export interface ExperimentSetup {

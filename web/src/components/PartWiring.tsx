@@ -1,4 +1,5 @@
-import { partSupported, wiring, type Board, type Part } from '../lib/guide';
+import { breadboard, partSupported, wiring, type Board, type Part } from '../lib/guide';
+import { BreadboardDiagram } from './Breadboard';
 import { WiringDiagram } from './WiringDiagram';
 
 interface Props {
@@ -55,6 +56,7 @@ export function PartWiring({ board, part, port, compact }: Props) {
         </div>
         <WiringDiagram board={b} part={part} />
       </div>
+      {connector.breadboard && !cable && <BreadboardNote need={connector.breadboard.need} why={connector.breadboard.why} circuit={connector.breadboard.circuit} />}
       {cautions.length > 0 && (compact ? (
         <details className="caution">
           <summary>주의할 점 {cautions.length}가지</summary>
@@ -67,5 +69,22 @@ export function PartWiring({ board, part, port, compact }: Props) {
         </div>
       ))}
     </div>
+  );
+}
+
+/** 브레드보드 필요 표시 + 회로 그림 (접어 둠) */
+export function BreadboardNote({ need, why, circuit }: { need: string; why: string; circuit: string | null }) {
+  const c = circuit ? breadboard.circuits.find((x) => x.id === circuit) : undefined;
+  return (
+    <details className={`bb-note ${need}`}>
+      <summary><b>{need === 'required' ? '브레드보드 필요' : '브레드보드 있으면 편함'}</b> — {why}</summary>
+      {c ? (
+        <div className="guide-cols bb-cols">
+          <ol className="wire-steps">{c.steps.map((s) => <li key={s}>{s}</li>)}</ol>
+          <BreadboardDiagram circuit={c} title={`${c.name} 브레드보드 연결 그림`} />
+        </div>
+      ) : <p className="note">센서를 브레드보드에 꽂고, 같은 세로 줄에서 점퍼선으로 보드 핀에 연결합니다.</p>}
+      <p className="note">브레드보드 구조와 규칙은 ‘연결 방법 → 브레드보드’에 있습니다.</p>
+    </details>
   );
 }
