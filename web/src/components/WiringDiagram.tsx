@@ -38,6 +38,12 @@ export function WiringDiagram({ board, connector, partName }: Props) {
       { pin: 'D2', term: 'DATA', color: WIRE.yellow },
     ];
     resistor = true;
+  } else if (connector === 'dht') {
+    wires = [
+      { pin: 'GND', term: 'GND (−)', color: WIRE.black },
+      { pin: pwr, term: 'VCC (+)', color: WIRE.red },
+      { pin: 'D4', term: 'DATA (S)', color: WIRE.yellow },
+    ];
   } else {
     wires = [
       { pin: 'GND', term: 'GND', color: WIRE.black },

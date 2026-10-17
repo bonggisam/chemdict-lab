@@ -1,5 +1,5 @@
 /*
-  ChemDict Lab firmware v0.2.1
+  ChemDict Lab firmware v0.2.2
   기준 보드: Arduino UNO R4 WiFi (USB + 블루투스)
   시험용:   UNO R4 Minima, UNO R3 (USB만, 실제 보드 확인 전)
 
@@ -7,6 +7,7 @@
   - 아날로그 A0~A3: 앱에서 센서 종류를 지정(PORT 명령), 설정은 EEPROM에 저장
   - DS18B20(D2) + Modulino Thermo 자동 인식
       구형 HS3003 = 0x44, 신형(V0.5~) GXHT30 = 0x45 (SHT3x 방식)
+  - DHT11 / DHT22 온습도 센서(D4) 자동 인식 — 라이브러리 없이 직접 읽음
   - HELLO를 받으면(측정 중이 아닐 때) 센서를 다시 찾습니다.
   - 2점 보정값은 EEPROM에 저장됩니다.
   - 센서가 없어도 DEMO ON 명령으로 가짜 데이터를 보낼 수 있습니다.
@@ -45,10 +46,11 @@
 #include <OneWire.h>
 #include <DallasTemperature.h>
 
-#define FW_VERSION "0.2.1"
+#define FW_VERSION "0.2.2"
 
 // ---------- 핀·상수 ----------
 const int ONEWIRE_PIN = 2;
+const int DHT_PIN = 4;                 // DHT11·DHT22 DATA
 const float VREF = 5.0;
 const float ADC_MAX = (1L << ADC_BITS) - 1;
 const uint8_t HS3003_ADDR = 0x44;   // Modulino Thermo 구형
@@ -116,6 +118,9 @@ DallasTemperature ds(&oneWire);
 bool hasDS = false;
 uint8_t thermoAddr = 0;   // 0 = 없음, 0x44 또는 0x45
 float lastDS = NAN;
+uint8_t dhtKind = 0;      // 0 = 없음, 11 = DHT11, 22 = DHT22
+float lastDhtT = NAN, lastDhtRH = NAN;
+unsigned long lastDhtMs = 0;
 
 // ---------- 측정 상태 ----------
 bool running = false;
@@ -212,6 +217,8 @@ void detectSensors() {
     QWIIC.beginTransmission(a);
     if (QWIIC.endTransmission() == 0) { thermoAddr = a; break; }
   }
+
+  detectDHT();
 }
 
 String sensorJson(const String& id, const char* type, const char* src, bool cal) {
@@ -236,12 +243,21 @@ void sendHello() {
     s += sensorJson("T", "T", demo && !hasDS ? "demo" : "onewire", settings.tempCalValid);
     first = false;
   }
-  if (thermoAddr || demo) {
+  if (thermoAddr || (demo && !dhtKind)) {
     const char* src = thermoAddr == HS3003_ADDR ? "i2c:0x44" : thermoAddr == GXHT30_ADDR ? "i2c:0x45" : "demo";
     if (!first) s += ",";
     s += sensorJson("TA", "TA", src, false);
     s += ",";
     s += sensorJson("RH", "RH", src, false);
+    first = false;
+  }
+  if (dhtKind) {
+    // Modulino와 함께 꽂으면 두 번째 센서로 "TA_D4"처럼 포트를 붙임
+    const char* src = dhtKind == 22 ? "D4:DHT22" : "D4:DHT11";
+    if (!first) s += ",";
+    s += sensorJson(thermoAddr ? "TA_D4" : "TA", "TA", src, false);
+    s += ",";
+    s += sensorJson(thermoAddr ? "RH_D4" : "RH", "RH", src, false);
   }
   s += "]}";
   sendLine(s);
@@ -303,6 +319,78 @@ bool readGXHT30(float& tempC, float& rh) {
   tempC = -45.0f + 175.0f * rawT / 65535.0f;
   rh = 100.0f * rawH / 65535.0f;
   return true;
+}
+
+// ---------- DHT11 / DHT22 (라이브러리 없이) ----------
+// 신호 하나가 끝날 때까지 기다린 시간(µs). 시간 초과면 0.
+uint32_t dhtWait(int level, uint32_t timeoutUs) {
+  uint32_t t0 = micros();
+  while (digitalRead(DHT_PIN) == level) {
+    if (micros() - t0 > timeoutUs) return 0;
+  }
+  return micros() - t0 + 1;  // 0은 시간 초과 뜻으로만 씀
+}
+
+// 40비트를 읽어 data[5]에 넣음. 1 = 성공, 0 = 잡음·체크섬 오류, -1 = 센서 응답 없음
+int dhtReadRaw(uint8_t data[5]) {
+  pinMode(DHT_PIN, OUTPUT);
+  digitalWrite(DHT_PIN, LOW);
+  delay(20);                          // 시작 신호 (DHT11은 18 ms 이상)
+  pinMode(DHT_PIN, INPUT_PULLUP);
+  delayMicroseconds(30);
+  if (!dhtWait(HIGH, 200)) return -1;      // 센서 응답: LOW 80 µs
+  if (!dhtWait(LOW, 200)) return -1;       //            HIGH 80 µs
+  if (!dhtWait(HIGH, 200)) return 0;
+  for (int i = 0; i < 5; i++) data[i] = 0;
+  for (int i = 0; i < 40; i++) {
+    if (!dhtWait(LOW, 200)) return 0;      // 비트 앞 LOW 50 µs
+    uint32_t high = dhtWait(HIGH, 200);    // HIGH 26~28 µs = 0, 70 µs = 1
+    if (!high) return 0;
+    data[i / 8] <<= 1;
+    if (high > 45) data[i / 8] |= 1;
+  }
+  return (uint8_t)(data[0] + data[1] + data[2] + data[3]) == data[4] ? 1 : 0;
+}
+
+// DHT22는 습도 상위 바이트가 3 이하(100.0 % = 1000), DHT11은 정수 습도(20 이상)
+int dhtLastResult = -1;
+bool dhtRead(float& tempC, float& rh, uint8_t& kind) {
+  uint8_t d[5];
+  dhtLastResult = dhtReadRaw(d);
+  if (dhtLastResult != 1) return false;
+  if (d[0] > 3) {
+    kind = 11;
+    rh = d[0] + d[1] / 10.0f;
+    tempC = (d[2] & 0x7F) + d[3] / 10.0f;
+    if (d[2] & 0x80) tempC = -tempC;
+  } else {
+    kind = 22;
+    rh = (((uint16_t)d[0] << 8) | d[1]) / 10.0f;
+    tempC = ((((uint16_t)d[2] & 0x7F) << 8) | d[3]) / 10.0f;
+    if (d[2] & 0x80) tempC = -tempC;
+  }
+  return rh >= 0 && rh <= 100 && tempC > -40 && tempC < 85;
+}
+
+void detectDHT() {
+  dhtKind = 0;
+  while (millis() < 1200) {}          // 전원을 켠 뒤 DHT가 준비될 때까지
+  float t, h; uint8_t k;
+  for (int tries = 0; tries < 3 && !dhtKind; tries++) {
+    if (tries) delay(1100);           // 센서가 준비될 시간
+    if (dhtRead(t, h, k)) { dhtKind = k; lastDhtT = t; lastDhtRH = h; lastDhtMs = millis(); }
+    else if (dhtLastResult == -1) break;   // 응답이 없으면 센서가 없는 것 — 다시 기다리지 않음
+  }
+}
+
+// DHT22는 2초, DHT11은 1초보다 자주 읽으면 안 되므로 마지막 값을 씀
+void pollDHT() {
+  if (!dhtKind) return;
+  unsigned long gap = dhtKind == 22 ? 2000 : 1100;
+  if (millis() - lastDhtMs < gap) return;
+  lastDhtMs = millis();
+  float t, h; uint8_t k;
+  if (dhtRead(t, h, k)) { lastDhtT = t; lastDhtRH = h; }
 }
 
 bool readThermo(float& tempC, float& rh) {
@@ -381,9 +469,13 @@ void tick() {
       add("TA", ta, 2);
       add("RH", rh, 1);
     }
-  } else if (demo) {
+  } else if (demo && !dhtKind) {
     add("TA", demoAirTemp(t), 2);
     add("RH", demoHumidity(t), 1);
+  }
+  if (dhtKind) {
+    add(thermoAddr ? "TA_D4" : "TA", lastDhtT, 1);
+    add(thermoAddr ? "RH_D4" : "RH", lastDhtRH, 1);
   }
 
   s += "}}";
@@ -625,6 +717,7 @@ void loop() {
 #endif
   readSerial();
   pollDS();
+  if (!running || millis() - lastTickMs < intervalMs - 50) pollDHT();  // 측정 직전에는 막지 않음
 
   if (running && millis() - lastTickMs >= intervalMs) {
     lastTickMs += intervalMs;

@@ -11,7 +11,9 @@
     {
       "id": "uno-r4-wifi",
       "name": "UNO R4 WiFi",
-      "match": ["UNO R4 WiFi"],
+      "match": [
+        "UNO R4 WiFi"
+      ],
       "firmware": "supported",
       "firmwareNote": "ChemDict 펌웨어 기준 보드. USB와 블루투스 모두 됩니다.",
       "usb": "USB-C",
@@ -27,7 +29,9 @@
             "케이블 반대쪽을 모듈의 Qwiic 단자에 꽂습니다. 단자가 두 개면 어느 쪽이든 됩니다.",
             "다른 Modulino는 모듈의 남은 단자에 이어서 연결할 수 있습니다."
           ],
-          "cautions": ["Qwiic 단자는 3.3 V 전용입니다. 5 V 모듈을 꽂지 않습니다."]
+          "cautions": [
+            "Qwiic 단자는 3.3 V 전용입니다. 5 V 모듈을 꽂지 않습니다."
+          ]
         },
         "onewire": {
           "level": "ok",
@@ -47,14 +51,28 @@
             "모듈 신호(AO·Po·OUT) → 보드 A0~A3 중 하나",
             "앱의 '센서 연결'에서 꽂은 포트의 센서 종류를 고릅니다."
           ],
-          "cautions": ["아날로그 입력은 0~5 V까지입니다."]
+          "cautions": [
+            "아날로그 입력은 0~5 V까지입니다."
+          ]
+        },
+        "dht": {
+          "level": "ok",
+          "steps": [
+            "센서 VCC(+) → 보드 5V",
+            "센서 GND(−) → 보드 GND",
+            "센서 DATA(OUT·S) → 보드 D4",
+            "핀이 4개인 센서(모듈 아님)는 DATA와 5V 사이에 10 kΩ 저항을 연결합니다."
+          ],
+          "cautions": []
         }
       }
     },
     {
       "id": "uno-r4-minima",
       "name": "UNO R4 Minima",
-      "match": ["UNO R4 Minima"],
+      "match": [
+        "UNO R4 Minima"
+      ],
       "firmware": "partial",
       "firmwareNote": "USB로만 연결됩니다 (블루투스 없음). 펌웨어는 실제 보드에서 아직 확인하지 않았습니다.",
       "usb": "USB-C",
@@ -92,14 +110,28 @@
             "모듈 신호(AO·Po·OUT) → 보드 A0~A3 중 하나",
             "앱의 '센서 연결'에서 꽂은 포트의 센서 종류를 고릅니다."
           ],
-          "cautions": ["아날로그 입력은 0~5 V까지입니다."]
+          "cautions": [
+            "아날로그 입력은 0~5 V까지입니다."
+          ]
+        },
+        "dht": {
+          "level": "ok",
+          "steps": [
+            "센서 VCC(+) → 보드 5V",
+            "센서 GND(−) → 보드 GND",
+            "센서 DATA(OUT·S) → 보드 D4",
+            "핀이 4개인 센서(모듈 아님)는 DATA와 5V 사이에 10 kΩ 저항을 연결합니다."
+          ],
+          "cautions": []
         }
       }
     },
     {
       "id": "uno-r3",
       "name": "UNO R3 (호환 보드 포함)",
-      "match": ["UNO R3"],
+      "match": [
+        "UNO R3"
+      ],
       "firmware": "partial",
       "firmwareNote": "USB로만 연결됩니다. 메모리가 작아 펌웨어는 시험용이며, 실제 보드에서 아직 확인하지 않았습니다.",
       "usb": "USB-B (맥북은 USB-C 변환 필요)",
@@ -137,14 +169,28 @@
             "모듈 신호(AO·Po·OUT) → 보드 A0~A3 중 하나",
             "앱의 '센서 연결'에서 꽂은 포트의 센서 종류를 고릅니다."
           ],
-          "cautions": ["10비트라서 R4보다 값이 거칠게 나옵니다 (약 5 mV 단위)."]
+          "cautions": [
+            "10비트라서 R4보다 값이 거칠게 나옵니다 (약 5 mV 단위)."
+          ]
+        },
+        "dht": {
+          "level": "ok",
+          "steps": [
+            "센서 VCC(+) → 보드 5V",
+            "센서 GND(−) → 보드 GND",
+            "센서 DATA(OUT·S) → 보드 D4",
+            "핀이 4개인 센서(모듈 아님)는 DATA와 5V 사이에 10 kΩ 저항을 연결합니다."
+          ],
+          "cautions": []
         }
       }
     },
     {
       "id": "uno-q",
       "name": "UNO Q",
-      "match": ["UNO Q"],
+      "match": [
+        "UNO Q"
+      ],
       "firmware": "none",
       "firmwareNote": "ChemDict 펌웨어를 아직 지원하지 않습니다 (App Lab 방식 보드). 연결 방법만 참고하세요.",
       "usb": "USB-C",
@@ -169,7 +215,9 @@
             "센서 노란 선(DATA) → 보드 D2",
             "4.7 kΩ 저항을 D2와 3.3V 사이에 연결합니다."
           ],
-          "cautions": ["핀 전압이 R4와 다를 수 있습니다. 5V 핀에 신호선을 연결하지 않습니다."]
+          "cautions": [
+            "핀 전압이 R4와 다를 수 있습니다. 5V 핀에 신호선을 연결하지 않습니다."
+          ]
         },
         "analog": {
           "level": "warn",
@@ -178,7 +226,21 @@
             "모듈 GND(−) → 보드 GND",
             "모듈 신호 → 보드 A0~A3"
           ],
-          "cautions": ["5 V 출력 모듈을 아날로그 핀에 바로 연결하지 않습니다."]
+          "cautions": [
+            "5 V 출력 모듈을 아날로그 핀에 바로 연결하지 않습니다."
+          ]
+        },
+        "dht": {
+          "level": "warn",
+          "steps": [
+            "센서 VCC(+) → 보드 3.3V",
+            "센서 GND(−) → 보드 GND",
+            "센서 DATA(OUT·S) → 보드 D4",
+            "핀이 4개인 센서(모듈 아님)는 DATA와 3.3V 사이에 10 kΩ 저항을 연결합니다."
+          ],
+          "cautions": [
+            "펌웨어가 아직 이 보드를 지원하지 않습니다."
+          ]
         }
       }
     }
@@ -187,9 +249,15 @@
     {
       "id": "modulino-thermo",
       "name": "Modulino Thermo (온도·습도)",
-      "provides": ["TA", "RH"],
+      "provides": [
+        "TA",
+        "RH"
+      ],
       "connector": "qwiic",
-      "items": ["Modulino Thermo 1개", "Qwiic 케이블 1개"],
+      "items": [
+        "Modulino Thermo 1개",
+        "Qwiic 케이블 1개"
+      ],
       "cautions": [
         "방수가 아닙니다. 물방울이 센서에 직접 닿지 않게 합니다.",
         "손가락으로 센서 칩 부분을 잡으면 체온 때문에 기온이 올라갑니다. 가장자리를 잡습니다.",
@@ -199,11 +267,37 @@
       ]
     },
     {
+      "id": "dht",
+      "name": "DHT11 / DHT22 (온도·습도)",
+      "provides": [
+        "TA",
+        "RH"
+      ],
+      "connector": "dht",
+      "items": [
+        "DHT11 또는 DHT22 센서 1개",
+        "점퍼선 3개 (핀이 4개인 센서는 10 kΩ 저항 1개 추가)"
+      ],
+      "cautions": [
+        "DHT11(파란색)은 1 °C·1 % 단위, DHT22(흰색)는 0.1 단위로 나옵니다. 어느 쪽인지는 펌웨어가 구분합니다.",
+        "센서는 2초에 한 번만 새 값을 줍니다. 측정 간격을 1초로 해도 값은 2초마다 바뀝니다.",
+        "습도 반응이 Modulino보다 느립니다. 입김 실험에서는 값이 오를 때까지 5~10초 기다립니다.",
+        "핀 순서는 제품마다 다릅니다. 모듈에 인쇄된 +, −, S(OUT) 글자를 보고 연결합니다.",
+        "물방울이 센서 구멍에 들어가지 않게 합니다."
+      ]
+    },
+    {
       "id": "ds18b20",
       "name": "방수 온도 센서 DS18B20",
-      "provides": ["T"],
+      "provides": [
+        "T"
+      ],
       "connector": "onewire",
-      "items": ["방수 DS18B20 1개", "4.7 kΩ 저항 1개 (어댑터 보드가 있으면 불필요)", "점퍼선 3개"],
+      "items": [
+        "방수 DS18B20 1개",
+        "4.7 kΩ 저항 1개 (어댑터 보드가 있으면 불필요)",
+        "점퍼선 3개"
+      ],
       "cautions": [
         "선 색은 제품마다 다를 수 있습니다. 제품 설명서에서 VCC·GND·DATA를 확인합니다.",
         "저항이 없으면 센서가 인식되지 않습니다.",
@@ -213,10 +307,23 @@
     {
       "id": "analog-module",
       "name": "아날로그 센서 모듈 (pH·빛·전도도 등)",
-      "provides": ["pH", "L", "EC", "V", "TL", "P", "RAW"],
+      "provides": [
+        "pH",
+        "L",
+        "EC",
+        "V",
+        "TL",
+        "P",
+        "RAW"
+      ],
       "connector": "analog",
-      "items": ["센서 모듈 1개", "점퍼선 3개"],
-      "cautions": ["꽂은 포트와 앱의 '센서 연결' 설정이 같아야 값이 맞게 나옵니다."]
+      "items": [
+        "센서 모듈 1개",
+        "점퍼선 3개"
+      ],
+      "cautions": [
+        "꽂은 포트와 앱의 '센서 연결' 설정이 같아야 값이 맞게 나옵니다."
+      ]
     }
   ]
 }

@@ -28,7 +28,12 @@ export function Guide({ experiments, initialExpId, boardName, sensors, connected
   const board = boards.find((b) => b.id === boardId) ?? boards[0];
   const exp = experiments.find((e) => e.id === expId) ?? experiments[0];
   const setup = exp?.setup;
-  const parts = useMemo(() => (exp ? partsFor(exp.sensors.filter((s) => s !== '*'), setup?.parts) : []), [exp, setup]);
+  const allParts = useMemo(() => (exp ? partsFor(exp.sensors.filter((s) => s !== '*'), setup?.parts) : []), [exp, setup]);
+  // 여러 센서 중 하나를 고르는 실험 (예: Modulino 또는 DHT) — 연결된 센서가 있으면 그것을 먼저
+  const detectedPart = allParts.find((p) => sensors.some((s) => p.provides.includes(s.type) && s.src !== 'demo' && (p.connector === 'dht' ? s.src.startsWith('D4') : !s.src.startsWith('D4'))));
+  const [partId, setPartId] = useState<string | undefined>(undefined);
+  const chosen = setup?.choose ? (allParts.find((p) => p.id === partId) ?? detectedPart ?? allParts[0]) : undefined;
+  const parts = chosen ? [chosen] : allParts;
 
   const pickBoard = (id: string) => { setBoardId(id); saveBoardId(id); };
 
@@ -75,6 +80,16 @@ export function Guide({ experiments, initialExpId, boardName, sensors, connected
           </select>
         </div>
         {!setup && <p className="note">이 실험의 부착 안내는 준비 중입니다. 아래 센서 연결 방법은 그대로 쓸 수 있습니다.</p>}
+        {setup?.choose && (
+          <div className="part-pick" role="radiogroup" aria-label="센서 종류">
+            <span className="note">가진 센서를 고르세요</span>
+            {allParts.map((p) => (
+              <button key={p.id} role="radio" aria-checked={p.id === chosen?.id} className={p.id === chosen?.id ? 'on' : ''} onClick={() => setPartId(p.id)}>
+                {p.name}
+              </button>
+            ))}
+          </div>
+        )}
       </section>
 
       {parts.map((p, i) => {

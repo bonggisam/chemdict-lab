@@ -93,6 +93,7 @@ export interface Experiment {
 
 export interface ExperimentSetup {
   parts: string[];       // guide.json parts[].id
+  choose?: boolean;      // true면 parts 중 하나를 골라 연결 (예: Modulino 또는 DHT)
   materials: string[];
   attach: string[];      // 실험 장치에 센서를 붙이는 방법
   cautions: string[];

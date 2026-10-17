@@ -1,63 +1,168 @@
 {
-  "version": 1,
-  "analog": [
-    {
-      "type": "pH", "name": "pH", "unit": "", "decimals": 2,
-      "slope": -5.70, "offset": 21.34, "min": 0, "max": 14,
-      "cal": { "kind": "two-point", "refs": [7.00, 4.00, 10.00], "hint": "완충 용액" },
-      "stableBand": 0.03,
-      "note": "아날로그 pH 모듈(BNC 전극). 보정 전 값은 참고용입니다."
-    },
-    {
-      "type": "L", "name": "빛", "unit": "%", "decimals": 1,
-      "slope": 20.0, "offset": 0.0, "min": 0, "max": 100,
-      "cal": { "kind": "none" },
-      "stableBand": 0.5,
-      "note": "광센서(포토트랜지스터·LDR). 비색계·탁도 실험."
-    },
-    {
-      "type": "EC", "name": "전도도", "unit": "µS/cm", "decimals": 0,
-      "slope": 1000.0, "offset": 0.0,
-      "cal": { "kind": "two-point", "refs": [0, 1413], "hint": "증류수, 표준 용액" },
-      "stableBand": 5,
-      "requiresCal": true,
-      "note": "아날로그 전도도(TDS) 모듈. 반드시 보정 후 사용하세요."
-    },
-    {
-      "type": "V", "name": "전압", "unit": "V", "decimals": 3,
-      "slope": 1.0, "offset": 0.0, "min": 0, "max": 5,
-      "cal": { "kind": "none" },
-      "stableBand": 0.005,
-      "note": "0~5 V 직접 측정. 화학 전지 전압."
-    },
-    {
-      "type": "TL", "name": "온도(LM35)", "unit": "°C", "decimals": 1,
-      "slope": 100.0, "offset": 0.0,
-      "cal": { "kind": "one-point", "refs": [0.0], "hint": "얼음물" },
-      "stableBand": 0.2,
-      "note": "아날로그 온도 센서 LM35 (10 mV/℃)."
-    },
-    {
-      "type": "P", "name": "기체 압력", "unit": "kPa", "decimals": 1,
-      "slope": 155.56, "offset": -31.11, "min": 0, "max": 250,
-      "cal": { "kind": "one-point", "refs": [101.3], "hint": "대기압" },
-      "stableBand": 0.5,
-      "note": "MPX5700AP 계열 절대압 센서 (주사기 연결)."
-    },
-    {
-      "type": "RAW", "name": "사용자 정의", "unit": "V", "decimals": 3,
-      "slope": 1.0, "offset": 0.0,
-      "cal": { "kind": "two-point", "refs": [], "hint": "기준값 두 개" },
-      "stableBand": 0.005,
-      "note": "전압을 그대로 기록하거나 직접 2점 보정합니다."
-    }
-  ],
-  "digital": [
-    { "type": "T", "name": "온도", "unit": "°C", "decimals": 2, "src": "onewire", "stableBand": 0.05,
-      "cal": { "kind": "one-point", "refs": [0.0], "hint": "얼음물" }, "note": "방수 온도 센서 DS18B20 (D2)" },
-    { "type": "TA", "name": "기온", "unit": "°C", "decimals": 2, "src": "i2c:0x44", "stableBand": 0.05,
-      "cal": { "kind": "none" }, "note": "Modulino Thermo (Qwiic)" },
-    { "type": "RH", "name": "습도", "unit": "%", "decimals": 1, "src": "i2c:0x44", "stableBand": 0.3,
-      "cal": { "kind": "none" }, "note": "Modulino Thermo (Qwiic)" }
-  ]
+ "version": 1,
+ "analog": [
+  {
+   "type": "pH",
+   "name": "pH",
+   "unit": "",
+   "decimals": 2,
+   "slope": -5.7,
+   "offset": 21.34,
+   "min": 0,
+   "max": 14,
+   "cal": {
+    "kind": "two-point",
+    "refs": [
+     7.0,
+     4.0,
+     10.0
+    ],
+    "hint": "완충 용액"
+   },
+   "stableBand": 0.03,
+   "note": "아날로그 pH 모듈(BNC 전극). 보정 전 값은 참고용입니다."
+  },
+  {
+   "type": "L",
+   "name": "빛",
+   "unit": "%",
+   "decimals": 1,
+   "slope": 20.0,
+   "offset": 0.0,
+   "min": 0,
+   "max": 100,
+   "cal": {
+    "kind": "none"
+   },
+   "stableBand": 0.5,
+   "note": "광센서(포토트랜지스터·LDR). 비색계·탁도 실험."
+  },
+  {
+   "type": "EC",
+   "name": "전도도",
+   "unit": "µS/cm",
+   "decimals": 0,
+   "slope": 1000.0,
+   "offset": 0.0,
+   "cal": {
+    "kind": "two-point",
+    "refs": [
+     0,
+     1413
+    ],
+    "hint": "증류수, 표준 용액"
+   },
+   "stableBand": 5,
+   "requiresCal": true,
+   "note": "아날로그 전도도(TDS) 모듈. 반드시 보정 후 사용하세요."
+  },
+  {
+   "type": "V",
+   "name": "전압",
+   "unit": "V",
+   "decimals": 3,
+   "slope": 1.0,
+   "offset": 0.0,
+   "min": 0,
+   "max": 5,
+   "cal": {
+    "kind": "none"
+   },
+   "stableBand": 0.005,
+   "note": "0~5 V 직접 측정. 화학 전지 전압."
+  },
+  {
+   "type": "TL",
+   "name": "온도(LM35)",
+   "unit": "°C",
+   "decimals": 1,
+   "slope": 100.0,
+   "offset": 0.0,
+   "cal": {
+    "kind": "one-point",
+    "refs": [
+     0.0
+    ],
+    "hint": "얼음물"
+   },
+   "stableBand": 0.2,
+   "note": "아날로그 온도 센서 LM35 (10 mV/℃)."
+  },
+  {
+   "type": "P",
+   "name": "기체 압력",
+   "unit": "kPa",
+   "decimals": 1,
+   "slope": 155.56,
+   "offset": -31.11,
+   "min": 0,
+   "max": 250,
+   "cal": {
+    "kind": "one-point",
+    "refs": [
+     101.3
+    ],
+    "hint": "대기압"
+   },
+   "stableBand": 0.5,
+   "note": "MPX5700AP 계열 절대압 센서 (주사기 연결)."
+  },
+  {
+   "type": "RAW",
+   "name": "사용자 정의",
+   "unit": "V",
+   "decimals": 3,
+   "slope": 1.0,
+   "offset": 0.0,
+   "cal": {
+    "kind": "two-point",
+    "refs": [],
+    "hint": "기준값 두 개"
+   },
+   "stableBand": 0.005,
+   "note": "전압을 그대로 기록하거나 직접 2점 보정합니다."
+  }
+ ],
+ "digital": [
+  {
+   "type": "T",
+   "name": "온도",
+   "unit": "°C",
+   "decimals": 2,
+   "src": "onewire",
+   "stableBand": 0.05,
+   "cal": {
+    "kind": "one-point",
+    "refs": [
+     0.0
+    ],
+    "hint": "얼음물"
+   },
+   "note": "방수 온도 센서 DS18B20 (D2)"
+  },
+  {
+   "type": "TA",
+   "name": "기온",
+   "unit": "°C",
+   "decimals": 2,
+   "src": "i2c:0x44",
+   "stableBand": 0.05,
+   "cal": {
+    "kind": "none"
+   },
+   "note": "Modulino Thermo (Qwiic) 또는 DHT11·DHT22 (D4)"
+  },
+  {
+   "type": "RH",
+   "name": "습도",
+   "unit": "%",
+   "decimals": 1,
+   "src": "i2c:0x44",
+   "stableBand": 0.3,
+   "cal": {
+    "kind": "none"
+   },
+   "note": "Modulino Thermo (Qwiic) 또는 DHT11·DHT22 (D4)"
+  }
+ ]
 }

@@ -1,7 +1,7 @@
 import guide from '../../../protocol/guide.json';
 
 // protocol/guide.json 을 그대로 읽습니다 (애플 앱과 같은 파일).
-export type ConnectorKind = 'qwiic' | 'onewire' | 'analog';
+export type ConnectorKind = 'qwiic' | 'onewire' | 'analog' | 'dht';
 export interface ConnectorGuide { level: 'ok' | 'warn'; steps: string[]; cautions: string[] }
 export interface Board {
   id: string;

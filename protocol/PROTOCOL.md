@@ -28,7 +28,7 @@ BLE는 한 번에 보낼 수 있는 길이가 짧습니다. 보드는 한 줄을
 ### hello — 연결 직후, 그리고 `HELLO` 명령을 받았을 때
 
 ```json
-{"type":"hello","fw":"0.2.1","board":"UNO R4 WiFi","station":3,"demo":false,
+{"type":"hello","fw":"0.2.2","board":"UNO R4 WiFi","station":3,"demo":false,
  "sensors":[
   {"id":"pH","type":"pH","name":"pH","unit":"","src":"A0","cal":true},
   {"id":"L","type":"L","name":"L","unit":"","src":"A1","cal":false},
@@ -41,7 +41,7 @@ BLE는 한 번에 보낼 수 있는 길이가 짧습니다. 보드는 한 줄을
 - `type`: 센서 종류. **이름·단위·소수 자리·보정 방법은 앱이 `protocol/sensors.json`에서 찾습니다.** (보드는 `name`에 type을 그대로 넣음)
 - `id`: 데이터 메시지의 키. 보통 type과 같고, 같은 종류가 두 포트에 있으면 두 번째부터 `pH_A2`처럼 포트가 붙습니다.
 - `board`: 보드 이름 (`UNO R4 WiFi`, `UNO R4 Minima`, `UNO R3`). 앱의 연결 안내가 이 이름으로 보드를 자동 선택합니다.
-- `src`: 센서가 연결된 곳 (`A0`~`A3`, `onewire`, `i2c:0x44`, `i2c:0x45`, 데모면 `demo`)
+- `src`: 센서가 연결된 곳 (`A0`~`A3`, `onewire`, `i2c:0x44`, `i2c:0x45`, `D4:DHT22` 등, 데모면 `demo`)
 - `cal`: 저장된 보정값이 있는지 여부
 
 ### d — 측정 데이터 (측정 중 반복)
@@ -111,6 +111,7 @@ CAL pH 2 4.00     ← pH 4 완충 용액에 담근 상태에서
 | D2 (OneWire) | `T` | 온도 | DS18B20 장치 검색 |
 | Qwiic 0x44 | `TA`, `RH` | 기온, 습도 | Modulino Thermo 구형 (HS3003) |
 | Qwiic 0x45 | `TA`, `RH` | 기온, 습도 | Modulino Thermo 신형 V0.5~ (GXHT30, SHT3x 방식) |
+| D4 | `TA`, `RH` | 기온, 습도 | DHT11 / DHT22 응답 (`src`: `D4:DHT11` 또는 `D4:DHT22`). Modulino와 함께 있으면 id가 `TA_D4`, `RH_D4` |
 
 Qwiic 버스: UNO R4 WiFi는 Qwiic 단자(`Wire1`, 3.3 V), UNO R4 Minima·R3는 SDA·SCL 핀(`Wire`). 데모 모드에서는 `T`, `TA`, `RH`도 가짜 값을 보냅니다.
 
