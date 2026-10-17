@@ -205,6 +205,37 @@ export default function App() {
     return () => window.removeEventListener('keydown', onKey);
   }, []);
 
+  // ---- 브라우저 뒤로가기 = 앱 안의 이전 화면 (페이지를 나가지 않게)
+  // 화면이 바뀔 때마다 기록을 남기고, 뒤로가기를 누르면 그 화면으로 돌아감.
+  // 열린 창(센서 연결·저장 등)이 있으면 먼저 닫고, 측정 중이면 화면을 바꾸지 않음.
+  const screenRef = useRef(screen);
+  screenRef.current = screen;
+  const runningRef = useRef(running);
+  runningRef.current = running;
+  const fromPop = useRef(false);
+  useEffect(() => {
+    try { history.replaceState({ cd: screenRef.current }, ''); } catch { /* noop */ }
+    const stay = () => { try { history.pushState({ cd: screenRef.current }, ''); } catch { /* noop */ } };
+    const onPop = (e: PopStateEvent) => {
+      const sheet = document.querySelector<HTMLElement>('.sheet-backdrop');
+      if (sheet) { sheet.click(); stay(); return; }
+      if (runningRef.current) { stay(); say('err', '측정 중입니다. 먼저 [정지]를 누르세요.'); return; }
+      const target = (e.state as { cd?: Screen } | null)?.cd;
+      if (!target) return;
+      fromPop.current = true;
+      setScreen(target);
+    };
+    window.addEventListener('popstate', onPop);
+    return () => window.removeEventListener('popstate', onPop);
+  }, [say]);
+  useEffect(() => {
+    if (fromPop.current) { fromPop.current = false; return; }
+    if ((history.state as { cd?: Screen } | null)?.cd === screen) return;
+    try { history.pushState({ cd: screen }, ''); } catch { /* noop */ }
+  }, [screen]);
+  // 측정 화면 기록인데 실험이 없으면 실험 고르기로
+  useEffect(() => { if (screen === 'measure' && !exp) setScreen('pick'); }, [screen, exp]);
+
   const send = useCallback((cmd: string) => { transportRef.current?.send(cmd); }, []);
 
   const sensors = useMemo(() => (hello?.sensors ?? []).map(resolveSensor), [hello]);
