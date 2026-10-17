@@ -5,7 +5,9 @@ import { CalibrationSheet } from './components/CalibrationSheet';
 import { Guide } from './components/Guide';
 import { SensorPicker } from './components/SensorPicker';
 import { QuickSheet, type QuickStatus } from './components/QuickSheet';
-import { boardByName, boards, loadBoardId, quickExperiment, type Part } from './lib/guide';
+import { boardByName, boards, loadBoardId, quickExperiment, saveBoardId, type Part } from './lib/guide';
+import { BoardStep, type FwState } from './components/BoardStep';
+import { BUNDLED_FW, FlashError, TARGETS, boardFromUsb, flashBoard, older } from './lib/flash';
 import { experiments } from './lib/experiments';
 import { parseLine, type BoardMsg, type Experiment, type HelloMsg } from './lib/protocol';
 import { BleTransport, SerialTransport, SimTransport, hasBluetooth, hasSerial, type Transport } from './lib/transports';
@@ -35,8 +37,13 @@ export default function App() {
   const [quick, setQuick] = useState<{ part: Part; status: QuickStatus } | null>(null);
   const quickTimer = useRef<number | null>(null);
   const autoStartRef = useRef(false);
-  const [guideFrom, setGuideFrom] = useState<{ screen: Screen; expId?: string }>({ screen: 'connect' });
-  const openGuide = (expId?: string) => { setGuideFrom({ screen: screen === 'guide' ? 'connect' : screen, expId }); setScreen('guide'); };
+  const [guideFrom, setGuideFrom] = useState<{ screen: Screen; expId?: string; tab?: 'wire' | 'help' }>({ screen: 'connect' });
+  const openGuide = (expId?: string, tab?: 'wire' | 'help') => { setGuideFrom({ screen: screen === 'guide' ? 'connect' : screen, expId, tab }); setScreen('guide'); };
+  const [boardId, setBoardId] = useState(loadBoardId);
+  const pickBoard = (id: string) => { setBoardId(id); saveBoardId(id); };
+  const [fw, setFw] = useState<FwState | null>(null);
+  const fwTimers = useRef<number[]>([]);
+  const clearFwTimers = () => { fwTimers.current.forEach(clearTimeout); fwTimers.current = []; };
   const rescan = () => { transportRef.current?.send('HELLO'); say('ok', '센서를 다시 찾았습니다.'); };
 
   // 메시지 처리기에서 최신 상태를 읽기 위한 ref
@@ -51,10 +58,12 @@ export default function App() {
     window.setTimeout(() => setToast((t) => (t?.text === text ? null : t)), 3500);
   }, []);
 
+  const helloRef = useRef<((m: HelloMsg) => void) | null>(null);
   const handleMsg = useCallback((m: BoardMsg) => {
     switch (m.type) {
       case 'hello':
         setHello(m);
+        helloRef.current?.(m);
         break;
       case 'd': {
         const row = { t: m.t, v: m.v };
@@ -81,8 +90,8 @@ export default function App() {
     }
   }, [say]);
 
-  const connect = async (kind: 'serial' | 'ble' | 'sim') => {
-    const t: Transport = kind === 'serial' ? new SerialTransport() : kind === 'ble' ? new BleTransport() : new SimTransport();
+  const connect = async (kind: 'serial' | 'ble' | 'sim', reuse?: SerialPort) => {
+    const t: Transport = kind === 'serial' ? new SerialTransport(reuse) : kind === 'ble' ? new BleTransport() : new SimTransport();
     t.onLine = (line) => { const m = parseLine(line); if (m) handleMsg(m); };
     t.onClose = () => {
       if (transportRef.current !== t) return;
@@ -93,6 +102,8 @@ export default function App() {
       setHello(null);
       setConnLabel('');
       // 연결 안내를 보는 중이면 화면을 유지 (센서를 꽂으려고 USB를 뽑는 경우)
+      clearFwTimers();
+      setFw((f) => (f?.status === 'installing' || f?.status === 'failed' ? f : null));
       setScreen((sc) => (sc === 'guide' ? sc : 'connect'));
       setGuideFrom((g) => ({ ...g, screen: 'connect' }));
       say('err', '연결이 끊어졌습니다. 케이블이나 블루투스를 확인하고 다시 연결하세요.');
@@ -102,8 +113,32 @@ export default function App() {
       await t.connect();
       transportRef.current = t;
       setConnLabel(t.label);
-      await t.send('HELLO');
-      setScreen(exp ? 'measure' : 'pick');
+      clearFwTimers();
+      if (t instanceof SerialTransport) {
+        // 측정 프로그램이 있으면 hello가 옴 (보드가 다시 시작하느라 1~2초 걸릴 수 있음)
+        const usbBoard = boardFromUsb(t.usb);
+        if (usbBoard && usbBoard !== 'clone') pickBoard(usbBoard);
+        setFw({ status: 'checking' });
+        setScreen('connect');
+        helloRef.current = (m) => {
+          helloRef.current = null;
+          clearFwTimers();
+          const id = boardByName(m.board)?.id;
+          if (m.fw !== 'sim' && older(m.fw, BUNDLED_FW) && id && TARGETS[id]) { setFw({ status: 'outdated', version: m.fw }); return; }
+          setFw(null);
+          setScreen((sc) => (sc === 'connect' ? (exp ? 'measure' : 'pick') : sc));
+        };
+        await t.send('HELLO');
+        fwTimers.current.push(window.setTimeout(() => t.send('HELLO'), 2500));
+        fwTimers.current.push(window.setTimeout(() => {
+          if (transportRef.current !== t || !helloRef.current) return;
+          helloRef.current = null;
+          setFw({ status: 'missing', usbBoard });
+        }, 4500));
+      } else {
+        await t.send('HELLO');
+        setScreen(exp ? 'measure' : 'pick');
+      }
     } catch (e) {
       const msg = e instanceof Error ? e.message : String(e);
       if (/cancel|No port selected|User cancelled/i.test(msg)) { /* 사용자가 선택 창을 닫음 */ }
@@ -114,7 +149,39 @@ export default function App() {
     }
   };
 
+  // ---- 측정 프로그램 설치: 포트를 넘겨받아 굽고, 같은 포트로 다시 연결
+  const install = async (targetId: string) => {
+    const t = transportRef.current;
+    const target = TARGETS[targetId];
+    if (!(t instanceof SerialTransport) || !target) return;
+    clearFwTimers();
+    helloRef.current = null;
+    transportRef.current = null;
+    setHello(null);
+    setConnLabel('');
+    const port = await t.release();
+    if (!port) return;
+    setFw({ status: 'installing', stage: 'reset', ratio: 0 });
+    try {
+      await flashBoard(port, target, (stage, ratio) => setFw({ status: 'installing', stage, ratio }));
+      pickBoard(targetId);
+      setFw({ status: 'done' });
+      await new Promise((r) => setTimeout(r, 600));
+      await connect('serial', port);
+    } catch (e) {
+      const kind = e instanceof FlashError ? e.kind : 'other';
+      const message = kind === 'nosync' ? '보드가 설치 모드로 들어가지 않았습니다. 보드 종류가 맞는지 확인하세요.'
+        : kind === 'verify' ? '쓴 내용이 맞지 않습니다. 다시 시도하세요.'
+        : kind === 'busy' ? '다른 프로그램이 보드를 쓰고 있습니다. Arduino IDE를 닫고 다시 시도하세요.'
+        : `오류: ${e instanceof Error ? e.message : String(e)}`;
+      setFw({ status: 'failed', message });
+    }
+  };
+
   const disconnect = async () => {
+    clearFwTimers();
+    helloRef.current = null;
+    setFw(null);
     const t = transportRef.current;
     transportRef.current = null;
     recordingRef.current = false;
@@ -141,7 +208,7 @@ export default function App() {
 
   const sensors = useMemo(() => (hello?.sensors ?? []).map(resolveSensor), [hello]);
   const detectedBoard = boardByName(hello?.board);
-  const board = detectedBoard ?? boards.find((b) => b.id === loadBoardId()) ?? boards[0];
+  const board = detectedBoard ?? boards.find((b) => b.id === boardId) ?? boards[0];
   const available = (e: Experiment) => e.sensors.includes('*') || e.sensors.every((t) => sensors.some((s) => s.type === t || s.id === t));
 
   // ---- 센서 설정
@@ -246,8 +313,6 @@ export default function App() {
     return vals.length ? isStable(vals, s?.spec?.stableBand ?? 0.05) : null;
   };
 
-  const unsupported = !hasSerial() && !hasBluetooth();
-
   return (
     <div className="app">
       <header className="top">
@@ -255,9 +320,26 @@ export default function App() {
           <span className="logo" aria-hidden="true">⚗</span>
           <span>ChemDict Lab</span>
         </div>
-        <nav className="top-nav">
-          <button className={screen !== 'guide' ? 'on' : ''} aria-current={screen !== 'guide' ? 'page' : undefined} onClick={() => screen === 'guide' && setScreen(guideFrom.screen)}>실험</button>
-          <button className={screen === 'guide' ? 'on' : ''} aria-current={screen === 'guide' ? 'page' : undefined} onClick={() => screen !== 'guide' && openGuide(screen === 'measure' ? exp?.id : undefined)}>연결 안내</button>
+        <nav className="top-nav stepper" aria-label="단계">
+          {([
+            ['connect', '1', '보드 연결'],
+            ['pick', '2', '실험'],
+            ['guide', '3', '연결 방법·문제 해결'],
+          ] as const).map(([sc, n, label]) => {
+            const on = sc === 'pick' ? screen === 'pick' || screen === 'measure' : screen === sc;
+            const done = sc === 'connect' && !!hello && !on;
+            return (
+              <button key={sc} className={`${on ? 'on' : ''} ${done ? 'done' : ''}`} aria-current={on ? 'step' : undefined}
+                onClick={() => {
+                  if (on) return;
+                  if (sc === 'guide') openGuide(screen === 'measure' ? exp?.id : undefined);
+                  else if (sc === 'pick') setScreen(exp && screen !== 'pick' ? 'measure' : 'pick');
+                  else setScreen('connect');
+                }}>
+                <span className="n">{done ? '✓' : n}</span><span className="t">{label}</span>
+              </button>
+            );
+          })}
         </nav>
         {connLabel && (
           <div className="conn">
@@ -269,36 +351,23 @@ export default function App() {
       </header>
 
       {screen === 'connect' && (
-        <main className="center">
-          <h1>보드를 연결하세요</h1>
-          <p className="lede">USB 케이블로 꽂거나 블루투스로 찾으면, 연결된 센서를 자동으로 불러옵니다.</p>
-          <p className="lede small">센서를 처음 꽂는다면 <button className="link" onClick={() => openGuide()}>연결 안내</button>를 먼저 보세요.</p>
-          <div className="connect-grid">
-            <button className="big" disabled={!hasSerial() || busy} onClick={() => connect('serial')}>
-              <b>USB로 연결</b>
-              <span>{hasSerial() ? '맥·윈도우·크롬북' : '이 브라우저에서는 사용할 수 없음'}</span>
-            </button>
-            <button className="big" disabled={!hasBluetooth() || busy} onClick={() => connect('ble')}>
-              <b>블루투스로 연결</b>
-              <span>{hasBluetooth() ? 'ChemDict-01 ~ 08' : '이 브라우저에서는 사용할 수 없음'}</span>
-            </button>
-            <button className="big alt" disabled={busy} onClick={() => connect('sim')}>
-              <b>보드 없이 체험</b>
-              <span>시뮬레이터 데이터</span>
-            </button>
-          </div>
-          {unsupported && (
-            <p className="note warn">
-              사파리는 USB·블루투스 연결을 지원하지 않습니다. 맥·윈도우에서는 크롬이나 엣지로 열고, 아이패드·아이폰에서는 ChemDict Lab 앱을 쓰세요.
-            </p>
-          )}
-        </main>
+        <BoardStep
+          board={board}
+          detectedId={detectedBoard?.id}
+          onPickBoard={pickBoard}
+          connected={!!connLabel}
+          busy={busy || fw?.status === 'installing'}
+          fw={fw}
+          onConnect={(k) => connect(k)}
+          onInstall={install}
+          onNext={() => { setFw(null); setScreen(exp ? 'measure' : 'pick'); }}
+        />
       )}
 
       {screen === 'pick' && (
         <main className="wide">
           <div className="row-head">
-            <h1>무엇을 잴까요?</h1>
+            <h1><span className="step-no">2</span>무엇을 잴까요?</h1>
             {hello && hello.fw !== 'sim' && (
               <label className="switch">
                 <input type="checkbox" checked={hello.demo} onChange={(e) => send(`DEMO ${e.target.checked ? 'ON' : 'OFF'}`)} />
@@ -306,6 +375,7 @@ export default function App() {
               </label>
             )}
           </div>
+          {!connLabel && <p className="note warn">보드가 연결되지 않았습니다. <button className="link" onClick={() => setScreen('connect')}>1단계: 보드 연결</button>부터 하세요.</p>}
           <p className="lede">센서를 누르면 연결 그림이 나옵니다. 그대로 꽂고 <b>측정 시작</b>을 누르면 바로 기록됩니다.</p>
           <p className="note board-line">
             보드: <b>{board.name}</b>{detectedBoard ? ' (자동 인식)' : ''}
@@ -354,6 +424,7 @@ export default function App() {
           connected={!!hello}
           status={quick.status}
           onStart={quickStart}
+          onHelp={() => { setQuick(null); openGuide(undefined, 'help'); }}
           onClose={() => { if (quickTimer.current) clearTimeout(quickTimer.current); setQuick(null); }}
         />
       )}
@@ -386,12 +457,14 @@ export default function App() {
           experiments={experiments}
           initialExpId={guideFrom.expId?.startsWith('quick-') ? undefined : guideFrom.expId}
           initialPartId={guideFrom.expId?.startsWith('quick-') ? guideFrom.expId.slice(6) : undefined}
-          boardName={hello?.board}
+          initialTab={guideFrom.tab}
+          board={board}
           sensors={sensors}
           connected={!!hello}
           onRescan={rescan}
-          onBack={() => setScreen(guideFrom.screen)}
-          backLabel={guideFrom.screen === 'measure' ? '측정으로' : guideFrom.screen === 'pick' ? '실험 고르기' : '연결 화면'}
+          onChangeBoard={() => setScreen('connect')}
+          onBack={guideFrom.screen === 'measure' ? () => setScreen('measure') : undefined}
+          backLabel="측정으로"
         />
       )}
 

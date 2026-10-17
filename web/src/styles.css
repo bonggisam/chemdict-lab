@@ -263,3 +263,24 @@ button.small { min-height: 44px; padding: 4px 12px; font-size: 14px; }
 .caution summary { cursor: pointer; font-weight: 700; min-height: 32px; }
 .dg-pin-sub { fill: #cfe9eb; font-size: 11px; }
 .board-notes { margin: 6px 0 0; padding-left: 20px; font-size: 14px; }
+
+/* ---- 3단계 흐름: 1 보드 연결 → 2 실험 → 3 연결 방법·문제 해결 */
+.stepper { order: 3; flex: 1 1 100%; }
+.stepper button { display: flex; align-items: center; gap: 8px; flex: 1; justify-content: center; }
+.stepper .n { width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; font-size: 13px; border: 1.5px solid currentColor; flex: none; }
+.stepper button.on .n { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.stepper button.done .n { background: var(--ok); border-color: var(--ok); color: #fff; }
+@media (max-width: 560px) { .stepper .t { font-size: 13px; } .stepper button { padding: 6px 6px; } }
+.step-no { display: inline-grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; background: var(--accent); color: var(--accent-ink); font-size: 16px; margin-right: 10px; vertical-align: 3px; }
+.step-page > h1, .step-page .row-head h1 { margin-bottom: 14px; }
+.fw-panel { border-color: var(--accent); }
+.fw-panel h2 { margin-top: 0; }
+.progress { height: 12px; border-radius: 999px; background: var(--tint); overflow: hidden; margin: 8px 0 4px; }
+.progress span { display: block; height: 100%; background: var(--accent); transition: width .2s; }
+.big-seg { margin: 0 0 14px; }
+.big-seg button { flex: 1; font-weight: 600; }
+.trouble { border: 1px solid var(--line); border-radius: 8px; margin: 0 0 8px; background: var(--surface); }
+.trouble summary { cursor: pointer; padding: 12px 14px; min-height: 44px; font-weight: 600; }
+.trouble ol { margin: 0; padding: 0 18px 14px 36px; }
+.trouble li { margin: 4px 0; }
+.board-pick button:disabled { opacity: .55; }

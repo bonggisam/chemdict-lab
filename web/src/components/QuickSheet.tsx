@@ -14,12 +14,13 @@ interface Props {
   status: QuickStatus;
   onStart: (port?: string) => void;
   onClose: () => void;
+  onHelp: () => void;
 }
 
 const PORTS = ['A0', 'A1', 'A2', 'A3'];
 
 /** 센서를 고르면: 연결 그림 → [연결했어요 · 측정 시작] 한 번으로 측정 */
-export function QuickSheet({ board, boardDetected, part, sensors, connected, status, onStart, onClose }: Props) {
+export function QuickSheet({ board, boardDetected, part, sensors, connected, status, onStart, onClose, onHelp }: Props) {
   const analog = !!part.analogType;
   // 이미 이 종류로 설정된 포트 → 비어 있는 포트 → A0
   const firstPort =
@@ -55,6 +56,7 @@ export function QuickSheet({ board, boardDetected, part, sensors, connected, sta
               <li>점퍼선이 헐겁지 않은지 눌러 봅니다. 브레드보드는 같은 줄에 꽂혀야 이어집니다.</li>
               <li>USB를 다시 꽂고 아래 버튼을 한 번 더 누릅니다.</li>
             </ol>
+            <button className="link" onClick={onHelp}>문제 해결 더 보기</button>
           </div>
         )}
 

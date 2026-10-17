@@ -54,6 +54,8 @@ export const boards = guide.boards as unknown as Board[];
 export const connectors = guide.connectors as unknown as Record<string, Connector>;
 export const parts = guide.parts as unknown as Part[];
 export const planned: string[] = guide.planned;
+export interface Trouble { id: string; title: string; steps: string[] }
+export const troubles = guide.troubles as Trouble[];
 
 const RANK: Record<SensorSet, number> = { none: 0, mini: 1, lite: 2, full: 3 };
 

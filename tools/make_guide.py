@@ -264,9 +264,49 @@ PARTS = [
            ["아날로그 출력이 있는 센서"], ["전압을 그대로 기록합니다. '보정'에서 기준값 두 개로 단위를 맞출 수 있습니다."]),
 ]
 
+# 문제 해결: 증상 → 차례로 해 볼 것 (웹앱 3단계, 애플 앱 같은 파일)
+TROUBLES = [
+    dict(id="no-port", title="USB로 연결할 때 보드가 목록에 안 보여요",
+         steps=["USB 케이블을 다른 것으로 바꿉니다. 충전 전용 케이블은 데이터가 안 갑니다.",
+                "컴퓨터의 다른 USB 포트에 꽂습니다. 허브보다 본체에 바로 꽂는 것이 좋습니다.",
+                "호환 보드(CH340 칩)를 윈도우에서 쓰면 CH340 드라이버를 한 번 설치해야 합니다.",
+                "크롬이나 엣지로 열었는지 확인합니다. 사파리·파이어폭스는 USB 연결이 안 됩니다."]),
+    dict(id="busy", title="'다른 프로그램이 보드를 쓰고 있습니다'가 떠요",
+         steps=["Arduino IDE의 시리얼 모니터·시리얼 플로터를 닫습니다.",
+                "ChemDict Lab이 열린 다른 탭이나 창을 닫습니다.",
+                "USB를 뽑았다가 다시 꽂고 [USB로 연결]을 누릅니다."]),
+    dict(id="no-fw", title="'측정 프로그램이 없습니다'가 떠요",
+         steps=["처음 쓰는 보드입니다. 1단계 화면의 [측정 프로그램 설치]를 누릅니다 (약 30초).",
+                "UNO R4·Leonardo는 아직 웹 설치가 안 됩니다. Arduino IDE로 한 번만 올리면 됩니다 (3단계 → 보드 정보 → 펌웨어 받기).",
+                "설치 뒤에는 다시 할 필요가 없습니다. 보드를 뽑아도 프로그램은 남아 있습니다."]),
+    dict(id="flash-fail", title="측정 프로그램 설치가 실패해요",
+         steps=["센서 선을 모두 뽑고 보드만 USB로 연결한 뒤 다시 누릅니다.",
+                "호환 보드라면 1단계에서 보드 종류(UNO·Nano·Mega)를 맞게 골랐는지 봅니다.",
+                "그래도 안 되면 [설치] 버튼을 누른 직후 보드의 RESET 버튼을 한 번 누릅니다.",
+                "실패해도 보드는 고장 나지 않습니다. 다시 시도하면 됩니다."]),
+    dict(id="no-sensor", title="센서를 찾지 못했다고 나와요",
+         steps=["USB를 뽑고 연결 그림대로 선을 다시 봅니다. VCC(+)와 GND(-)가 바뀌지 않았는지 확인합니다.",
+                "점퍼선을 꾹 눌러 꽂습니다. 브레드보드는 같은 줄에 꽂혀야 이어집니다.",
+                "USB를 다시 꽂고 [다시 찾기]를 누릅니다.",
+                "이 보드가 지원하지 않는 센서일 수 있습니다. 센서 카드에 '이 보드 미지원'이 있는지 봅니다."]),
+    dict(id="odd-value", title="값이 0이나 최댓값에서 안 움직여요",
+         steps=["아날로그 센서는 꽂은 포트(A0~A3)와 앱에서 고른 포트가 같아야 합니다.",
+                "센서의 AO(아날로그 출력) 핀을 썼는지 봅니다. DO 핀은 켜짐/꺼짐만 나옵니다.",
+                "pH·전도도처럼 보정이 필요한 센서는 [센서 보정]을 먼저 합니다."]),
+    dict(id="ble", title="블루투스에서 보드가 안 보여요",
+         steps=["블루투스는 UNO R4 WiFi만 됩니다. 다른 보드는 USB로 연결합니다.",
+                "보드에 USB 전원(보조배터리도 가능)이 들어와 있는지 봅니다.",
+                "다른 기기가 이미 연결했으면 안 보입니다. 그 기기에서 연결을 끊습니다.",
+                "모둠 번호(ChemDict-01~08)가 같은 보드가 두 개면 하나를 바꿉니다."]),
+    dict(id="stopped", title="측정 중에 그래프가 멈췄어요",
+         steps=["케이블이 빠졌거나 흔들렸을 수 있습니다. 화면 위에 '연결이 끊어졌습니다'가 떴는지 봅니다.",
+                "다시 연결하면 지금까지 기록한 데이터는 그대로 남아 있습니다.",
+                "노트북이 절전 모드에 들어가지 않게 합니다."]),
+]
+
 ORDER = ["온도", "온습도", "기압·압력", "기체", "빛·색", "물·용액", "무게·거리·힘", "전기·소리"]
 
-out = dict(version=2, common=COMMON, categories=ORDER, boards=BOARDS, connectors=CONNECTORS, parts=PARTS,
+out = dict(version=2, common=COMMON, categories=ORDER, boards=BOARDS, connectors=CONNECTORS, parts=PARTS, troubles=TROUBLES,
            planned=["MH-Z19B 이산화탄소 (UART)", "PMS7003 미세먼지", "Modulino Distance·Light·Movement",
                     "Nano ESP32·Nano 33·GIGA·UNO Q 펌웨어"])
 path = pathlib.Path(__file__).resolve().parent.parent / "protocol" / "guide.json"

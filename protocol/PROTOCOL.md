@@ -173,3 +173,20 @@ I2C는 Qwiic 단자(UNO R4 WiFi·Nano R4의 `Wire1`, `qwiic:`)와 SDA·SCL 핀(`
 | 명령 | 뜻 |
 |---|---|
 | `SIMX <값>` | 값 입력 모드 체험용: 다음에 기록할 입력값(예: NaOH 부피)을 알려 주면 pH를 그에 맞게 만듦 |
+
+## 웹앱에서 측정 프로그램 설치 (v1.4)
+
+- USB로 연결한 뒤 약 4.5초 안에 `hello`가 오지 않으면 "측정 프로그램이 없는 보드"로 봅니다 (2.5초에 `HELLO`를 한 번 더 보냄).
+- `hello.fw`가 웹앱에 들어 있는 버전(`web/src/lib/flash/index.ts`의 `BUNDLED_FW`)보다 낮으면 업데이트를 권합니다.
+- 보드 알아보기: USB VID/PID (0x2341·0x2A03 정품). CH340(0x1A86)·CP210x(0x10C4)·FTDI(0x0403)는 호환 보드 → 1단계에서 고른 보드를 씁니다.
+- 굽는 방식 (Web Serial, 크롬·엣지):
+
+| 보드 | 방식 | 속도 | 파일 |
+|---|---|---|---|
+| Mega 2560 | STK500v2 (DTR 리셋, 256바이트 페이지, 읽어서 확인) | 115200 | `web/public/firmware/mega2560.hex` |
+| UNO R3 | STK500v1 (optiboot, 128바이트 페이지) | 115200 | `uno.hex` |
+| Nano | STK500v1 | 115200 → 안 되면 57600 (옛 부트로더) | `nano.hex` |
+| UNO R4·Nano R4·Leonardo | 아직 Arduino IDE로 한 번 올림 | | |
+
+- 펌웨어를 바꾸면: Arduino IDE에서 보드별로 *Sketch → Export Compiled Binary* → `build/arduino.avr.*/chemdict_fw.ino.hex`를 위 이름으로 복사하고 `BUNDLED_FW`를 맞춥니다.
+- `guide.json`의 `troubles[]`(id, title, steps)는 3단계 "문제 해결" 목록입니다.

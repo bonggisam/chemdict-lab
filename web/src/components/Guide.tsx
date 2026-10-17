@@ -1,33 +1,29 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import type { Experiment } from '../lib/protocol';
 import type { ResolvedSensor } from '../lib/sensors';
-import { boardByName, boards, commonRules, loadBoardId, partById, partsFor, planned, saveBoardId, type Part } from '../lib/guide';
+import { commonRules, partById, partsFor, planned, troubles, type Board, type Part } from '../lib/guide';
 import { PartWiring } from './PartWiring';
 import { SensorPicker } from './SensorPicker';
 
+const SET_LABEL = { full: '모든 센서', lite: '가벼운 버전', mini: '가장 가벼운 버전', none: '' } as const;
+
 interface Props {
   experiments: Experiment[];
+  board: Board;
   initialExpId?: string;
   initialPartId?: string;        // 바로 측정에서 온 경우 그 센서 연결을 바로 보여 줌
-  boardName?: string;            // 연결된 보드가 hello로 알려 준 이름
+  initialTab?: 'wire' | 'help';
   sensors: ResolvedSensor[];
   connected: boolean;
   onRescan: () => void;
-  onBack: () => void;
-  backLabel: string;
+  onChangeBoard: () => void;
+  onBack?: () => void;
+  backLabel?: string;
 }
 
-const FW_LABEL = { verified: '실제 확인', compiled: '펌웨어 지원', none: '펌웨어 준비 중' } as const;
-const SET_LABEL = { full: '모든 센서', lite: '가벼운 버전', mini: '가장 가벼운 버전', none: '' } as const;
-
-/** 보드 → 센서(또는 실험) → 연결 그림·주의 */
-export function Guide({ experiments, initialExpId, initialPartId, boardName, sensors, connected, onRescan, onBack, backLabel }: Props) {
-  const detected = boardByName(boardName);
-  const [boardId, setBoardId] = useState(() => detected?.id ?? loadBoardId());
-  useEffect(() => { if (detected) setBoardId(detected.id); }, [detected?.id]);
-  const board = boards.find((b) => b.id === boardId) ?? boards[0];
-  const pickBoard = (id: string) => { setBoardId(id); saveBoardId(id); };
-
+/** 3단계: 센서 연결 방법 + 문제 해결 */
+export function Guide({ experiments, board, initialExpId, initialPartId, initialTab, sensors, connected, onRescan, onChangeBoard, onBack, backLabel }: Props) {
+  const [tab, setTab] = useState<'wire' | 'help'>(initialTab ?? 'wire');
   const [by, setBy] = useState<'sensor' | 'exp'>(initialExpId && !initialPartId ? 'exp' : 'sensor');
   const [partId, setPartId] = useState<string | undefined>(initialPartId);
   const [expId, setExpId] = useState(initialExpId ?? experiments.find((e) => e.setup)?.id ?? experiments[0]?.id);
@@ -44,45 +40,59 @@ export function Guide({ experiments, initialExpId, initialPartId, boardName, sen
   const connectedTypes = sensors.filter((s) => s.src !== 'demo').map((s) => s.type);
 
   return (
-    <main className="wide guide">
+    <main className="wide guide step-page">
       <div className="row-head">
-        <h1>연결 안내</h1>
-        <button className="ghost" onClick={onBack}>← {backLabel}</button>
+        <h1><span className="step-no">3</span>연결 방법 · 문제 해결</h1>
+        {onBack && <button className="ghost" onClick={onBack}>← {backLabel}</button>}
+      </div>
+      <div className="seg big-seg" role="tablist" aria-label="도움말">
+        <button role="tab" aria-selected={tab === 'wire'} className={tab === 'wire' ? 'on' : ''} onClick={() => setTab('wire')}>센서 연결 방법</button>
+        <button role="tab" aria-selected={tab === 'help'} className={tab === 'help' ? 'on' : ''} onClick={() => setTab('help')}>문제 해결</button>
       </div>
 
-      <section className="guide-block">
-        <h2>1. 보드 고르기</h2>
-        <div className="board-pick" role="radiogroup" aria-label="보드 종류">
-          {boards.map((b) => (
-            <button key={b.id} role="radio" aria-checked={b.id === board.id} className={b.id === board.id ? 'on' : ''} onClick={() => pickBoard(b.id)}>
-              <b>{b.name}</b>
-              <span className={`fw ${b.firmware}`}>{FW_LABEL[b.firmware]}</span>
-            </button>
+      {tab === 'help' && (
+        <section className="guide-block troubles">
+          <p className="note">증상을 누르면 차례로 해 볼 일이 나옵니다.</p>
+          {troubles.map((t) => (
+            <details key={t.id} className="trouble">
+              <summary>{t.title}</summary>
+              <ol>{t.steps.map((s) => <li key={s}>{s}</li>)}</ol>
+            </details>
           ))}
+        </section>
+      )}
+
+      {tab === 'wire' && <>
+      <section className="guide-block">
+        <div className="row-head sub">
+          <h2>보드: {board.name}</h2>
+          <button className="ghost" onClick={onChangeBoard}>보드 바꾸기 (1단계)</button>
         </div>
-        {detected && <p className="note ok-note">연결된 보드: {detected.name} (자동 선택)</p>}
-        <dl className="board-facts">
-          <div><dt>USB</dt><dd>{board.usb}</dd></div>
-          <div><dt>블루투스</dt><dd>{board.ble ? '있음' : '없음 (USB만)'}</dd></div>
-          <div><dt>핀 전압</dt><dd>{board.logic}</dd></div>
-          <div><dt>아날로그</dt><dd>{board.adc}</dd></div>
-          <div><dt>Qwiic</dt><dd>{board.qwiic}</dd></div>
-          <div><dt>I2C 핀</dt><dd>{board.pins.SDA} · {board.pins.SCL}</dd></div>
-        </dl>
-        <p className={`note ${board.firmware === 'verified' ? '' : 'warn'}`}>
-          {board.firmwareNote}{board.sensorSet !== 'none' && board.sensorSet !== 'full' ? ` (${SET_LABEL[board.sensorSet]})` : ''}
-        </p>
-        {board.notes.length > 0 && <ul className="board-notes">{board.notes.map((n) => <li key={n}>{n}</li>)}</ul>}
+        <details className="advanced">
+          <summary>보드 정보</summary>
+          <dl className="board-facts">
+            <div><dt>USB</dt><dd>{board.usb}</dd></div>
+            <div><dt>블루투스</dt><dd>{board.ble ? '있음' : '없음 (USB만)'}</dd></div>
+            <div><dt>핀 전압</dt><dd>{board.logic}</dd></div>
+            <div><dt>아날로그</dt><dd>{board.adc}</dd></div>
+            <div><dt>Qwiic</dt><dd>{board.qwiic}</dd></div>
+            <div><dt>I2C 핀</dt><dd>{board.pins.SDA} · {board.pins.SCL}</dd></div>
+          </dl>
+          <p className={`note ${board.firmware === 'verified' ? '' : 'warn'}`}>
+            {board.firmwareNote}{board.sensorSet !== 'none' && board.sensorSet !== 'full' ? ` (${SET_LABEL[board.sensorSet]})` : ''}
+          </p>
+          {board.notes.length > 0 && <ul className="board-notes">{board.notes.map((n) => <li key={n}>{n}</li>)}</ul>}
+        </details>
       </section>
 
       <section className="guide-block">
-        <h2>2. 연결 전 공통 규칙</h2>
+        <h2>연결 전 공통 규칙</h2>
         <ul className="rules">{commonRules.map((r) => <li key={r}>{r}</li>)}</ul>
       </section>
 
       <section className="guide-block">
         <div className="row-head sub">
-          <h2>3. 센서 고르기</h2>
+          <h2>센서 고르기</h2>
           <div className="seg" role="tablist" aria-label="찾는 방법">
             <button role="tab" aria-selected={by === 'sensor'} className={by === 'sensor' ? 'on' : ''} onClick={() => setBy('sensor')}>센서로 찾기</button>
             <button role="tab" aria-selected={by === 'exp'} className={by === 'exp' ? 'on' : ''} onClick={() => setBy('exp')}>실험으로 찾기</button>
@@ -113,7 +123,7 @@ export function Guide({ experiments, initialExpId, initialPartId, boardName, sen
         const found = p.analogType ? null : p.provides.every((t) => connectedTypes.includes(t));
         return (
           <section key={p.id} className="guide-block" id={`part-${p.id}`}>
-            <h2>{4 + i}. {p.name} 연결</h2>
+            <h2>{p.name} 연결</h2>
             <PartWiring board={board} part={p} />
             {found !== null && (
               <div className="detect">
@@ -130,7 +140,7 @@ export function Guide({ experiments, initialExpId, initialPartId, boardName, sen
 
       {by === 'exp' && setup && (
         <section className="guide-block">
-          <h2>{4 + shown.length}. 실험 장치에 붙이기</h2>
+          <h2>실험 장치에 붙이기</h2>
           {setup.materials.length > 0 && <><h3>준비물</h3><ul>{setup.materials.map((m) => <li key={m}>{m}</li>)}</ul></>}
           <ol>{setup.attach.map((s) => <li key={s}>{s}</li>)}</ol>
           {setup.cautions.length > 0 && (
@@ -141,6 +151,7 @@ export function Guide({ experiments, initialExpId, initialPartId, boardName, sen
           )}
         </section>
       )}
+      </>}
     </main>
   );
 }

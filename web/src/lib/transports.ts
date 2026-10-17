@@ -27,17 +27,33 @@ export class SerialTransport implements Transport {
   label = 'USB';
   onLine: (line: string) => void = noop;
   onClose: () => void = noop;
-  private port: SerialPort | null = null;
+  port: SerialPort | null = null;
+  usb: { vid?: number; pid?: number } = {};
   private reader: ReadableStreamDefaultReader<Uint8Array> | null = null;
   private closing = false;
 
+  /** reuse: 펌웨어 설치 뒤 같은 포트로 다시 연결할 때 (선택 창 없이) */
+  constructor(private reuse?: SerialPort) {}
+
   async connect() {
-    // 아두이노 공식 보드(VID 0x2341)를 먼저 보여 주되, 다른 보드도 고를 수 있게 필터 없이 요청
-    this.port = await navigator.serial.requestPort();
+    // 필터 없이 요청: 호환 보드(CH340 등)도 고를 수 있게
+    this.port = this.reuse ?? await navigator.serial.requestPort();
     await this.port.open({ baudRate: 115200 });
     const info = this.port.getInfo();
-    this.label = info.usbVendorId === 0x2341 ? 'USB · Arduino' : 'USB';
+    this.usb = { vid: info.usbVendorId, pid: info.usbProductId };
+    this.label = info.usbVendorId === 0x2341 || info.usbVendorId === 0x2a03 ? 'USB · Arduino' : 'USB';
     this.readLoop();
+  }
+
+  /** 펌웨어 설치를 위해 포트를 닫고 넘겨줌 (연결 끊김 알림 없이) */
+  async release(): Promise<SerialPort | null> {
+    this.closing = true;
+    try { await this.reader?.cancel(); } catch { /* noop */ }
+    await new Promise((r) => setTimeout(r, 30));
+    try { await this.port?.close(); } catch { /* noop */ }
+    const p = this.port;
+    this.port = null;
+    return p;
   }
 
   private async readLoop() {
