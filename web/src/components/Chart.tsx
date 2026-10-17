@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { t } from '../lib/i18n';
 import type { Pt } from '../lib/analysis';
 import { PAD, drawChart, fmt, renderChartImage, type DrawOpts, type Overlays, type Scale, type Series } from '../lib/chartDraw';
 import { tangentAt } from '../lib/fit';
@@ -55,7 +56,7 @@ export function Chart(props: Props) {
   const tx = tool === 'tangent' ? (hover && scaleRef.current ? scaleRef.current.ix(hover.px) : pin) : null;
   const tan = tx !== null && tangentPts ? tangentAt(tangentPts, tx) : null;
   const ov: Overlays | undefined = tan
-    ? { ...overlays, tangent: { ...tan, label: `기울기 ${fmt(tan.slope)} ${unit ?? ''}/${xUnit || 'x'} (x = ${fmt(tan.x)})` } }
+    ? { ...overlays, tangent: { ...tan, label: t('기울기 {v} {unit} (x = {x})', { v: fmt(tan.slope), unit: `${unit ?? ''}/${xUnit || 'x'}`, x: fmt(tan.x) }) } }
     : overlays;
 
   const opts = (): DrawOpts => ({
@@ -141,10 +142,10 @@ export function Chart(props: Props) {
     c.toBlob((b) => b && saveFile(b, `${exportName}.png`), 'image/png');
   };
 
-  const hint = drawing ? '그래프 위에 예측선을 그리세요'
-    : tool === 'tangent' ? '그래프 위를 움직이거나 누르면 그 점의 기울기(접선)를 보여 줍니다'
-    : tool === 'read' ? '그래프 위를 누르면 가장 가까운 점의 값을 읽습니다'
-    : '드래그해서 구간 선택 · 클릭하면 해제';
+  const hint = drawing ? t('그래프 위에 예측선을 그리세요')
+    : tool === 'tangent' ? t('그래프 위를 움직이거나 누르면 그 점의 기울기(접선)를 보여 줍니다')
+    : tool === 'read' ? t('그래프 위를 누르면 가장 가까운 점의 값을 읽습니다')
+    : t('드래그해서 구간 선택 · 클릭하면 해제');
 
   return (
     <figure className="chart">
@@ -152,7 +153,7 @@ export function Chart(props: Props) {
         <span className="chart-label">{title}{unit ? ` (${unit})` : ''}</span>
         <span className="chart-right">
           {stable !== undefined && stable !== null && (
-            <span className={`stable ${stable ? 'on' : ''}`}>{stable ? '✓ 안정' : '〰 변하는 중'}</span>
+            <span className={`stable ${stable ? 'on' : ''}`}>{stable ? t('✓ 안정') : t('〰 변하는 중')}</span>
           )}
           {value !== undefined && <span className="chart-value">{value}</span>}
         </span>
@@ -162,14 +163,14 @@ export function Chart(props: Props) {
           {series.map((s) => (
             <span key={s.id}><i style={{ background: `var(${s.color})` }} />{s.name}</span>
           ))}
-          {prediction.length > 1 && <span><i className="pred" />예측</span>}
+          {prediction.length > 1 && <span><i className="pred" />{t('예측')}</span>}
         </div>
       )}
       <div ref={wrapRef} className={`chart-canvas ${drawing ? 'drawing' : ''} tool-${tool}`}>
         <canvas
           ref={canvasRef}
           role="img"
-          aria-label={`${title} 그래프`}
+          aria-label={t('{title} 그래프', { title })}
           onPointerDown={onDown}
           onPointerMove={onMove}
           onPointerUp={onUp}
@@ -179,7 +180,7 @@ export function Chart(props: Props) {
       </div>
       <div className="chart-foot">
         <span className="hint">{hint}</span>
-        <button className="link" onClick={exportPNG}>그림 저장</button>
+        <button className="link" onClick={exportPNG}>{t('그림 저장')}</button>
       </div>
     </figure>
   );

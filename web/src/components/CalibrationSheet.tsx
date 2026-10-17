@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { t } from '../lib/i18n';
 import type { ResolvedSensor } from '../lib/sensors';
 import { fmtValue } from '../lib/sensors';
 
@@ -38,10 +39,10 @@ export function CalibrationSheet({ sensors, initialId, live, stable, running, la
   if (!calSensors.length) {
     return (
       <div className="sheet-backdrop" onClick={onClose}>
-        <div className="sheet" role="dialog" aria-modal="true" aria-label="센서 보정" onClick={(e) => e.stopPropagation()}>
-          <h2>보정</h2>
-          <p>보정이 필요한 센서가 연결되어 있지 않습니다.</p>
-          <div className="sheet-actions"><span /><button onClick={onClose}>닫기</button></div>
+        <div className="sheet" role="dialog" aria-modal="true" aria-label={t('센서 보정')} onClick={(e) => e.stopPropagation()}>
+          <h2>{t('보정')}</h2>
+          <p>{t('보정이 필요한 센서가 연결되어 있지 않습니다.')}</p>
+          <div className="sheet-actions"><span /><button onClick={onClose}>{t('닫기')}</button></div>
         </div>
       </div>
     );
@@ -53,36 +54,36 @@ export function CalibrationSheet({ sensors, initialId, live, stable, running, la
 
   return (
     <div className="sheet-backdrop" onClick={onClose}>
-      <div className="sheet" role="dialog" aria-modal="true" aria-label="센서 보정" onClick={(e) => e.stopPropagation()}>
-        <h2>센서 보정</h2>
+      <div className="sheet" role="dialog" aria-modal="true" aria-label={t('센서 보정')} onClick={(e) => e.stopPropagation()}>
+        <h2>{t('센서 보정')}</h2>
         <label className="field">
-          <span>센서</span>
+          <span>{t('센서')}</span>
           <select id="cal-sensor" value={id} onChange={(e) => setId(e.target.value)}>
-            {calSensors.map((x) => <option key={x.id} value={x.id}>{x.displayName}{x.cal ? ' (보정됨)' : ''}</option>)}
+            {calSensors.map((x) => <option key={x.id} value={x.id}>{x.displayName}{x.cal ? ` (${t('보정됨')})` : ''}</option>)}
           </select>
         </label>
 
         <div className="cal-live">
-          <span>지금 값</span>
+          <span>{t('지금 값')}</span>
           <b>{fmtValue(v, s?.decimals)}{unit ? ` ${unit}` : ''}</b>
-          {running ? <span className={`stable ${st ? 'on' : ''}`}>{st ? '안정' : '변하는 중'}</span>
-            : <span className="note">측정을 시작해야 값이 보입니다</span>}
+          {running ? <span className={`stable ${st ? 'on' : ''}`}>{st ? t('안정') : t('변하는 중')}</span>
+            : <span className="note">{t('측정을 시작해야 값이 보입니다')}</span>}
         </div>
 
         {kind === 'two-point' && (
           <ol className="cal-steps">
             <li className={step === 1 ? 'on' : 'done'}>
-              <p>센서를 증류수로 헹구고 첫 번째 {s?.spec?.cal.hint ?? '기준'}에 담그세요. 값이 '안정'이 되면 기록합니다.</p>
+              <p>{t('센서를 증류수로 헹구고 첫 번째 {ref}에 담그세요. 값이 ‘안정’이 되면 기록합니다.', { ref: s?.spec?.cal.hint ?? t('기준') })}</p>
               <div className="row">
-                <input id="cal-ref1" inputMode="decimal" value={ref1} onChange={(e) => setRef1(e.target.value)} aria-label="첫 번째 기준값" />
-                <button className="primary" disabled={step !== 1 || !running || ref1 === ''} onClick={() => { send(`CAL ${id} 1 ${ref1}`); setStep(2); }}>첫 번째 기록</button>
+                <input id="cal-ref1" inputMode="decimal" value={ref1} onChange={(e) => setRef1(e.target.value)} aria-label={t('첫 번째 기준값')} />
+                <button className="primary" disabled={step !== 1 || !running || ref1 === ''} onClick={() => { send(`CAL ${id} 1 ${ref1}`); setStep(2); }}>{t('첫 번째 기록')}</button>
               </div>
             </li>
             <li className={step === 2 ? 'on' : step > 2 || done ? 'done' : ''}>
-              <p>다시 헹군 뒤 두 번째 {s?.spec?.cal.hint ?? '기준'}에 담그세요. 값이 '안정'이 되면 기록합니다.</p>
+              <p>{t('다시 헹군 뒤 두 번째 {ref}에 담그세요. 값이 ‘안정’이 되면 기록합니다.', { ref: s?.spec?.cal.hint ?? t('기준') })}</p>
               <div className="row">
-                <input id="cal-ref2" inputMode="decimal" value={ref2} onChange={(e) => setRef2(e.target.value)} aria-label="두 번째 기준값" />
-                <button className="primary" disabled={step !== 2 || !running || ref2 === ''} onClick={() => { send(`CAL ${id} 2 ${ref2}`); setStep(3); }}>두 번째 기록</button>
+                <input id="cal-ref2" inputMode="decimal" value={ref2} onChange={(e) => setRef2(e.target.value)} aria-label={t('두 번째 기준값')} />
+                <button className="primary" disabled={step !== 2 || !running || ref2 === ''} onClick={() => { send(`CAL ${id} 2 ${ref2}`); setStep(3); }}>{t('두 번째 기록')}</button>
               </div>
             </li>
           </ol>
@@ -91,10 +92,10 @@ export function CalibrationSheet({ sensors, initialId, live, stable, running, la
         {kind === 'one-point' && (
           <ol className="cal-steps">
             <li className="on">
-              <p>센서를 {s?.spec?.cal.hint ?? '기준 상태'}에 두고 값이 '안정'이 되면, 실제 값을 입력해 맞춥니다.</p>
+              <p>{t('센서를 {ref}에 두고 값이 ‘안정’이 되면, 실제 값을 입력해 맞춥니다.', { ref: s?.spec?.cal.hint ?? t('기준 상태') })}</p>
               <div className="row">
-                <input id="cal-ref" inputMode="decimal" value={ref1} onChange={(e) => setRef1(e.target.value)} aria-label="기준값" />
-                <button className="primary" disabled={!running || ref1 === ''} onClick={() => send(`CAL ${id} OFS ${ref1}`)}>이 값으로 맞추기</button>
+                <input id="cal-ref" inputMode="decimal" value={ref1} onChange={(e) => setRef1(e.target.value)} aria-label={t('기준값')} />
+                <button className="primary" disabled={!running || ref1 === ''} onClick={() => send(`CAL ${id} OFS ${ref1}`)}>{t('이 값으로 맞추기')}</button>
               </div>
             </li>
           </ol>
@@ -103,10 +104,10 @@ export function CalibrationSheet({ sensors, initialId, live, stable, running, la
         {kind === 'scale' && (
           <ol className="cal-steps">
             <li className="on">
-              <p>센서를 {s?.spec?.cal.hint ?? '기준 상태'}에 두고 값이 '안정'이 되면, 그때의 실제 값을 입력해 맞춥니다.</p>
+              <p>{t('센서를 {ref}에 두고 값이 ‘안정’이 되면, 그때의 실제 값을 입력해 맞춥니다.', { ref: s?.spec?.cal.hint ?? t('기준 상태') })}</p>
               <div className="row">
-                <input id="cal-scale" inputMode="decimal" value={ref1} onChange={(e) => setRef1(e.target.value)} aria-label="기준값" />
-                <button className="primary" disabled={!running || ref1 === ''} onClick={() => send(`CAL ${id} SCL ${ref1}`)}>이 값으로 맞추기</button>
+                <input id="cal-scale" inputMode="decimal" value={ref1} onChange={(e) => setRef1(e.target.value)} aria-label={t('기준값')} />
+                <button className="primary" disabled={!running || ref1 === ''} onClick={() => send(`CAL ${id} SCL ${ref1}`)}>{t('이 값으로 맞추기')}</button>
               </div>
             </li>
           </ol>
@@ -115,26 +116,26 @@ export function CalibrationSheet({ sensors, initialId, live, stable, running, la
         {kind === 'tare-scale' && (
           <ol className="cal-steps">
             <li className={step === 1 ? 'on' : 'done'}>
-              <p>접시를 비우고 값이 '안정'이 되면 영점을 맞춥니다.</p>
+              <p>{t('접시를 비우고 값이 ‘안정’이 되면 영점을 맞춥니다.')}</p>
               <div className="row">
-                <button className="primary" disabled={step !== 1 || !running} onClick={() => { send(`CAL ${id} OFS 0`); setStep(2); }}>영점 맞추기 (0 g)</button>
+                <button className="primary" disabled={step !== 1 || !running} onClick={() => { send(`CAL ${id} OFS 0`); setStep(2); }}>{t('영점 맞추기 (0 g)')}</button>
               </div>
             </li>
             <li className={step === 2 ? 'on' : step > 2 || done ? 'done' : ''}>
-              <p>무게를 아는 추를 올리고 값이 '안정'이 되면, 추의 질량을 입력합니다.</p>
+              <p>{t('무게를 아는 추를 올리고 값이 ‘안정’이 되면, 추의 질량을 입력합니다.')}</p>
               <div className="row">
-                <input id="cal-mass" inputMode="decimal" value={ref2} onChange={(e) => setRef2(e.target.value)} aria-label="추의 질량 (g)" />
-                <button className="primary" disabled={step !== 2 || !running || ref2 === ''} onClick={() => { send(`CAL ${id} SCL ${ref2}`); setStep(3); }}>이 질량으로 맞추기</button>
+                <input id="cal-mass" inputMode="decimal" value={ref2} onChange={(e) => setRef2(e.target.value)} aria-label={t('추의 질량 (g)')} />
+                <button className="primary" disabled={step !== 2 || !running || ref2 === ''} onClick={() => { send(`CAL ${id} SCL ${ref2}`); setStep(3); }}>{t('이 질량으로 맞추기')}</button>
               </div>
             </li>
           </ol>
         )}
 
-        {done && lastCal && <p className="ok-text">보정 완료 · 보드에 저장했습니다 (기울기 {lastCal.slope}, 절편 {lastCal.offset}).</p>}
+        {done && lastCal && <p className="ok-text">{t('보정 완료 · 보드에 저장했습니다 (기울기 {slope}, 절편 {offset}).', { slope: lastCal.slope, offset: lastCal.offset })}</p>}
 
         <div className="sheet-actions">
-          <button className="ghost" onClick={() => { onClear(id); setStep(1); setDone(false); }}>보정 지우기</button>
-          <button onClick={onClose}>{done ? '완료' : '닫기'}</button>
+          <button className="ghost" onClick={() => { onClear(id); setStep(1); setDone(false); }}>{t('보정 지우기')}</button>
+          <button onClick={onClose}>{done ? t('완료') : t('닫기')}</button>
         </div>
       </div>
     </div>

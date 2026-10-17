@@ -1,4 +1,5 @@
 // 저장: 그래프 그림(PNG) · PDF 보고서 · 엑셀/Numbers(.xlsx) · CSV
+import { t } from './i18n';
 import { LIGHT, cssVar, drawChart, renderChartImage, withLight, type DrawOpts } from './chartDraw';
 import { canvasesToPdf } from './pdf';
 import { buildXlsx, safeSheetName, type Cell, type XChart, type XSeries, type XSheet } from './xlsx';
@@ -150,7 +151,7 @@ export async function reportPdf(r: Report): Promise<Blob> {
       const need = 24 * (r.summary.rows.length + 1) + 50 + r.notes.length * 20;
       if (y + need > H - M) { ctx = page(); y = M; }
       ctx.fillStyle = LIGHT['--ink']; ctx.font = `700 16px ${FONT}`; ctx.textBaseline = 'top';
-      ctx.fillText('데이터 해석', M, y); y += 28;
+      ctx.fillText(t('데이터 해석'), M, y); y += 28;
       y = drawTable(ctx, M, y, W - 2 * M, r.summary.head, r.summary.rows) + 14;
       y = notesBlock(ctx, r.notes, M, y, W - 2 * M) + 10;
     }
@@ -161,7 +162,7 @@ export async function reportPdf(r: Report): Promise<Blob> {
       while (i < rows.length) {
         if (y + 24 * 3 + 30 > H - M) { ctx = page(); y = M; }
         ctx.fillStyle = LIGHT['--ink']; ctx.font = `700 15px ${FONT}`; ctx.textBaseline = 'top';
-        ctx.fillText(`${run.name} 데이터${i ? ' (이어서)' : ''}`, M, y); y += 26;
+        ctx.fillText(i ? t('{name} 데이터 (이어서)', { name: run.name }) : t('{name} 데이터', { name: run.name }), M, y); y += 26;
         const fit = Math.max(1, Math.floor((H - M - y - 24) / 20));
         y = drawTable(ctx, M, y, W - 2 * M, run.head, rows.slice(i, i + fit), 20) + 20;
         i += fit;
@@ -204,12 +205,12 @@ export function reportXlsx(r: Report): Blob {
     })).filter((_, i) => r.runs[i].rows.length > 0),
   }));
   const summary: XSheet = {
-    name: '해석',
+    name: t('해석'),
     rows: [[r.title], r.meta, ...r.info, [], r.summary.head, ...r.summary.rows.map((row) => row.map(numOrText)), [], ...r.notes.map((n) => [n])],
     boldRows: [0, 3 + r.info.length],
     widths: [22, ...r.summary.head.slice(1).map(() => 16)],
   };
-  const graph: XSheet = { name: '그래프', rows: [[r.title], [r.meta.join(' · ')], ...r.info], boldRows: [0], charts, widths: [16, 28] };
+  const graph: XSheet = { name: t('그래프'), rows: [[r.title], [r.meta.join(' · ')], ...r.info], boldRows: [0], charts, widths: [16, 28] };
   return buildXlsx([graph, summary, ...runSheets]);
 }
 

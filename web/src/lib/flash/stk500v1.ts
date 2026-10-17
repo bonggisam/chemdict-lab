@@ -1,3 +1,4 @@
+import { t } from '../i18n';
 // STK500v1 — UNO R3 · Nano (optiboot / 옛 부트로더, avrdude -c arduino 와 같은 순서)
 import { SerialIO, sleep } from './io';
 import type { Progress } from './stk500v2';
@@ -11,7 +12,7 @@ async function cmd(io: SerialIO, bytes: number[], dataLen = 0, timeoutMs = 600):
   if (s !== INSYNC) throw new Error('NOSYNC');
   const data = dataLen ? await io.read(dataLen, timeoutMs) : [];
   const [o] = await io.read(1, timeoutMs);
-  if (o !== OK) throw new Error('부트로더 거부');
+  if (o !== OK) throw new Error(t('부트로더 거부'));
   return data;
 }
 

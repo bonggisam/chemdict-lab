@@ -1,4 +1,5 @@
 import { analogTypes, digitalTypes, type ResolvedSensor } from '../lib/sensors';
+import { t } from '../lib/i18n';
 
 interface Props {
   sensors: ResolvedSensor[];
@@ -15,8 +16,8 @@ export function SensorSetup({ sensors, disabled, onSetPort, onRescan }: Props) {
   return (
     <section className="setup">
       <div className="setup-head">
-        <h2>센서 연결</h2>
-        <p className="note">아날로그 센서는 꽂은 포트에 맞춰 종류를 고르세요. 설정은 보드에 저장됩니다.</p>
+        <h2>{t('센서 연결')}</h2>
+        <p className="note">{t('아날로그 센서는 꽂은 포트에 맞춰 종류를 고르세요. 설정은 보드에 저장됩니다.')}</p>
       </div>
       <div className="ports">
         {PORTS.map((port) => {
@@ -32,23 +33,23 @@ export function SensorSetup({ sensors, disabled, onSetPort, onRescan }: Props) {
                 disabled={disabled}
                 onChange={(e) => onSetPort(port, e.target.value)}
               >
-                <option value="OFF">사용 안 함</option>
+                <option value="OFF">{t('사용 안 함')}</option>
                 {analogTypes.map((t) => (
                   <option key={t.type} value={t.type}>{t.name}{t.unit ? ` (${t.unit})` : ''}</option>
                 ))}
               </select>
               <span className="port-note">
-                {spec ? spec.note : '꽂은 센서가 없으면 꺼 두세요.'}
-                {s && spec?.cal.kind !== 'none' && <b className={s.cal ? 'ok' : 'warn'}>{s.cal ? ' · 보정됨' : spec?.requiresCal ? ' · 보정 필요' : ' · 보정 전'}</b>}
+                {spec ? spec.note : t('꽂은 센서가 없으면 꺼 두세요.')}
+                {s && spec?.cal.kind !== 'none' && <b className={s.cal ? 'ok' : 'warn'}>{' · '}{s.cal ? t('보정됨') : spec?.requiresCal ? t('보정 필요') : t('보정 전')}</b>}
               </span>
             </label>
           );
         })}
       </div>
       <div className="digital">
-        <span className="note">자동 인식</span>
-        {onRescan && <button className="ghost small" disabled={disabled} onClick={onRescan}>센서 다시 찾기</button>}
-        {digital.length === 0 && <span className="note">디지털 센서 없음 (DS18B20은 D2, Modulino는 Qwiic 단자)</span>}
+        <span className="note">{t('자동 인식')}</span>
+        {onRescan && <button className="ghost small" disabled={disabled} onClick={onRescan}>{t('센서 다시 찾기')}</button>}
+        {digital.length === 0 && <span className="note">{t('디지털 센서 없음 (DS18B20은 D2, Modulino는 Qwiic 단자)')}</span>}
         {digital.map((s) => (
           <span key={s.id} className="chip">
             {s.displayName}

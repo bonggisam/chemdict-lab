@@ -115,6 +115,17 @@ for f in sorted((P / "experiments").glob("*.json")):
     if e.get("breadboard"):
         put(f"{k}.bb", e["breadboard"]["why"])
 
+# ---------------------------------------------------------------- 화면 문구: web/src 의 t('…') · tk('…')
+UI = re.compile(r"""\bt[k]?\(\s*(?:'((?:[^'\\]|\\.)*)'|"((?:[^"\\]|\\.)*)")""")
+ui: dict[str, str] = {}
+for f in sorted((ROOT / "web" / "src").rglob("*.ts*")):
+    for m in UI.finditer(f.read_text(encoding="utf-8")):
+        k = (m.group(1) if m.group(1) is not None else m.group(2)).replace("\\'", "'").replace('\\"', '"')
+        if HANGUL.search(k):
+            ui[k] = k
+(P / "i18n" / "source" / "ui.json").write_text(json.dumps(ui, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
+print("ui strings", len(ui), "chars", sum(len(v) for v in ui))
+
 OUT.parent.mkdir(parents=True, exist_ok=True)
 OUT.write_text(json.dumps(src, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
 print("strings", len(src), "chars", sum(len(v) for v in src.values()), "->", OUT)

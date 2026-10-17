@@ -1,5 +1,6 @@
 // 함수 찾기 (곡선 맞춤) · 접선 · 넓이 · 변화율 · 부드럽게
 // Vernier Graphical Analysis / PASCO SPARKvue의 해석 도구를 참고해 학교 실험에 자주 쓰는 것만 골랐습니다.
+import { tk } from './i18n';
 import type { Pt } from './analysis';
 
 export type ModelId = 'auto' | 'prop' | 'linear' | 'quad' | 'cubic' | 'exp' | 'approach' | 'power' | 'log' | 'inverse';
@@ -7,15 +8,15 @@ export type ModelId = 'auto' | 'prop' | 'linear' | 'quad' | 'cubic' | 'exp' | 'a
 export interface ModelInfo { id: Exclude<ModelId, 'auto'>; name: string; form: string; params: string[]; use: string }
 
 export const MODELS: ModelInfo[] = [
-  { id: 'linear', name: '직선', form: 'y = m·x + b', params: ['m', 'b'], use: '일정한 속도로 변함 (반응 속도, 가열 초기)' },
-  { id: 'prop', name: '비례', form: 'y = A·x', params: ['A'], use: '원점을 지나는 직선 (질량–부피, 샤를 법칙 K)' },
-  { id: 'quad', name: '2차 함수', form: 'y = A·x² + B·x + C', params: ['A', 'B', 'C'], use: '휘어진 곡선 (가속, 포물선)' },
-  { id: 'cubic', name: '3차 함수', form: 'y = A·x³ + B·x² + C·x + D', params: ['A', 'B', 'C', 'D'], use: 'S자 모양 일부' },
-  { id: 'exp', name: '지수', form: 'y = A·e^(B·x)', params: ['A', 'B'], use: '일정 비율로 늘거나 줄어듦 (1차 반응 농도)' },
-  { id: 'approach', name: '지수 접근', form: 'y = A·e^(−C·x) + B', params: ['A', 'B', 'C'], use: '어떤 값에 다가감 (냉각·가열 곡선, 뉴턴 냉각)' },
-  { id: 'power', name: '거듭제곱', form: 'y = A·x^B', params: ['A', 'B'], use: '두 양의 거듭제곱 관계' },
-  { id: 'log', name: '로그', form: 'y = A + B·ln x', params: ['A', 'B'], use: '빨리 늘다 천천히 늘어남 (희석–pH)' },
-  { id: 'inverse', name: '반비례', form: 'y = A / x', params: ['A'], use: '곱이 일정 (보일 법칙 P–V)' },
+  { id: 'linear', name: tk('직선'), form: 'y = m·x + b', params: ['m', 'b'], use: tk('일정한 속도로 변함 (반응 속도, 가열 초기)') },
+  { id: 'prop', name: tk('비례'), form: 'y = A·x', params: ['A'], use: tk('원점을 지나는 직선 (질량–부피, 샤를 법칙 K)') },
+  { id: 'quad', name: tk('2차 함수'), form: 'y = A·x² + B·x + C', params: ['A', 'B', 'C'], use: tk('휘어진 곡선 (가속, 포물선)') },
+  { id: 'cubic', name: tk('3차 함수'), form: 'y = A·x³ + B·x² + C·x + D', params: ['A', 'B', 'C', 'D'], use: tk('S자 모양 일부') },
+  { id: 'exp', name: tk('지수'), form: 'y = A·e^(B·x)', params: ['A', 'B'], use: tk('일정 비율로 늘거나 줄어듦 (1차 반응 농도)') },
+  { id: 'approach', name: tk('지수 접근'), form: 'y = A·e^(−C·x) + B', params: ['A', 'B', 'C'], use: tk('어떤 값에 다가감 (냉각·가열 곡선, 뉴턴 냉각)') },
+  { id: 'power', name: tk('거듭제곱'), form: 'y = A·x^B', params: ['A', 'B'], use: tk('두 양의 거듭제곱 관계') },
+  { id: 'log', name: tk('로그'), form: 'y = A + B·ln x', params: ['A', 'B'], use: tk('빨리 늘다 천천히 늘어남 (희석–pH)') },
+  { id: 'inverse', name: tk('반비례'), form: 'y = A / x', params: ['A'], use: tk('곱이 일정 (보일 법칙 P–V)') },
 ];
 
 export interface FitResult {

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Measure } from './components/Measure';
 import { SensorSetup } from './components/SensorSetup';
 import { CalibrationSheet } from './components/CalibrationSheet';
@@ -9,6 +9,8 @@ import { QuickSheet, type QuickStatus } from './components/QuickSheet';
 import { boardByName, boards, loadBoardId, quickExperiment, saveBoardId, type Part } from './lib/guide';
 import { BoardStep, type FwState } from './components/BoardStep';
 import { loadInfo, saveInfo, type ExpInfo } from './lib/info';
+import { LANGS, initialLang, loadLang, t, tk, type Lang } from './lib/i18n';
+import { relocalize } from './lib/l10n';
 import { BUNDLED_FW, FlashError, TARGETS, boardFromUsb, flashBoard, older } from './lib/flash';
 import { experiments } from './lib/experiments';
 import { parseLine, type BoardMsg, type Experiment, type HelloMsg } from './lib/protocol';
@@ -45,10 +47,14 @@ export default function App() {
   const pickBoard = (id: string) => { setBoardId(id); saveBoardId(id); };
   const [fw, setFw] = useState<FwState | null>(null);
   const [info, setInfoState] = useState<ExpInfo>(loadInfo);
+  // 언어: 처음에는 저장된 언어(없으면 브라우저 언어)로
+  const [lang, setLangState] = useState<Lang>('ko');
+  const changeLang = async (l: Lang) => { await loadLang(l); relocalize(); setLangState(l); };
+  useEffect(() => { const l = initialLang(); if (l !== 'ko') changeLang(l); else loadLang('ko'); }, []); // eslint-disable-line react-hooks/exhaustive-deps
   const setInfo = (i: ExpInfo) => { setInfoState(i); saveInfo(i); };
   const fwTimers = useRef<number[]>([]);
   const clearFwTimers = () => { fwTimers.current.forEach(clearTimeout); fwTimers.current = []; };
-  const rescan = () => { transportRef.current?.send('HELLO'); say('ok', '센서를 다시 찾았습니다.'); };
+  const rescan = () => { transportRef.current?.send('HELLO'); say('ok', t('센서를 다시 찾았습니다.')); };
 
   // 메시지 처리기에서 최신 상태를 읽기 위한 ref
   const recordingRef = useRef(false);   // 측정(run)에 기록 중
@@ -85,11 +91,11 @@ export default function App() {
         break;
       case 'cal':
         setLastCal(m);
-        say('ok', '보정 완료 · 보드에 저장했습니다.');
+        say('ok', t('보정 완료 · 보드에 저장했습니다.'));
         transportRef.current?.send('HELLO');
         break;
       case 'err':
-        say('err', `보드 응답: ${m.cmd} — ${m.msg}`);
+        say('err', t('보드 응답: {cmd} — {msg}', { cmd: m.cmd, msg: m.msg }));
         break;
     }
   }, [say]);
@@ -110,7 +116,7 @@ export default function App() {
       setFw((f) => (f?.status === 'installing' || f?.status === 'failed' ? f : null));
       setScreen((sc) => (sc === 'guide' ? sc : 'connect'));
       setGuideFrom((g) => ({ ...g, screen: 'connect' }));
-      say('err', '연결이 끊어졌습니다. 케이블이나 블루투스를 확인하고 다시 연결하세요.');
+      say('err', t('연결이 끊어졌습니다. 케이블이나 블루투스를 확인하고 다시 연결하세요.'));
     };
     setBusy(true);
     try {
@@ -146,8 +152,8 @@ export default function App() {
     } catch (e) {
       const msg = e instanceof Error ? e.message : String(e);
       if (/cancel|No port selected|User cancelled/i.test(msg)) { /* 사용자가 선택 창을 닫음 */ }
-      else if (/open|busy|in use|NetworkError|InvalidState/i.test(msg)) say('err', '다른 프로그램이 보드를 쓰고 있습니다. Arduino IDE의 시리얼 모니터를 닫고 다시 연결하세요.');
-      else say('err', `연결하지 못했습니다: ${msg}`);
+      else if (/open|busy|in use|NetworkError|InvalidState/i.test(msg)) say('err', t('다른 프로그램이 보드를 쓰고 있습니다. Arduino IDE의 시리얼 모니터를 닫고 다시 연결하세요.'));
+      else say('err', t('연결하지 못했습니다: {msg}', { msg }));
     } finally {
       setBusy(false);
     }
@@ -174,10 +180,10 @@ export default function App() {
       await connect('serial', port);
     } catch (e) {
       const kind = e instanceof FlashError ? e.kind : 'other';
-      const message = kind === 'nosync' ? '보드가 설치 모드로 들어가지 않았습니다. 보드 종류가 맞는지 확인하세요.'
-        : kind === 'verify' ? '쓴 내용이 맞지 않습니다. 다시 시도하세요.'
-        : kind === 'busy' ? '다른 프로그램이 보드를 쓰고 있습니다. Arduino IDE를 닫고 다시 시도하세요.'
-        : `오류: ${e instanceof Error ? e.message : String(e)}`;
+      const message = kind === 'nosync' ? t('보드가 설치 모드로 들어가지 않았습니다. 보드 종류가 맞는지 확인하세요.')
+        : kind === 'verify' ? t('쓴 내용이 맞지 않습니다. 다시 시도하세요.')
+        : kind === 'busy' ? t('다른 프로그램이 보드를 쓰고 있습니다. Arduino IDE를 닫고 다시 시도하세요.')
+        : t('오류: {msg}', { msg: e instanceof Error ? e.message : String(e) });
       setFw({ status: 'failed', message });
     }
   };
@@ -222,7 +228,7 @@ export default function App() {
     const onPop = (e: PopStateEvent) => {
       const sheet = document.querySelector<HTMLElement>('.sheet-backdrop');
       if (sheet) { sheet.click(); stay(); return; }
-      if (runningRef.current) { stay(); say('err', '측정 중입니다. 먼저 [정지]를 누르세요.'); return; }
+      if (runningRef.current) { stay(); say('err', t('측정 중입니다. 먼저 [정지]를 누르세요.')); return; }
       const target = (e.state as { cd?: Screen } | null)?.cd;
       if (!target) return;
       fromPop.current = true;
@@ -291,7 +297,7 @@ export default function App() {
     autoStartRef.current = true;
     pickExperiment(e);
     const spec = quick.part.analogType ? analogTypes.find((t) => t.type === quick.part.analogType) : undefined;
-    if (spec?.requiresCal) say('ok', '측정을 시작합니다. 정확한 값은 [보정] 후에 나옵니다.');
+    if (spec?.requiresCal) say('ok', t('측정을 시작합니다. 정확한 값은 [보정] 후에 나옵니다.'));
   }, [hello]); // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (autoStartRef.current && exp && screen === 'measure') { autoStartRef.current = false; start(); }
@@ -357,11 +363,11 @@ export default function App() {
           <img className="logo" src={`${import.meta.env.BASE_URL}logo-128.png`} alt="" width={32} height={32} />
           <span>ChemDict Lab</span>
         </div>
-        <nav className="top-nav stepper" aria-label="단계">
+        <nav className="top-nav stepper" aria-label={t('단계')}>
           {([
-            ['connect', '1', '보드 연결'],
-            ['pick', '2', '실험'],
-            ['guide', '3', '연결 방법·문제 해결'],
+            ['connect', '1', tk('보드 연결')],
+            ['pick', '2', tk('실험')],
+            ['guide', '3', tk('연결 방법·문제 해결')],
           ] as const).map(([sc, n, label]) => {
             const on = sc === 'pick' ? screen === 'pick' || screen === 'measure' : screen === sc;
             const done = sc === 'connect' && !!hello && !on;
@@ -373,7 +379,7 @@ export default function App() {
                   else if (sc === 'pick') setScreen(exp && screen !== 'pick' ? 'measure' : 'pick');
                   else setScreen('connect');
                 }}>
-                <span className="n">{done ? '✓' : n}</span><span className="t">{label}</span>
+                <span className="n">{done ? '✓' : n}</span><span className="t">{t(label)}</span>
               </button>
             );
           })}
@@ -381,11 +387,18 @@ export default function App() {
         {connLabel && (
           <div className="conn">
             <span className="dot" aria-hidden="true" />
-            <span>{connLabel}{hello?.station ? ` · 모둠 ${hello.station}` : ''}</span>
-            <button className="ghost" onClick={disconnect}>연결 끊기</button>
+            <span>{connLabel}{hello?.station ? ` · ${t('모둠 {n}', { n: hello.station })}` : ''}</span>
+            <button className="ghost" onClick={disconnect}>{t('연결 끊기')}</button>
           </div>
         )}
+        <label className="lang-pick">
+          <span aria-hidden="true">🌐</span>
+          <select aria-label="Language" value={lang} onChange={(e) => changeLang(e.target.value as Lang)}>
+            {LANGS.map((l) => <option key={l.code} value={l.code}>{l.name}</option>)}
+          </select>
+        </label>
       </header>
+      <Fragment key={lang}>
 
       {screen === 'connect' && (
         <BoardStep
@@ -404,33 +417,33 @@ export default function App() {
       {screen === 'pick' && (
         <main className="wide">
           <div className="row-head">
-            <h1><span className="step-no">2</span>무엇을 잴까요?</h1>
+            <h1><span className="step-no">2</span>{t('무엇을 잴까요?')}</h1>
             {hello && hello.fw !== 'sim' && (
               <label className="switch">
                 <input type="checkbox" checked={hello.demo} onChange={(e) => send(`DEMO ${e.target.checked ? 'ON' : 'OFF'}`)} />
-                <span>데모 데이터</span>
+                <span>{t('데모 데이터')}</span>
               </label>
             )}
           </div>
-          {!connLabel && <p className="note warn">보드가 연결되지 않았습니다. <button className="link" onClick={() => setScreen('connect')}>1단계: 보드 연결</button>부터 하세요.</p>}
-          <p className="lede">센서를 누르면 연결 그림이 나옵니다. 그대로 꽂고 <b>측정 시작</b>을 누르면 바로 기록됩니다.</p>
+          {!connLabel && <p className="note warn">{t('보드가 연결되지 않았습니다.')} <button className="link" onClick={() => setScreen('connect')}>{t('1단계: 보드 연결로 가기')}</button></p>}
+          <p className="lede">{t('센서를 누르면 연결 그림이 나옵니다. 그대로 꽂고 [측정 시작]을 누르면 바로 기록됩니다.')}</p>
           <p className="note board-line">
-            보드: <b>{board.name}</b>{detectedBoard ? ' (자동 인식)' : ''}
+            {t('보드:')} <b>{board.name}</b>{detectedBoard ? ` (${t('자동 인식')})` : ''}
             {sensors.filter((s) => !/^A\d$/.test(s.src) && s.src !== 'demo').length > 0 &&
-              <> · 인식된 센서: {sensors.filter((s) => !/^A\d$/.test(s.src) && s.src !== 'demo').map((s) => s.displayName).join(', ')}</>}
+              <> · {t('인식된 센서:')} {sensors.filter((s) => !/^A\d$/.test(s.src) && s.src !== 'demo').map((s) => s.displayName).join(', ')}</>}
           </p>
 
           <SensorPicker board={board} connectedTypes={sensors.filter((s) => s.src !== 'demo').map((s) => s.type)} onPick={(p) => setQuick({ part: p, status: 'idle' })} />
 
           <div className="row-head sub">
-            <h2>실험으로 찾기 (교육과정)</h2>
-            <button className="ghost" disabled={!sensors.some((s) => s.spec && s.spec.cal.kind !== 'none')} onClick={() => openCal()}>센서 보정</button>
+            <h2>{t('실험으로 찾기 (교육과정)')}</h2>
+            <button className="ghost" disabled={!sensors.some((s) => s.spec && s.spec.cal.kind !== 'none')} onClick={() => openCal()}>{t('센서 보정')}</button>
           </div>
           <ExperimentBrowser experiments={experiments} connectedTypes={sensors.filter((x) => x.src !== 'demo' || transportRef.current?.kind === 'sim').map((x) => x.type)} onPick={pickExperiment} />
 
           {hello && (
             <details className="advanced">
-              <summary>포트 직접 설정 (고급)</summary>
+              <summary>{t('포트 직접 설정 (고급)')}</summary>
               <SensorSetup sensors={sensors} disabled={false} onSetPort={setPort} onRescan={rescan} />
             </details>
           )}
@@ -488,15 +501,15 @@ export default function App() {
           onRescan={rescan}
           onChangeBoard={() => setScreen('connect')}
           onBack={guideFrom.screen === 'measure' ? () => setScreen('measure') : undefined}
-          backLabel="측정으로"
+          backLabel={t('측정으로')}
         />
       )}
 
       {setupOpen && (
         <div className="sheet-backdrop" onClick={() => setSetupOpen(false)}>
-          <div className="sheet wide-sheet" role="dialog" aria-modal="true" aria-label="센서 연결" onClick={(e) => e.stopPropagation()}>
+          <div className="sheet wide-sheet" role="dialog" aria-modal="true" aria-label={t('센서 연결')} onClick={(e) => e.stopPropagation()}>
             <SensorSetup sensors={sensors} disabled={running} onSetPort={setPort} onRescan={rescan} />
-            <div className="sheet-actions"><span /><button onClick={() => setSetupOpen(false)}>닫기</button></div>
+            <div className="sheet-actions"><span /><button onClick={() => setSetupOpen(false)}>{t('닫기')}</button></div>
           </div>
         </div>
       )}
@@ -515,6 +528,7 @@ export default function App() {
         />
       )}
 
+      </Fragment>
       {toast && <div className={`toast ${toast.kind}`} role="status">{toast.text}</div>}
     </div>
   );

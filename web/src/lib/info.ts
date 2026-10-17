@@ -1,4 +1,5 @@
 // 실험 정보 (모둠·이름·날짜 등): 측정 화면에서 입력하고, 저장하는 모든 파일에 함께 남깁니다.
+import { t } from './i18n';
 import type { Run } from './runs';
 
 export interface ExpInfo {
@@ -36,19 +37,19 @@ export function infoRows(i: ExpInfo, runs: Run[], station?: number): [string, st
   const date = i.date ? i.date.replace(/-/g, '.') : d0 ? fmtDate(d0) : '';
   const time = i.time || (d0 ? fmtTime(d0) : '');
   const rows: [string, string][] = [
-    ['모둠·실험조', i.group],
-    ['이름', i.members],
-    ['학년·반', i.className],
-    ['날짜', date],
-    ['시간', time],
-    ['장소', i.place],
-    ['보드 모둠 번호', station ? `ChemDict-${z(station)}` : ''],
-    ['메모', i.note],
+    [t('모둠·실험조'), i.group],
+    [t('이름'), i.members],
+    [t('학년·반'), i.className],
+    [t('날짜'), date],
+    [t('시간'), time],
+    [t('장소'), i.place],
+    [t('보드 모둠 번호'), station ? `ChemDict-${z(station)}` : ''],
+    [t('메모'), i.note],
   ];
   const out = rows.filter(([, v]) => v.trim());
   // 측정별 시작 시각
-  for (const r of runs) if (r.startedAt) { const d = new Date(r.startedAt); out.push([`${r.name} 시작`, `${fmtDate(d)} ${fmtTime(d)}`]); }
-  out.push(['저장한 때', `${fmtDate(new Date())} ${fmtTime(new Date())}`]);
+  for (const r of runs) if (r.startedAt) { const d = new Date(r.startedAt); out.push([t('{name} 시작', { name: r.name }), `${fmtDate(d)} ${fmtTime(d)}`]); }
+  out.push([t('저장한 때'), `${fmtDate(new Date())} ${fmtTime(new Date())}`]);
   return out;
 }
 

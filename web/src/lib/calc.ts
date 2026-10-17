@@ -1,15 +1,16 @@
+import { t, tk } from './i18n';
 // 표의 계산 열 (Vernier '계산 열'처럼 자주 쓰는 것만)
 export type CalcId = 'none' | 'delta' | 'rate' | 'inv' | 'ln' | 'log' | 'sq' | 'kelvin';
 
 export const CALCS: { id: CalcId; name: string; title: (y: string) => string; tempOnly?: boolean }[] = [
-  { id: 'none', name: '없음', title: () => '' },
-  { id: 'delta', name: '처음 값과의 차 (y − y₀)', title: (y) => `Δ${y}` },
-  { id: 'rate', name: '변화율 (Δy/Δx)', title: (y) => `${y} 변화율` },
-  { id: 'inv', name: '역수 (1/y)', title: (y) => `1/${y}` },
-  { id: 'ln', name: '자연로그 (ln y)', title: (y) => `ln ${y}` },
-  { id: 'log', name: '상용로그 (log y)', title: (y) => `log ${y}` },
-  { id: 'sq', name: '제곱 (y²)', title: (y) => `${y}²` },
-  { id: 'kelvin', name: '절대온도 (K = °C + 273.15)', title: () => '절대온도(K)', tempOnly: true },
+  { id: 'none', name: tk('없음'), title: () => '' },
+  { id: 'delta', name: tk('처음 값과의 차 (y − y₀)'), title: (y) => `Δ${y}` },
+  { id: 'rate', name: tk('변화율 (Δy/Δx)'), title: (y) => t('{y} 변화율', { y }) },
+  { id: 'inv', name: tk('역수 (1/y)'), title: (y) => `1/${y}` },
+  { id: 'ln', name: tk('자연로그 (ln y)'), title: (y) => `ln ${y}` },
+  { id: 'log', name: tk('상용로그 (log y)'), title: (y) => `log ${y}` },
+  { id: 'sq', name: tk('제곱 (y²)'), title: (y) => `${y}²` },
+  { id: 'kelvin', name: tk('절대온도 (K = °C + 273.15)'), title: () => t('절대온도(K)'), tempOnly: true },
 ];
 
 /** xs, ys 같은 길이 (값이 없으면 NaN) → 계산 열 */
