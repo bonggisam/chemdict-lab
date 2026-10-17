@@ -7,3 +7,4 @@
 - BLE: Nordic UART 방식 UUID, 20바이트 조각 + '\n' 줄 단위. 한글이 조각 경계에서 잘리므로 받는 쪽은 바이트 단위로 모은 뒤 디코딩한다.
 - 웹앱 확인: `cd web && npx tsc -b && npx vite build`
 - 생성 파일 이름은 영문만 (한글 파일명은 다운로드 오류가 남).
+- 화면 디자인은 `docs/DESIGN.md`가 기준이다 (색·글자·44px 터치·그래프 규칙). 측정 색을 바꾸면 dataviz 검증기를 다시 돌린다. 웹 토큰(styles.css)과 애플 Theme.swift 값을 같이 맞춘다.

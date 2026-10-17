@@ -116,7 +116,7 @@ export function Chart(props: Props) {
     if (!forExport) scaleRef.current = { x: X, y: Y, ix: IX, iy: IY, W, H };
 
     ctx.clearRect(0, 0, forExport ? 0 : W, forExport ? 0 : H);
-    ctx.font = '11px ui-monospace, Menlo, monospace';
+    ctx.font = `12px ${css('--font', '"Pretendard Variable", system-ui, sans-serif')}`;
 
     // 선택 구간
     if (selection) {
@@ -166,7 +166,7 @@ export function Chart(props: Props) {
     ctx.save();
     ctx.beginPath(); ctx.rect(L, T, pw, ph); ctx.clip();
     for (const s of series) {
-      const col = css(s.color, '#1d5fa8');
+      const col = css(s.color, '#2a78d6');
       if (s.pts.length) {
         ctx.strokeStyle = col; ctx.lineWidth = 2; ctx.lineJoin = 'round';
         ctx.beginPath();
@@ -219,7 +219,7 @@ export function Chart(props: Props) {
         const bx = X(best.x), by = Y(best.y);
         ctx.strokeStyle = cInk; ctx.lineWidth = 1;
         ctx.beginPath(); ctx.moveTo(bx + 0.5, T); ctx.lineTo(bx + 0.5, T + ph); ctx.stroke();
-        ctx.fillStyle = css(best.color, '#1d5fa8'); ctx.beginPath(); ctx.arc(bx, by, 5, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = css(best.color, '#2a78d6'); ctx.beginPath(); ctx.arc(bx, by, 5, 0, Math.PI * 2); ctx.fill();
         const txt = `${series.length > 1 ? best.name + ' · ' : ''}${fmt(best.x)} → ${fmt(best.y)}${unit ? ' ' + unit : ''}`;
         label(ctx, txt, bx + 8, by - 12, cText, 'left', W, true);
       }
@@ -279,7 +279,7 @@ export function Chart(props: Props) {
     const ctx = c.getContext('2d')!;
     ctx.scale(scale, scale);
     ctx.fillStyle = css('--surface', '#fff'); ctx.fillRect(0, 0, W, H + 28);
-    ctx.fillStyle = css('--ink', '#14212e'); ctx.font = '600 14px system-ui, sans-serif';
+    ctx.fillStyle = css('--ink', '#14212e'); ctx.font = '600 14px "Pretendard Variable", system-ui, sans-serif';
     ctx.textAlign = 'left'; ctx.textBaseline = 'top';
     ctx.fillText(`${title}${unit ? ` (${unit})` : ''}`, 12, 8);
     ctx.translate(0, 28);
@@ -293,7 +293,7 @@ export function Chart(props: Props) {
         <span className="chart-label">{title}{unit ? ` (${unit})` : ''}</span>
         <span className="chart-right">
           {stable !== undefined && stable !== null && (
-            <span className={`stable ${stable ? 'on' : ''}`}>{stable ? '안정' : '변하는 중'}</span>
+            <span className={`stable ${stable ? 'on' : ''}`}>{stable ? '✓ 안정' : '〰 변하는 중'}</span>
           )}
           <span className="chart-value">{value ?? '—'}</span>
         </span>
@@ -327,7 +327,7 @@ export function Chart(props: Props) {
 }
 
 function label(ctx: CanvasRenderingContext2D, text: string, x: number, y: number, color: string, align: CanvasTextAlign, W: number, boxed = false) {
-  ctx.font = '12px system-ui, sans-serif';
+  ctx.font = '13px "Pretendard Variable", system-ui, sans-serif';
   const w = ctx.measureText(text).width;
   let lx = align === 'center' ? x - w / 2 : x;
   if (lx + w > W - 4) lx = W - 4 - w;

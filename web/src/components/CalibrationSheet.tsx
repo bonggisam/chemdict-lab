@@ -38,7 +38,7 @@ export function CalibrationSheet({ sensors, initialId, live, stable, running, la
   if (!calSensors.length) {
     return (
       <div className="sheet-backdrop" onClick={onClose}>
-        <div className="sheet" onClick={(e) => e.stopPropagation()}>
+        <div className="sheet" role="dialog" aria-modal="true" aria-label="센서 보정" onClick={(e) => e.stopPropagation()}>
           <h2>보정</h2>
           <p>보정이 필요한 센서가 연결되어 있지 않습니다.</p>
           <div className="sheet-actions"><span /><button onClick={onClose}>닫기</button></div>
@@ -53,7 +53,7 @@ export function CalibrationSheet({ sensors, initialId, live, stable, running, la
 
   return (
     <div className="sheet-backdrop" onClick={onClose}>
-      <div className="sheet" role="dialog" aria-label="센서 보정" onClick={(e) => e.stopPropagation()}>
+      <div className="sheet" role="dialog" aria-modal="true" aria-label="센서 보정" onClick={(e) => e.stopPropagation()}>
         <h2>센서 보정</h2>
         <label className="field">
           <span>센서</span>

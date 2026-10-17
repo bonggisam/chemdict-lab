@@ -120,6 +120,15 @@ export default function App() {
 
   useEffect(() => () => { transportRef.current?.disconnect(); }, []);
 
+  // Esc로 열린 창 닫기
+  const escRef = useRef<() => void>(() => {});
+  escRef.current = () => { if (cal) closeCal(); else if (setupOpen) setSetupOpen(false); };
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') escRef.current(); };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
+
   const send = useCallback((cmd: string) => { transportRef.current?.send(cmd); }, []);
 
   const sensors = useMemo(() => (hello?.sensors ?? []).map(resolveSensor), [hello]);
@@ -208,8 +217,8 @@ export default function App() {
           <span>ChemDict Lab</span>
         </div>
         <nav className="top-nav">
-          <button className={screen !== 'guide' ? 'on' : ''} onClick={() => screen === 'guide' && setScreen(guideFrom.screen)}>실험</button>
-          <button className={screen === 'guide' ? 'on' : ''} onClick={() => screen !== 'guide' && openGuide(exp?.id)}>연결 안내</button>
+          <button className={screen !== 'guide' ? 'on' : ''} aria-current={screen !== 'guide' ? 'page' : undefined} onClick={() => screen === 'guide' && setScreen(guideFrom.screen)}>실험</button>
+          <button className={screen === 'guide' ? 'on' : ''} aria-current={screen === 'guide' ? 'page' : undefined} onClick={() => screen !== 'guide' && openGuide(exp?.id)}>연결 안내</button>
         </nav>
         {connLabel && (
           <div className="conn">
@@ -322,7 +331,7 @@ export default function App() {
 
       {setupOpen && (
         <div className="sheet-backdrop" onClick={() => setSetupOpen(false)}>
-          <div className="sheet wide-sheet" onClick={(e) => e.stopPropagation()}>
+          <div className="sheet wide-sheet" role="dialog" aria-modal="true" aria-label="센서 연결" onClick={(e) => e.stopPropagation()}>
             <SensorSetup sensors={sensors} disabled={running} onSetPort={setPort} onRescan={rescan} />
             <div className="sheet-actions"><span /><button onClick={() => setSetupOpen(false)}>닫기</button></div>
           </div>

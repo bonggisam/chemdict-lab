@@ -308,7 +308,7 @@ export function Measure(p: Props) {
       <div className="toolbar">
         {mode === 'time' && exp.markers.enabled && (
           <div className="marker">
-            <input id="marker-note" value={markerNote} placeholder={exp.markers.prompt} onChange={(e) => setMarkerNote(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter') addMarker(); }} />
+            <input id="marker-note" aria-label={exp.markers.label} value={markerNote} placeholder={exp.markers.prompt} onChange={(e) => setMarkerNote(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter') addMarker(); }} />
             <button onClick={addMarker} disabled={!running}>{exp.markers.label}</button>
           </div>
         )}
