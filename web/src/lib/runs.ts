@@ -14,6 +14,7 @@ export interface Run {
   events: EventPoint[];    // 이벤트 모드에서 '값 기록'한 점
   markers: Marker[];
   prediction: Pt[];        // 첫 번째 그래프 기준 예측선
+  excluded?: number[];     // 해석에서 뺀 행 (시간 모드: rows 번호, 값 입력 모드: events 번호)
 }
 
 let seq = 0;
@@ -32,15 +33,27 @@ export function newRun(mode: 'time' | 'event', index: number): Run {
   };
 }
 
-/** 그래프용 점: 시간 모드는 (t, 값), 이벤트 모드는 (입력값, 값) */
-export function seriesPoints(run: Run, sensorId: string): Pt[] {
+/**
+ * 그래프용 점: 시간 모드는 (t, 값), 이벤트 모드는 (입력값, 값).
+ * xId를 주면 가로축을 그 센서 값으로 (예: 온도–압력). 제외한 행은 빼고 줌 (keepExcluded면 포함)
+ */
+export function seriesPoints(run: Run, sensorId: string, opt: { xId?: string; keepExcluded?: boolean } = {}): Pt[] {
+  const ex = opt.keepExcluded ? null : new Set(run.excluded ?? []);
   if (run.mode === 'event') {
     return run.events
-      .filter((e) => typeof e.v[sensorId] === 'number')
+      .filter((e, i) => typeof e.v[sensorId] === 'number' && !ex?.has(i))
       .map((e) => [e.x, e.v[sensorId]] as Pt)
       .sort((a, b) => a[0] - b[0]);
   }
-  return run.rows.filter((r) => typeof r.v[sensorId] === 'number').map((r) => [r.t, r.v[sensorId]] as Pt);
+  const { xId } = opt;
+  const out: Pt[] = [];
+  run.rows.forEach((r, i) => {
+    if (typeof r.v[sensorId] !== 'number' || ex?.has(i)) return;
+    if (xId) { if (typeof r.v[xId] === 'number') out.push([r.v[xId], r.v[sensorId]]); }
+    else out.push([r.t, r.v[sensorId]]);
+  });
+  if (xId) out.sort((a, b) => a[0] - b[0]);
+  return out;
 }
 
 /** 최근 windowSec초 동안의 값 (안정 판정, 이벤트 기록용) */

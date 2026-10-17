@@ -190,3 +190,13 @@ I2C는 Qwiic 단자(UNO R4 WiFi·Nano R4의 `Wire1`, `qwiic:`)와 SDA·SCL 핀(`
 
 - 펌웨어를 바꾸면: Arduino IDE에서 보드별로 *Sketch → Export Compiled Binary* → `build/arduino.avr.*/chemdict_fw.ino.hex`를 위 이름으로 복사하고 `BUNDLED_FW`를 맞춥니다.
 - `guide.json`의 `troubles[]`(id, title, steps)는 3단계 "문제 해결" 목록입니다.
+
+## 측정 간격 (v1.5)
+
+- `START <ms>`의 `<ms>`는 100 ~ 3,600,000 (0.1초 ~ 60분). 웹앱은 자주 쓰는 값 + 직접 입력(초·분)을 제공합니다. 펌웨어는 100 ms 미만만 올려 맞춥니다.
+- DHT는 약 2초, SCD4x는 5초마다 새 값을 만들므로 그보다 짧은 간격에서는 같은 값이 반복됩니다.
+
+## 데이터 해석·저장 (웹앱)
+
+- 해석: 함수 찾기(직선·비례·2차·3차·지수·지수 접근·거듭제곱·로그·반비례 + 자동), 접선, 넓이(사다리꼴 적분), 변화율 그래프, 부드럽게(이동 평균), 가로축 바꾸기(다른 센서), 선택 구간 확대, 표 계산 열, 점 제외. 코드: `web/src/lib/fit.ts`, `calc.ts`.
+- 저장: PNG(그래프+해석 한 장), PDF(A4, 페이지를 그림으로 넣어 한글 글꼴 불필요), .xlsx(측정별 시트 + 엑셀 분산형 그래프 + 추세선, Numbers에서 그대로 열림), CSV. 코드: `web/src/lib/report.ts`, `xlsx.ts`, `pdf.ts`.

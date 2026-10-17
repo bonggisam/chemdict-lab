@@ -284,3 +284,39 @@ button.small { min-height: 44px; padding: 4px 12px; font-size: 14px; }
 .trouble ol { margin: 0; padding: 0 18px 14px 36px; }
 .trouble li { margin: 4px 0; }
 .board-pick button:disabled { opacity: .55; }
+
+/* ---- 측정 간격 직접 입력 */
+.interval-custom { display: inline-flex; gap: 4px; }
+.interval-custom input { width: 72px; min-height: 44px; border: 1px solid var(--field); border-radius: 8px; background: var(--surface); padding: 0 10px; }
+.interval-custom select { min-height: 44px; }
+.warn-text.small { font-size: 13px; }
+
+/* ---- 그래프 도구 (구간 선택·값 읽기·접선, 확대, 표시, 가로축, 부드럽게) */
+.graph-tools { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin: 12px 0 4px; }
+.graph-tools .seg button { min-width: 72px; }
+label.mini { display: inline-flex; align-items: center; gap: 6px; font-size: 14px; color: var(--muted); }
+label.mini select, .fit-pick select { min-height: 44px; border: 1px solid var(--field); border-radius: 8px; background: var(--surface); padding: 0 8px; color: var(--ink); }
+.chart-canvas.tool-tangent canvas, .chart-canvas.tool-read canvas { cursor: crosshair; }
+
+/* ---- 해석 */
+.ana-tools { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 18px; margin-bottom: 12px; font-size: 14px; }
+.ana-tools input[type=checkbox] { width: 18px; height: 18px; accent-color: var(--accent); vertical-align: -3px; }
+.fit-pick { display: inline-flex; align-items: center; gap: 8px; font-weight: 600; }
+.fit-pick select { max-width: min(100%, 320px); }
+.fit-card { border: 1px solid var(--accent); background: var(--tint); border-radius: var(--radius); padding: 12px 14px; margin-bottom: 12px; }
+.fit-eq { display: flex; flex-direction: column; gap: 2px; }
+.fit-eq b { font-size: 20px; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.fit-card .note { margin: 6px 0 0; }
+.cands { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-top: 8px; }
+.chip-btn { border-radius: 999px; padding: 6px 12px; font-size: 13px; }
+.data-scroll { max-height: 420px; overflow: auto; }
+.ana-table tr.excluded td { color: var(--muted); text-decoration: line-through; }
+.ana-table tr.excluded td.row-acts { text-decoration: none; }
+.row-acts { display: flex; gap: 10px; }
+.row-acts .link { min-height: 32px; }
+
+/* ---- 저장하기 */
+.export-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 8px; margin: 12px 0; }
+.export-item { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; text-align: left; padding: 12px 14px; }
+.export-item span { font-size: 13px; color: var(--muted); }
+.export-item:not(:disabled):hover { border-color: var(--accent); }
