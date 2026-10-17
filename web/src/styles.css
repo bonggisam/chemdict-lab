@@ -231,6 +231,7 @@ button.small { min-height: 44px; padding: 4px 12px; font-size: 14px; }
 
 /* ---------- 바로 측정 · 센서 카드 ---------- */
 .board-line { margin: -8px 0 14px; font-size: 15px; }
+.sensor-search { min-height: 44px; border: 1px solid var(--field); border-radius: 8px; background: var(--surface); color: inherit; padding: 0 12px; width: 100%; max-width: 420px; margin-bottom: 10px; font: inherit; }
 .cat-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
 .cat-chips button { min-height: 44px; padding: 6px 14px; border-radius: 999px; }
 .cat-chips button.on { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); font-weight: 600; }

@@ -1,5 +1,5 @@
 {
- "version": 2,
+ "version": 3,
  "analog": [
   {
    "type": "pH",
@@ -291,6 +291,360 @@
    "note": "FSR 압력 센서 + 10 kΩ 저항."
   },
   {
+   "type": "TKA",
+   "name": "고온(열전대)",
+   "unit": "°C",
+   "decimals": 1,
+   "slope": 200.0,
+   "offset": -250.0,
+   "cal": {
+    "kind": "one-point",
+    "refs": [
+     0.0
+    ],
+    "hint": "얼음물"
+   },
+   "stableBand": 0.5,
+   "note": "AD8495 K형 열전대 앰프 (5 mV/°C)."
+  },
+  {
+   "type": "CO2N",
+   "name": "이산화탄소(아날로그)",
+   "unit": "ppm",
+   "decimals": 0,
+   "slope": 3125.0,
+   "offset": -1250.0,
+   "min": 0,
+   "max": 5000,
+   "cal": {
+    "kind": "none"
+   },
+   "stableBand": 10,
+   "note": "적외선 CO₂ 센서 SEN0219 (0.4~2.0 V = 0~5000 ppm). 3분 예열."
+  },
+  {
+   "type": "REFL",
+   "name": "반사(상대값)",
+   "unit": "%",
+   "decimals": 0,
+   "slope": 20.0,
+   "offset": 0.0,
+   "min": 0,
+   "max": 100,
+   "cal": {
+    "kind": "none"
+   },
+   "stableBand": 1,
+   "note": "적외선 반사 센서 TCRT5000 AO 출력."
+  },
+  {
+   "type": "FLAM",
+   "name": "불꽃(상대값)",
+   "unit": "%",
+   "decimals": 0,
+   "slope": -20.0,
+   "offset": 100.0,
+   "min": 0,
+   "max": 100,
+   "cal": {
+    "kind": "none"
+   },
+   "stableBand": 1,
+   "note": "불꽃 센서 AO 출력. 클수록 불꽃이 셉니다."
+  },
+  {
+   "type": "RAIN",
+   "name": "젖음(상대값)",
+   "unit": "%",
+   "decimals": 0,
+   "slope": -20.0,
+   "offset": 100.0,
+   "min": 0,
+   "max": 100,
+   "cal": {
+    "kind": "none"
+   },
+   "stableBand": 1,
+   "note": "빗물 감지 센서 AO 출력. 클수록 젖었습니다."
+  },
+  {
+   "type": "DOUT",
+   "name": "켜짐/꺼짐",
+   "unit": "",
+   "decimals": 0,
+   "slope": 0.2,
+   "offset": 0.0,
+   "min": 0,
+   "max": 1,
+   "cal": {
+    "kind": "none"
+   },
+   "stableBand": 0.5,
+   "note": "디지털 출력(DO) 모듈: 1 = 신호 있음, 0 = 없음."
+  },
+  {
+   "type": "AXA",
+   "name": "가속도 X(아날로그)",
+   "unit": "m/s²",
+   "decimals": 2,
+   "slope": 29.72,
+   "offset": -49.03,
+   "cal": {
+    "kind": "two-point",
+    "refs": [
+     9.81,
+     -9.81
+    ],
+    "hint": "축을 위로, 아래로"
+   },
+   "stableBand": 0.1,
+   "note": "ADXL335 X축 (3.3 V 전원)."
+  },
+  {
+   "type": "AYA",
+   "name": "가속도 Y(아날로그)",
+   "unit": "m/s²",
+   "decimals": 2,
+   "slope": 29.72,
+   "offset": -49.03,
+   "cal": {
+    "kind": "two-point",
+    "refs": [
+     9.81,
+     -9.81
+    ],
+    "hint": "축을 위로, 아래로"
+   },
+   "stableBand": 0.1,
+   "note": "ADXL335 Y축 (3.3 V 전원)."
+  },
+  {
+   "type": "AZA",
+   "name": "가속도 Z(아날로그)",
+   "unit": "m/s²",
+   "decimals": 2,
+   "slope": 29.72,
+   "offset": -49.03,
+   "cal": {
+    "kind": "two-point",
+    "refs": [
+     9.81,
+     -9.81
+    ],
+    "hint": "축을 위로, 아래로"
+   },
+   "stableBand": 0.1,
+   "note": "ADXL335 Z축 (3.3 V 전원)."
+  },
+  {
+   "type": "FLEX",
+   "name": "휨(상대값)",
+   "unit": "%",
+   "decimals": 0,
+   "slope": 20.0,
+   "offset": 0.0,
+   "min": 0,
+   "max": 100,
+   "cal": {
+    "kind": "none"
+   },
+   "stableBand": 1,
+   "note": "Flex 센서 + 10 kΩ 저항."
+  },
+  {
+   "type": "I5A",
+   "name": "전류(5 A)",
+   "unit": "A",
+   "decimals": 2,
+   "slope": 5.405,
+   "offset": -13.51,
+   "cal": {
+    "kind": "one-point",
+    "refs": [
+     0.0
+    ],
+    "hint": "전류 0"
+   },
+   "stableBand": 0.02,
+   "note": "ACS712 5 A 모듈 (185 mV/A). 0 A에서 0이 아니면 영점 보정."
+  },
+  {
+   "type": "I20A",
+   "name": "전류(20 A)",
+   "unit": "A",
+   "decimals": 2,
+   "slope": 10.0,
+   "offset": -25.0,
+   "cal": {
+    "kind": "one-point",
+    "refs": [
+     0.0
+    ],
+    "hint": "전류 0"
+   },
+   "stableBand": 0.03,
+   "note": "ACS712 20 A 모듈 (100 mV/A)."
+  },
+  {
+   "type": "I30A",
+   "name": "전류(30 A)",
+   "unit": "A",
+   "decimals": 2,
+   "slope": 15.15,
+   "offset": -37.88,
+   "cal": {
+    "kind": "one-point",
+    "refs": [
+     0.0
+    ],
+    "hint": "전류 0"
+   },
+   "stableBand": 0.05,
+   "note": "ACS712 30 A 모듈 (66 mV/A)."
+  },
+  {
+   "type": "V25",
+   "name": "전압(0~25 V)",
+   "unit": "V",
+   "decimals": 2,
+   "slope": 5.0,
+   "offset": 0.0,
+   "min": 0,
+   "max": 25,
+   "cal": {
+    "kind": "none"
+   },
+   "stableBand": 0.02,
+   "note": "전압 감지 모듈 (1/5 분압)."
+  },
+  {
+   "type": "VIB",
+   "name": "진동(상대값)",
+   "unit": "%",
+   "decimals": 0,
+   "slope": 20.0,
+   "offset": 0.0,
+   "min": 0,
+   "max": 100,
+   "cal": {
+    "kind": "none"
+   },
+   "stableBand": 1,
+   "note": "세라믹 압전 진동 센서."
+  },
+  {
+   "type": "DBA",
+   "name": "소리 크기",
+   "unit": "dBA",
+   "decimals": 1,
+   "slope": 50.0,
+   "offset": 0.0,
+   "min": 30,
+   "max": 130,
+   "cal": {
+    "kind": "none"
+   },
+   "stableBand": 1,
+   "note": "소리 크기 측정기 SEN0232 (30~130 dBA)."
+  },
+  {
+   "type": "DOX",
+   "name": "용존 산소",
+   "unit": "mg/L",
+   "decimals": 2,
+   "slope": 5.2,
+   "offset": 0.0,
+   "min": 0,
+   "max": 20,
+   "cal": {
+    "kind": "scale",
+    "refs": [
+     8.3
+    ],
+    "hint": "공기 포화된 물 (25 °C)"
+   },
+   "stableBand": 0.05,
+   "requiresCal": true,
+   "note": "아날로그 용존 산소 센서. 공기로 포화시킨 물로 보정하세요."
+  },
+  {
+   "type": "ORP",
+   "name": "산화환원전위",
+   "unit": "mV",
+   "decimals": 0,
+   "slope": -1000.0,
+   "offset": 2000.0,
+   "cal": {
+    "kind": "one-point",
+    "refs": [
+     256
+    ],
+    "hint": "ORP 표준액"
+   },
+   "stableBand": 3,
+   "note": "ORP 센서 SEN0165 (−2000~2000 mV)."
+  },
+  {
+   "type": "PULS",
+   "name": "맥박 파형(상대값)",
+   "unit": "%",
+   "decimals": 0,
+   "slope": 20.0,
+   "offset": 0.0,
+   "min": 0,
+   "max": 100,
+   "cal": {
+    "kind": "none"
+   },
+   "stableBand": 3,
+   "note": "맥박 센서. 측정 간격 0.1초로 파형을 봅니다."
+  },
+  {
+   "type": "ECG",
+   "name": "심전도(상대값)",
+   "unit": "%",
+   "decimals": 0,
+   "slope": 20.0,
+   "offset": 0.0,
+   "min": 0,
+   "max": 100,
+   "cal": {
+    "kind": "none"
+   },
+   "stableBand": 3,
+   "note": "AD8232 심전도 센서."
+  },
+  {
+   "type": "EMG",
+   "name": "근전도(상대값)",
+   "unit": "%",
+   "decimals": 0,
+   "slope": 20.0,
+   "offset": 0.0,
+   "min": 0,
+   "max": 100,
+   "cal": {
+    "kind": "none"
+   },
+   "stableBand": 3,
+   "note": "근전도 센서 (포락선 출력)."
+  },
+  {
+   "type": "GSR",
+   "name": "피부 전기 반응(상대값)",
+   "unit": "%",
+   "decimals": 0,
+   "slope": 20.0,
+   "offset": 0.0,
+   "min": 0,
+   "max": 100,
+   "cal": {
+    "kind": "none"
+   },
+   "stableBand": 1,
+   "note": "GSR 센서."
+  },
+  {
    "type": "RAW",
    "name": "사용자 정의",
    "unit": "V",
@@ -448,6 +802,186 @@
     "kind": "none"
    },
    "note": "MAX6675 K형 열전대"
+  },
+  {
+   "type": "LUX",
+   "name": "조도",
+   "unit": "lx",
+   "decimals": 0,
+   "src": "i2c",
+   "stableBand": 2,
+   "cal": {
+    "kind": "none"
+   },
+   "note": "BH1750·VEML7700·TSL2591 조도 센서"
+  },
+  {
+   "type": "TIR",
+   "name": "표면 온도(비접촉)",
+   "unit": "°C",
+   "decimals": 2,
+   "src": "i2c:0x5A",
+   "stableBand": 0.1,
+   "cal": {
+    "kind": "none"
+   },
+   "note": "MLX90614 적외선 온도"
+  },
+  {
+   "type": "VDC",
+   "name": "전압",
+   "unit": "V",
+   "decimals": 3,
+   "src": "i2c:0x40",
+   "stableBand": 0.005,
+   "cal": {
+    "kind": "none"
+   },
+   "note": "INA219·INA260 전압"
+  },
+  {
+   "type": "IDC",
+   "name": "전류",
+   "unit": "mA",
+   "decimals": 1,
+   "src": "i2c:0x40",
+   "stableBand": 0.5,
+   "cal": {
+    "kind": "none"
+   },
+   "note": "INA219·INA260 전류"
+  },
+  {
+   "type": "AX",
+   "name": "가속도 X",
+   "unit": "m/s²",
+   "decimals": 2,
+   "src": "i2c",
+   "stableBand": 0.1,
+   "cal": {
+    "kind": "none"
+   },
+   "note": "MPU6050·ADXL345·LIS3DH·LSM6DS"
+  },
+  {
+   "type": "AY",
+   "name": "가속도 Y",
+   "unit": "m/s²",
+   "decimals": 2,
+   "src": "i2c",
+   "stableBand": 0.1,
+   "cal": {
+    "kind": "none"
+   },
+   "note": "MPU6050·ADXL345·LIS3DH·LSM6DS"
+  },
+  {
+   "type": "AZ",
+   "name": "가속도 Z",
+   "unit": "m/s²",
+   "decimals": 2,
+   "src": "i2c",
+   "stableBand": 0.1,
+   "cal": {
+    "kind": "none"
+   },
+   "note": "MPU6050·ADXL345·LIS3DH·LSM6DS"
+  },
+  {
+   "type": "MAG",
+   "name": "자기장",
+   "unit": "µT",
+   "decimals": 1,
+   "src": "i2c",
+   "stableBand": 0.5,
+   "cal": {
+    "kind": "none"
+   },
+   "note": "QMC5883L·HMC5883L 지자기 센서 (세기)"
+  },
+  {
+   "type": "ECO2",
+   "name": "eCO₂(추정)",
+   "unit": "ppm",
+   "decimals": 0,
+   "src": "i2c",
+   "stableBand": 10,
+   "cal": {
+    "kind": "none"
+   },
+   "note": "SGP30·CCS811·ENS160 (휘발성 물질로 추정한 값)"
+  },
+  {
+   "type": "TVOC",
+   "name": "총휘발성유기물",
+   "unit": "ppb",
+   "decimals": 0,
+   "src": "i2c",
+   "stableBand": 5,
+   "cal": {
+    "kind": "none"
+   },
+   "note": "SGP30·CCS811·ENS160"
+  },
+  {
+   "type": "PPG",
+   "name": "맥박 파형(적외선)",
+   "unit": "",
+   "decimals": 0,
+   "src": "i2c:0x57",
+   "stableBand": 200,
+   "cal": {
+    "kind": "none"
+   },
+   "note": "MAX30102 적외선 반사값"
+  },
+  {
+   "type": "PM1",
+   "name": "미세먼지 PM1.0",
+   "unit": "µg/m³",
+   "decimals": 0,
+   "src": "uart",
+   "stableBand": 1,
+   "cal": {
+    "kind": "none"
+   },
+   "note": "PMS7003·PMS A003"
+  },
+  {
+   "type": "PM25",
+   "name": "초미세먼지 PM2.5",
+   "unit": "µg/m³",
+   "decimals": 0,
+   "src": "uart",
+   "stableBand": 1,
+   "cal": {
+    "kind": "none"
+   },
+   "note": "PMS7003·PMS A003"
+  },
+  {
+   "type": "PM10",
+   "name": "미세먼지 PM10",
+   "unit": "µg/m³",
+   "decimals": 0,
+   "src": "uart",
+   "stableBand": 1,
+   "cal": {
+    "kind": "none"
+   },
+   "note": "PMS7003·PMS A003"
+  },
+  {
+   "type": "O2I",
+   "name": "산소",
+   "unit": "%",
+   "decimals": 2,
+   "src": "i2c:0x73",
+   "stableBand": 0.05,
+   "cal": {
+    "kind": "none"
+   },
+   "note": "Gravity I2C 산소 센서 SEN0322"
   }
  ]
 }

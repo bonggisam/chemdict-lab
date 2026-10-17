@@ -428,5 +428,8 @@
  "측정을 마친 뒤 업데이트하세요.": "Atualize depois de terminar a medição.",
  "지금 업데이트": "Atualizar agora",
  "앱으로 설치": "Instalar app",
- "바탕화면·홈 화면에 아이콘이 생깁니다.": "Adiciona um ícone à área de trabalho ou à tela inicial."
+ "바탕화면·홈 화면에 아이콘이 생깁니다.": "Adiciona um ícone à área de trabalho ou à tela inicial.",
+ "센서 이름·부품 번호로 찾기 (예: MQ-3, BH1750)": "Buscar por nome do sensor ou número da peça (ex.: MQ-3, BH1750)",
+ "센서 찾기": "Buscar sensor",
+ "찾는 센서가 없습니다. 아날로그 출력 센서는 '기타 아날로그 센서'로 잴 수 있습니다.": "Sensor não encontrado. Sensores com saída analógica podem ser medidos com 'Outro sensor analógico'."
 }

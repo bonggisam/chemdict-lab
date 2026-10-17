@@ -232,3 +232,48 @@ I2C는 Qwiic 단자(UNO R4 WiFi·Nano R4의 `Wire1`, `qwiic:`)와 SDA·SCL 핀(`
 - 한 번 접속한 뒤에는 인터넷 없이 열리고, USB·블루투스 측정과 파일 저장도 그대로 됩니다.
 - 새 버전은 자동으로 바꾸지 않고 '새 버전이 있습니다 · 지금 업데이트'를 보여 줍니다 (측정 중에는 미룸). 1시간마다 새 버전을 확인합니다.
 - 크롬·엣지에서는 '앱으로 설치'가 나오면 바탕화면 아이콘으로 설치할 수 있습니다.
+
+## 추가 센서 (펌웨어 0.4.0, sensors.json v3)
+
+디바이스마트 등 국내에서 파는 아두이노 센서 모듈을 넣었습니다. 연결 안내 86종(`tools/make_guide.py`의 `MORE_PARTS`).
+
+**아날로그 type** (모든 보드, 값 = slope × V + offset):
+
+| type | 센서 | 변환 | 보정 |
+|---|---|---|---|
+| `TKA` | AD8495 K형 열전대 | 200 V − 250 °C | 1점 |
+| `CO2N` | SEN0219 적외선 CO₂ | 3125 V − 1250 ppm | 없음 |
+| `REFL` `FLEX` `VIB` `PULS` `ECG` `EMG` `GSR` | 반사·휨·압전·생체 (상대값) | 20 V % | 없음 |
+| `FLAM` `RAIN` | 불꽃·빗물 (상대값) | 100 − 20 V % | 없음 |
+| `DOUT` | DO 출력 모듈 (PIR, SW-420, 기울기, 홀, 포토 인터럽터, 광전 수위) | 0.2 V (0/1) | 없음 |
+| `AXA` `AYA` `AZA` | ADXL335 (3.3 V) | 29.72 V − 49.03 m/s² | 2점 (±9.81) |
+| `I5A` `I20A` `I30A` | ACS712 5·20·30 A | 185·100·66 mV/A, 2.5 V 영점 | 1점 (0 A) |
+| `V25` | 전압 감지 모듈 | 5 V | 없음 |
+| `DBA` | SEN0232 소리 크기 | 50 V dBA | 없음 |
+| `DOX` | 용존 산소 | 5.2 V mg/L | 배율, 필수 |
+| `ORP` | ORP SEN0165 | 2000 − 1000 V mV | 1점 |
+
+MQ-2·3·4·7·8·9·135, MG811은 기존 `GAS`, 마이크 앰프는 `SND`, 저항식 토양은 `SOIL`을 씁니다.
+
+**디지털 type** (`sensors_more.ino`, `FULL_SENSORS` 보드 = UNO R4·Nano R4·Mega만):
+
+| 연결 | type | 센서 |
+|---|---|---|
+| I2C 0x23·0x5C / 0x10 / 0x29 | `LUX` (lx) | BH1750 / VEML7700 / TSL2591 |
+| I2C 0x38 · 0x40 · 0x44·0x45 | `TA`, `RH` | AHT20·DHT20 · HTU21D·Si7021 · SHT4x |
+| I2C 0x77 (id 0x55) | `TA`, `BP` | BMP180 |
+| I2C 0x5A | `TIR`, `TA` | MLX90614 |
+| I2C 0x18–0x1F | `T` | MCP9808 |
+| I2C 0x40–0x45 | `VDC` (V), `IDC` (mA) | INA219, INA260 |
+| I2C 0x68·0x69 / 0x53·0x1D / 0x18·0x19 / 0x6A·0x6B | `AX` `AY` `AZ` (m/s²) | MPU6050 / ADXL345 / LIS3DH / LSM6DS |
+| I2C 0x0D / 0x1E | `MAG` (µT) | QMC5883L / HMC5883L |
+| I2C 0x58 / 0x5A·0x5B / 0x52·0x53 | `ECO2` (ppm), `TVOC` (ppb) | SGP30 / CCS811 / ENS160 |
+| I2C 0x61 | `CO2`, `TA`, `RH` | SCD30 |
+| I2C 0x70–0x73 | `O2I` (%) | DFRobot SEN0322 |
+| I2C 0x57 | `PPG` | MAX30102 (적외선 원값) |
+| I2C 0x29 | `DIST` (cm) | VL53L0X (Pololu 라이브러리가 있을 때만) |
+| UART (R4 D0·D1 = `Serial1`, Mega D19·D18) | `PM1` `PM25` `PM10` (µg/m³) 또는 `CO2` | PMS7003 / MH-Z19 (켤 때 하나만 판별) |
+
+- 같은 주소를 쓰는 칩은 칩 ID로 구분하고, 이미 다른 센서로 잡힌 주소는 건너뜁니다 (예: 0x40 INA219 ↔ HTU21D, 0x5A MLX90614 ↔ CCS811).
+- 연결 안내에 핀 역할 `U_RX`·`U_TX`(UART)와 연결 방식 `uart`, `digital-out`, 분류 '움직임·자기', '생체'가 더해졌습니다. UNO R3·Nano·Leonardo의 UART 핀은 `—`(지원 안 함).
+- 웹앱 센서 카드에 이름·부품 번호 찾기 칸을 두고, 연결된 센서를 앞에 보입니다.

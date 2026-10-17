@@ -428,5 +428,8 @@
  "측정을 마친 뒤 업데이트하세요.": "Update after you finish measuring.",
  "지금 업데이트": "Update now",
  "앱으로 설치": "Install app",
- "바탕화면·홈 화면에 아이콘이 생깁니다.": "Adds an icon to your desktop or home screen."
+ "바탕화면·홈 화면에 아이콘이 생깁니다.": "Adds an icon to your desktop or home screen.",
+ "센서 이름·부품 번호로 찾기 (예: MQ-3, BH1750)": "Search by sensor name or part number (e.g. MQ-3, BH1750)",
+ "센서 찾기": "Find sensor",
+ "찾는 센서가 없습니다. 아날로그 출력 센서는 '기타 아날로그 센서'로 잴 수 있습니다.": "No matching sensor. Sensors with analog output can be measured with 'Other analog sensor'."
 }

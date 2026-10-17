@@ -1,5 +1,5 @@
 /*
-  ChemDict Lab firmware v0.3.1
+  ChemDict Lab firmware v0.4.0
   기준 보드: Arduino UNO R4 WiFi (USB + 블루투스, 실제 보드 확인)
   그 밖의 보드: UNO R4 Minima, Nano R4, UNO R3, Nano, Leonardo, Mega 2560 (USB만)
 
@@ -17,9 +17,11 @@
         0x5C·0x5D  Modulino Pressure(LPS22) 기압·온도
         0x62       SCD40/41 이산화탄소·온도·습도
         0x29       TCS34725 색(R·G·B)
+        그 밖의 I2C·UART 모듈 20여 종은 sensors_more.ino (UNO R4·Nano R4·Mega)
   - 센서가 없어도 DEMO ON 명령으로 가짜 데이터를 보낼 수 있습니다.
 
   필요 라이브러리: OneWire, DallasTemperature (+ 블루투스 보드는 ArduinoBLE)
+  선택 라이브러리: VL53L0X (Pololu) — 있으면 레이저 거리 센서도 인식
   통신 규칙: protocol/PROTOCOL.md
 */
 
@@ -87,7 +89,7 @@
 #include <OneWire.h>
 #include <DallasTemperature.h>
 
-#define FW_VERSION "0.3.1"
+#define FW_VERSION "0.4.0"
 
 // ---------- 핀 ----------
 #if defined(ARDUINO_AVR_LEONARDO)
@@ -162,7 +164,7 @@ bool calHasP1[4] = { false, false, false, false };
 #if !FULL_SENSORS
 const uint8_t MAX_DS = 8;
 #elif defined(ARDUINO_ARCH_AVR)
-const uint8_t MAX_DS = 12;
+const uint8_t MAX_DS = 16;
 #else
 const uint8_t MAX_DS = 20;
 #endif
@@ -917,6 +919,7 @@ void detectSensors() {
   detectLps();
   detectScd();
   detectTcs();
+  detectMoreAll();   // sensors_more.ino
 #endif
 #if MID_SENSORS
   detectHx();
@@ -947,6 +950,7 @@ void pollSensors() {
   pollTcs();
   pollTc();
   pollUs();
+  pollMoreAll();
 #endif
   pollDHT();
 }

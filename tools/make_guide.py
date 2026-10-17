@@ -14,10 +14,13 @@ COMMON = [
 # ---------------------------------------------------------------- 보드
 # sensorSet: full(모든 센서) · lite(UNO R3·Nano: LPS22·SCD4x·TCS34725·MAX6675·HC-SR04 제외)
 #            · mini(Leonardo: lite에서 BME280·HX711도 제외) · none(펌웨어 없음)
-def pins5(sda='SDA (A4)', scl='SCL (A5)', onewire='D2', pwr='5V'):
+def pins5(sda='SDA (A4)', scl='SCL (A5)', onewire='D2', pwr='5V', urx='D0 (RX)', utx='D1 (TX)'):
     return {"PWR": pwr, "PWR3": "3.3V", "GND": "GND", "SDA": sda, "SCL": scl, "A": "A0",
             "ONEWIRE": onewire, "DHT": "D4", "HX_DT": "D5", "HX_SCK": "D6",
-            "TRIG": "D7", "ECHO": "D8", "TC_CS": "D10", "TC_SO": "D12", "TC_SCK": "D13"}
+            "TRIG": "D7", "ECHO": "D8", "TC_CS": "D10", "TC_SO": "D12", "TC_SCK": "D13",
+            "U_RX": urx, "U_TX": utx}
+
+NO_UART = dict(urx="—", utx="—")
 
 V33_NOTE = "3.3 V 보드입니다. 5 V 신호를 내는 모듈(MQ 가스, HC-SR04, 5 V 전용 pH 모듈 등)의 신호선을 바로 연결하지 않습니다."
 CH340 = "호환 보드(CH340 칩)는 맥에 CH340 드라이버가 필요할 수 있습니다. 포트가 안 보이면 판매처의 드라이버를 설치합니다."
@@ -38,20 +41,20 @@ BOARDS = [
     dict(id="mega-2560", name="Mega 2560 (호환 포함)", match=["Mega 2560"], firmware="compiled", sensorSet="full",
          firmwareNote="모든 센서 지원 (컴파일 확인, 실제 보드 확인 전). USB로만 연결됩니다.",
          usb="USB-B (맥북은 변환 필요)", ble=False, logic="5 V", adc="10비트 (0~5 V)", qwiic="없음",
-         pins=pins5(sda="D20 (SDA)", scl="D21 (SCL)"), notes=["I2C 핀이 A4·A5가 아니라 D20·D21입니다.", CH340]),
+         pins=pins5(sda="D20 (SDA)", scl="D21 (SCL)", urx="D19 (RX1)", utx="D18 (TX1)"), notes=["I2C 핀이 A4·A5가 아니라 D20·D21입니다.", CH340, "UART 센서(미세먼지·MH-Z19)는 D19(RX1)·D18(TX1)에 연결합니다."]),
     dict(id="uno-r3", name="UNO R3 (호환 포함)", match=["UNO R3"], firmware="compiled", sensorSet="lite",
-         firmwareNote="메모리가 작아 가벼운 버전입니다 (기압 LPS22, CO₂, 색, 열전대, 초음파 제외). 컴파일 확인, 실제 보드 확인 전.",
+         firmwareNote="메모리가 작아 가벼운 버전입니다 (기압 LPS22, CO₂, 색, 열전대, 초음파와 추가 I2C·UART 센서 제외). 아날로그 센서는 모두 됩니다. 컴파일 확인, 실제 보드 확인 전.",
          usb="USB-B (맥북은 변환 필요)", ble=False, logic="5 V", adc="10비트 (0~5 V)", qwiic="없음",
-         pins=pins5(), notes=[CH340]),
+         pins=pins5(**NO_UART), notes=[CH340]),
     dict(id="nano", name="Nano (호환 포함)", match=["Nano"], firmware="compiled", sensorSet="lite",
          firmwareNote="가벼운 버전입니다 (UNO R3와 같음). 컴파일 확인, 실제 보드 확인 전.",
          usb="Mini-USB (호환품은 USB-C도 있음)", ble=False, logic="5 V", adc="10비트 (0~5 V)", qwiic="없음",
-         pins=pins5(sda="A4 (SDA)", scl="A5 (SCL)"),
+         pins=pins5(sda="A4 (SDA)", scl="A5 (SCL)", **NO_UART),
          notes=[CH340, "호환 Nano에 업로드가 안 되면 IDE의 Tools > Processor에서 'ATmega328P (Old Bootloader)'를 고릅니다."]),
     dict(id="leonardo", name="Leonardo", match=["Leonardo"], firmware="compiled", sensorSet="mini",
          firmwareNote="가장 가벼운 버전입니다 (BME280·HX711도 제외). 컴파일 확인, 실제 보드 확인 전.",
          usb="Micro-USB", ble=False, logic="5 V", adc="10비트 (0~5 V)", qwiic="없음",
-         pins=pins5(sda="D2 (SDA)", scl="D3 (SCL)", onewire="D9"),
+         pins=pins5(sda="D2 (SDA)", scl="D3 (SCL)", onewire="D9", **NO_UART),
          notes=["D2·D3이 I2C 핀이라 DS18B20은 D9에 연결합니다."]),
     dict(id="nano-every", name="Nano Every", match=["Nano Every"], firmware="none", sensorSet="none",
          firmwareNote="ChemDict 펌웨어 준비 중입니다. 연결 방법만 참고하세요.",
@@ -136,6 +139,19 @@ CONNECTORS = {
         dict(term="SO", pin="TC_SO", color="yellow")],
         steps=["K형 열전대의 (+)·(−) 선을 모듈의 + / − 나사 단자에 연결합니다 (보통 빨강 = −, 노랑·파랑 = +, 반대면 온도가 내려감)."],
         cautions=[]),
+    "uart": dict(name="UART 4선 (TX·RX 엇갈려)", wires=[
+        dict(term="VCC (5V)", pin="PWR", color="red"), dict(term="GND", pin="GND", color="black"),
+        dict(term="TX (센서가 보냄)", pin="U_RX", color="green"), dict(term="RX (센서가 받음)", pin="U_TX", color="yellow")],
+        steps=["센서의 TX는 보드의 RX에, 센서의 RX는 보드의 TX에 엇갈려 연결합니다.",
+               "UART 센서는 한 번에 하나만 연결합니다 (미세먼지 또는 MH-Z19 중 하나)."],
+        cautions=["UNO R3·Nano·Leonardo는 이 핀을 USB 통신에 쓰므로 UART 센서를 지원하지 않습니다.",
+                  "센서를 꽂은 뒤 보드를 다시 연결하거나 '센서 다시 찾기'를 누릅니다 (켜질 때 종류를 알아냄)."]),
+    "digital-out": dict(name="디지털 출력(DO) 3선", wires=[
+        dict(term="VCC (+)", pin="PWR", color="red"), dict(term="GND (−)", pin="GND", color="black"),
+        dict(term="DO (디지털 출력)", pin="A", color="green")],
+        steps=["DO 핀을 A0~A3 중 하나에 꽂고, '꽂을 포트'에서 같은 포트를 누릅니다.",
+               "값 1은 감지됨, 0은 감지 안 됨입니다 (모듈에 따라 반대일 수 있음). 감도는 모듈의 가변저항으로 맞춥니다."],
+        cautions=["켜짐·꺼짐만 기록합니다. 아주 짧은 순간(0.1초 이하)은 놓칠 수 있습니다."]),
     "ultrasonic": dict(name="초음파 4선", wires=[
         dict(term="VCC", pin="PWR", color="red"), dict(term="TRIG", pin="TRIG", color="yellow"),
         dict(term="ECHO", pin="ECHO", color="green"), dict(term="GND", pin="GND", color="black")],
@@ -267,6 +283,134 @@ PARTS = [
            ["아날로그 출력이 있는 센서"], ["전압을 그대로 기록합니다. '보정'에서 기준값 두 개로 단위를 맞출 수 있습니다."]),
 ]
 
+# ---------------------------------------------------------------- 추가 센서 (디바이스마트 판매 모듈, 펌웨어 0.4.0)
+# I2C·UART 센서는 UNO R4·Nano R4·Mega(full)에서만 인식. 아날로그 센서는 모든 보드.
+F = "full"
+MORE_PARTS = [
+    # 온도
+    analog("ad8495", "K형 열전대 AD8495 (아날로그 고온)", "온도", "TKA",
+           ["AD8495 열전대 앰프 모듈", "K형 열전대", "점퍼선 3개"], ["5 mV/°C 출력입니다. 열전대 끝만 가열 부위에 댑니다."]),
+    part("mlx90614", "비접촉 적외선 온도 MLX90614 (GY-906)", "온도", "i2c", ["TIR", "TA"],
+         ["MLX90614 모듈", "점퍼선 4개"], ["물체 표면 온도를 닿지 않고 잽니다. 센서 시야(약 35°) 안에 대상만 들어오게 합니다.",
+          "반짝이는 금속 표면은 실제보다 낮게 나옵니다."], minSet=F, addr="0x5A"),
+    part("mcp9808", "정밀 온도 센서 MCP9808", "온도", "i2c", ["T"],
+         ["MCP9808 모듈", "점퍼선 4개"], ["±0.25 °C 정밀 온도 (0.0625 °C 단위)."], minSet=F, addr="0x18"),
+    # 온습도·기압
+    part("aht20", "AHT20 / DHT20 온습도", "온습도", "i2c", ["TA", "RH"],
+         ["AHT20 또는 DHT20(I2C) 모듈", "점퍼선 4개"], ["DHT20은 이름은 비슷하지만 I2C입니다 (D4가 아니라 SDA·SCL)."], minSet=F, addr="0x38"),
+    part("htu21d", "HTU21D / Si7021 / SHT21 온습도", "온습도", "i2c", ["TA", "RH"],
+         ["HTU21D·Si7021 모듈", "점퍼선 4개"], ["INA219와 주소(0x40)가 같습니다. 둘을 함께 쓰지 않습니다."], minSet=F, addr="0x40"),
+    part("sht40", "SHT40 / SHT41 온습도", "온습도", "i2c", ["TA", "RH"],
+         ["SHT40 모듈 (Qwiic 가능)", "점퍼선 4개"], ["정밀 온습도 (±0.2 °C)."], minSet=F, addr="0x44"),
+    part("bmp180", "BMP180 기압 센서 (GY-68)", "기압·압력", "i2c", ["TA", "BP"],
+         ["BMP180 모듈", "점퍼선 4개"], ["구형 센서입니다. 새로 산다면 BMP280을 권장합니다."], minSet=F, addr="0x77"),
+    # 기체
+    analog("mq-2", "MQ-2 가연성 가스·연기 (상대값)", "기체", "GAS", ["MQ-2 모듈 (AO 핀)", "점퍼선 3개"],
+           ["LPG·프로판·수소·연기에 반응합니다. 3분 이상 예열합니다.", "센서가 뜨거워집니다. 손대지 않습니다."]),
+    analog("mq-3", "MQ-3 알코올 가스 (상대값)", "기체", "GAS", ["MQ-3 모듈 (AO 핀)", "점퍼선 3개"],
+           ["에탄올 증기에 반응합니다. 발효·증발 실험에 씁니다. 3분 이상 예열합니다."]),
+    analog("mq-4", "MQ-4 메탄 가스 (상대값)", "기체", "GAS", ["MQ-4 모듈 (AO 핀)", "점퍼선 3개"], ["메탄(도시가스)에 반응합니다."]),
+    analog("mq-7", "MQ-7 일산화탄소 (상대값)", "기체", "GAS", ["MQ-7 모듈 (AO 핀)", "점퍼선 3개"],
+           ["불완전 연소 비교용입니다. 일산화탄소는 위험하므로 밀폐된 곳에서 만들지 않습니다."]),
+    analog("mq-8", "MQ-8 수소 가스 (상대값)", "기체", "GAS", ["MQ-8 모듈 (AO 핀)", "점퍼선 3개"], ["금속+산 반응, 물의 전기 분해에서 나오는 수소 비교."]),
+    analog("mq-9", "MQ-9 일산화탄소·가연성 가스 (상대값)", "기체", "GAS", ["MQ-9 모듈 (AO 핀)", "점퍼선 3개"], ["예열 후 상대 변화만 봅니다."]),
+    analog("mq-135", "MQ-135 공기질 (상대값)", "기체", "GAS", ["MQ-135 모듈 (AO 핀)", "점퍼선 3개"], ["암모니아·벤젠·CO₂ 등 여러 기체에 함께 반응합니다 (구분 못 함)."]),
+    analog("mg811", "MG811 이산화탄소 (아날로그, 상대값)", "기체", "GAS", ["MG811 모듈 (Gravity SEN0159)", "점퍼선 3개"],
+           ["예열이 길고(10분 이상) 값이 반대로 움직입니다 (CO₂가 많으면 전압이 내려감). 정확한 값은 SCD40·MH-Z19를 씁니다."]),
+    analog("co2-ndir-analog", "적외선 CO₂ 센서 (아날로그, SEN0219)", "기체", "CO2N", ["SEN0219 모듈", "점퍼선 3개"],
+           ["0.4~2.0 V가 0~5000 ppm입니다. 3분 예열합니다."]),
+    part("scd30", "이산화탄소 센서 SCD30", "기체", "i2c", ["CO2", "TA", "RH"],
+         ["SCD30 모듈 (Qwiic·Grove)", "점퍼선 4개"], ["400~10000 ppm. 2초마다 새 값이 나옵니다."], minSet=F, addr="0x61"),
+    part("mhz19", "이산화탄소 센서 MH-Z19C (NDIR, UART)", "기체", "uart", ["CO2"],
+         ["MH-Z19C(또는 B)", "점퍼선 4개"], ["400~5000 ppm. 켠 뒤 3분 예열합니다.", "보드를 켤 때 연결되어 있어야 인식합니다."], minSet=F),
+    part("sgp30", "공기질 센서 SGP30 (TVOC·eCO₂)", "기체", "i2c", ["ECO2", "TVOC"],
+         ["SGP30 모듈", "점퍼선 4개"], ["eCO₂는 휘발성 물질로 추정한 값이라 실제 CO₂가 아닙니다. 처음 15초는 400 ppm으로 나옵니다."], minSet=F, addr="0x58"),
+    part("ens160", "공기질 센서 ENS160 (TVOC·eCO₂)", "기체", "i2c", ["ECO2", "TVOC"],
+         ["ENS160 모듈 (Gravity SEN0514 등)", "점퍼선 4개"], ["처음 켜면 몇 분 동안 값이 안정되지 않습니다.", "eCO₂는 추정값입니다."], minSet=F, addr="0x53"),
+    part("o2-i2c", "산소 센서 Gravity I2C (SEN0322)", "기체", "i2c", ["O2I"],
+         ["SEN0322 산소 센서", "점퍼선 4개 (Gravity 케이블)"], ["0~25 %. 연소·호흡의 산소 소모, 과산화수소 분해의 산소 발생을 잽니다.",
+          "처음 쓰면 맑은 공기에서 20.9 %가 나오는지 확인합니다."], minSet=F, addr="0x73"),
+    part("pms7003", "미세먼지 센서 PMS7003 / PMS A003", "기체", "uart", ["PM1", "PM25", "PM10"],
+         ["PMS7003 + 변환 보드(1.27 mm → 2.54 mm)", "점퍼선 4개"], ["PM1.0·PM2.5·PM10(µg/m³)을 1초마다 보냅니다.",
+          "보드를 켤 때 연결되어 있어야 인식합니다."], minSet=F),
+    # 빛
+    part("bh1750", "조도 센서 BH1750 (GY-302, lx)", "빛·색", "i2c", ["LUX"],
+         ["BH1750 모듈", "점퍼선 4개"], ["1~65535 lx. 광합성 빛 세기, 거리-빛 세기 실험에 좋습니다."], minSet=F, addr="0x23"),
+    part("tsl2591", "고감도 조도 센서 TSL2591", "빛·색", "i2c", ["LUX"],
+         ["TSL2591 모듈", "점퍼선 4개"], ["아주 어두운 빛(루미놀 발광 등)도 잽니다."], minSet=F, addr="0x29"),
+    analog("tcrt5000", "적외선 반사 센서 TCRT5000", "빛·색", "REFL", ["TCRT5000 모듈 (AO 핀)", "점퍼선 3개"],
+           ["가까운 면의 반사 정도(상대값)입니다. 회전 원판에 붙인 흰 테이프로 회전수를 셀 수 있습니다."]),
+    analog("flame", "불꽃 센서 (적외선)", "빛·색", "FLAM", ["불꽃 센서 모듈 (AO 핀)", "점퍼선 3개"],
+           ["불꽃 세기의 상대값입니다. 센서를 불에서 20 cm 이상 떨어뜨립니다."]),
+    analog("photo-gate", "포토 인터럽터 (빛 차단 감지)", "빛·색", "DOUT", ["포토 인터럽터 모듈 (DO 핀)", "점퍼선 3개"],
+           ["홈 사이를 물체가 지나가면 0↔1로 바뀝니다. 0.1초보다 빠른 통과는 놓칠 수 있습니다."], connector="digital-out"),
+    # 거리
+    part("vl53l0x", "레이저 거리 센서 VL53L0X (ToF)", "무게·거리·힘", "i2c", ["DIST"],
+         ["VL53L0X 모듈", "점퍼선 4개"], ["약 3~200 cm. 초음파보다 작은 물체·짧은 거리에 좋습니다.",
+          "펌웨어를 직접 올릴 때는 Pololu VL53L0X 라이브러리가 필요합니다."], minSet=F, addr="0x29"),
+    analog("flex", "휨 센서 (Flex)", "무게·거리·힘", "FLEX", ["Flex 센서", "10 kΩ 저항", "브레드보드"],
+           ["휜 정도의 상대값입니다."], connector="analog-divider"),
+    # 움직임·자기
+    part("mpu6050", "가속도·자이로 MPU6050 (GY-521) / MPU9250", "움직임·자기", "i2c", ["AX", "AY", "AZ"],
+         ["MPU6050 모듈", "점퍼선 4개"], ["x·y·z 가속도(m/s²)를 잽니다. 가만히 두면 위쪽 축이 약 9.8입니다."], minSet=F, addr="0x68"),
+    part("adxl345", "가속도 센서 ADXL345 (GY-291)", "움직임·자기", "i2c", ["AX", "AY", "AZ"],
+         ["ADXL345 모듈", "점퍼선 4개"], ["자유 낙하·충돌·진동 실험에 씁니다."], minSet=F, addr="0x53"),
+    part("lis3dh", "가속도 센서 LIS3DH", "움직임·자기", "i2c", ["AX", "AY", "AZ"],
+         ["LIS3DH 모듈", "점퍼선 4개"], ["±2 g 범위로 잽니다."], minSet=F, addr="0x18"),
+    part("lsm6ds", "가속도·자이로 LSM6DSOX", "움직임·자기", "i2c", ["AX", "AY", "AZ"],
+         ["LSM6DSOX 모듈 (Qwiic)", "Qwiic 케이블"], ["±2 g 범위로 잽니다."], minSet=F, addr="0x6A"),
+    analog("adxl335", "가속도 센서 ADXL335 (아날로그 3축)", "움직임·자기", "AXA", ["ADXL335 모듈", "점퍼선 5개"],
+           ["X·Y·Z 출력을 A0·A1·A2에 꽂고 각 포트를 AXA·AYA·AZA로 고릅니다.", "VCC는 3.3V에 연결합니다."]),
+    part("magnetometer", "지자기 센서 QMC5883L / HMC5883L (GY-271)", "움직임·자기", "i2c", ["MAG"],
+         ["GY-271 모듈", "점퍼선 4개"], ["자기장 세기(µT)입니다. 지구 자기장은 약 50 µT, 자석을 가까이 하면 커집니다."], minSet=F, addr="0x0D"),
+    analog("pir", "인체 감지 센서 HC-SR501 (PIR)", "움직임·자기", "DOUT", ["HC-SR501 모듈 (OUT 핀)", "점퍼선 3개"],
+           ["움직임이 있으면 1입니다. 켠 뒤 약 1분은 값이 흔들립니다."], connector="digital-out"),
+    analog("vibration", "진동 감지 센서 SW-420", "움직임·자기", "DOUT", ["SW-420 모듈 (DO 핀)", "점퍼선 3개"],
+           ["진동이 있으면 0↔1로 바뀝니다."], connector="digital-out"),
+    analog("tilt", "기울기 센서 SW-520D", "움직임·자기", "DOUT", ["SW-520D 모듈 (DO 핀)", "점퍼선 3개"], ["기울면 0↔1로 바뀝니다."], connector="digital-out"),
+    analog("hall", "홀 센서 A3144 (자석 감지)", "움직임·자기", "DOUT", ["A3144 홀 센서 모듈 (DO 핀)", "점퍼선 3개"],
+           ["자석의 한쪽 극이 가까이 오면 바뀝니다. 바퀴에 자석을 붙여 회전을 셉니다."], connector="digital-out"),
+    analog("piezo", "세라믹 압전 진동 센서", "움직임·자기", "VIB", ["압전 진동 센서 (DFR0052 등)", "점퍼선 3개"],
+           ["두드린 세기의 상대값입니다. 짧은 충격은 측정 간격을 0.1초로 둡니다."]),
+    # 전기·소리
+    part("ina219", "전압·전류 센서 INA219", "전기·소리", "i2c", ["VDC", "IDC"],
+         ["INA219 모듈", "점퍼선 4개 + 측정 회로선"], ["0~26 V, ±3.2 A. 회로 중간(+쪽)에 VIN+ → VIN−로 끼웁니다.",
+          "화학 전지·전기 분해·태양전지의 전류를 정확히 잽니다."], minSet=F, addr="0x40"),
+    part("ina260", "전압·전류 센서 INA260", "전기·소리", "i2c", ["VDC", "IDC"],
+         ["INA260 모듈", "점퍼선 4개 + 측정 회로선"], ["0~36 V, ±15 A."], minSet=F, addr="0x40"),
+    analog("acs712", "전류 센서 ACS712 (5 A)", "전기·소리", "I5A", ["ACS712 5A 모듈", "점퍼선 3개"],
+           ["0.1 A보다 작은 전류는 정확하지 않습니다 (작은 전류는 INA219).", "20 A·30 A 모듈은 '포트 직접 설정'에서 I20A·I30A를 고릅니다."]),
+    analog("voltage-25", "전압 센서 모듈 (0~25 V 분압)", "전기·소리", "V25", ["전압 감지 모듈", "점퍼선 3개"],
+           ["5 V보다 높은 전압(최대 25 V)을 잽니다. 모듈의 VCC·GND 단자에 측정할 전압을 연결합니다."]),
+    analog("sound-level", "소리 크기 측정기 (dBA, SEN0232)", "전기·소리", "DBA", ["SEN0232 모듈", "점퍼선 3개"],
+           ["30~130 dBA의 실제 소리 크기입니다."]),
+    analog("mic-amp", "마이크 앰프 MAX4466 / MAX9814", "전기·소리", "SND", ["MAX4466·MAX9814 모듈", "점퍼선 3개"],
+           ["소리 세기의 상대값입니다. 파형(진동수)은 측정 간격이 길어 볼 수 없습니다."]),
+    # 물
+    analog("dissolved-oxygen", "용존 산소 센서 (Gravity DO)", "물·용액", "DOX", ["SEN0237 DO 센서 키트", "점퍼선 3개"],
+           ["전극에 전해액을 채워 쓰고, 보정 후 사용합니다.", "수초 광합성, 수온과 용존 산소 실험에 씁니다."]),
+    analog("orp", "ORP(산화환원전위) 센서", "물·용액", "ORP", ["SEN0165 ORP 키트", "점퍼선 3개"],
+           ["−2000~2000 mV. 표준액(예: 256 mV)으로 확인 후 씁니다."]),
+    analog("rain", "빗물 감지 센서", "물·용액", "RAIN", ["빗물 감지판 + LM393 모듈 (AO 핀)", "점퍼선 3개"],
+           ["젖을수록 값이 커집니다 (상대값). 회로 부분은 물에 넣지 않습니다."]),
+    analog("soil-resistive", "토양 수분 센서 (저항식)", "물·용액", "SOIL", ["저항식 토양 센서 + LM393 모듈", "점퍼선 3개"],
+           ["전극이 쉽게 부식됩니다. 오래 꽂아 둘 때는 정전식을 씁니다."]),
+    analog("water-level-optical", "광전 수위 센서 (SEN0205)", "물·용액", "DOUT", ["SEN0205 모듈", "점퍼선 3개"],
+           ["물이 닿으면 0↔1로 바뀝니다."], connector="digital-out"),
+    # 생체
+    analog("pulse", "맥박 센서 (Pulse Sensor)", "생체", "PULS", ["Pulse Sensor", "점퍼선 3개"],
+           ["손가락 끝이나 귓불에 대고 움직이지 않습니다. 측정 간격 0.1초로 파형을 봅니다.", "의료용이 아닙니다."]),
+    part("max30102", "맥박·산소포화도 센서 MAX30102", "생체", "i2c", ["PPG"],
+         ["MAX30102 모듈", "점퍼선 4개"], ["적외선 맥박 파형(상대값)을 기록합니다. 봉우리 간격으로 맥박 수를 구합니다.", "의료용이 아닙니다."], minSet=F, addr="0x57"),
+    analog("ecg", "심전도 센서 AD8232", "생체", "ECG", ["AD8232 모듈", "전극 패드 3개"],
+           ["전극을 붙이고 움직이지 않습니다. 노트북은 충전기를 빼고 씁니다 (잡음).", "의료용이 아닙니다."]),
+    analog("emg", "근전도 센서 (Grove EMG · SEN0240)", "생체", "EMG", ["근전도 모듈", "전극 패드"],
+           ["근육에 힘을 줄 때 커지는 상대값입니다."]),
+    analog("gsr", "피부 전기 반응 센서 (Grove GSR)", "생체", "GSR", ["GSR 모듈", "손가락 전극"],
+           ["긴장·자극에 따라 바뀌는 상대값입니다."]),
+]
+PARTS += MORE_PARTS
+
 # 문제 해결: 증상 → 차례로 해 볼 것 (웹앱 3단계, 애플 앱 같은 파일)
 TROUBLES = [
     dict(id="no-port", title="USB로 연결할 때 보드가 목록에 안 보여요",
@@ -367,7 +511,7 @@ BREADBOARD = dict(
     ],
 )
 
-ORDER = ["온도", "온습도", "기압·압력", "기체", "빛·색", "물·용액", "무게·거리·힘", "전기·소리"]
+ORDER = ["온도", "온습도", "기압·압력", "기체", "빛·색", "물·용액", "무게·거리·힘", "움직임·자기", "전기·소리", "생체"]
 
 out = dict(version=2, common=COMMON, categories=ORDER, boards=BOARDS, connectors=CONNECTORS, parts=PARTS, troubles=TROUBLES, breadboard=BREADBOARD,
            planned=["MH-Z19B 이산화탄소 (UART)", "PMS7003 미세먼지", "Modulino Distance·Light·Movement",

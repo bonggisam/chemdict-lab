@@ -13,10 +13,18 @@ interface Props {
 /** 센서 카드: 분류별로 보여 주고, 누르면 바로 측정 창 */
 export function SensorPicker({ board, connectedTypes, onPick }: Props) {
   const [cat, setCat] = useState<string>('전체');
-  const list = parts.filter((p) => cat === '전체' || p.category === cat);
+  const [q, setQ] = useState('');
+  const words = q.trim().toLowerCase().split(/\s+/).filter(Boolean);
+  const isOn = (p: Part) => !p.analogType && p.provides.every((ty) => connectedTypes.includes(ty));
+  const list = parts
+    .filter((p) => (cat === '전체' || p.category === cat) && (words.length === 0 || words.every((w) =>
+      [p.name, p.id, ...p.items, ...p.provides.map((ty) => typeInfo(ty)?.name ?? ty)].join(' ').toLowerCase().includes(w))))
+    .sort((a, b) => Number(isOn(b)) - Number(isOn(a)));
 
   return (
     <div className="sensor-picker">
+      <input className="sensor-search" type="search" value={q} onChange={(e) => setQ(e.target.value)}
+        placeholder={t('센서 이름·부품 번호로 찾기 (예: MQ-3, BH1750)')} aria-label={t('센서 찾기')} />
       <div className="cat-chips" role="tablist" aria-label={t('센서 분류')}>
         {['전체', ...categories].map((c) => (
           <button key={c} role="tab" aria-selected={c === cat} className={c === cat ? 'on' : ''} onClick={() => setCat(c)}>{c === '전체' ? t('전체') : catName(c)}</button>
@@ -25,7 +33,7 @@ export function SensorPicker({ board, connectedTypes, onPick }: Props) {
       <div className="sensor-cards">
         {list.map((p) => {
           const ok = partSupported(board, p);
-          const on = !p.analogType && p.provides.every((ty) => connectedTypes.includes(ty));
+          const on = isOn(p);
           return (
             <button key={p.id} className={`sensor-card ${ok ? '' : 'dim'}`} onClick={() => onPick(p)}>
               <b>{p.name}</b>
@@ -38,6 +46,7 @@ export function SensorPicker({ board, connectedTypes, onPick }: Props) {
             </button>
           );
         })}
+        {list.length === 0 && <p className="muted">{t('찾는 센서가 없습니다. 아날로그 출력 센서는 \'기타 아날로그 센서\'로 잴 수 있습니다.')}</p>}
       </div>
     </div>
   );

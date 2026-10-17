@@ -21,6 +21,13 @@
 | Leonardo | Arduino AVR Boards | 가장 가벼운 버전 | 98% / 38% | USB |
 
 라이브러리: `OneWire`, `DallasTemperature` (+ UNO R4 WiFi는 `ArduinoBLE`). 그 밖의 센서는 라이브러리 없이 직접 읽습니다.
+선택: `VL53L0X` (Pololu) — 설치되어 있으면 레이저 거리 센서도 읽습니다 (`__has_include`로 자동).
+
+### 펌웨어 0.4.0 — 추가 센서 (`sensors_more.ino`)
+
+전체 버전 보드(UNO R4·Nano R4·Mega)만 컴파일합니다. 2026-10-17 컴파일: UNO R4 WiFi 137264 B (52%) / RAM 42%, Mega hex 135684 B. UNO R3·Nano는 크기 변화 없음.
+I2C: BH1750, VEML7700, TSL2591, AHT20/DHT20, HTU21D/Si7021, SHT4x, BMP180, MLX90614, MCP9808, INA219, INA260, MPU6050, ADXL345, LIS3DH, LSM6DS, QMC5883L, HMC5883L, SGP30, CCS811, ENS160, SCD30, SEN0322 산소, MAX30102, VL53L0X. UART(`Serial1`): PMS7003 미세먼지 또는 MH-Z19 CO₂.
+`.ino`는 IDE가 이름 순서로 이어 붙이므로 사용자 정의 타입을 함수 매개변수에 쓰지 않습니다(자동 원형 선언 오류). `B1`·`B2` 같은 이름은 AVR 2진수 매크로와 겹치니 쓰지 않습니다.
 보드 종류와 센서 범위는 펌웨어가 자동으로 정합니다. 센서 연결 방법은 앱의 **연결 안내** 탭을 보세요.
 
 ## 바로 시험하기 (센서 없이)
