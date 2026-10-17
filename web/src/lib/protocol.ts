@@ -89,6 +89,13 @@ export interface Experiment {
   analysis?: AnalysisTool[];
   setup?: ExperimentSetup;     // 연결 안내 (protocol/guide.json의 parts를 참조)
   steps: string[];
+  // 실험으로 찾기 (2022 개정 교육과정)
+  level?: '중학교' | '고1 공통' | '고2·3 선택' | '공통';
+  course?: string;             // 과학 1·2·3, 통합과학1, 과학탐구실험1, 물리학, 화학 …
+  area?: string;               // 영역·단원
+  summary?: string;            // 한 줄 소개
+  textbooks?: { publisher: string; course: string; note: string; sure: 'confirmed' | 'mentioned' | 'similar' }[];
+  standardTexts?: string[];    // 성취기준 문장 (standards와 같은 순서)
 }
 
 export interface ExperimentSetup {

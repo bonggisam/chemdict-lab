@@ -4,6 +4,7 @@ import type { ResolvedSensor } from '../lib/sensors';
 import { commonRules, partById, partsFor, planned, troubles, type Board, type Part } from '../lib/guide';
 import { PartWiring } from './PartWiring';
 import { SensorPicker } from './SensorPicker';
+import { ExperimentBrowser } from './ExperimentBrowser';
 
 const SET_LABEL = { full: '모든 센서', lite: '가벼운 버전', mini: '가장 가벼운 버전', none: '' } as const;
 
@@ -102,9 +103,17 @@ export function Guide({ experiments, board, initialExpId, initialPartId, initial
           <SensorPicker board={board} connectedTypes={connectedTypes} onPick={(p) => setPartId(p.id)} />
         ) : (
           <>
-            <select value={exp?.id} onChange={(e) => { setExpId(e.target.value); setExpPart(undefined); }} aria-label="실험">
-              {experiments.map((e) => <option key={e.id} value={e.id}>{e.title}{e.setup ? '' : ' (부착 안내 준비 중)'}</option>)}
-            </select>
+            <ExperimentBrowser experiments={experiments.filter((e) => !e.sensors.includes('*'))} selectedId={exp?.id} onPick={(e) => { setExpId(e.id); setExpPart(undefined); setTimeout(() => document.getElementById('exp-detail')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50); }} />
+            {exp && (
+              <div className="exp-detail" id="exp-detail">
+                <h3>{exp.title}</h3>
+                <p className="note">{[exp.level, exp.course, exp.area].filter(Boolean).join(' · ')}</p>
+                {exp.standards.map((s, i) => <p key={s} className="std"><b>[{s}]</b> {exp.standardTexts?.[i] ?? ''}</p>)}
+                {exp.textbooks?.length ? (
+                  <ul className="pubs">{exp.textbooks.map((t, i) => <li key={i}><b>{t.publisher}</b> {t.course} — {t.note}{t.sure !== 'confirmed' ? ` (${t.sure === 'mentioned' ? '자료 언급' : '비슷한 활동'})` : ''}</li>)}</ul>
+                ) : null}
+              </div>
+            )}
             {setup?.choose && (
               <div className="part-pick" role="radiogroup" aria-label="센서 종류">
                 <span className="note">가진 센서를 고르세요</span>

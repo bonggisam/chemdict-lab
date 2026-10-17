@@ -4,6 +4,7 @@ import { SensorSetup } from './components/SensorSetup';
 import { CalibrationSheet } from './components/CalibrationSheet';
 import { Guide } from './components/Guide';
 import { SensorPicker } from './components/SensorPicker';
+import { ExperimentBrowser } from './components/ExperimentBrowser';
 import { QuickSheet, type QuickStatus } from './components/QuickSheet';
 import { boardByName, boards, loadBoardId, quickExperiment, saveBoardId, type Part } from './lib/guide';
 import { BoardStep, type FwState } from './components/BoardStep';
@@ -209,7 +210,6 @@ export default function App() {
   const sensors = useMemo(() => (hello?.sensors ?? []).map(resolveSensor), [hello]);
   const detectedBoard = boardByName(hello?.board);
   const board = detectedBoard ?? boards.find((b) => b.id === boardId) ?? boards[0];
-  const available = (e: Experiment) => e.sensors.includes('*') || e.sensors.every((t) => sensors.some((s) => s.type === t || s.id === t));
 
   // ---- 센서 설정
   const setPort = (port: string, type: string) => {
@@ -386,25 +386,10 @@ export default function App() {
           <SensorPicker board={board} connectedTypes={sensors.filter((s) => s.src !== 'demo').map((s) => s.type)} onPick={(p) => setQuick({ part: p, status: 'idle' })} />
 
           <div className="row-head sub">
-            <h2>수업 실험</h2>
+            <h2>실험으로 찾기 (교육과정)</h2>
             <button className="ghost" disabled={!sensors.some((s) => s.spec && s.spec.cal.kind !== 'none')} onClick={() => openCal()}>센서 보정</button>
           </div>
-          <div className="cards">
-            {experiments.map((e) => {
-              const ok = available(e);
-              return (
-                <button key={e.id} className="card" disabled={!ok} onClick={() => pickExperiment(e)}>
-                  <span className="subject">{e.subject}{e.mode === 'event' ? ' · 값 입력' : ''}</span>
-                  <b>{e.title}</b>
-                  {e.standards.length > 0 && <span className="codes">{e.standards.map((s) => `[${s}]`).join(' ')}</span>}
-                  <span className="need">
-                    {e.sensors.includes('*') ? '모든 센서' : e.sensors.map((t) => analogTypes.find((a) => a.type === t)?.name ?? sensors.find((s) => s.type === t)?.displayName ?? t).join(' · ')}
-                    {!ok && ' — 위에서 센서를 먼저 연결하세요'}
-                  </span>
-                </button>
-              );
-            })}
-          </div>
+          <ExperimentBrowser experiments={experiments} connectedTypes={sensors.filter((x) => x.src !== 'demo' || transportRef.current?.kind === 'sim').map((x) => x.type)} onPick={pickExperiment} />
 
           {hello && (
             <details className="advanced">

@@ -320,3 +320,17 @@ label.mini select, .fit-pick select { min-height: 44px; border: 1px solid var(--
 .export-item { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; text-align: left; padding: 12px 14px; }
 .export-item span { font-size: 13px; color: var(--muted); }
 .export-item:not(:disabled):hover { border-color: var(--accent); }
+
+/* ---- 실험으로 찾기 */
+.exp-browser { display: flex; flex-direction: column; gap: 10px; margin-bottom: 8px; }
+.level-seg button { flex: 1; font-weight: 600; }
+.exp-filter { display: flex; flex-direction: column; gap: 8px; }
+.exp-search { min-height: 44px; border: 1px solid var(--field); border-radius: 8px; background: var(--surface); padding: 0 12px; width: 100%; max-width: 420px; }
+.exp-card .sum { font-size: 14px; color: var(--ink); }
+.exp-card.on { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); background: var(--tint); }
+.exp-card .badges { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 2px; }
+.badge.pub { color: var(--accent); border-color: var(--accent); }
+.exp-detail { margin-top: 12px; border-top: 1px solid var(--line); padding-top: 12px; }
+.exp-detail h3 { margin: 0 0 2px; }
+.exp-detail .std { margin: 6px 0; font-size: 14px; }
+.pubs { margin: 6px 0 0; padding-left: 18px; font-size: 14px; }
