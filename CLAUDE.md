@@ -12,3 +12,4 @@
 - 펌웨어를 바꾸면 web/public/firmware/*.hex 를 다시 내보내고 BUNDLED_FW 를 맞춘다 (PROTOCOL.md "웹앱에서 측정 프로그램 설치").
 - 화면 흐름은 3단계: 1 보드 연결(고르기·연결·설치) → 2 실험(센서 카드·측정) → 3 연결 방법·문제 해결.
 - 목표: 학생·교사가 클릭만으로 센서를 고르고 바로 데이터를 얻는 것. 새 기능은 준비 단계를 늘리지 않는다 (센서 카드 → 연결 그림 → 측정 시작).
+- 다국어(10개): 화면 문구는 `t('한국어 원문')`(상수는 `tk`)으로 쓰고, 내용(guide·실험·센서)은 `lib/l10n.ts`가 바꾼다. 문구를 고치거나 더하면 `python3 tools/i18n_extract.py` → 각 언어 `protocol/i18n/<lang>/{ui,content}.json`에 번역 추가 → `python3 tools/i18n_check.py`가 0 빠짐이어야 한다. 번역 지침: `protocol/i18n/TRANSLATING.md`.
