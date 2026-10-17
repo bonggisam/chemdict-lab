@@ -8,6 +8,7 @@ import { ExperimentBrowser } from './components/ExperimentBrowser';
 import { QuickSheet, type QuickStatus } from './components/QuickSheet';
 import { boardByName, boards, loadBoardId, quickExperiment, saveBoardId, type Part } from './lib/guide';
 import { BoardStep, type FwState } from './components/BoardStep';
+import { loadInfo, saveInfo, type ExpInfo } from './lib/info';
 import { BUNDLED_FW, FlashError, TARGETS, boardFromUsb, flashBoard, older } from './lib/flash';
 import { experiments } from './lib/experiments';
 import { parseLine, type BoardMsg, type Experiment, type HelloMsg } from './lib/protocol';
@@ -43,6 +44,8 @@ export default function App() {
   const [boardId, setBoardId] = useState(loadBoardId);
   const pickBoard = (id: string) => { setBoardId(id); saveBoardId(id); };
   const [fw, setFw] = useState<FwState | null>(null);
+  const [info, setInfoState] = useState<ExpInfo>(loadInfo);
+  const setInfo = (i: ExpInfo) => { setInfoState(i); saveInfo(i); };
   const fwTimers = useRef<number[]>([]);
   const clearFwTimers = () => { fwTimers.current.forEach(clearTimeout); fwTimers.current = []; };
   const rescan = () => { transportRef.current?.send('HELLO'); say('ok', '센서를 다시 찾았습니다.'); };
@@ -309,6 +312,9 @@ export default function App() {
       // 값 입력 모드는 같은 측정에 계속 추가 (안정 판정용 자동 기록만 새로)
       setRuns((rs) => rs.map((r) => (r.id === id ? { ...r, rows: [] } : r)));
     }
+    // 측정 시작 시각 (처음 시작할 때만 기록, 저장 파일에 남김)
+    const now = new Date().toISOString();
+    setRuns((rs) => rs.map((r) => (r.id === id && !r.startedAt ? { ...r, startedAt: now } : r)));
     calibratingRef.current = false;
     recordingRef.current = true;
     if (transportRef.current?.kind === 'sim') send(exp.mode === 'event' ? `SIMX ${exp.event?.start ?? 0}` : 'SIMX');
@@ -465,6 +471,8 @@ export default function App() {
           say={say}
           onEventX={(x) => { if (transportRef.current?.kind === 'sim') send(`SIMX ${x}`); }}
           station={hello?.station}
+          info={info}
+          setInfo={setInfo}
         />
       )}
 

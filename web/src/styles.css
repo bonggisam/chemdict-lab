@@ -362,3 +362,12 @@ details.bb-note summary { cursor: pointer; min-height: 32px; }
 .badge.need { color: var(--mark); font-weight: 600; }
 .badge.bb { color: var(--mark); }
 @media (prefers-color-scheme: dark) { .bb-body { fill: #e9e4d8; } .bb-pin-text, .bb-label, .bb-board + text { fill: #e4ebf2; } .bb-probe + text, .bb-bat + text { fill: #111; } }
+
+/* ---- 실험 정보 */
+.info-bar { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; border: 1px dashed var(--field); border-radius: var(--radius); padding: 6px 6px 6px 14px; margin: 10px 0; font-size: 14px; }
+.info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px 14px; margin: 12px 0; }
+.info-grid label { display: flex; flex-direction: column; gap: 4px; font-size: 14px; font-weight: 600; }
+.info-grid label.wide { grid-column: 1 / -1; }
+.info-grid input, .info-grid textarea { font: inherit; font-weight: 400; min-height: 44px; border: 1px solid var(--field); border-radius: 8px; padding: 8px 10px; background: var(--surface); color: var(--ink); }
+.info-left { display: flex; gap: 8px; flex-wrap: wrap; }
+.info-sheet .sheet-actions { flex-wrap: wrap; gap: 8px; }

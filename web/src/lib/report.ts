@@ -17,6 +17,7 @@ export interface ReportRun { name: string; colorIndex: number; head: string[]; r
 export interface Report {
   title: string;
   meta: string[];           // 날짜 · 모둠 · 방식 · 간격
+  info: [string, string][]; // 실험 정보 (모둠·이름·날짜 등)
   xTitle: string;
   logX?: boolean;
   charts: ReportChart[];
@@ -55,13 +56,28 @@ function drawTable(ctx: CanvasRenderingContext2D, x: number, y: number, width: n
   return y;
 }
 
+const INFO_COLS = 2, INFO_ROW = 22;
+export const infoHeight = (r: Report) => (r.info.length ? Math.ceil(r.info.length / INFO_COLS) * INFO_ROW + 16 : 0);
+
 function header(ctx: CanvasRenderingContext2D, r: Report, W: number, M: number): number {
   ctx.fillStyle = LIGHT['--accent']; ctx.fillRect(0, 0, W, 6);
   ctx.fillStyle = LIGHT['--ink']; ctx.textBaseline = 'top'; ctx.textAlign = 'left';
   ctx.font = `700 22px ${FONT}`; ctx.fillText(r.title, M, M);
   ctx.font = `13px ${FONT}`; ctx.fillStyle = LIGHT['--muted'];
   ctx.fillText(r.meta.join('  ·  '), M, M + 32);
-  return M + 60;
+  let y = M + 60;
+  if (r.info.length) {
+    // 실험 정보 상자 (두 칸씩)
+    const h = infoHeight(r) - 6, cw = (W - 2 * M) / INFO_COLS;
+    ctx.fillStyle = LIGHT['--tint']; ctx.fillRect(M, y - 6, W - 2 * M, h);
+    r.info.forEach(([k, v], i) => {
+      const x = M + 12 + (i % INFO_COLS) * cw, yy = y + Math.floor(i / INFO_COLS) * INFO_ROW;
+      ctx.font = `600 12px ${FONT}`; ctx.fillStyle = LIGHT['--muted']; ctx.fillText(k, x, yy);
+      ctx.font = `13px ${FONT}`; ctx.fillStyle = LIGHT['--ink']; ctx.fillText(textFit(ctx, v, cw - 120), x + 96, yy - 1);
+    });
+    y += h + 10;
+  }
+  return y;
 }
 
 function notesBlock(ctx: CanvasRenderingContext2D, notes: string[], x: number, y: number, width: number): number {
@@ -75,7 +91,7 @@ export function reportImage(r: Report): HTMLCanvasElement {
   return withLight(() => {
     const W = 1000, M = 28, CH = 380, scale = 2;
     const sumH = r.summary.rows.length ? 24 * (r.summary.rows.length + 1) + 20 : 0;
-    const H = M + 60 + r.charts.length * (CH + 40) + sumH + r.notes.length * 20 + M;
+    const H = M + 60 + infoHeight(r) + 10 + r.charts.length * (CH + 40) + sumH + r.notes.length * 20 + M;
     const c = document.createElement('canvas');
     c.width = W * scale; c.height = H * scale;
     const ctx = c.getContext('2d')!;
@@ -189,11 +205,11 @@ export function reportXlsx(r: Report): Blob {
   }));
   const summary: XSheet = {
     name: '해석',
-    rows: [[r.title], r.meta, [], r.summary.head, ...r.summary.rows.map((row) => row.map(numOrText)), [], ...r.notes.map((n) => [n])],
-    boldRows: [0, 3],
+    rows: [[r.title], r.meta, ...r.info, [], r.summary.head, ...r.summary.rows.map((row) => row.map(numOrText)), [], ...r.notes.map((n) => [n])],
+    boldRows: [0, 3 + r.info.length],
     widths: [22, ...r.summary.head.slice(1).map(() => 16)],
   };
-  const graph: XSheet = { name: '그래프', rows: [[r.title], [r.meta.join(' · ')]], boldRows: [0], charts, widths: [20] };
+  const graph: XSheet = { name: '그래프', rows: [[r.title], [r.meta.join(' · ')], ...r.info], boldRows: [0], charts, widths: [16, 28] };
   return buildXlsx([graph, summary, ...runSheets]);
 }
 

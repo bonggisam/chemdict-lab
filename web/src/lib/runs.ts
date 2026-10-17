@@ -14,7 +14,8 @@ export interface Run {
   events: EventPoint[];    // 이벤트 모드에서 '값 기록'한 점
   markers: Marker[];
   prediction: Pt[];        // 첫 번째 그래프 기준 예측선
-  excluded?: number[];     // 해석에서 뺀 행 (시간 모드: rows 번호, 값 입력 모드: events 번호)
+  excluded?: number[];
+  startedAt?: string;      // 측정을 처음 시작한 시각 (ISO)     // 해석에서 뺀 행 (시간 모드: rows 번호, 값 입력 모드: events 번호)
 }
 
 let seq = 0;

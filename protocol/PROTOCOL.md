@@ -211,3 +211,10 @@ I2C는 Qwiic 단자(UNO R4 WiFi·Nano R4의 `Wire1`, `qwiic:`)와 SDA·SCL 핀(`
 - `tools/make_experiments.py`로 생성합니다 (json 직접 수정 금지). 손으로 만든 실험 5개에는 같은 스크립트가 찾기 정보만 덧붙입니다.
 - 추가 필드: `level`(중학교 / 고1 공통 / 고2·3 선택 / 공통), `course`, `area`, `summary`, `standardTexts`, `textbooks[]`(publisher, course, note, sure = confirmed·mentioned·similar).
 - 성취기준 문장은 교육과정 정리본·교육청 자료에서 옮긴 것입니다. 수업 자료에 쓰기 전 NCIC 원문과 대조합니다.
+
+## 실험 정보 (웹앱, 선택)
+
+- 측정 화면의 '실험 정보'에서 모둠·실험조, 이름, 학년·반, 장소, 날짜, 시간, 메모를 적습니다 (`web/src/lib/info.ts`).
+- 날짜·시간을 비우면 첫 측정의 시작 시각(`Run.startedAt`)이 들어갑니다. 측정마다 시작 시각과 '저장한 때'도 함께 남깁니다.
+- 저장 파일: PNG·PDF는 제목 아래 정보 상자, 엑셀은 '그래프'·'해석' 시트 위쪽, CSV는 표 위 이름–값 줄로 들어갑니다.
+- 모둠·이름·반·장소는 브라우저 저장소에 기억해 다음 실험에 미리 채웁니다 (그 기기에만).

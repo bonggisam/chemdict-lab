@@ -13,6 +13,8 @@ import { reportImage, reportPdf, reportXlsx, type Report } from '../lib/report';
 import type { XSeries } from '../lib/xlsx';
 import { breadboardFor } from '../lib/guide';
 import { BreadboardNote } from './PartWiring';
+import { InfoSheet } from './InfoSheet';
+import { infoRows, infoSummary, type ExpInfo } from '../lib/info';
 
 interface Props {
   exp: Experiment;
@@ -33,6 +35,8 @@ interface Props {
   say: (kind: 'ok' | 'err', text: string) => void;
   onEventX?: (nextX: number) => void;
   station?: number;
+  info: ExpInfo;
+  setInfo: (i: ExpInfo) => void;
 }
 
 interface ChartSpec { sensor: ResolvedSensor; label: string; unit: string; min?: number; max?: number }
@@ -68,6 +72,7 @@ export function Measure(p: Props) {
   const [showTable, setShowTable] = useState(false);
   const [calc, setCalc] = useState<CalcId>('none');
   const [exportOpen, setExportOpen] = useState(false);
+  const [infoOpen, setInfoOpen] = useState(false);
   const [eventX, setEventX] = useState<string>(String(ev?.start ?? 0));
   const [markerNote, setMarkerNote] = useState('');
   const [armedDelete, setArmedDelete] = useState<string | null>(null);
@@ -283,10 +288,7 @@ export function Measure(p: Props) {
   ]);
 
   const buildReport = (): Report => {
-    const d = new Date();
     const meta = [
-      `${d.getFullYear()}.${d.getMonth() + 1}.${d.getDate()} ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`,
-      ...(p.station ? [`모둠 ${p.station}`] : []),
       mode === 'event' ? `값 입력 · ${ev?.label}` : `시간 기록 · 간격 ${intervalText(p.intervalMs)}`,
       ...(selection ? [`해석 구간 ${fmt(Math.min(...selection))}~${fmt(Math.max(...selection))} ${xUnit}`] : []),
     ];
@@ -307,6 +309,7 @@ export function Measure(p: Props) {
     return {
       title: exp.title,
       meta,
+      info: infoRows(p.info, dataRuns, p.station),
       xTitle,
       logX,
       charts: charts.map((c) => ({
@@ -329,7 +332,13 @@ export function Measure(p: Props) {
 
   const doExport = async (k: ExportKind) => {
     if (!dataRuns.length) { p.say('err', '저장할 데이터가 없습니다.'); return; }
-    if (k === 'csv') { saveFile(new Blob([runsCSV(dataRuns, cols, xTitle)], { type: 'text/csv;charset=utf-8' }), `${baseName}.csv`); return; }
+    if (k === 'csv') {
+      const q = (x: string) => (/[",\n]/.test(x) ? `"${x.replace(/"/g, '""')}"` : x);
+      const head = [['실험', exp.title], ...infoRows(p.info, dataRuns, p.station)].map((r) => r.map(q).join(',')).join('\n');
+      const body = runsCSV(dataRuns, cols, xTitle).replace(/^\uFEFF/, '');
+      saveFile(new Blob(['\uFEFF' + head + '\n\n' + body], { type: 'text/csv;charset=utf-8' }), `${baseName}.csv`);
+      return;
+    }
     if (k === 'copy') { await copyTable(); return; }
     const r = buildReport();
     if (k === 'png') {
@@ -371,6 +380,11 @@ export function Measure(p: Props) {
       {mode === 'time' && p.intervalMs >= 2000 && !running && (
         <p className="note">간격이 길면 그래프 점이 드문드문 찍힙니다. 온습도(DHT)는 2초, 이산화탄소(SCD4x)는 5초보다 짧으면 같은 값이 반복됩니다.</p>
       )}
+
+      <div className="info-bar">
+        <span><b>실험 정보</b> {infoSummary(p.info) || <span className="note">모둠·이름·날짜 (선택) — 저장할 때 함께 남습니다</span>}</span>
+        <button className="ghost" onClick={() => setInfoOpen(true)}>{infoSummary(p.info) ? '수정' : '입력'}</button>
+      </div>
 
       {/* 측정 목록 */}
       <div className="runs">
@@ -612,6 +626,7 @@ export function Measure(p: Props) {
         </section>
       )}
 
+      {infoOpen && <InfoSheet info={p.info} onSave={p.setInfo} onClose={() => setInfoOpen(false)} />}
       {exportOpen && <ExportSheet runCount={dataRuns.length} onExport={doExport} onClose={() => setExportOpen(false)} />}
     </main>
   );
