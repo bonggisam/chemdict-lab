@@ -1,5 +1,5 @@
 /*
-  ChemDict Lab firmware v0.4.0
+  ChemDict Lab firmware v0.5.0
   기준 보드: Arduino UNO R4 WiFi (USB + 블루투스, 실제 보드 확인)
   그 밖의 보드: UNO R4 Minima, Nano R4, UNO R3, Nano, Leonardo, Mega 2560 (USB만)
 
@@ -10,14 +10,16 @@
       D4  DHT11 / DHT22 온습도
       D5·D6  HX711 무게(로드셀)        DT=D5, SCK=D6
       D7·D8  HC-SR04 초음파 거리        TRIG=D7, ECHO=D8
-      D10·D12·D13  MAX6675 K형 열전대   CS=D10, SO=D12, SCK=D13
+      D10·D12·D13  MAX6675·MAX31855 K형 열전대   CS=D10, SO=D12, SCK=D13
+      D9·D11·D12·D13  MAX31865 PT100 백금 저항 온도  CS=D9, SDI=D11 (전체 버전)
+      D3  펄스 입력 (유량계·가이거 계수기·풍속계·회전) — 앱에서 PORT D3 <종류> (전체 버전)
       I2C(Qwiic 단자와 SDA·SCL 핀 모두 검색)
         0x44·0x45  Modulino Thermo, SHT30/31 온습도
         0x76·0x77  BMP280 기압·온도, BME280 기압·온도·습도
         0x5C·0x5D  Modulino Pressure(LPS22) 기압·온도
         0x62       SCD40/41 이산화탄소·온도·습도
         0x29       TCS34725 색(R·G·B)
-        그 밖의 I2C·UART 모듈 20여 종은 sensors_more.ino (UNO R4·Nano R4·Mega)
+        그 밖의 I2C·UART 모듈은 sensors_more.ino · sensors_more2.ino (UNO R4·Nano R4·Mega)
   - 센서가 없어도 DEMO ON 명령으로 가짜 데이터를 보낼 수 있습니다.
 
   필요 라이브러리: OneWire, DallasTemperature (+ 블루투스 보드는 ArduinoBLE)
@@ -89,7 +91,7 @@
 #include <OneWire.h>
 #include <DallasTemperature.h>
 
-#define FW_VERSION "0.4.0"
+#define FW_VERSION "0.5.0"
 
 // ---------- 핀 ----------
 #if defined(ARDUINO_AVR_LEONARDO)
@@ -101,6 +103,8 @@ const uint8_t DHT_PIN = 4;
 const uint8_t HX_DT = 5, HX_SCK = 6;
 const uint8_t US_TRIG = 7, US_ECHO = 8;
 const uint8_t TC_CS = 10, TC_SO = 12, TC_SCK = 13;
+const uint8_t RTD_CS = 9, SPI_SDI = 11;   // MAX31865
+const uint8_t PULSE_PIN = 3;              // 펄스 입력 (인터럽트)
 
 const float VREF = 5.0;
 const float ADC_MAX = (1L << ADC_BITS) - 1;
@@ -110,7 +114,12 @@ const uint8_t BLE_CHUNK = 20;
 // ---------- 아날로그 포트 ----------
 // 종류(type)와 변환식(값 = slope × 전압 + offset)은 앱이 PORT 명령으로 정합니다 (protocol/sensors.json).
 const uint8_t analogPins[4] = { A0, A1, A2, A3 };
-const char* const analogSrc[4] = { "A0", "A1", "A2", "A3" };
+#if FULL_SENSORS
+const uint8_t NPORT = 5;   // 4번 = D3 펄스 입력 (값 = 초당 펄스 수 Hz)
+#else
+const uint8_t NPORT = 4;
+#endif
+const char* const analogSrc[5] = { "A0", "A1", "A2", "A3", "D3" };
 const uint8_t TYPE_LEN = 8;
 
 // ---------- EEPROM 설정 ----------
@@ -133,21 +142,27 @@ struct Settings {
 };
 Settings settings;
 
+// D3 펄스 포트 설정은 기존 설정(EEPROM) 뒤에 따로 둠 (예전 설정을 지우지 않게)
+const uint32_t PULSE_MAGIC = 0x50554C53;
+struct PulseStore { uint32_t magic; PortSetting p; };
+PulseStore pulseSet;
+PortSetting& P(int i) { return i < 4 ? settings.port[i] : pulseSet.p; }
+
 void setPort(int i, const char* type, float slope, float offset) {
-  strncpy(settings.port[i].type, type, TYPE_LEN - 1);
-  settings.port[i].type[TYPE_LEN - 1] = 0;
-  settings.port[i].slope = slope;
-  settings.port[i].offset = offset;
-  settings.port[i].calValid = 0;
+  strncpy(P(i).type, type, TYPE_LEN - 1);
+  P(i).type[TYPE_LEN - 1] = 0;
+  P(i).slope = slope;
+  P(i).offset = offset;
+  P(i).calValid = 0;
 }
 
-bool portOn(int i) { return strcmp(settings.port[i].type, "OFF") != 0; }
+bool portOn(int i) { return strcmp(P(i).type, "OFF") != 0; }
 
 // 같은 종류가 두 포트에 있으면 두 번째부터 "pH_A1"처럼 포트 이름을 붙임
 String portId(int i) {
-  String id = settings.port[i].type;
+  String id = P(i).type;
   for (int j = 0; j < i; j++) {
-    if (portOn(j) && strcmp(settings.port[j].type, settings.port[i].type) == 0) {
+    if (portOn(j) && strcmp(P(j).type, P(i).type) == 0) {
       id += "_";
       id += analogSrc[i];
       break;
@@ -156,8 +171,8 @@ String portId(int i) {
   return id;
 }
 
-float calV1[4], calRef1[4];
-bool calHasP1[4] = { false, false, false, false };
+float calV1[5], calRef1[5];
+bool calHasP1[5] = { false, false, false, false, false };
 
 // ---------- 디지털 센서 목록 ----------
 // 인식된 센서마다 한 칸. 값은 각 센서가 자기 주기로 읽어 v에 넣고, 측정 때는 v만 보냄.
@@ -186,7 +201,7 @@ int8_t regDS(const char* type, const char* tag, const char* src, uint8_t dec) {
   strncpy(d.type, type, 4); d.type[4] = 0;
   bool dup = false;
   for (uint8_t i = 0; i < nds; i++) if (!strcmp(dsx[i].type, type)) dup = true;
-  for (int i = 0; i < 4 && !dup; i++) if (portOn(i) && !strcmp(settings.port[i].type, type)) dup = true;
+  for (int i = 0; i < NPORT && !dup; i++) if (portOn(i) && !strcmp(P(i).type, type)) dup = true;
   if (dup) snprintf(d.id, sizeof(d.id), "%s_%s", type, tag);
   else { strncpy(d.id, type, sizeof(d.id) - 1); d.id[sizeof(d.id) - 1] = 0; }
   d.src = src; d.v = NAN; d.dec = dec; d.cal = 0;
@@ -238,9 +253,15 @@ void loadSettings() {
     EEPROM.put(0, settings);
   }
   if (settings.station < 1 || settings.station > 8) settings.station = 1;
+  EEPROM.get(sizeof(Settings), pulseSet);
+  if (pulseSet.magic != PULSE_MAGIC) {
+    pulseSet.magic = PULSE_MAGIC;
+    strcpy(pulseSet.p.type, "OFF"); pulseSet.p.slope = 1; pulseSet.p.offset = 0; pulseSet.p.calValid = 0;
+    EEPROM.put(sizeof(Settings), pulseSet);
+  }
 }
 
-void saveSettings() { EEPROM.put(0, settings); }
+void saveSettings() { EEPROM.put(0, settings); EEPROM.put(sizeof(Settings), pulseSet); }
 
 // =====================================================================
 // 출력: 한 줄을 조각으로 USB와 BLE에 동시에 보냄 (긴 줄도 메모리를 적게 씀)
@@ -653,12 +674,12 @@ void pollTcs() {
   tcs.last = millis();
   uint8_t d[8];
   if (!i2cRead(tcs.w, 0x29, 0xA0 | 0x14, d, 8)) return;  // 자동 증가 읽기
-  float c = d[0] | (d[1] << 8);
+  float c = (uint16_t)(d[0] | (d[1] << 8));
   if (c < 1) c = 1;
   // 전체 빛(clear) 대비 각 색의 비율(%) — 용액 색 비교용
-  setDS(tcs.iR, 100.0f * (d[2] | (d[3] << 8)) / c);
-  setDS(tcs.iG, 100.0f * (d[4] | (d[5] << 8)) / c);
-  setDS(tcs.iB, 100.0f * (d[6] | (d[7] << 8)) / c);
+  setDS(tcs.iR, 100.0f * (uint16_t)(d[2] | (d[3] << 8)) / c);
+  setDS(tcs.iG, 100.0f * (uint16_t)(d[4] | (d[5] << 8)) / c);
+  setDS(tcs.iB, 100.0f * (uint16_t)(d[6] | (d[7] << 8)) / c);
 }
 
 #endif
@@ -666,6 +687,7 @@ void pollTcs() {
 #if MID_SENSORS
 // ---------- HX711 로드셀 (DT=D5, SCK=D6) ----------
 int8_t hxIdx = -1;
+bool hxNau = false;   // 무게 칸을 NAU7802가 쓰는 중 (sensors_more2.ino)
 long hxRaw = 0;
 float hxAvg = NAN;
 
@@ -686,6 +708,7 @@ bool hxRead(long& raw) {
 
 void detectHx() {
   hxIdx = -1;
+  hxNau = false;
   pinMode(HX_DT, INPUT_PULLUP);
   pinMode(HX_SCK, OUTPUT);
   digitalWrite(HX_SCK, LOW);
@@ -700,7 +723,7 @@ void detectHx() {
 float massFromRaw(float raw) { return (raw - settings.massTare) * settings.massScale; }
 
 void pollHx() {
-  if (hxIdx < 0) return;
+  if (hxIdx < 0 || hxNau) return;
   long r;
   if (!hxRead(r)) return;
   hxRaw = r;
@@ -727,11 +750,37 @@ int tcReadRaw() {
   return (int)v;
 }
 
+// MAX31855: 32비트 (위 14비트 열전대, 아래 12비트 내부 온도)
+bool tc31855 = false;
+uint32_t tcRead32() {
+  digitalWrite(TC_CS, LOW); delayMicroseconds(2);
+  uint32_t v = 0;
+  for (int8_t i = 31; i >= 0; i--) {
+    digitalWrite(TC_SCK, HIGH); delayMicroseconds(1);
+    v = (v << 1) | digitalRead(TC_SO);
+    digitalWrite(TC_SCK, LOW); delayMicroseconds(1);
+  }
+  digitalWrite(TC_CS, HIGH);
+  return v;
+}
+float tc31855Temp(uint32_t v) { return (v & 0x00010000UL) ? NAN : ((int32_t)v >> 18) * 0.25f; }
+
 void detectTc() {
   tcIdx = -1;
+  tc31855 = false;
   pinMode(TC_CS, OUTPUT); digitalWrite(TC_CS, HIGH);
   pinMode(TC_SCK, OUTPUT); digitalWrite(TC_SCK, LOW);
   pinMode(TC_SO, INPUT_PULLUP);
+  delay(250);
+  uint32_t w = tcRead32();
+  float inner = ((int16_t)(w & 0xFFFF) >> 4) * 0.0625f;   // MAX31855 내부(냉접점) 온도
+  if (w != 0xFFFFFFFFUL && w != 0 && (w & 0x00020008UL) == 0 && inner > 5 && inner < 60) {
+    tc31855 = true;
+    tcIdx = regDS("TK", "TC", "D10:MAX31855", 2);
+    setDS(tcIdx, tc31855Temp(w));
+    tcLast = millis();
+    return;
+  }
   delay(250);
   uint16_t v = (uint16_t)tcReadRaw();
   // 모듈이 없으면 SO가 계속 1(0xFFFF) — 0번 비트(더미)와 1번 비트(장치 ID)는 항상 0
@@ -745,8 +794,72 @@ void detectTc() {
 void pollTc() {
   if (tcIdx < 0 || millis() - tcLast < 300) return;   // 변환 220 ms
   tcLast = millis();
+  if (tc31855) { setDS(tcIdx, tc31855Temp(tcRead32())); return; }
   uint16_t v = (uint16_t)tcReadRaw();
   setDS(tcIdx, (v & 0x0004) ? NAN : (v >> 3) * 0.25f);  // 2번 비트: 열전대 끊김
+}
+
+// ---------- MAX31865 PT100 (CS=D9, SDI=D11, SDO=D12, SCK=D13, SPI 모드 1) ----------
+int8_t rtdIdx = -1;
+unsigned long rtdLast = 0;
+
+uint8_t rtdXfer(uint8_t out) {
+  uint8_t in = 0;
+  for (int8_t i = 7; i >= 0; i--) {
+    digitalWrite(TC_SCK, HIGH);
+    digitalWrite(SPI_SDI, (out >> i) & 1);
+    delayMicroseconds(1);
+    in = (in << 1) | digitalRead(TC_SO);
+    digitalWrite(TC_SCK, LOW); delayMicroseconds(1);
+  }
+  return in;
+}
+void rtdWrite(uint8_t reg, uint8_t v) {
+  digitalWrite(RTD_CS, LOW); rtdXfer(reg | 0x80); rtdXfer(v); digitalWrite(RTD_CS, HIGH);
+}
+uint8_t rtdRead(uint8_t reg, uint8_t* d, uint8_t n) {
+  digitalWrite(RTD_CS, LOW); rtdXfer(reg & 0x7F);
+  for (uint8_t i = 0; i < n; i++) d[i] = rtdXfer(0xFF);
+  digitalWrite(RTD_CS, HIGH);
+  return n;
+}
+// PT100, 기준 저항 430 Ω (Adafruit·호환 모듈). Callendar–Van Dusen
+float rtdTemp() {
+  uint8_t d[2];
+  rtdRead(0x01, d, 2);
+  if (d[1] & 0x01) { rtdWrite(0x00, 0xC2); return NAN; }   // 고장 → 지우고 다시
+  float r = ((uint16_t)((d[0] << 8) | d[1]) >> 1) * 430.0f / 32768.0f;
+  const float A = 3.9083e-3f, B = -5.775e-7f;
+  float z = A * A - 4 * B * (1 - r / 100.0f);
+  if (z < 0) return NAN;
+  float t = (-A + sqrt(z)) / (2 * B);
+  if (t < 0) {   // 0 °C 아래 근사
+    float rr = r, r2 = rr * rr, r3 = r2 * rr;   // Adafruit 5차 근사
+    t = -242.02f + 2.2228f * rr + 2.5859e-3f * r2 - 4.8260e-6f * r3 - 2.8183e-8f * r3 * rr + 1.5243e-10f * r3 * r2;
+  }
+  return t;
+}
+
+void detectRtd() {
+  rtdIdx = -1;
+  pinMode(RTD_CS, OUTPUT); digitalWrite(RTD_CS, HIGH);
+  pinMode(SPI_SDI, OUTPUT);
+  pinMode(TC_SCK, OUTPUT); digitalWrite(TC_SCK, LOW);
+  pinMode(TC_SO, INPUT_PULLUP);
+  rtdWrite(0x00, 0xC2);   // 바이어스 켜기, 자동 변환, 2·4선, 60 Hz, 고장 지우기
+  delay(70);
+  uint8_t c;
+  rtdRead(0x00, &c, 1);
+  if ((c & 0xFD) != 0xC0) return;
+  rtdIdx = regDS("TPT", "RTD", "D9:MAX31865", 2);
+  setDS(rtdIdx, rtdTemp());
+  rtdLast = millis();
+}
+
+void pollRtd() {
+  if (rtdIdx < 0 || millis() - rtdLast < 200) return;
+  rtdLast = millis();
+  setDS(rtdIdx, rtdTemp());
 }
 
 // ---------- HC-SR04 초음파 (TRIG=D7, ECHO=D8) ----------
@@ -888,6 +1001,7 @@ float demoAnalog(const char* type, float t) {
   if (!strcmp(type, "V")) return 1.10f + demoNoise(0.005f);
   if (!strcmp(type, "TL") || !strcmp(type, "TM36")) return demoTemp(t);
   if (!strcmp(type, "P")) return 101.3f + 0.5f * t + demoNoise(0.3f);
+  if (!strcmp(type, "CPM") || !strcmp(type, "USVH")) return 0.4f + demoNoise(0.05f);
   return 2.5f + demoNoise(0.01f);
 }
 
@@ -927,6 +1041,8 @@ void detectSensors() {
 #if FULL_SENSORS
   detectTc();
   detectUs();
+  detectRtd();
+  detectNau();       // sensors_more2.ino (HX711이 없을 때)
 #endif
   detectDHT();
   registerDemo();
@@ -949,6 +1065,7 @@ void pollSensors() {
   pollScd();
   pollTcs();
   pollTc();
+  pollRtd();
   pollUs();
   pollMoreAll();
 #endif
@@ -978,9 +1095,9 @@ void sendHello() {
   out.print(running ? F(",\"running\":true") : F(",\"running\":false"));
   out.print(F(",\"sensors\":["));
   bool first = true;
-  for (int i = 0; i < 4; i++) {
+  for (int i = 0; i < NPORT; i++) {
     if (!portOn(i)) continue;
-    sensorJson(first, portId(i).c_str(), settings.port[i].type, analogSrc[i], settings.port[i].calValid);
+    sensorJson(first, portId(i).c_str(), P(i).type, analogSrc[i], P(i).calValid);
   }
   for (uint8_t i = 0; i < nds; i++) sensorJson(first, dsx[i].id, dsx[i].type, dsx[i].src, dsx[i].cal);
   out.print(F("]}"));
@@ -994,7 +1111,65 @@ float readVoltage(uint8_t pin) {
   return (sum / (float)N) * VREF / ADC_MAX;
 }
 
-float analogValue(int i, float volt) { return settings.port[i].slope * volt + settings.port[i].offset; }
+float analogValue(int i, float x) { return P(i).slope * x + P(i).offset; }
+
+// ---------- D3 펄스 입력: 1초마다 센 수를 60칸에 기록 ----------
+#if FULL_SENSORS
+volatile uint32_t pulseCount = 0;
+void pulseIsr() { pulseCount++; }
+uint16_t pulseHist[60];
+uint8_t pulseHead = 0, pulseFilled = 0;
+uint32_t pulsePrev = 0;
+unsigned long pulseSecMs = 0;
+
+void pulseUpdate() {
+  unsigned long el = millis() - pulseSecMs;
+  if (el < 1000) return;
+  uint8_t k = el / 1000;                 // 센서 찾기 등으로 늦어지면 여러 칸에 나눠 넣음
+  if (k > 60) k = 60;
+  pulseSecMs = millis() - (el % 1000);
+  noInterrupts(); uint32_t c = pulseCount; interrupts();
+  uint32_t d = (c - pulsePrev) / k; pulsePrev = c;
+  for (uint8_t j = 0; j < k; j++) {
+    pulseHist[pulseHead] = d > 65535UL ? 65535 : d;
+    pulseHead = (pulseHead + 1) % 60;
+    if (pulseFilled < 60) pulseFilled++;
+  }
+}
+
+// 평균 낼 시간: 가이거(CPM·USVH) 60초, 심박(BPM) 10초, 나머지 2초
+float pulseHz() {
+  const char* t = pulseSet.p.type;
+  uint8_t win = (!strcmp(t, "CPM") || !strcmp(t, "USVH")) ? 60 : !strcmp(t, "BPM") ? 10 : 2;
+  uint8_t n = min(win, pulseFilled);
+  if (!n) return 0;
+  uint32_t sum = 0;
+  for (uint8_t k = 1; k <= n; k++) sum += pulseHist[(pulseHead + 60 - k) % 60];
+  return sum / (float)n;
+}
+#endif
+
+// 곡선 모양 센서는 전압을 먼저 바꾼 값(x)에 slope·offset을 적용 (전체 버전만)
+float xform(const char* t, float v) {
+#if FULL_SENSORS
+  if (!strcmp(t, "IRD")) return v > 0.25f ? pow(v, -1.15f) : NAN;     // GP2Y0A21 (cm = 27.86 × V^-1.15)
+  if (!strcmp(t, "IRDS")) return v > 0.25f ? pow(v, -1.058f) : NAN;   // GP2Y0A41 (cm = 12.08 × V^-1.058)
+  if (!strcmp(t, "TNTC")) {                                            // 10 kΩ NTC (B 3950) — 10 kΩ 저항이 5V 쪽
+    if (v < 0.02f || v > VREF - 0.02f) return NAN;
+    float r = 10000.0f * v / (VREF - v);
+    return 1.0f / (1.0f / 298.15f + log(r / 10000.0f) / 3950.0f) - 273.15f;
+  }
+#endif
+  return v;
+}
+
+// 포트의 x 값: A0~A3는 전압(곡선 센서는 변환), D3는 펄스 Hz
+float portX(int i) {
+#if FULL_SENSORS
+  if (i == 4) return pulseHz();
+#endif
+  return xform(P(i).type, readVoltage(analogPins[i]));
+}
 
 void tick() {
   float t = (millis() - startMs) / 1000.0f;
@@ -1006,9 +1181,9 @@ void tick() {
   out.print(F("{\"type\":\"d\",\"t\":")); out.num(t, 2);
   out.print(F(",\"v\":{"));
   bool first = true;
-  for (int i = 0; i < 4; i++) {
+  for (int i = 0; i < NPORT; i++) {
     if (!portOn(i)) continue;
-    float v = demo ? demoAnalog(settings.port[i].type, t) : analogValue(i, readVoltage(analogPins[i]));
+    float v = demo ? demoAnalog(P(i).type, t) : analogValue(i, portX(i));
     if (!first) out.print(F(","));
     first = false;
     out.str(portId(i).c_str()); out.print(F(":")); out.num(v, 3);
@@ -1027,13 +1202,13 @@ void tick() {
 // 명령
 // =====================================================================
 int analogIndex(const String& id) {
-  for (int i = 0; i < 4; i++)
+  for (int i = 0; i < NPORT; i++)
     if (portOn(i) && id.equals(portId(i))) return i;
   return -1;
 }
 
 int portIndexByName(const String& name) {
-  for (int i = 0; i < 4; i++)
+  for (int i = 0; i < NPORT; i++)
     if (name.equalsIgnoreCase(analogSrc[i])) return i;
   return -1;
 }
@@ -1094,7 +1269,7 @@ void handleCal(String args[], int argc) {
 
   int i = analogIndex(id);
   if (i < 0) { sendErr("CAL", F("unknown sensor")); return; }
-  PortSetting& p = settings.port[i];
+  PortSetting& p = P(i);
 
   if (step == "CLEAR") {
     p.calValid = 0;
@@ -1104,7 +1279,8 @@ void handleCal(String args[], int argc) {
     return;
   }
   if (argc < 4) { sendErr("CAL", F("missing reference value")); return; }
-  float volt = readVoltage(analogPins[i]);
+  float volt = portX(i);
+  if (isnan(volt)) { sendErr("CAL", F("no reading")); return; }
 
   if (step == "OFS") {
     p.offset += ref - analogValue(i, volt);
@@ -1135,11 +1311,11 @@ void handleCal(String args[], int argc) {
   }
 }
 
-// PORT <A0~A3> <type> [slope offset]  /  PORT <A0~A3> OFF
+// PORT <A0~A3|D3> <type> [slope offset]  /  PORT <A0~A3|D3> OFF   (D3 = 펄스, 전체 버전만)
 void handlePort(String args[], int argc) {
-  if (argc < 3) { sendErr("PORT", F("usage: PORT <A0-A3> <type> [slope offset]")); return; }
+  if (argc < 3) { sendErr("PORT", F("usage: PORT <A0-A3|D3> <type> [slope offset]")); return; }
   int i = portIndexByName(args[1]);
-  if (i < 0) { sendErr("PORT", F("port must be A0-A3")); return; }
+  if (i < 0) { sendErr("PORT", NPORT > 4 ? F("port must be A0-A3 or D3") : F("port must be A0-A3")); return; }
   if (args[2].length() >= TYPE_LEN) { sendErr("PORT", F("type too long")); return; }
   setPort(i, args[2].c_str(), argc > 3 ? args[3].toFloat() : 1.0f, argc > 4 ? args[4].toFloat() : 0.0f);
   calHasP1[i] = false;
@@ -1240,6 +1416,11 @@ void setup() {
 #endif
   randomSeed(analogRead(A5));
   loadSettings();
+#if FULL_SENSORS
+  pinMode(PULSE_PIN, INPUT_PULLUP);
+  attachInterrupt(digitalPinToInterrupt(PULSE_PIN), pulseIsr, FALLING);
+  pulseSecMs = millis();
+#endif
   detectSensors();
 
 #if HAS_BLE
@@ -1268,6 +1449,9 @@ void loop() {
 #endif
   readSerial();
   pollSensors();
+#if FULL_SENSORS
+  pulseUpdate();
+#endif
 
   if (running && millis() - lastTickMs >= intervalMs) {
     lastTickMs += intervalMs;

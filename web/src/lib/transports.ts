@@ -165,6 +165,7 @@ export class SimTransport implements Transport {
     { type: 'L', cal: false, offsetAdj: 0 },
     { type: 'EC', cal: false, offsetAdj: 0 },
     { type: 'V', cal: false, offsetAdj: 0 },
+    { type: 'OFF', cal: false, offsetAdj: 0 },   // D3 펄스
   ];
   private calStep1 = new Set<string>();
   private simX: number | null = null; // 값 입력 모드 체험: 앱이 알려 준 '다음 부피'
@@ -180,14 +181,14 @@ export class SimTransport implements Transport {
   private portId(i: number) {
     const t = this.ports[i].type;
     const dup = this.ports.slice(0, i).some((p) => p.type === t);
-    return dup ? `${t}_A${i}` : t;
+    return dup ? `${t}_${i === 4 ? 'D3' : `A${i}`}` : t;
   }
 
   private hello() {
     const sensors = this.ports
       .map((p, i) => ({ p, i }))
       .filter(({ p }) => p.type !== 'OFF')
-      .map(({ p, i }) => ({ id: this.portId(i), type: p.type, name: p.type, unit: '', src: `A${i}`, cal: p.cal }));
+      .map(({ p, i }) => ({ id: this.portId(i), type: p.type, name: p.type, unit: '', src: i === 4 ? 'D3' : `A${i}`, cal: p.cal }));
     sensors.push({ id: 'T', type: 'T', name: 'T', unit: '', src: 'demo', cal: false });
     sensors.push({ id: 'TA', type: 'TA', name: 'TA', unit: '', src: 'demo', cal: false });
     sensors.push({ id: 'RH', type: 'RH', name: 'RH', unit: '', src: 'demo', cal: false });
@@ -257,8 +258,8 @@ export class SimTransport implements Transport {
     } else if (C === 'SIMX') {
       this.simX = args[0] === undefined ? null : Number(args[0]);
     } else if (C === 'PORT') {
-      const i = ['A0', 'A1', 'A2', 'A3'].indexOf((args[0] ?? '').toUpperCase());
-      if (i < 0 || !args[1]) return this.emit({ type: 'err', cmd: 'PORT', msg: 'port must be A0-A3' });
+      const i = ['A0', 'A1', 'A2', 'A3', 'D3'].indexOf((args[0] ?? '').toUpperCase());
+      if (i < 0 || !args[1]) return this.emit({ type: 'err', cmd: 'PORT', msg: 'port must be A0-A3 or D3' });
       this.ports[i] = { type: args[1], cal: false, offsetAdj: 0 };
       this.emit({ type: 'ack', cmd: 'PORT' });
       this.hello();

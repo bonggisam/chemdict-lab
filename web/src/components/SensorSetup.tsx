@@ -6,13 +6,14 @@ interface Props {
   disabled: boolean;
   onSetPort: (port: string, type: string) => void;
   onRescan?: () => void;
+  pulse?: boolean;   // D3 펄스 입력이 되는 보드 (전체 버전)
 }
 
 const PORTS = ['A0', 'A1', 'A2', 'A3'];
 
 /** 아날로그 포트마다 꽂은 센서 종류를 고르고, 디지털 센서는 자동 인식 결과를 보여 줌 */
-export function SensorSetup({ sensors, disabled, onSetPort, onRescan }: Props) {
-  const digital = sensors.filter((s) => !/^A\d$/.test(s.src));
+export function SensorSetup({ sensors, disabled, onSetPort, onRescan, pulse }: Props) {
+  const digital = sensors.filter((s) => !/^(A\d|D3)$/.test(s.src));
   return (
     <section className="setup">
       <div className="setup-head">
@@ -20,7 +21,7 @@ export function SensorSetup({ sensors, disabled, onSetPort, onRescan }: Props) {
         <p className="note">{t('아날로그 센서는 꽂은 포트에 맞춰 종류를 고르세요. 설정은 보드에 저장됩니다.')}</p>
       </div>
       <div className="ports">
-        {PORTS.map((port) => {
+        {(pulse ? [...PORTS, 'D3'] : PORTS).map((port) => {
           const s = sensors.find((x) => x.src === port);
           const type = s?.type ?? 'OFF';
           const spec = analogTypes.find((t) => t.type === type);
@@ -34,7 +35,7 @@ export function SensorSetup({ sensors, disabled, onSetPort, onRescan }: Props) {
                 onChange={(e) => onSetPort(port, e.target.value)}
               >
                 <option value="OFF">{t('사용 안 함')}</option>
-                {analogTypes.map((t) => (
+                {analogTypes.filter((x) => (port === 'D3') === (x.port === 'pulse')).map((t) => (
                   <option key={t.type} value={t.type}>{t.name}{t.unit ? ` (${t.unit})` : ''}</option>
                 ))}
               </select>

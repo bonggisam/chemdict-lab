@@ -277,3 +277,45 @@ MQ-2·3·4·7·8·9·135, MG811은 기존 `GAS`, 마이크 앰프는 `SND`, 저�
 - 같은 주소를 쓰는 칩은 칩 ID로 구분하고, 이미 다른 센서로 잡힌 주소는 건너뜁니다 (예: 0x40 INA219 ↔ HTU21D, 0x5A MLX90614 ↔ CCS811).
 - 연결 안내에 핀 역할 `U_RX`·`U_TX`(UART)와 연결 방식 `uart`, `digital-out`, 분류 '움직임·자기', '생체'가 더해졌습니다. UNO R3·Nano·Leonardo의 UART 핀은 `—`(지원 안 함).
 - 웹앱 센서 카드에 이름·부품 번호 찾기 칸을 두고, 연결된 센서를 앞에 보입니다.
+
+## 추가 센서 2 (펌웨어 0.5.0, sensors.json v4)
+
+국내 아두이노 공식 판매처(엘레파츠·아이씨뱅큐·메카솔루션·디바이스마트) 조사로 빠진 센서를 넣었습니다 (`docs/research/official_distributors_sensors.md`). 연결 안내 146종 (`make_guide.py`의 `MORE_PARTS2`).
+
+**D3 펄스 포트** (전체 버전만): `PORT D3 <type> [slope offset]`. 보드는 D3의 하강 에지를 세어 초당 펄스 수(Hz)를 x로 쓰고, 값 = slope × x + offset. 평균 시간: `CPM`·`USVH` 60초, `BPM` 10초, 나머지 2초. hello의 `src`는 `"D3"`. 설정은 EEPROM의 기존 설정 뒤에 따로 저장(예전 설정 유지).
+
+| type | 센서 | 변환 |
+|---|---|---|
+| `FLOW` | 유량 YF-S201 | Hz ÷ 7.5 L/min (배율 보정) |
+| `CPM` / `USVH` | 가이거 계수기 | Hz × 60 회/분 / ÷ 151 µSv/h |
+| `BPM` | 귀 클립 심박 | Hz × 60 |
+| `WNDP` | 펄스형 풍속계 | 0.062 × Hz m/s |
+| `RPM` / `FREQ` | 회전수 / 주파수 | Hz × 60 / Hz |
+
+**곡선 변환 아날로그 type** (펌웨어가 x를 먼저 계산, 전체 버전만, sensors.json `full: true`): `IRD` GP2Y0A21 (x = V^−1.15, ×27.86 cm), `IRDS` GP2Y0A41 (x = V^−1.058, ×12.08 cm), `TNTC` 10 kΩ NTC B3950 (x = °C, 10 kΩ 저항이 5V 쪽).
+
+**그 밖의 아날로그 type**: `UVML` ML8511, `WPRS` 수압 SEN0257, `DP` MPX5010DP, `WIND` SEN0170, `ANGA` SEN0221, `I5B` ACS723, `I50A` ACS758, `DUS` MaxBotix.
+
+**디지털 (sensors_more2.ino, 전체 버전)**:
+
+| 연결 | type | 센서 |
+|---|---|---|
+| I2C 0x48~0x4B | `T` / `VP` (V, A0−A1 차동 ±4.096 V) | TMP117·TMP119·TMP102 / ADS1115·ADS1015 |
+| I2C 0x76·0x77 | `TA`, `BP` | BMP388·BMP390 · DPS310 · MS5611 |
+| I2C 0x60 / 0x60~0x67 | `TA`,`BP` · `UVI` / `TK` | MPL3115A2 · SI1145 / MCP9600 |
+| I2C 0x36 | `ANG` (°) | AS5600 |
+| I2C 0x68·0x69 / 0x1C·0x1D / 0x28·0x29 | `AX` `AY` `AZ` (+ BNO055 `ANG` 방위각) | ICM-20948·20649 / MMA8452Q / BNO055 (ADXL313은 ADXL345 칸) |
+| I2C 0x1C·0x1E / 0x0E / 0x10~0x13 / 0x35·0x22·0x78 | `MAG` (µT) | LIS3MDL / MAG3110 / BMM150(근삿값) / TMAG5273 |
+| I2C 0x39 | `S415`…`S680` (원시값) / `COLR` `COLG` `COLB` | AS7341 / APDS9960 |
+| I2C 0x53 | `UVI` / `COLR` `COLG` `COLB` `LUX` | LTR390 / LTR381 (Modulino Light) |
+| I2C 0x59 | `VOCR` | SGP40 원시값 |
+| I2C 0x5C / 0x27 | `TA`, `RH` | AM2320 / HIH6130 |
+| I2C 0x29 | `DIST` | VL6180X · VL53L1X · VL53L4CD (Modulino Distance) — 라이브러리 없이 |
+| I2C 0x2A | `M` (HX711이 없을 때 같은 무게 칸·보정) | NAU7802 |
+| SPI D10·D12·D13 | `TK` | MAX31855 (MAX6675와 자동 구분) |
+| SPI D9(CS)·D11(SDI)·D12·D13 | `TPT` (°C) | MAX31865 + PT100 (기준 저항 430 Ω) |
+| UART 9600 | `CO2` / `DIST` / `HCHO` (ppm) / PMS5003ST는 `HCHO` `TA` `RH` 추가 | CM1106·CM1108 · COZIR·SprintIR · MH-Z14A·MH-Z16 / A02YYUW / SEN0231 |
+| UART 115200 | `DIST` | TFmini-S·TFmini Plus·TF-Luna |
+
+- 아직 안 되는 것: 열화상(AMG8833·MLX90640), GP2Y1014AU·PPD42NS, TCS3200, RS485 토양 센서, SEN0321·MiCS-4514, HTU31D·SHT1x·ICP-10111·MS5540C·HPMA115, MAX32664.
+- 메모리(2026-10-18 컴파일): UNO R4 WiFi 약 157 KB (60%) / RAM 44%, Mega 약 74 KB (29%) / RAM 46%, UNO R3 30556 B (94%).

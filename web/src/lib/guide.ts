@@ -7,7 +7,7 @@ import { t } from './i18n';
 export type SensorSet = 'full' | 'lite' | 'mini' | 'none';
 export type PinRole =
   | 'PWR' | 'PWR3' | 'GND' | 'SDA' | 'SCL' | 'A' | 'ONEWIRE' | 'DHT'
-  | 'HX_DT' | 'HX_SCK' | 'TRIG' | 'ECHO' | 'TC_CS' | 'TC_SO' | 'TC_SCK' | 'U_RX' | 'U_TX';
+  | 'HX_DT' | 'HX_SCK' | 'TRIG' | 'ECHO' | 'TC_CS' | 'TC_SO' | 'TC_SCK' | 'U_RX' | 'U_TX' | 'PULSE' | 'RTD_CS' | 'SPI_SDI';
 
 export interface Board {
   id: string;

@@ -1,5 +1,5 @@
 {
- "version": 3,
+ "version": 4,
  "analog": [
   {
    "type": "pH",
@@ -645,6 +645,293 @@
    "note": "GSR 센서."
   },
   {
+   "type": "IRD",
+   "name": "거리(적외선)",
+   "unit": "cm",
+   "decimals": 1,
+   "slope": 27.86,
+   "offset": 0.0,
+   "min": 10,
+   "max": 80,
+   "cal": {
+    "kind": "none"
+   },
+   "stableBand": 0.5,
+   "note": "Sharp GP2Y0A21 (10~80 cm). 곡선 변환은 UNO R4·Mega 펌웨어에서만.",
+   "full": true
+  },
+  {
+   "type": "IRDS",
+   "name": "거리(적외선, 가까이)",
+   "unit": "cm",
+   "decimals": 1,
+   "slope": 12.08,
+   "offset": 0.0,
+   "min": 4,
+   "max": 30,
+   "cal": {
+    "kind": "none"
+   },
+   "stableBand": 0.3,
+   "note": "Sharp GP2Y0A41 (4~30 cm). 곡선 변환은 UNO R4·Mega 펌웨어에서만.",
+   "full": true
+  },
+  {
+   "type": "TNTC",
+   "name": "온도(서미스터)",
+   "unit": "°C",
+   "decimals": 1,
+   "slope": 1.0,
+   "offset": 0.0,
+   "cal": {
+    "kind": "one-point",
+    "refs": [
+     0.0
+    ],
+    "hint": "얼음물"
+   },
+   "stableBand": 0.1,
+   "note": "10 kΩ NTC 서미스터 (B 3950) + 10 kΩ 저항. UNO R4·Mega 펌웨어에서만.",
+   "full": true
+  },
+  {
+   "type": "UVML",
+   "name": "자외선 세기",
+   "unit": "mW/cm²",
+   "decimals": 2,
+   "slope": 8.287,
+   "offset": -8.204,
+   "min": 0,
+   "max": 15,
+   "cal": {
+    "kind": "none"
+   },
+   "stableBand": 0.05,
+   "note": "ML8511 자외선 센서 (3.3 V 전원)."
+  },
+  {
+   "type": "WPRS",
+   "name": "물 압력",
+   "unit": "kPa",
+   "decimals": 1,
+   "slope": 400.0,
+   "offset": -200.0,
+   "cal": {
+    "kind": "one-point",
+    "refs": [
+     0.0
+    ],
+    "hint": "대기 중(0 kPa)"
+   },
+   "stableBand": 2,
+   "note": "수압 센서 SEN0257 (0.5~4.5 V = 0~1.6 MPa)."
+  },
+  {
+   "type": "DP",
+   "name": "압력 차",
+   "unit": "kPa",
+   "decimals": 3,
+   "slope": 2.222,
+   "offset": -0.444,
+   "cal": {
+    "kind": "one-point",
+    "refs": [
+     0.0
+    ],
+    "hint": "양쪽 관이 열린 상태"
+   },
+   "stableBand": 0.01,
+   "note": "차압 센서 MPX5010DP (0~10 kPa)."
+  },
+  {
+   "type": "WIND",
+   "name": "풍속",
+   "unit": "m/s",
+   "decimals": 1,
+   "slope": 6.48,
+   "offset": 0.0,
+   "min": 0,
+   "max": 33,
+   "cal": {
+    "kind": "none"
+   },
+   "stableBand": 0.2,
+   "note": "풍속계 SEN0170 (0~5 V = 0~32.4 m/s, 12~24 V 전원)."
+  },
+  {
+   "type": "ANGA",
+   "name": "각도(아날로그)",
+   "unit": "°",
+   "decimals": 1,
+   "slope": 72.0,
+   "offset": 0.0,
+   "min": 0,
+   "max": 360,
+   "cal": {
+    "kind": "two-point",
+    "refs": [
+     0,
+     180
+    ],
+    "hint": "0°, 180°"
+   },
+   "stableBand": 0.5,
+   "note": "360° 홀 각도 센서 SEN0221."
+  },
+  {
+   "type": "I5B",
+   "name": "전류(ACS723)",
+   "unit": "A",
+   "decimals": 2,
+   "slope": 2.5,
+   "offset": -6.25,
+   "cal": {
+    "kind": "one-point",
+    "refs": [
+     0.0
+    ],
+    "hint": "전류 0"
+   },
+   "stableBand": 0.02,
+   "note": "ACS723 5 A 모듈 (400 mV/A)."
+  },
+  {
+   "type": "I50A",
+   "name": "전류(50 A)",
+   "unit": "A",
+   "decimals": 1,
+   "slope": 25.0,
+   "offset": -62.5,
+   "cal": {
+    "kind": "one-point",
+    "refs": [
+     0.0
+    ],
+    "hint": "전류 0"
+   },
+   "stableBand": 0.2,
+   "note": "ACS758 50 A 모듈 (40 mV/A)."
+  },
+  {
+   "type": "DUS",
+   "name": "거리(초음파 아날로그)",
+   "unit": "cm",
+   "decimals": 1,
+   "slope": 102.4,
+   "offset": 0.0,
+   "cal": {
+    "kind": "none"
+   },
+   "stableBand": 0.5,
+   "note": "MaxBotix 방수 초음파 아날로그 출력 (5 V)."
+  },
+  {
+   "type": "FLOW",
+   "name": "유량",
+   "unit": "L/min",
+   "decimals": 2,
+   "slope": 0.1333,
+   "offset": 0.0,
+   "cal": {
+    "kind": "scale",
+    "refs": [
+     1.0
+    ],
+    "hint": "1분 동안 받은 물의 양"
+   },
+   "stableBand": 0.05,
+   "note": "물 흐름 센서 YF-S201 (펄스 7.5 Hz = 1 L/min). D3에 연결.",
+   "port": "pulse"
+  },
+  {
+   "type": "CPM",
+   "name": "방사선 계수",
+   "unit": "회/분",
+   "decimals": 0,
+   "slope": 60.0,
+   "offset": 0.0,
+   "cal": {
+    "kind": "none"
+   },
+   "stableBand": 3,
+   "note": "가이거 계수기 (1분 평균). D3에 연결.",
+   "port": "pulse"
+  },
+  {
+   "type": "USVH",
+   "name": "방사선량",
+   "unit": "µSv/h",
+   "decimals": 3,
+   "slope": 0.3974,
+   "offset": 0.0,
+   "cal": {
+    "kind": "none"
+   },
+   "stableBand": 0.02,
+   "note": "가이거 계수기 (J305 관, CPM ÷ 151, 1분 평균). D3에 연결.",
+   "port": "pulse"
+  },
+  {
+   "type": "BPM",
+   "name": "심박수",
+   "unit": "회/분",
+   "decimals": 0,
+   "slope": 60.0,
+   "offset": 0.0,
+   "cal": {
+    "kind": "none"
+   },
+   "stableBand": 2,
+   "note": "귀 클립·손가락 심박 센서 (박동마다 펄스, 10초 평균). D3에 연결.",
+   "port": "pulse"
+  },
+  {
+   "type": "WNDP",
+   "name": "풍속(펄스)",
+   "unit": "m/s",
+   "decimals": 1,
+   "slope": 0.062,
+   "offset": 0.0,
+   "cal": {
+    "kind": "scale",
+    "refs": [
+     5.0
+    ],
+    "hint": "기준 풍속 (m/s)"
+   },
+   "stableBand": 0.2,
+   "note": "펄스형 풍속계 (속도 = 0.062 × Hz). D3에 연결.",
+   "port": "pulse"
+  },
+  {
+   "type": "RPM",
+   "name": "회전수",
+   "unit": "회/분",
+   "decimals": 0,
+   "slope": 60.0,
+   "offset": 0.0,
+   "cal": {
+    "kind": "none"
+   },
+   "stableBand": 2,
+   "note": "홀 센서·포토 인터럽터로 센 회전수 (한 바퀴에 펄스 1번). D3에 연결.",
+   "port": "pulse"
+  },
+  {
+   "type": "FREQ",
+   "name": "펄스 주파수",
+   "unit": "Hz",
+   "decimals": 2,
+   "slope": 1.0,
+   "offset": 0.0,
+   "cal": {
+    "kind": "none"
+   },
+   "stableBand": 0.1,
+   "note": "D3에 들어오는 초당 펄스 수.",
+   "port": "pulse"
+  },
+  {
    "type": "RAW",
    "name": "사용자 정의",
    "unit": "V",
@@ -982,6 +1269,174 @@
     "kind": "none"
    },
    "note": "Gravity I2C 산소 센서 SEN0322"
+  },
+  {
+   "type": "VP",
+   "name": "정밀 전압",
+   "unit": "V",
+   "decimals": 4,
+   "src": "i2c:0x48",
+   "stableBand": 0.0005,
+   "cal": {
+    "kind": "none"
+   },
+   "note": "ADS1115 16비트 (A0−A1 차동, ±4.096 V)"
+  },
+  {
+   "type": "ANG",
+   "name": "각도",
+   "unit": "°",
+   "decimals": 1,
+   "src": "i2c",
+   "stableBand": 0.5,
+   "cal": {
+    "kind": "none"
+   },
+   "note": "AS5600 자석 회전 각도 · BNO055 방위각"
+  },
+  {
+   "type": "UVI",
+   "name": "자외선 지수",
+   "unit": "",
+   "decimals": 2,
+   "src": "i2c",
+   "stableBand": 0.05,
+   "cal": {
+    "kind": "none"
+   },
+   "note": "LTR390 · SI1145"
+  },
+  {
+   "type": "VOCR",
+   "name": "VOC 원시값",
+   "unit": "",
+   "decimals": 0,
+   "src": "i2c:0x59",
+   "stableBand": 20,
+   "cal": {
+    "kind": "none"
+   },
+   "note": "SGP40 (휘발성 물질이 많으면 값이 내려감)"
+  },
+  {
+   "type": "HCHO",
+   "name": "폼알데하이드",
+   "unit": "ppm",
+   "decimals": 3,
+   "src": "uart",
+   "stableBand": 0.005,
+   "cal": {
+    "kind": "none"
+   },
+   "note": "SEN0231(WZ-S) · PMS5003ST"
+  },
+  {
+   "type": "TPT",
+   "name": "온도(백금 저항)",
+   "unit": "°C",
+   "decimals": 2,
+   "src": "D9",
+   "stableBand": 0.02,
+   "cal": {
+    "kind": "none"
+   },
+   "note": "MAX31865 + PT100"
+  },
+  {
+   "type": "S415",
+   "name": "분광 415 nm",
+   "unit": "",
+   "decimals": 0,
+   "src": "i2c:0x39",
+   "stableBand": 20,
+   "cal": {
+    "kind": "none"
+   },
+   "note": "AS7341 415 nm 채널 (원시값). 흡광도 = log(기준값 ÷ 값)"
+  },
+  {
+   "type": "S445",
+   "name": "분광 445 nm",
+   "unit": "",
+   "decimals": 0,
+   "src": "i2c:0x39",
+   "stableBand": 20,
+   "cal": {
+    "kind": "none"
+   },
+   "note": "AS7341 445 nm 채널 (원시값). 흡광도 = log(기준값 ÷ 값)"
+  },
+  {
+   "type": "S480",
+   "name": "분광 480 nm",
+   "unit": "",
+   "decimals": 0,
+   "src": "i2c:0x39",
+   "stableBand": 20,
+   "cal": {
+    "kind": "none"
+   },
+   "note": "AS7341 480 nm 채널 (원시값). 흡광도 = log(기준값 ÷ 값)"
+  },
+  {
+   "type": "S515",
+   "name": "분광 515 nm",
+   "unit": "",
+   "decimals": 0,
+   "src": "i2c:0x39",
+   "stableBand": 20,
+   "cal": {
+    "kind": "none"
+   },
+   "note": "AS7341 515 nm 채널 (원시값). 흡광도 = log(기준값 ÷ 값)"
+  },
+  {
+   "type": "S555",
+   "name": "분광 555 nm",
+   "unit": "",
+   "decimals": 0,
+   "src": "i2c:0x39",
+   "stableBand": 20,
+   "cal": {
+    "kind": "none"
+   },
+   "note": "AS7341 555 nm 채널 (원시값). 흡광도 = log(기준값 ÷ 값)"
+  },
+  {
+   "type": "S590",
+   "name": "분광 590 nm",
+   "unit": "",
+   "decimals": 0,
+   "src": "i2c:0x39",
+   "stableBand": 20,
+   "cal": {
+    "kind": "none"
+   },
+   "note": "AS7341 590 nm 채널 (원시값). 흡광도 = log(기준값 ÷ 값)"
+  },
+  {
+   "type": "S630",
+   "name": "분광 630 nm",
+   "unit": "",
+   "decimals": 0,
+   "src": "i2c:0x39",
+   "stableBand": 20,
+   "cal": {
+    "kind": "none"
+   },
+   "note": "AS7341 630 nm 채널 (원시값). 흡광도 = log(기준값 ÷ 값)"
+  },
+  {
+   "type": "S680",
+   "name": "분광 680 nm",
+   "unit": "",
+   "decimals": 0,
+   "src": "i2c:0x39",
+   "stableBand": 20,
+   "cal": {
+    "kind": "none"
+   },
+   "note": "AS7341 680 nm 채널 (원시값). 흡광도 = log(기준값 ÷ 값)"
   }
  ]
 }

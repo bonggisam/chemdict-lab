@@ -14,13 +14,13 @@ COMMON = [
 # ---------------------------------------------------------------- 보드
 # sensorSet: full(모든 센서) · lite(UNO R3·Nano: LPS22·SCD4x·TCS34725·MAX6675·HC-SR04 제외)
 #            · mini(Leonardo: lite에서 BME280·HX711도 제외) · none(펌웨어 없음)
-def pins5(sda='SDA (A4)', scl='SCL (A5)', onewire='D2', pwr='5V', urx='D0 (RX)', utx='D1 (TX)'):
+def pins5(sda='SDA (A4)', scl='SCL (A5)', onewire='D2', pwr='5V', urx='D0 (RX)', utx='D1 (TX)', pulse='D3'):
     return {"PWR": pwr, "PWR3": "3.3V", "GND": "GND", "SDA": sda, "SCL": scl, "A": "A0",
             "ONEWIRE": onewire, "DHT": "D4", "HX_DT": "D5", "HX_SCK": "D6",
             "TRIG": "D7", "ECHO": "D8", "TC_CS": "D10", "TC_SO": "D12", "TC_SCK": "D13",
-            "U_RX": urx, "U_TX": utx}
+            "U_RX": urx, "U_TX": utx, "PULSE": pulse, "RTD_CS": "D9", "SPI_SDI": "D11"}
 
-NO_UART = dict(urx="—", utx="—")
+NO_UART = dict(urx="—", utx="—", pulse="—")   # 가벼운 버전 보드: UART·D3 펄스 없음
 
 V33_NOTE = "3.3 V 보드입니다. 5 V 신호를 내는 모듈(MQ 가스, HC-SR04, 5 V 전용 pH 모듈 등)의 신호선을 바로 연결하지 않습니다."
 CH340 = "호환 보드(CH340 칩)는 맥에 CH340 드라이버가 필요할 수 있습니다. 포트가 안 보이면 판매처의 드라이버를 설치합니다."
@@ -139,6 +139,20 @@ CONNECTORS = {
         dict(term="SO", pin="TC_SO", color="yellow")],
         steps=["K형 열전대의 (+)·(−) 선을 모듈의 + / − 나사 단자에 연결합니다 (보통 빨강 = −, 노랑·파랑 = +, 반대면 온도가 내려감)."],
         cautions=[]),
+    "pulse": dict(name="펄스 3선 (D3)", wires=[
+        dict(term="VCC (+)", pin="PWR", color="red"), dict(term="GND (−)", pin="GND", color="black"),
+        dict(term="신호 (OUT·SIG)", pin="PULSE", color="yellow")],
+        steps=["신호선은 항상 D3에 꽂습니다. 펌웨어가 초당 펄스 수를 세어 단위로 바꿉니다.",
+               "같은 D3에는 펄스 센서를 하나만 연결합니다."],
+        cautions=["UNO R4·Nano R4·Mega에서만 됩니다 (UNO R3·Nano는 메모리가 부족).",
+                  "12 V 전원을 쓰는 센서는 신호가 5 V를 넘지 않는지 설명서를 확인합니다."]),
+    "spi-rtd": dict(name="MAX31865 6선 (SPI)", wires=[
+        dict(term="VIN", pin="PWR", color="red"), dict(term="GND", pin="GND", color="black"),
+        dict(term="CLK", pin="TC_SCK", color="green"), dict(term="SDO", pin="TC_SO", color="yellow"),
+        dict(term="SDI", pin="SPI_SDI", color="blue"), dict(term="CS", pin="RTD_CS", color="orange")],
+        steps=["PT100 탐침의 선을 모듈의 RTD 단자에 연결합니다 (2선이면 양 끝 단자에).",
+               "MAX6675·MAX31855 열전대와 CLK·SDO를 함께 써도 됩니다 (CS만 다름)."],
+        cautions=["모듈의 기준 저항이 430 Ω(PT100용)인지 확인합니다. 4300 Ω은 PT1000용이라 값이 10배 틀립니다."]),
     "uart": dict(name="UART 4선 (TX·RX 엇갈려)", wires=[
         dict(term="VCC (5V)", pin="PWR", color="red"), dict(term="GND", pin="GND", color="black"),
         dict(term="TX (센서가 보냄)", pin="U_RX", color="green"), dict(term="RX (센서가 받음)", pin="U_TX", color="yellow")],
@@ -169,8 +183,8 @@ def part(id, name, category, connector, provides, items, cautions, minSet="mini"
     if addr: p["addr"] = addr
     return p
 
-def analog(id, name, category, t, items, cautions, connector="analog"):
-    return part(id, name, category, connector, [t], items, cautions, analogType=t)
+def analog(id, name, category, t, items, cautions, connector="analog", minSet="mini"):
+    return part(id, name, category, connector, [t], items, cautions, analogType=t, minSet=minSet)
 
 PARTS = [
     # 온도
@@ -411,6 +425,144 @@ MORE_PARTS = [
 ]
 PARTS += MORE_PARTS
 
+# ---------------------------------------------------------------- 추가 센서 2 (공식 판매처 조사, 펌웨어 0.5.0)
+# 엘레파츠·아이씨뱅큐·메카솔루션·디바이스마트(엔티렉스) 판매 모듈 (docs/research/official_distributors_sensors.md)
+MORE_PARTS2 = [
+    # 온도
+    part("tmp117", "정밀 온도 센서 TMP117 / TMP119 (±0.1 °C)", "온도", "i2c", ["T"],
+         ["TMP117 모듈 (Qwiic)", "점퍼선 4개"], ["±0.1 °C로 가장 정밀합니다. 열량계·중화열 실험에 좋습니다."], minSet=F, addr="0x48"),
+    part("tmp102", "온도 센서 TMP102", "온도", "i2c", ["T"],
+         ["TMP102 모듈", "점퍼선 4개"], ["±0.5 °C. 작은 기판 온도 센서입니다."], minSet=F, addr="0x48"),
+    part("mcp9600", "열전대 앰프 MCP9600 (I2C, 고온)", "온도", "i2c", ["TK"],
+         ["Grove I2C Thermocouple Amplifier (MCP9600)", "K형 열전대"], ["−200~1300 °C. 냉접점 보상이 들어 있습니다.", "모듈 기판은 불에서 멀리 둡니다."], minSet=F, addr="0x60"),
+    part("max31855", "K형 열전대 MAX31855 (고온, 정밀)", "온도", "spi-tc", ["TK"],
+         ["MAX31855 모듈", "K형 열전대", "점퍼선 5개"], ["MAX6675와 같은 자리(D10·D12·D13)에 꽂으면 자동으로 구분합니다. −200~1350 °C."], minSet=F),
+    part("max31865", "백금 저항 온도 PT100 + MAX31865", "온도", "spi-rtd", ["TPT"],
+         ["MAX31865 모듈 (기준 저항 430 Ω)", "PT100 탐침 (2선·3선·4선)", "점퍼선 6개"],
+         ["−200~600 °C를 ±0.5 °C로 잽니다. 기준 저항이 430 Ω인 PT100 모듈 기준입니다.",
+          "3선 탐침은 모듈 뒷면의 납땜 점퍼를 3선으로 바꿔야 합니다."], minSet=F),
+    analog("ntc", "NTC 서미스터 10 kΩ (B 3950)", "온도", "TNTC", ["NTC 10 kΩ 서미스터", "10 kΩ 저항", "브레드보드"],
+           ["값싼 온도 센서입니다. 얼음물(0 °C)로 1점 보정하면 정확해집니다.", "B 값이 3950이 아니면 보정 후 씁니다."],
+           connector="analog-divider", minSet=F),
+    part("am2320", "온습도 센서 AM2320", "온습도", "i2c", ["TA", "RH"],
+         ["AM2320 센서", "점퍼선 4개 (SDA·SCL 10 kΩ 풀업이 없으면 추가)"], ["2초마다 새 값이 나옵니다."], minSet=F, addr="0x5C"),
+    part("hih6130", "온습도 센서 HIH6130 / HIH6120", "온습도", "i2c", ["TA", "RH"],
+         ["HIH6130 모듈", "점퍼선 4개"], ["±4 % RH. LCD 어댑터(0x27)와 주소가 같아 함께 쓰지 않습니다."], minSet=F, addr="0x27"),
+    # 기압
+    part("bmp388", "기압 센서 BMP388 / BMP390", "기압·압력", "i2c", ["TA", "BP"],
+         ["BMP388·BMP390 모듈", "점퍼선 4개"], ["±0.03 kPa. 높이에 따른 기압 변화도 볼 수 있습니다."], minSet=F, addr="0x77"),
+    part("dps310", "기압 센서 DPS310 (Grove)", "기압·압력", "i2c", ["TA", "BP"],
+         ["DPS310 모듈", "점퍼선 4개"], ["±0.002 kPa로 아주 정밀합니다."], minSet=F, addr="0x77"),
+    part("ms5611", "기압 센서 MS5611 (GY-63)", "기압·압력", "i2c", ["TA", "BP"],
+         ["GY-63 MS5611 모듈", "점퍼선 4개"], ["10 cm 높이 차이도 구분할 만큼 정밀합니다."], minSet=F, addr="0x77"),
+    part("mpl3115a2", "기압 센서 MPL3115A2", "기압·압력", "i2c", ["TA", "BP"],
+         ["MPL3115A2 모듈", "점퍼선 4개"], ["0.6초마다 새 값이 나옵니다."], minSet=F, addr="0x60"),
+    analog("mpx5010dp", "차압 센서 MPX5010DP (0~10 kPa)", "기압·압력", "DP", ["MPX5010DP 모듈", "실리콘 관 2개", "점퍼선 3개"],
+           ["두 관의 압력 차이를 잽니다. 입김·폐활량·유속 실험에 씁니다.", "시작 전에 두 관을 열어 두고 영점을 맞춥니다."]),
+    analog("water-pressure", "수압 센서 (SEN0257, 0~1.6 MPa)", "기압·압력", "WPRS", ["SEN0257 수압 센서", "점퍼선 3개"],
+           ["물 깊이에 따른 압력(물기둥 1 m ≈ 9.8 kPa)을 잽니다. 범위가 커서 깊은 수조에 알맞습니다."]),
+    # 기체
+    analog("mq-5", "MQ-5 LPG·도시가스 (상대값)", "기체", "GAS", ["MQ-5 모듈 (AO 핀)", "점퍼선 3개"], ["3분 이상 예열합니다."]),
+    analog("mq-6", "MQ-6 LPG·부탄 (상대값)", "기체", "GAS", ["MQ-6 모듈 (AO 핀)", "점퍼선 3개"], ["부탄가스 확산 실험에 씁니다. 3분 이상 예열합니다."]),
+    analog("mq-131", "MQ-131 오존 (상대값)", "기체", "GAS", ["MQ-131 모듈 (AO 핀)", "점퍼선 3개"], ["오존에 반응합니다. 예열이 깁니다(24시간 권장)."]),
+    analog("mq-137", "MQ-137 암모니아 (상대값)", "기체", "GAS", ["MQ-137 모듈 (AO 핀)", "점퍼선 3개"], ["암모니아 확산·발생 실험에 씁니다. 3분 이상 예열합니다."]),
+    analog("mq-138", "MQ-138 휘발성 유기물 (상대값)", "기체", "GAS", ["MQ-138 모듈 (AO 핀)", "점퍼선 3개"], ["알코올·아세톤·톨루엔 등에 반응합니다."]),
+    analog("mics-5524", "MiCS-5524 가스 (CO·알코올·VOC, 상대값)", "기체", "GAS", ["MiCS-5524 모듈", "점퍼선 3개"], ["여러 기체에 함께 반응합니다 (구분 못 함)."]),
+    part("mhz16", "이산화탄소 센서 MH-Z14A / MH-Z16 (UART, 0~50000 ppm)", "기체", "uart", ["CO2"],
+         ["MH-Z14A 또는 Gravity SEN0220 (MH-Z16)", "점퍼선 4개"], ["MH-Z19와 같은 방식이라 자동으로 인식합니다. 진한 CO₂(발효·연소)도 잽니다."], minSet=F),
+    part("cm1106", "이산화탄소 센서 CM1106 / CM1108 (UART)", "기체", "uart", ["CO2"],
+         ["Cubic CM1106·CM1108", "점퍼선 4개"], ["0~5000 ppm. 켠 뒤 3분 예열합니다."], minSet=F),
+    part("cozir", "이산화탄소 센서 COZIR / SprintIR (UART)", "기체", "uart", ["CO2"],
+         ["GSS COZIR·SprintIR·ExplorIR", "점퍼선 4개 (3.3 V 전원)"], ["SprintIR은 빨라서 반응 속도 실험에 좋습니다. 배율은 자동으로 읽습니다.",
+          "전원은 3.3 V입니다. 5 V에 연결하지 않습니다."], minSet=F),
+    part("hcho", "폼알데하이드 센서 (SEN0231, UART)", "기체", "uart", ["HCHO"],
+         ["DFRobot SEN0231 (WZ-S)", "점퍼선 4개"], ["0~5 ppm. 실내 공기질 비교에 씁니다."], minSet=F),
+    part("pms5003st", "미세먼지 + 폼알데하이드 센서 PMS5003ST", "기체", "uart", ["PM1", "PM25", "PM10", "HCHO", "TA", "RH"],
+         ["PMS5003ST (SEN0233)", "점퍼선 4개"], ["미세먼지·폼알데하이드·온도·습도를 함께 잽니다."], minSet=F),
+    part("sgp40", "VOC 센서 SGP40 (원시값)", "기체", "i2c", ["VOCR"],
+         ["SGP40 모듈", "점퍼선 4개"], ["휘발성 물질이 많아지면 값이 내려갑니다 (상대 비교용)."], minSet=F, addr="0x59"),
+    # 빛
+    part("as7341", "분광 센서 AS7341 (8파장, 간이 분광광도계)", "빛·색", "i2c",
+         ["S415", "S445", "S480", "S515", "S555", "S590", "S630", "S680"],
+         ["AS7341 모듈 (DFRobot SEN0364 등)", "점퍼선 4개", "LED 광원·큐벳 받침"],
+         ["415~680 nm 8가지 빛 세기를 잽니다. 용액의 흡광도(비어-람베르트 법칙) 실험에 좋습니다.",
+          "흡광도 = log(증류수 값 ÷ 시료 값). 표에서 계산 열로 구합니다."], minSet=F, addr="0x39"),
+    part("apds9960", "색·근접 센서 APDS9960", "빛·색", "i2c", ["COLR", "COLG", "COLB"],
+         ["APDS9960 모듈", "점퍼선 4개"], ["빨강·초록·파랑 비율(%)을 잽니다. 용액 색 변화 비교에 씁니다."], minSet=F, addr="0x39"),
+    part("ltr390", "자외선 센서 LTR390 (UV 지수)", "빛·색", "i2c", ["UVI"],
+         ["LTR390 모듈", "점퍼선 4개"], ["자외선 지수(UVI)입니다. 선크림·유리·그늘에 따른 자외선 차단을 비교합니다."], minSet=F, addr="0x53"),
+    part("si1145", "자외선 센서 SI1145 (Grove Sunlight)", "빛·색", "i2c", ["UVI"],
+         ["SI1145 모듈", "점퍼선 4개"], ["자외선 지수 근삿값입니다."], minSet=F, addr="0x60"),
+    analog("ml8511", "자외선 센서 ML8511 (아날로그)", "빛·색", "UVML", ["ML8511 모듈", "점퍼선 3개 (3.3 V 전원)"],
+           ["자외선 세기(mW/cm²)입니다. VCC는 3.3V에 연결합니다."]),
+    part("modulino-light", "Modulino Light (LTR381, 색·조도)", "빛·색", "qwiic", ["COLR", "COLG", "COLB", "LUX"],
+         ["Modulino Light", "Qwiic 케이블"], ["빨강·초록·파랑 비율과 조도(lx)를 함께 잽니다."], minSet=F, addr="0x53"),
+    # 거리
+    part("vl53l1x", "레이저 거리 센서 VL53L1X (최대 4 m)", "무게·거리·힘", "i2c", ["DIST"],
+         ["VL53L1X 모듈", "점퍼선 4개"], ["4 cm~4 m. 라이브러리 없이 바로 됩니다. 물체 낙하·수레 운동에 좋습니다."], minSet=F, addr="0x29"),
+    part("modulino-distance", "Modulino Distance (VL53L4CD)", "무게·거리·힘", "qwiic", ["DIST"],
+         ["Modulino Distance", "Qwiic 케이블"], ["1~130 cm. Qwiic 케이블로 꽂으면 바로 됩니다."], minSet=F, addr="0x29"),
+    part("vl6180x", "근거리 레이저 센서 VL6180X (0~20 cm)", "무게·거리·힘", "i2c", ["DIST"],
+         ["VL6180X 모듈", "점퍼선 4개"], ["0~20 cm를 mm 단위로 잽니다. 용수철 진동처럼 짧은 움직임에 씁니다."], minSet=F, addr="0x29"),
+    analog("gp2y0a21", "적외선 거리 센서 GP2Y0A21 (10~80 cm)", "무게·거리·힘", "IRD", ["Sharp GP2Y0A21", "JST 3핀 케이블"],
+           ["10 cm보다 가까우면 값이 틀립니다.", "전압→거리 곡선 변환은 UNO R4·Mega에서만 됩니다."], minSet=F),
+    analog("gp2y0a41", "적외선 거리 센서 GP2Y0A41 (4~30 cm)", "무게·거리·힘", "IRDS", ["Sharp GP2Y0A41", "JST 3핀 케이블"],
+           ["4 cm보다 가까우면 값이 틀립니다.", "전압→거리 곡선 변환은 UNO R4·Mega에서만 됩니다."], minSet=F),
+    part("tfmini", "라이다 거리 센서 TFmini-S / TFmini Plus / TF-Luna", "무게·거리·힘", "uart", ["DIST"],
+         ["Benewake TFmini-S·Plus·TF-Luna", "점퍼선 4개"], ["0.1~12 m. 먼 거리 운동에 씁니다. 기본 설정(115200, UART)으로 씁니다."], minSet=F),
+    part("a02yyuw", "방수 초음파 거리 센서 A02YYUW (UART)", "무게·거리·힘", "uart", ["DIST"],
+         ["DFRobot A02YYUW", "점퍼선 4개"], ["3~450 cm. 물 위 수위 측정에 씁니다 (센서 머리만 방수)."], minSet=F),
+    analog("maxbotix", "방수 초음파 MaxBotix (아날로그)", "무게·거리·힘", "DUS", ["MaxBotix MB7388 등", "점퍼선 3개"],
+           ["AN 핀을 연결합니다. 5 V 전원 기준입니다."]),
+    part("nau7802", "로드셀 ADC NAU7802 (Qwiic 저울)", "무게·거리·힘", "i2c", ["M"],
+         ["SparkFun Qwiic Scale (NAU7802)", "로드셀", "기준 추"], ["HX711 대신 Qwiic 케이블로 연결하는 저울입니다. '보정'에서 영점 → 기준 추 순서로 맞춥니다."], minSet=F, addr="0x2A"),
+    # 움직임·자기
+    part("icm20948", "9축 센서 ICM-20948 / ICM-20649", "움직임·자기", "i2c", ["AX", "AY", "AZ"],
+         ["ICM-20948 모듈 (MPU9250 후속)", "점퍼선 4개"], ["x·y·z 가속도(m/s²)를 잽니다."], minSet=F, addr="0x68"),
+    part("mma8452q", "가속도 센서 MMA8452Q", "움직임·자기", "i2c", ["AX", "AY", "AZ"],
+         ["MMA8452Q 모듈", "점퍼선 4개"], ["±2 g 범위로 잽니다."], minSet=F, addr="0x1D"),
+    part("adxl313", "가속도 센서 ADXL313 (Qwiic)", "움직임·자기", "i2c", ["AX", "AY", "AZ"],
+         ["SparkFun ADXL313", "Qwiic 케이블"], ["±4 g 범위로 잽니다."], minSet=F, addr="0x1D"),
+    part("bno055", "방향 센서 BNO055 (9축, 각도 계산)", "움직임·자기", "i2c", ["AX", "AY", "AZ", "ANG"],
+         ["BNO055 모듈", "점퍼선 4개"], ["가속도와 방위각(°)을 함께 냅니다. 처음 몇 초는 천천히 돌려 보정합니다."], minSet=F, addr="0x28"),
+    part("as5600", "자석 회전 각도 센서 AS5600", "움직임·자기", "i2c", ["ANG"],
+         ["AS5600 모듈 + 원형 자석", "점퍼선 4개"], ["0~360°를 잽니다. 진자의 흔들림·회전 운동에 씁니다.", "자석을 칩 바로 위 1~3 mm에 둡니다."], minSet=F, addr="0x36"),
+    analog("hall-angle", "360° 홀 각도 센서 (SEN0221, 아날로그)", "움직임·자기", "ANGA", ["SEN0221 모듈", "점퍼선 3개"],
+           ["손잡이를 돌린 각도(°)입니다. 0°·180° 두 점으로 보정하면 정확해집니다."]),
+    part("lis3mdl", "자기장 센서 LIS3MDL", "움직임·자기", "i2c", ["MAG"],
+         ["LIS3MDL 모듈", "점퍼선 4개"], ["±400 µT. 코일·자석 주변 자기장 세기를 잽니다."], minSet=F, addr="0x1C"),
+    part("mag3110", "자기장 센서 MAG3110", "움직임·자기", "i2c", ["MAG"],
+         ["MAG3110 모듈", "점퍼선 4개"], ["±1000 µT."], minSet=F, addr="0x0E"),
+    part("bmm150", "자기장 센서 BMM150 (Grove Compass v2)", "움직임·자기", "i2c", ["MAG"],
+         ["BMM150 모듈", "점퍼선 4개"], ["공장 보정을 쓰지 않은 근삿값입니다. 변화 비교에 씁니다."], minSet=F, addr="0x13"),
+    part("tmag5273", "3축 홀 센서 TMAG5273 (강한 자기장)", "움직임·자기", "i2c", ["MAG"],
+         ["SparkFun TMAG5273", "Qwiic 케이블"], ["±40 mT(약 40000 µT)까지 잽니다. 자석 가까이·전자석 실험에 좋습니다."], minSet=F, addr="0x22"),
+    # 펄스 (D3)
+    analog("water-flow", "물 흐름 센서 YF-S201 (유량)", "물·용액", "FLOW", ["YF-S201 유량 센서", "점퍼선 3개", "호스"],
+           ["노랑(신호)선을 D3에 꽂습니다. 1분 동안 받은 물로 보정하면 정확해집니다.", "Seeed G1/4 등 다른 크기는 보정 후 씁니다."],
+           connector="pulse", minSet=F),
+    analog("geiger", "가이거 계수기 (방사선, 1분 계수)", "전기·소리", "CPM", ["가이거 계수기 모듈 (SEN0463·RadiationD 등)", "점퍼선 3개"],
+           ["신호(VIN·OUT)선을 D3에 꽂습니다. 1분 평균이라 처음 1분은 값이 쌓이는 중입니다.",
+            "µSv/h로 보려면 '포트 직접 설정'에서 D3를 '방사선량'으로 바꿉니다.", "방사선원은 교사가 관리합니다."],
+           connector="pulse", minSet=F),
+    analog("anemometer-pulse", "풍속계 (펄스형)", "물·용액", "WNDP", ["펄스 출력 풍속계 (P2531 등)", "점퍼선 3개"],
+           ["신호선을 D3에 꽂습니다. 제품마다 펄스-풍속 비율이 달라 설명서 값으로 보정합니다."], connector="pulse", minSet=F),
+    analog("anemometer-analog", "풍속계 (아날로그, SEN0170)", "물·용액", "WIND", ["SEN0170 풍속계", "12 V 어댑터", "점퍼선 3개"],
+           ["풍속계 전원은 12~24 V 따로, 신호(0~5 V)만 A0에 꽂고 GND는 함께 연결합니다."]),
+    analog("ear-clip-hr", "귀 클립 심박 센서 (Grove)", "생체", "BPM", ["Grove Ear-clip Heart Rate", "점퍼선 3개"],
+           ["신호선을 D3에 꽂습니다. 10초 평균 심박수입니다. 운동 전후 비교에 씁니다.", "의료용이 아닙니다."],
+           connector="pulse", minSet=F),
+    analog("pulse-counter", "회전수·펄스 세기 (홀 센서·포토 인터럽터)", "움직임·자기", "RPM", ["홀 센서 또는 포토 인터럽터 모듈 (DO 핀)", "점퍼선 3개"],
+           ["DO선을 D3에 꽂습니다. 한 바퀴에 펄스가 1번이면 회전수(rpm) 그대로입니다."], connector="pulse", minSet=F),
+    # 전기
+    part("ads1115", "정밀 전압 ADS1115 (16비트, 화학 전지)", "전기·소리", "i2c", ["VP"],
+         ["ADS1115 모듈", "점퍼선 4개 + 악어 클립 2개"], ["A0(+)·A1(−) 사이 전압을 0.1 mV 단위로 잽니다 (±4 V). 화학 전지·농도차 전지에 좋습니다.",
+          "모듈의 A0·A1 단자입니다 (보드의 A0·A1이 아님)."], minSet=F, addr="0x48"),
+    analog("acs723", "전류 센서 ACS723 (5 A)", "전기·소리", "I5B", ["ACS723 모듈", "점퍼선 3개"], ["0 A에서 영점을 맞추고 씁니다."]),
+    analog("acs758", "전류 센서 ACS758 (50 A)", "전기·소리", "I50A", ["ACS758 50A 모듈", "점퍼선 3개"], ["큰 전류용입니다. 교사 시범 실험에만 씁니다."]),
+]
+PARTS += MORE_PARTS2
+
 # 문제 해결: 증상 → 차례로 해 볼 것 (웹앱 3단계, 애플 앱 같은 파일)
 TROUBLES = [
     dict(id="no-port", title="USB로 연결할 때 보드가 목록에 안 보여요",
@@ -514,7 +666,9 @@ BREADBOARD = dict(
 ORDER = ["온도", "온습도", "기압·압력", "기체", "빛·색", "물·용액", "무게·거리·힘", "움직임·자기", "전기·소리", "생체"]
 
 out = dict(version=2, common=COMMON, categories=ORDER, boards=BOARDS, connectors=CONNECTORS, parts=PARTS, troubles=TROUBLES, breadboard=BREADBOARD,
-           planned=["MH-Z19B 이산화탄소 (UART)", "PMS7003 미세먼지", "Modulino Distance·Light·Movement",
+           planned=["열화상 카메라 AMG8833·MLX90640", "먼지 센서 GP2Y1014AU·PPD42NS (펄스 폭 방식)",
+                    "색 센서 TCS3200 (주파수 출력)", "RS485 토양 센서 (수분·EC·pH·질소·인·칼륨)",
+                    "오존 SEN0321·멀티가스 MiCS-4514·심박 허브 MAX32664", "HTU31D·SHT1x·ICP-10111·MS5540C·HPMA115",
                     "Nano ESP32·Nano 33·GIGA·UNO Q 펌웨어"])
 path = pathlib.Path(__file__).resolve().parent.parent / "protocol" / "guide.json"
 path.write_text(json.dumps(out, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")

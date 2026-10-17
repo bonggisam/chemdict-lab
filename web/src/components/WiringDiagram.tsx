@@ -23,7 +23,8 @@ export function WiringDiagram({ board, part }: Props) {
   const bx = 40, by = 76, bw = 250, bh = 200;
   const sx = 450, sy = 96, sw = 170;
   const sh = Math.max(140, 44 + n * 30);
-  const pinX = (i: number) => bx + 38 + i * 48;
+  const step = n > 5 ? (bw - 70) / (n - 1) : 48;   // 6선(MAX31865)도 보드 안에
+  const pinX = (i: number) => bx + 38 + i * step;
   const pinY = by + 14;
   const laneY = (i: number) => 22 + i * 10;
   const dropX = (i: number) => 418 - i * 22;

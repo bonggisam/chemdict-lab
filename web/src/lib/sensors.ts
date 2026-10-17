@@ -15,6 +15,8 @@ export interface SensorType {
   stableBand: number;
   requiresCal?: boolean;
   note: string;
+  port?: 'pulse';   // D3 펄스 입력에만 (Hz × slope + offset)
+  full?: boolean;   // 전체 버전 펌웨어(UNO R4·Mega)에서만 바르게 변환
   src?: string;
 }
 
@@ -38,7 +40,7 @@ export interface ResolvedSensor extends SensorInfo {
 export function resolveSensor(s: SensorInfo & { type?: string }): ResolvedSensor {
   const type = s.type ?? s.id;
   const spec = typeInfo(type);
-  const port = s.src && /^A\d$/.test(s.src) ? s.src : '';
+  const port = s.src && /^(A\d|D3)$/.test(s.src) ? s.src : '';
   const dup = s.id.includes('_') ? ` (${port})` : '';
   return {
     ...s,

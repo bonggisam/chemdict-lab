@@ -23,11 +23,12 @@ const PORTS = ['A0', 'A1', 'A2', 'A3'];
 /** 센서를 고르면: 연결 그림 → [연결했어요 · 측정 시작] 한 번으로 측정 */
 export function QuickSheet({ board, boardDetected, part, sensors, connected, status, onStart, onClose, onHelp }: Props) {
   const analog = !!part.analogType;
+  const pulse = part.connector === 'pulse';   // D3 고정
   // 이미 이 종류로 설정된 포트 → 비어 있는 포트 → A0
   const firstPort =
-    sensors.find((s) => s.type === part.analogType && /^A\d$/.test(s.src))?.src ??
+    sensors.find((s) => s.type === part.analogType && /^(A\d|D3)$/.test(s.src))?.src ??
     PORTS.find((p) => !sensors.some((s) => s.src === p)) ?? 'A0';
-  const [port, setPort] = useState(firstPort);
+  const [port, setPort] = useState(pulse ? 'D3' : firstPort);
   const ok = partSupported(board, part);
 
   return (
@@ -38,7 +39,7 @@ export function QuickSheet({ board, boardDetected, part, sensors, connected, sta
           <span className="note">{boardDetected ? t('보드: {name} (자동 인식)', { name: board.name }) : t('보드: {name}', { name: board.name })}</span>
         </div>
 
-        {analog && (
+        {analog && !pulse && (
           <div className="port-pick" role="radiogroup" aria-label={t('꽂을 포트')}>
             <span>{t('꽂을 포트')}</span>
             {PORTS.map((p) => (

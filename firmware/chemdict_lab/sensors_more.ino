@@ -51,14 +51,18 @@ bool lpsAt(TwoWire* w, uint8_t a) { for (uint8_t i = 0; i < nLps; i++) if (lps[i
 
 // ---------- 일반 I2C 센서 칸 ----------
 enum Kind : uint8_t { K_BH1750, K_VEML, K_AHT, K_HTU, K_SHT4, K_BMP180, K_MLX, K_MCP, K_INA, K_MPU, K_ADXL, K_QMC, K_HMC, K_SGP, K_CCS, K_MAX,
-                     K_SCD30, K_ENS, K_O2, K_TSL, K_LIS, K_LSM, K_INA260 };
+                     K_SCD30, K_ENS, K_O2, K_TSL, K_LIS, K_LSM, K_INA260,
+                     // sensors_more2.ino (0.5.0)
+                     K_TMP117, K_TMP102, K_ADS, K_BMP3, K_DPS, K_MS56, K_MPL, K_SI1145, K_MCP9600, K_AS5600, K_ICM, K_MMA, K_BNO,
+                     K_LIS3MDL, K_MAG3110, K_BMM, K_TMAG, K_AS7341, K_APDS, K_LTR390, K_LTR381, K_SGP40, K_AM2320, K_HIH,
+                     K_VL6180, K_VL53L1, K_NAU };
 struct More {
   TwoWire* w; uint8_t addr; Kind kind; uint8_t step;
   int8_t i0, i1, i2; unsigned long last;
   int16_t cal[11];   // BMP180 보정값 (AC1..MD)
   uint16_t ucal[3];  // BMP180 AC4..AC6
 };
-const uint8_t MAX_MORE = 12;
+const uint8_t MAX_MORE = 16;
 More more[MAX_MORE];
 uint8_t nMore = 0;
 
@@ -82,6 +86,7 @@ void detectMore() {
     for (uint8_t a : A1) {
       if (!i2cHas(w, a) || lpsAt(w, a)) continue;
       if (a == 0x5C) { uint8_t who; if (i2cRead(w, a, 0x0F, &who, 1) && (who == 0xB1 || who == 0xB3)) continue; }
+      if (a == 0x5C) { float t, h; if (am2320Read(w, t, h)) continue; }   // AM2320 (sensors_more2.ino)
       if (!i2cCmd8(w, a, 0x01) || !i2cCmd8(w, a, 0x10)) continue;   // 켜기, 연속 고해상도
       if ((m = addMore(w, a, K_BH1750))) m->i0 = regDS("LUX", tag, SRC(b, "BH1750"), 0);
     }
@@ -188,11 +193,12 @@ void detectMore() {
     static const uint8_t A6[] = { 0x53, 0x1D };
     for (uint8_t a : A6) {
       uint8_t id;
-      if (!i2cHas(w, a) || !i2cRead(w, a, 0x00, &id, 1) || id != 0xE5) continue;
-      i2cWrite8(w, a, 0x31, 0x08);   // 전체 해상도 ±2 g
+      if (!i2cHas(w, a) || !i2cRead(w, a, 0x00, &id, 1) || (id != 0xE5 && id != 0xAD)) continue;   // ADXL345·343 / ADXL313
+      i2cWrite8(w, a, 0x31, id == 0xAD ? 0x0B : 0x08);   // 전체 해상도 (313: ±4 g, 1024/g)
       i2cWrite8(w, a, 0x2C, 0x0A);   // 100 Hz
       i2cWrite8(w, a, 0x2D, 0x08);   // 측정
       if ((m = addMore(w, a, K_ADXL))) {
+        m->step = id == 0xAD;
         m->i0 = regDS("AX", "ADXL", SRC(b, "ADXL345"), 2); m->i1 = regDS("AY", "ADXL", SRC(b, "ADXL345"), 2); m->i2 = regDS("AZ", "ADXL", SRC(b, "ADXL345"), 2);
       }
       break;
@@ -418,7 +424,7 @@ void pollMore() {
         if (!i2cRead(m.w, m.addr, mpu ? 0x3B : 0x32, d, 6)) break;
         for (uint8_t k = 0; k < 3; k++) {
           int16_t raw = mpu ? (int16_t)((d[2 * k] << 8) | d[2 * k + 1]) : (int16_t)(d[2 * k] | (d[2 * k + 1] << 8));
-          float g = mpu ? raw / 16384.0f : raw * 0.0039f;
+          float g = mpu ? raw / 16384.0f : m.step ? raw / 1024.0f : raw * 0.0039f;
           setDS(k == 0 ? m.i0 : k == 1 ? m.i1 : m.i2, g * 9.80665f);   // m/s²
         }
         break;
@@ -522,6 +528,7 @@ void pollMore() {
         if (ir >= 0) setDS(m.i0, ir);
         break;
       }
+      default: pollExtra(i); break;   // sensors_more2.ino
     }
   }
 }
@@ -550,74 +557,237 @@ void pollTof() {
 }
 #endif
 
-// ---------- UART: PMS5003/7003 미세먼지 · MH-Z19B 이산화탄소 (Serial1, 9600) ----------
+// ---------- UART (Serial1): 켤 때 한 종류만 알아냄 ----------
+//  9600:   PMS5003/7003/5003ST 미세먼지(+폼알데하이드·온습도) · A02YYUW 방수 초음파 · 폼알데하이드 SEN0231(WZ-S)
+//          MH-Z19B/C·MH-Z14A·MH-Z16 CO2 · CM1106/CM1108 CO2 · COZIR·SprintIR CO2
+//  115200: TFmini-S·TFmini Plus·TF-Luna 라이다 거리
 #if defined(HAVE_HWSERIAL1) || defined(ARDUINO_ARCH_RENESAS)
 #define HAS_UART_SENSOR 1
-uint8_t uartKind = 0;          // 0 없음, 1 PMS, 2 MH-Z19
-int8_t pm1 = -1, pm25 = -1, pm10 = -1, mhz = -1;
-uint8_t ubuf[32]; uint8_t ulen = 0;
+enum UKind : uint8_t { U_NONE, U_PMS, U_MHZ, U_CM11, U_GSS, U_A02, U_HCHO, U_TF };
+uint8_t uartKind = U_NONE;
+int8_t ui0 = -1, ui1 = -1, ui2 = -1, ui3 = -1, ui4 = -1, ui5 = -1;
+uint8_t ubuf[40]; uint8_t ulen = 0, uneed = 0;
 unsigned long ulast = 0;
+uint16_t gssMul = 1;
+bool pmsST = false;   // PMS5003ST (프레임 40바이트)
+unsigned long uartLastOk = 0;   // 마지막으로 바른 값을 받은 때
+char gssLine[16]; uint8_t gssN = 0;
 
-void detectUart() {
-  uartKind = 0; ulen = 0;
-  Serial1.begin(9600);
-  // PMS는 1초마다 스스로 0x42 0x4D 프레임을 보냄
+const uint8_t MHZ_Q[9] = { 0xFF, 0x01, 0x86, 0, 0, 0, 0, 0, 0x79 };
+const uint8_t CM_Q[4] = { 0x11, 0x01, 0x01, 0xED };
+
+void uartFlush() { while (Serial1.available()) Serial1.read(); }
+
+// 9600으로 1.5초 듣기: 스스로 보내는 센서 (PMS 0x42 0x4D · A02 0xFF+합 · WZ-S 0xFF 0x17)
+uint8_t uartListen() {
   unsigned long t0 = millis();
-  uint8_t prev = 0;
+  uint8_t b[9]; uint8_t n = 0;
   while (millis() - t0 < 1500) {
     if (!Serial1.available()) continue;
     uint8_t c = Serial1.read();
-    if (prev == 0x42 && c == 0x4D) { uartKind = 1; break; }
+    if (n == 0 && c != 0x42 && c != 0xFF) continue;
+    b[n++] = c;
+    if (b[0] == 0x42) {
+      if (n == 2 && c != 0x4D) { n = 0; continue; }
+      if (n == 4) { pmsST = (b[2] == 0 && b[3] == 36); return U_PMS; }
+      continue;
+    }
+    if (n == 4 && b[0] == 0xFF && b[1] != 0x17) { if (((0xFF + b[1] + b[2]) & 0xFF) == b[3]) return U_A02; n = 0; continue; }
+    if (n == 9 && b[0] == 0xFF) {
+      uint8_t ck = 0; for (uint8_t i = 1; i < 8; i++) ck += b[i];
+      if (b[1] == 0x17 && (uint8_t)(~ck + 1) == b[8]) return U_HCHO;
+      n = 0;
+    }
+  }
+  return U_NONE;
+}
+
+bool uartAsk(const uint8_t* q, uint8_t qn, uint8_t h0, uint8_t h1, unsigned long ms) {
+  uartFlush(); Serial1.write(q, qn);
+  unsigned long t0 = millis(); uint8_t prev = 0;
+  while (millis() - t0 < ms) {
+    if (!Serial1.available()) continue;
+    uint8_t c = Serial1.read();
+    if (prev == h0 && c == h1) { uartFlush(); return true; }
     prev = c;
   }
-  if (!uartKind) {
-    while (Serial1.available()) Serial1.read();
-    const uint8_t q[9] = { 0xFF, 0x01, 0x86, 0, 0, 0, 0, 0, 0x79 };
-    Serial1.write(q, 9);
-    t0 = millis();
-    while (millis() - t0 < 300) {
-      if (Serial1.available() >= 2) { if (Serial1.read() == 0xFF && Serial1.read() == 0x86) uartKind = 2; break; }
-    }
-    while (Serial1.available()) Serial1.read();
+  return false;
+}
+
+// COZIR·SprintIR: "K 2" (질의 모드) → " K 00002"
+bool gssAsk() {
+  uartFlush(); Serial1.print("K 2\r\n");
+  unsigned long t0 = millis(); char prev = 0;
+  while (millis() - t0 < 300) {
+    if (!Serial1.available()) continue;
+    char c = Serial1.read();
+    if (prev == ' ' && c == 'K') { delay(20); uartFlush(); return true; }
+    prev = c;
   }
-  if (uartKind == 1) { pm1 = regDS("PM1", "PMS", "uart:PMS", 0); pm25 = regDS("PM25", "PMS", "uart:PMS", 0); pm10 = regDS("PM10", "PMS", "uart:PMS", 0); }
-  else if (uartKind == 2) mhz = regDS("CO2", "MHZ", "uart:MH-Z19", 0);
-  else Serial1.end();
+  return false;
+}
+
+long gssQuery(const char* cmd, char key) {   // " Z 00450" 같은 줄에서 숫자
+  uartFlush(); Serial1.print(cmd);
+  unsigned long t0 = millis(); bool on = false; long v = 0; uint8_t nd = 0;
+  while (millis() - t0 < 200) {
+    if (!Serial1.available()) continue;
+    char c = Serial1.read();
+    if (!on) { if (c == key) on = true; continue; }
+    if (c >= '0' && c <= '9') { v = v * 10 + (c - '0'); nd++; }
+    else if (nd && (c == '\r' || c == '\n')) return v;
+  }
+  return nd ? v : -1;
+}
+
+void detectUart() {
+  ulen = 0; uneed = 0;
+  ui0 = ui1 = ui2 = ui3 = ui4 = ui5 = -1;
+  // 이미 알아낸 센서는 다시 묻지 않음 (센서 다시 찾기를 빠르게). 없을 때만 새로 찾음
+  if (uartKind != U_NONE && millis() - uartLastOk > 10000) uartKind = U_NONE;   // 10초 넘게 값이 없으면 빠진 것으로 보고 다시 찾음
+  if (uartKind == U_NONE) {
+  uartLastOk = millis();
+  pmsST = false;
+  Serial1.begin(9600);
+  uartKind = uartListen();
+  if (uartKind == U_NONE && uartAsk(MHZ_Q, 9, 0xFF, 0x86, 300)) uartKind = U_MHZ;
+  if (uartKind == U_NONE && uartAsk(CM_Q, 4, 0x16, 0x05, 300)) uartKind = U_CM11;
+  if (uartKind == U_NONE && gssAsk()) {
+    uartKind = U_GSS;
+    long mul = gssQuery(".\r\n", '.');
+    gssMul = mul > 0 ? mul : 1;
+  }
+  if (uartKind == U_NONE) {   // 라이다는 115200
+    Serial1.end(); Serial1.begin(115200);
+    unsigned long t0 = millis(); uint8_t prev = 0;
+    while (millis() - t0 < 300) {
+      if (!Serial1.available()) continue;
+      uint8_t c = Serial1.read();
+      if (prev == 0x59 && c == 0x59) { uartKind = U_TF; break; }
+      prev = c;
+    }
+  }
+  }
+  uartFlush();
+  switch (uartKind) {
+    case U_PMS:
+      ui0 = regDS("PM1", "PMS", "uart:PMS", 0); ui1 = regDS("PM25", "PMS", "uart:PMS", 0); ui2 = regDS("PM10", "PMS", "uart:PMS", 0);
+      if (pmsST) { ui3 = regDS("HCHO", "PMS", "uart:PMS5003ST", 3); ui4 = regDS("TA", "PMS", "uart:PMS5003ST", 1); ui5 = regDS("RH", "PMS", "uart:PMS5003ST", 1); }
+      break;
+    case U_MHZ: ui0 = regDS("CO2", "MHZ", "uart:MH-Z19", 0); break;
+    case U_CM11: ui0 = regDS("CO2", "CM11", "uart:CM1106", 0); break;
+    case U_GSS: ui0 = regDS("CO2", "GSS", "uart:COZIR", 0); break;
+    case U_A02: ui0 = regDS("DIST", "A02", "uart:A02YYUW", 1); break;
+    case U_HCHO: ui0 = regDS("HCHO", "WZ", "uart:WZ-S", 3); break;
+    case U_TF: ui0 = regDS("DIST", "TF", "uart:TFmini", 1); break;
+    default: Serial1.end();
+  }
 }
 
 void pollUart() {
-  if (uartKind == 1) {
-    while (Serial1.available()) {
-      uint8_t c = Serial1.read();
-      if (ulen == 0 && c != 0x42) continue;
-      if (ulen == 1 && c != 0x4D) { ulen = 0; continue; }
-      ubuf[ulen++] = c;
-      if (ulen == 32) {
-        uint16_t sum = 0;
-        for (uint8_t i = 0; i < 30; i++) sum += ubuf[i];
-        if (sum == ((ubuf[30] << 8) | ubuf[31])) {
-          setDS(pm1, (ubuf[10] << 8) | ubuf[11]);    // 대기 환경 기준 (µg/m³)
-          setDS(pm25, (ubuf[12] << 8) | ubuf[13]);
-          setDS(pm10, (ubuf[14] << 8) | ubuf[15]);
+  switch (uartKind) {
+    case U_PMS: {   // 0x42 0x4D 길이(2) 자료… 합(2). 7003 = 32바이트, 5003ST = 40바이트
+      while (Serial1.available()) {
+        uint8_t c = Serial1.read();
+        if (ulen == 0 && c != 0x42) continue;
+        if (ulen == 1 && c != 0x4D) { ulen = 0; continue; }
+        ubuf[ulen++] = c;
+        if (ulen == 4) { uneed = 4 + ((ubuf[2] << 8) | ubuf[3]); if (uneed > sizeof(ubuf) || uneed < 32) { ulen = 0; continue; } }
+        if (ulen >= 4 && ulen == uneed) {
+          uint16_t sum = 0;
+          for (uint8_t i = 0; i < uneed - 2; i++) sum += ubuf[i];
+          if (sum == ((ubuf[uneed - 2] << 8) | ubuf[uneed - 1])) {
+            { setDS(ui0, (uint16_t)((ubuf[10] << 8) | ubuf[11])); uartLastOk = millis(); }    // 대기 환경 기준 (µg/m³)
+            setDS(ui1, (ubuf[12] << 8) | ubuf[13]);
+            setDS(ui2, (ubuf[14] << 8) | ubuf[15]);
+            if (uneed == 40 && ui3 >= 0) {   // PMS5003ST: 폼알데하이드(mg/m³ ×1000)·온도·습도(×10)
+              setDS(ui3, ((ubuf[28] << 8) | ubuf[29]) / 1000.0f * 0.814f);   // mg/m³ → ppm (25 °C)
+              setDS(ui4, (int16_t)((ubuf[30] << 8) | ubuf[31]) / 10.0f);
+              setDS(ui5, ((ubuf[32] << 8) | ubuf[33]) / 10.0f);
+            }
+          }
+          ulen = 0;
+        }
+      }
+      break;
+    }
+    case U_A02: {   // 0xFF H L 합, 거리 mm
+      while (Serial1.available()) {
+        uint8_t c = Serial1.read();
+        if (ulen == 0 && c != 0xFF) continue;
+        ubuf[ulen++] = c;
+        if (ulen == 4) {
+          if (((ubuf[0] + ubuf[1] + ubuf[2]) & 0xFF) == ubuf[3]) { setDS(ui0, ((ubuf[1] << 8) | ubuf[2]) / 10.0f); uartLastOk = millis(); }
+          ulen = 0;
+        }
+      }
+      break;
+    }
+    case U_HCHO: {   // FF 17 04 00 농도(ppb, 2) 최대(2) 합
+      while (Serial1.available()) {
+        uint8_t c = Serial1.read();
+        if (ulen == 0 && c != 0xFF) continue;
+        if (ulen == 1 && c != 0x17) { ulen = 0; continue; }
+        ubuf[ulen++] = c;
+        if (ulen == 9) {
+          uint8_t ck = 0; for (uint8_t i = 1; i < 8; i++) ck += ubuf[i];
+          if ((uint8_t)(~ck + 1) == ubuf[8]) { setDS(ui0, ((ubuf[4] << 8) | ubuf[5]) / 1000.0f); uartLastOk = millis(); }   // ppm
+          ulen = 0;
+        }
+      }
+      break;
+    }
+    case U_TF: {   // 59 59 거리(L,H, cm) 세기(2) 온도(2) 합
+      while (Serial1.available()) {
+        uint8_t c = Serial1.read();
+        if (ulen < 2 && c != 0x59) { ulen = 0; continue; }
+        ubuf[ulen++] = c;
+        if (ulen == 9) {
+          uint8_t sum = 0; for (uint8_t i = 0; i < 8; i++) sum += ubuf[i];
+          uint16_t str = ubuf[4] | (ubuf[5] << 8);
+          if (sum == ubuf[8]) { setDS(ui0, (str >= 100 && str != 0xFFFF) ? (ubuf[2] | (ubuf[3] << 8)) : NAN); uartLastOk = millis(); }
+          ulen = 0;
+        }
+      }
+      break;
+    }
+    case U_MHZ: case U_CM11: {   // 2초마다 묻고 답 읽기
+      uint8_t n = uartKind == U_MHZ ? 9 : 8;
+      if (ulen == 0 && millis() - ulast >= 2000) {
+        uartFlush();
+        if (uartKind == U_MHZ) Serial1.write(MHZ_Q, 9); else Serial1.write(CM_Q, 4);
+        ulast = millis(); ulen = 1;
+      }
+      if (ulen && Serial1.available() >= n) {
+        uint8_t d[9];
+        for (uint8_t i = 0; i < n; i++) d[i] = Serial1.read();
+        uint8_t ck = 0;
+        if (uartKind == U_MHZ) {
+          for (uint8_t i = 1; i < 8; i++) ck += d[i];
+          if (d[0] == 0xFF && d[1] == 0x86 && (uint8_t)(0xFF - ck + 1) == d[8]) { setDS(ui0, (uint16_t)((d[2] << 8) | d[3])); uartLastOk = millis(); }
+        } else {
+          for (uint8_t i = 0; i < 7; i++) ck += d[i];
+          if (d[0] == 0x16 && d[1] == 0x05 && (uint8_t)(0x100 - ck) == d[7]) { setDS(ui0, (uint16_t)((d[3] << 8) | d[4])); uartLastOk = millis(); }
         }
         ulen = 0;
+      } else if (ulen && millis() - ulast > 500) { uartFlush(); ulen = 0; }
+      break;
+    }
+    case U_GSS: {   // " Z 00450" (×배율)
+      if (ulen == 0 && millis() - ulast >= 1000) { uartFlush(); Serial1.print("Z\r\n"); ulast = millis(); ulen = 1; gssN = 0; }
+      while (ulen && Serial1.available()) {
+        char c = Serial1.read();
+        if (c == '\n') {
+          gssLine[gssN] = 0;
+          char* z = strchr(gssLine, 'Z');
+          if (z) { setDS(ui0, atol(z + 1) * (float)gssMul); uartLastOk = millis(); }
+          ulen = 0; gssN = 0;
+        } else if (gssN < sizeof(gssLine) - 1) gssLine[gssN++] = c;
       }
+      if (ulen && millis() - ulast > 500) ulen = 0;
+      break;
     }
-  } else if (uartKind == 2) {
-    if (ulen == 0 && millis() - ulast >= 2000) {
-      const uint8_t q[9] = { 0xFF, 0x01, 0x86, 0, 0, 0, 0, 0, 0x79 };
-      Serial1.write(q, 9);
-      ulast = millis(); ulen = 1;
-    }
-    if (ulen && Serial1.available() >= 9) {
-      uint8_t d[9];
-      for (uint8_t i = 0; i < 9; i++) d[i] = Serial1.read();
-      uint8_t ck = 0;
-      for (uint8_t i = 1; i < 8; i++) ck += d[i];
-      ck = 0xFF - ck + 1;
-      if (d[0] == 0xFF && d[1] == 0x86 && ck == d[8]) setDS(mhz, (d[2] << 8) | d[3]);
-      ulen = 0;
-    } else if (ulen && millis() - ulast > 500) { while (Serial1.available()) Serial1.read(); ulen = 0; }
+    default: break;
   }
 }
 #else
@@ -626,6 +796,7 @@ void pollUart() {
 
 void detectMoreAll() {
   detectMore();
+  detectExtra();   // sensors_more2.ino
 #if HAS_VL53
   detectTof();
 #endif

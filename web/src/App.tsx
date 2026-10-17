@@ -260,7 +260,7 @@ export default function App() {
   };
   const clearCal = (id: string) => {
     const s = sensors.find((x) => x.id === id);
-    if (s && /^A\d$/.test(s.src)) setPort(s.src, s.type); // 기본 변환식으로 되돌림
+    if (s && /^(A\d|D3)$/.test(s.src)) setPort(s.src, s.type); // 기본 변환식으로 되돌림
     else send(`CAL ${id} CLEAR`);
   };
 
@@ -431,8 +431,8 @@ export default function App() {
           <p className="lede">{t('센서를 누르면 연결 그림이 나옵니다. 그대로 꽂고 [측정 시작]을 누르면 바로 기록됩니다.')}</p>
           <p className="note board-line">
             {t('보드:')} <b>{board.name}</b>{detectedBoard ? ` (${t('자동 인식')})` : ''}
-            {sensors.filter((s) => !/^A\d$/.test(s.src) && s.src !== 'demo').length > 0 &&
-              <> · {t('인식된 센서:')} {sensors.filter((s) => !/^A\d$/.test(s.src) && s.src !== 'demo').map((s) => s.displayName).join(', ')}</>}
+            {sensors.filter((s) => !/^(A\d|D3)$/.test(s.src) && s.src !== 'demo').length > 0 &&
+              <> · {t('인식된 센서:')} {sensors.filter((s) => !/^(A\d|D3)$/.test(s.src) && s.src !== 'demo').map((s) => s.displayName).join(', ')}</>}
           </p>
 
           <SensorPicker board={board} connectedTypes={sensors.filter((s) => s.src !== 'demo').map((s) => s.type)} onPick={(p) => setQuick({ part: p, status: 'idle' })} />
@@ -446,7 +446,7 @@ export default function App() {
           {hello && (
             <details className="advanced">
               <summary>{t('포트 직접 설정 (고급)')}</summary>
-              <SensorSetup sensors={sensors} disabled={false} onSetPort={setPort} onRescan={rescan} />
+              <SensorSetup sensors={sensors} disabled={false} onSetPort={setPort} onRescan={rescan} pulse={board.sensorSet === 'full'} />
             </details>
           )}
         </main>
@@ -510,7 +510,7 @@ export default function App() {
       {setupOpen && (
         <div className="sheet-backdrop" onClick={() => setSetupOpen(false)}>
           <div className="sheet wide-sheet" role="dialog" aria-modal="true" aria-label={t('센서 연결')} onClick={(e) => e.stopPropagation()}>
-            <SensorSetup sensors={sensors} disabled={running} onSetPort={setPort} onRescan={rescan} />
+            <SensorSetup sensors={sensors} disabled={running} onSetPort={setPort} onRescan={rescan} pulse={board.sensorSet === 'full'} />
             <div className="sheet-actions"><span /><button onClick={() => setSetupOpen(false)}>{t('닫기')}</button></div>
           </div>
         </div>
