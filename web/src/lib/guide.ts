@@ -1,6 +1,7 @@
 import guide from '../../../protocol/guide.json';
 import type { Experiment } from './protocol';
 import { typeInfo } from './sensors';
+import { t } from './i18n';
 
 // protocol/guide.json 을 그대로 읽습니다 (애플 앱과 같은 파일, tools/make_guide.py로 생성).
 export type SensorSet = 'full' | 'lite' | 'mini' | 'none';
@@ -90,8 +91,10 @@ export function partSupported(board: Board, p: Part) {
   return RANK[board.sensorSet] >= RANK[p.minSet];
 }
 
+// Qwiic 단자 여부는 번역 전(한국어) 값으로 한 번만 정함 (board.qwiic 글은 언어에 따라 바뀜)
+const QWIIC = new Set(boards.filter((b) => !b.qwiic.startsWith('없음')).map((b) => b.id));
 export function hasQwiic(board: Board) {
-  return !board.qwiic.startsWith('없음');
+  return QWIIC.has(board.id);
 }
 
 /** 보드에 맞춘 배선 목록 (보드 핀 이름까지) */
@@ -119,17 +122,17 @@ export function quickExperiment(p: Part): Experiment {
     id: `quick-${p.id}`,
     order: 0,
     title: p.name,
-    subject: '바로 측정',
+    subject: t('바로 측정'),
     standards: [],
     sensors: p.provides,
     mode: 'time',
     intervalMs: 1000,
-    x: { label: '시간', unit: 's' },
+    x: { label: t('시간'), unit: 's' },
     y: p.provides.map((t) => {
       const s = typeInfo(t);
       return { sensor: t, label: s?.name ?? t, unit: s?.unit, min: s?.min, max: s?.max };
     }),
-    markers: { enabled: true, label: '관찰 기록', prompt: '한 일 (예: 시약 넣음)' },
+    markers: { enabled: true, label: t('관찰 기록'), prompt: t('한 일 (예: 시약 넣음)') },
     analysis: ['stats', 'fit', 'plateau'],
     steps: [],
   };
