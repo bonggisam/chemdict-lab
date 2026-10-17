@@ -101,10 +101,10 @@ export default function App() {
   }, [say]);
 
   const connect = async (kind: 'serial' | 'ble' | 'sim', reuse?: SerialPort) => {
-    const t: Transport = kind === 'serial' ? new SerialTransport(reuse) : kind === 'ble' ? new BleTransport() : new SimTransport();
-    t.onLine = (line) => { const m = parseLine(line); if (m) handleMsg(m); };
-    t.onClose = () => {
-      if (transportRef.current !== t) return;
+    const tr: Transport = kind === 'serial' ? new SerialTransport(reuse) : kind === 'ble' ? new BleTransport() : new SimTransport();
+    tr.onLine = (line) => { const m = parseLine(line); if (m) handleMsg(m); };
+    tr.onClose = () => {
+      if (transportRef.current !== tr) return;
       transportRef.current = null;
       recordingRef.current = false;
       calibratingRef.current = false;
@@ -120,13 +120,13 @@ export default function App() {
     };
     setBusy(true);
     try {
-      await t.connect();
-      transportRef.current = t;
-      setConnLabel(t.label);
+      await tr.connect();
+      transportRef.current = tr;
+      setConnLabel(tr.label);
       clearFwTimers();
-      if (t instanceof SerialTransport) {
+      if (tr instanceof SerialTransport) {
         // 측정 프로그램이 있으면 hello가 옴 (보드가 다시 시작하느라 1~2초 걸릴 수 있음)
-        const usbBoard = boardFromUsb(t.usb);
+        const usbBoard = boardFromUsb(tr.usb);
         if (usbBoard && usbBoard !== 'clone') pickBoard(usbBoard);
         setFw({ status: 'checking' });
         setScreen('connect');
@@ -138,15 +138,15 @@ export default function App() {
           setFw(null);
           setScreen((sc) => (sc === 'connect' ? (exp ? 'measure' : 'pick') : sc));
         };
-        await t.send('HELLO');
-        fwTimers.current.push(window.setTimeout(() => t.send('HELLO'), 2500));
+        await tr.send('HELLO');
+        fwTimers.current.push(window.setTimeout(() => tr.send('HELLO'), 2500));
         fwTimers.current.push(window.setTimeout(() => {
-          if (transportRef.current !== t || !helloRef.current) return;
+          if (transportRef.current !== tr || !helloRef.current) return;
           helloRef.current = null;
           setFw({ status: 'missing', usbBoard });
         }, 4500));
       } else {
-        await t.send('HELLO');
+        await tr.send('HELLO');
         setScreen(exp ? 'measure' : 'pick');
       }
     } catch (e) {
@@ -161,15 +161,15 @@ export default function App() {
 
   // ---- 측정 프로그램 설치: 포트를 넘겨받아 굽고, 같은 포트로 다시 연결
   const install = async (targetId: string) => {
-    const t = transportRef.current;
+    const tr = transportRef.current;
     const target = TARGETS[targetId];
-    if (!(t instanceof SerialTransport) || !target) return;
+    if (!(tr instanceof SerialTransport) || !target) return;
     clearFwTimers();
     helloRef.current = null;
     transportRef.current = null;
     setHello(null);
     setConnLabel('');
-    const port = await t.release();
+    const port = await tr.release();
     if (!port) return;
     setFw({ status: 'installing', stage: 'reset', ratio: 0 });
     try {
@@ -192,7 +192,7 @@ export default function App() {
     clearFwTimers();
     helloRef.current = null;
     setFw(null);
-    const t = transportRef.current;
+    const tr = transportRef.current;
     transportRef.current = null;
     recordingRef.current = false;
     calibratingRef.current = false;
@@ -200,7 +200,7 @@ export default function App() {
     setHello(null);
     setConnLabel('');
     setScreen('connect');
-    await t?.disconnect();
+    await tr?.disconnect();
   };
 
   useEffect(() => () => { transportRef.current?.disconnect(); }, []);

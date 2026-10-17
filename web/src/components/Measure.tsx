@@ -200,8 +200,8 @@ export function Measure(p: Props) {
       if (vals.length) v[s.id] = Number((vals.reduce((a, b) => a + b, 0) / vals.length).toFixed(s.decimals + 1));
     }
     if (!Object.keys(v).length) { p.say('err', t('아직 받은 값이 없습니다. 측정을 시작했는지 확인하세요.')); return; }
-    const t = active.rows[active.rows.length - 1]?.t ?? 0;
-    setRuns((rs) => rs.map((r) => (r.id === active.id ? { ...r, events: [...r.events, { x, v, t }] } : r)));
+    const tNow = active.rows[active.rows.length - 1]?.t ?? 0;
+    setRuns((rs) => rs.map((r) => (r.id === active.id ? { ...r, events: [...r.events, { x, v, t: tNow }] } : r)));
     const next = ev?.scale === 'log' ? x * (ev?.step ?? 10) : x + (ev?.step ?? 1);
     setEventX(String(Number(next.toFixed(4))));
     p.onEventX?.(next);
@@ -221,9 +221,9 @@ export function Measure(p: Props) {
 
   const addMarker = () => {
     if (!active) return;
-    const t = active.rows[active.rows.length - 1]?.t ?? 0;
+    const tNow = active.rows[active.rows.length - 1]?.t ?? 0;
     const note = markerNote.trim() || exp.markers.label;
-    setRuns((rs) => rs.map((r) => (r.id === active.id ? { ...r, markers: [...r.markers, { t, note }] } : r)));
+    setRuns((rs) => rs.map((r) => (r.id === active.id ? { ...r, markers: [...r.markers, { t: tNow, note }] } : r)));
     setMarkerNote('');
   };
 
