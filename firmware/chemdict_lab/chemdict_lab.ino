@@ -1,12 +1,12 @@
 /*
-  ChemDict Lab firmware v0.3.0
+  ChemDict Lab firmware v0.3.1
   기준 보드: Arduino UNO R4 WiFi (USB + 블루투스, 실제 보드 확인)
   그 밖의 보드: UNO R4 Minima, Nano R4, UNO R3, Nano, Leonardo, Mega 2560 (USB만)
 
   - USB 시리얼(115200)과 BLE(Nordic UART 방식)로 같은 JSON 한 줄 메시지를 보냅니다.
   - 아날로그 A0~A3: 앱에서 센서 종류를 지정(PORT 명령), 설정은 EEPROM에 저장
   - 디지털 센서는 꽂아 두면 자동 인식 (HELLO = 센서 다시 찾기)
-      D2  DS18B20 방수 온도
+      D2  DS18B20 방수 온도 (여러 개 나란히: T, T_OW2, T_OW3…)
       D4  DHT11 / DHT22 온습도
       D5·D6  HX711 무게(로드셀)        DT=D5, SCK=D6
       D7·D8  HC-SR04 초음파 거리        TRIG=D7, ECHO=D8
@@ -87,7 +87,7 @@
 #include <OneWire.h>
 #include <DallasTemperature.h>
 
-#define FW_VERSION "0.3.0"
+#define FW_VERSION "0.3.1"
 
 // ---------- 핀 ----------
 #if defined(ARDUINO_AVR_LEONARDO)
@@ -354,24 +354,41 @@ const uint8_t NBUS = 1;
 // ---------- DS18B20 (D2) ----------
 OneWire oneWire(ONEWIRE_PIN);
 DallasTemperature ds(&oneWire);
-int8_t dsIdx = -1;
+// 같은 D2 선에 여러 개를 나란히 꽂을 수 있음 (열평형·비열 비교 등). 첫 번째 id는 "T", 다음은 "T_OW2", "T_OW3"…
+#if FULL_SENSORS
+const uint8_t MAX_PROBES = 4;
+#else
+const uint8_t MAX_PROBES = 2;
+#endif
+int8_t dsIdx[MAX_PROBES];
+uint8_t nProbes = 0;
 
 void detectDS18() {
-  dsIdx = -1;
+  nProbes = 0;
   ds.begin();
-  if (ds.getDeviceCount() > 0) {
-    ds.setResolution(11);
-    ds.setWaitForConversion(false);
-    ds.requestTemperatures();
-    dsIdx = regDS("T", "OW", "onewire", 2);
-    if (dsIdx >= 0) dsx[dsIdx].cal = settings.tempCalValid;
+  uint8_t n = ds.getDeviceCount();
+  if (n > MAX_PROBES) n = MAX_PROBES;
+  if (!n) return;
+  ds.setResolution(11);
+  ds.setWaitForConversion(false);
+  ds.requestTemperatures();
+  for (uint8_t i = 0; i < n; i++) {
+    char tag[5];
+    if (i == 0) strcpy(tag, "OW"); else snprintf(tag, sizeof(tag), "OW%u", i + 1);
+    int8_t k = regDS("T", tag, "onewire", 2);
+    if (k < 0) break;
+    if (i > 0) snprintf(dsx[k].id, sizeof(dsx[k].id), "T_%s", tag);
+    if (i == 0) dsx[k].cal = settings.tempCalValid;   // 1점 보정은 첫 번째 센서에만
+    dsIdx[nProbes++] = k;
   }
 }
 
 void pollDS18() {
-  if (dsIdx < 0 || !ds.isConversionComplete()) return;
-  float c = ds.getTempCByIndex(0);
-  if (c > -100 && c < 150) setDS(dsIdx, c + (settings.tempCalValid ? settings.tempOffset : 0));
+  if (!nProbes || !ds.isConversionComplete()) return;
+  for (uint8_t i = 0; i < nProbes; i++) {
+    float c = ds.getTempCByIndex(i);
+    if (c > -100 && c < 150) setDS(dsIdx[i], c + (i == 0 && settings.tempCalValid ? settings.tempOffset : 0));
+  }
   ds.requestTemperatures();
 }
 
@@ -1040,7 +1057,7 @@ void handleCal(String args[], int argc) {
 
   // 디지털: DS18B20 온도(영점), HX711 무게(영점·비례)
   int8_t di = findDS(id);
-  if (di >= 0 && di == dsIdx) {
+  if (di >= 0 && nProbes && di == dsIdx[0]) {
     if (step == "CLEAR") { settings.tempOffset = 0; settings.tempCalValid = 0; }
     else {
       if (isnan(dsx[di].v)) { sendErr("CAL", F("no reading")); return; }

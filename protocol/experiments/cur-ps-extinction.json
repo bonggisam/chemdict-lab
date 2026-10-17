@@ -1,0 +1,86 @@
+{
+  "id": "cur-ps-extinction",
+  "order": 207,
+  "title": "티끌이 빛을 붉게 만든다 (성간 소광)",
+  "subject": "행성우주과학",
+  "level": "고2·3 선택",
+  "course": "행성우주과학",
+  "area": "우리은하",
+  "summary": "우유를 탄 물을 지난 빛에서 파랑이 더 많이 줄어드는 것을 봅니다.",
+  "standards": [
+    "12행우03-02"
+  ],
+  "standardTexts": [
+    "성간 소광 자료를 통해 성간 티끌의 존재를 추론하고, 성간 티끌의 특징을 설명할 수 있다."
+  ],
+  "sensors": [
+    "COLR",
+    "COLG",
+    "COLB"
+  ],
+  "mode": "event",
+  "intervalMs": 500,
+  "x": {
+    "label": "우유 방울 수",
+    "unit": "방울"
+  },
+  "y": [
+    {
+      "sensor": "COLR",
+      "label": "빨강",
+      "unit": "%",
+      "min": 0,
+      "max": 100
+    },
+    {
+      "sensor": "COLG",
+      "label": "초록",
+      "unit": "%",
+      "min": 0,
+      "max": 100
+    },
+    {
+      "sensor": "COLB",
+      "label": "파랑",
+      "unit": "%",
+      "min": 0,
+      "max": 100
+    }
+  ],
+  "markers": {
+    "enabled": false,
+    "label": "관찰 기록",
+    "prompt": "한 일 (예: 시약 넣음)"
+  },
+  "analysis": [
+    "stats",
+    "fit"
+  ],
+  "steps": [
+    "물이 든 투명 통 한쪽에 흰 LED, 반대쪽에 색 센서를 둡니다.",
+    "우유를 2방울씩 넣으며 ‘값 기록’을 누릅니다.",
+    "B가 가장 많이 줄어드는지 보고 성간 적색화와 연결합니다."
+  ],
+  "setup": {
+    "parts": [
+      "tcs34725"
+    ],
+    "choose": false,
+    "materials": [
+      "색 센서",
+      "흰 LED",
+      "투명 통",
+      "우유"
+    ],
+    "attach": [],
+    "cautions": []
+  },
+  "textbooks": [],
+  "event": {
+    "label": "우유 방울 수",
+    "unit": "방울",
+    "start": 0,
+    "step": 2,
+    "scale": "linear"
+  }
+}

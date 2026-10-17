@@ -1,0 +1,69 @@
+{
+  "id": "cur-h-incline",
+  "order": 132,
+  "title": "경사면을 내려가는 수레 (중력과 운동)",
+  "subject": "통합과학1",
+  "level": "고1 공통",
+  "course": "통합과학1",
+  "area": "시스템과 상호작용",
+  "summary": "경사각에 따른 가속도를 구해 중력의 작용을 봅니다.",
+  "standards": [
+    "10통과1-03-03"
+  ],
+  "standardTexts": [
+    "중력의 작용으로 인한 지구 표면과 지구 주위의 다양한 운동을 설명할 수 있다."
+  ],
+  "sensors": [
+    "DIST"
+  ],
+  "mode": "time",
+  "intervalMs": 100,
+  "x": {
+    "label": "시간",
+    "unit": "s"
+  },
+  "y": [
+    {
+      "sensor": "DIST",
+      "label": "거리",
+      "unit": "cm"
+    }
+  ],
+  "markers": {
+    "enabled": true,
+    "label": "관찰 기록",
+    "prompt": "한 일 (예: 시약 넣음)"
+  },
+  "analysis": [
+    "stats",
+    "fit"
+  ],
+  "steps": [
+    "경사면 위쪽에 초음파 센서를 두고 수레를 놓습니다.",
+    "측정을 시작하고 수레를 놓습니다.",
+    "‘변화율 그래프’로 속력–시간을 보고 직선 기울기(가속도)를 구합니다.",
+    "경사각을 바꿔 반복합니다 (새 측정)."
+  ],
+  "setup": {
+    "parts": [
+      "hcsr04"
+    ],
+    "choose": false,
+    "materials": [
+      "초음파 센서",
+      "경사면",
+      "수레",
+      "각도기"
+    ],
+    "attach": [],
+    "cautions": []
+  },
+  "textbooks": [
+    {
+      "publisher": "미래엔",
+      "course": "통합과학1",
+      "note": "125쪽 자유 낙하 하는 물체의 가속도 분석하기",
+      "sure": "similar"
+    }
+  ]
+}

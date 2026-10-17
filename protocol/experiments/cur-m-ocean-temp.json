@@ -1,0 +1,73 @@
+{
+  "id": "cur-m-ocean-temp",
+  "order": 125,
+  "title": "바다 깊이에 따른 수온 (연직 수온 분포)",
+  "subject": "과학 3",
+  "level": "중학교",
+  "course": "과학 3",
+  "area": "수권과 해수의 순환",
+  "summary": "전등으로 데운 수조에서 깊이별 수온을 재어 혼합층·수온 약층을 봅니다.",
+  "standards": [],
+  "standardTexts": [],
+  "sensors": [
+    "T"
+  ],
+  "mode": "event",
+  "intervalMs": 1000,
+  "x": {
+    "label": "깊이",
+    "unit": "cm"
+  },
+  "y": [
+    {
+      "sensor": "T",
+      "label": "온도",
+      "unit": "°C"
+    }
+  ],
+  "markers": {
+    "enabled": false,
+    "label": "관찰 기록",
+    "prompt": "한 일 (예: 시약 넣음)"
+  },
+  "analysis": [
+    "stats",
+    "fit"
+  ],
+  "steps": [
+    "수조에 찬물을 담고 위에서 전등을 20분 비춥니다.",
+    "센서를 수면에서 2 cm씩 내리며 ‘값 기록’을 누릅니다.",
+    "선풍기로 바람을 불어 섞은 뒤 반복합니다 (새 측정).",
+    "깊이–수온 그래프에서 혼합층이 두꺼워지는지 봅니다."
+  ],
+  "setup": {
+    "parts": [
+      "ds18b20"
+    ],
+    "choose": false,
+    "materials": [
+      "온도 센서(방수)",
+      "투명 수조",
+      "전등",
+      "자",
+      "선풍기"
+    ],
+    "attach": [],
+    "cautions": []
+  },
+  "textbooks": [
+    {
+      "publisher": "미래엔",
+      "course": "과학3",
+      "note": "124쪽 디지털 탐구 도구를 이용하여 해수의 연직 수온 분포 실험하기",
+      "sure": "mentioned"
+    }
+  ],
+  "event": {
+    "label": "깊이",
+    "unit": "cm",
+    "start": 0,
+    "step": 2,
+    "scale": "linear"
+  }
+}

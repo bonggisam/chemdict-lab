@@ -1,0 +1,62 @@
+{
+  "id": "cur-cl-diffusion",
+  "order": 195,
+  "title": "투석막 밖으로 나오는 이온 (세포막 수송)",
+  "subject": "세포와 물질대사",
+  "level": "고2·3 선택",
+  "course": "세포와 물질대사",
+  "area": "세포",
+  "summary": "투석막 주머니 속 소금물이 바깥으로 확산되며 전도도가 오르는 것을 봅니다.",
+  "standards": [
+    "12세포01-05"
+  ],
+  "standardTexts": [
+    "세포막의 구조와 특성을 이해하고, 세포막을 통한 물질 수송 과정을 추론할 수 있다."
+  ],
+  "sensors": [
+    "EC"
+  ],
+  "mode": "time",
+  "intervalMs": 30000,
+  "x": {
+    "label": "시간",
+    "unit": "s"
+  },
+  "y": [
+    {
+      "sensor": "EC",
+      "label": "전도도",
+      "unit": "µS/cm"
+    }
+  ],
+  "markers": {
+    "enabled": true,
+    "label": "관찰 기록",
+    "prompt": "한 일 (예: 시약 넣음)"
+  },
+  "analysis": [
+    "stats",
+    "plateau",
+    "fit"
+  ],
+  "steps": [
+    "투석막 주머니에 진한 소금물을 넣고 묶습니다.",
+    "증류수 비커에 넣고 바깥 물의 전도도를 측정합니다.",
+    "온도를 바꿔 반복해 확산 빠르기를 비교합니다."
+  ],
+  "setup": {
+    "parts": [
+      "ec"
+    ],
+    "choose": false,
+    "materials": [
+      "전도도 센서",
+      "투석막",
+      "소금물",
+      "증류수"
+    ],
+    "attach": [],
+    "cautions": []
+  },
+  "textbooks": []
+}

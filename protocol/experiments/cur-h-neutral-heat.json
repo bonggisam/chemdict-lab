@@ -1,0 +1,79 @@
+{
+  "id": "cur-h-neutral-heat",
+  "order": 139,
+  "title": "산과 염기를 섞으면 따뜻해질까 (중화열)",
+  "subject": "통합과학2",
+  "level": "고1 공통",
+  "course": "통합과학2",
+  "area": "변화와 다양성",
+  "summary": "넣은 NaOH 부피에 따른 최고 온도로 중화점을 찾습니다.",
+  "standards": [
+    "10통과2-01-04"
+  ],
+  "standardTexts": [
+    "대표적인 산·염기 물질의 특징을 알고, 산과 염기를 혼합 할 때 나타나는 중화 반응을 생활 속에서 이용할 수 있다."
+  ],
+  "sensors": [
+    "T"
+  ],
+  "mode": "event",
+  "intervalMs": 1000,
+  "x": {
+    "label": "넣은 NaOH 부피",
+    "unit": "mL"
+  },
+  "y": [
+    {
+      "sensor": "T",
+      "label": "온도",
+      "unit": "°C"
+    }
+  ],
+  "markers": {
+    "enabled": false,
+    "label": "관찰 기록",
+    "prompt": "한 일 (예: 시약 넣음)"
+  },
+  "analysis": [
+    "stats",
+    "fit"
+  ],
+  "steps": [
+    "1 M HCl 20 mL를 단열 컵에 넣고 온도 센서를 꽂습니다.",
+    "처음 온도를 0 mL로 기록합니다.",
+    "1 M NaOH를 2 mL씩 넣고 저어 가장 높은 온도에서 ‘값 기록’을 누릅니다.",
+    "온도가 가장 높은 곳(두 직선이 만나는 곳)이 중화점입니다."
+  ],
+  "setup": {
+    "parts": [
+      "ds18b20"
+    ],
+    "choose": false,
+    "materials": [
+      "온도 센서",
+      "스티로폼 컵",
+      "1 M HCl",
+      "1 M NaOH",
+      "뷰렛 또는 눈금 피펫"
+    ],
+    "attach": [],
+    "cautions": [
+      "산·염기는 보안경과 장갑을 끼고 다루며, 피부에 묻으면 바로 물로 씻습니다."
+    ]
+  },
+  "textbooks": [
+    {
+      "publisher": "미래엔",
+      "course": "통합과학2",
+      "note": "50쪽 산과 염기를 혼합할 때 용액의 온도를 측정해 그래프로 나타내기",
+      "sure": "mentioned"
+    }
+  ],
+  "event": {
+    "label": "넣은 NaOH 부피",
+    "unit": "mL",
+    "start": 0,
+    "step": 2,
+    "scale": "linear"
+  }
+}

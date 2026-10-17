@@ -1,0 +1,67 @@
+{
+  "id": "cur-h-galvanic",
+  "order": 137,
+  "title": "금속을 바꾸면 전지 전압은 (화학 전지)",
+  "subject": "통합과학2",
+  "level": "고1 공통",
+  "course": "통합과학2",
+  "area": "변화와 다양성",
+  "summary": "레몬에 꽂은 금속 쌍별 전압을 비교해 반응성 차이를 봅니다.",
+  "standards": [
+    "10통과2-01-03"
+  ],
+  "standardTexts": [
+    "자연과 인류의 역사에 큰 변화를 가져온 광합성, 화석 연료 사용, 철의 제련 등에서 공통점을 찾아 산화와 환원을 이해하고, 생활 주변의 다양한 변화를 산화와 환원의 특징과 규칙성으로 분석할 수 있다."
+  ],
+  "sensors": [
+    "V"
+  ],
+  "mode": "event",
+  "intervalMs": 500,
+  "x": {
+    "label": "금속 쌍 번호",
+    "unit": "번"
+  },
+  "y": [
+    {
+      "sensor": "V",
+      "label": "전압",
+      "unit": "V"
+    }
+  ],
+  "markers": {
+    "enabled": false,
+    "label": "관찰 기록",
+    "prompt": "한 일 (예: 시약 넣음)"
+  },
+  "analysis": [
+    "stats"
+  ],
+  "steps": [
+    "1 Zn–Cu, 2 Mg–Cu, 3 Fe–Cu, 4 Zn–Fe로 번호를 정합니다.",
+    "레몬에 전극 쌍을 꽂고 전압 선을 연결합니다.",
+    "안정되면 ‘값 기록’을 누릅니다.",
+    "반응성 차이가 클수록 전압이 큰지 봅니다."
+  ],
+  "setup": {
+    "parts": [
+      "voltage"
+    ],
+    "choose": false,
+    "materials": [
+      "전압 측정 선",
+      "레몬(또는 소금물)",
+      "아연·구리·마그네슘·철 전극"
+    ],
+    "attach": [],
+    "cautions": []
+  },
+  "textbooks": [],
+  "event": {
+    "label": "금속 쌍 번호",
+    "unit": "번",
+    "start": 1,
+    "step": 1,
+    "scale": "linear"
+  }
+}

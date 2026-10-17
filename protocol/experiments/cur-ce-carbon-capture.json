@@ -1,0 +1,62 @@
+{
+  "id": "cur-ce-carbon-capture",
+  "order": 213,
+  "title": "이산화탄소를 잡아라 (탄소 포집)",
+  "subject": "기후변화와 환경생태",
+  "level": "고2·3 선택",
+  "course": "기후변화와 환경생태",
+  "area": "지속가능한 미래",
+  "summary": "밀폐 상자에서 수산화칼슘·식물·빈 상자의 CO2 감소를 비교합니다.",
+  "standards": [
+    "12기환03-03"
+  ],
+  "standardTexts": [
+    "탄소중립 사회를 이루기 위한 탄소 저감 관련 과학기술 개발 현황을 알아보고, 이의 적용 사례를 제시할 수 있다."
+  ],
+  "sensors": [
+    "CO2"
+  ],
+  "mode": "time",
+  "intervalMs": 30000,
+  "x": {
+    "label": "시간",
+    "unit": "s"
+  },
+  "y": [
+    {
+      "sensor": "CO2",
+      "label": "이산화탄소",
+      "unit": "ppm"
+    }
+  ],
+  "markers": {
+    "enabled": true,
+    "label": "관찰 기록",
+    "prompt": "한 일 (예: 시약 넣음)"
+  },
+  "analysis": [
+    "stats",
+    "fit"
+  ],
+  "steps": [
+    "상자에 날숨을 불어 넣어 처음 CO2를 같게 맞춥니다.",
+    "흡수제(수산화칼슘, 활성탄, 식물)를 넣고 30분 측정합니다 (새 측정).",
+    "감소 기울기를 비교해 탄소 포집 기술과 연결합니다."
+  ],
+  "setup": {
+    "parts": [
+      "scd4x"
+    ],
+    "choose": false,
+    "materials": [
+      "CO2 센서",
+      "밀폐 상자",
+      "수산화칼슘",
+      "활성탄",
+      "화분"
+    ],
+    "attach": [],
+    "cautions": []
+  },
+  "textbooks": []
+}

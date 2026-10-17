@@ -75,9 +75,12 @@ export function Measure(p: Props) {
   // 그래프 목록: 템플릿의 y 축 → 센서 종류로 찾기. 자유 측정이면 연결된 모든 센서
   const allCharts: ChartSpec[] = useMemo(() => {
     if (exp.y.length) {
+      // 같은 종류 센서가 여러 개면 그래프도 여러 개 (예: 온도 1·온도 2 — 열평형, 비열 비교)
       return exp.y.flatMap((y) => {
-        const s = sensors.find((x) => x.id === y.sensor) ?? sensors.find((x) => x.type === y.sensor);
-        return s ? [{ sensor: s, label: y.label, unit: y.unit ?? s.displayUnit, min: y.min, max: y.max }] : [];
+        const byId = sensors.find((x) => x.id === y.sensor);
+        let list = byId ? [byId] : sensors.filter((x) => x.type === y.sensor);
+        if (list.some((x) => x.src !== 'demo')) list = list.filter((x) => x.src !== 'demo');
+        return list.map((s, i) => ({ sensor: s, label: list.length > 1 ? `${y.label} ${i + 1}` : y.label, unit: y.unit ?? s.displayUnit, min: y.min, max: y.max }));
       });
     }
     return sensors.map((s) => ({ sensor: s, label: s.displayName, unit: s.displayUnit, min: s.spec?.min, max: s.spec?.max }));

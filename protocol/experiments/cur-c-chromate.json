@@ -1,0 +1,67 @@
+{
+  "id": "cur-c-chromate",
+  "order": 159,
+  "title": "크로뮴산–다이크로뮴산 평형의 색",
+  "subject": "화학",
+  "level": "고2·3 선택",
+  "course": "화학",
+  "area": "역동적인 화학 반응",
+  "summary": "산·염기를 넣었다 되돌릴 때 색(파랑 채널 흡광도)이 오가는 것을 봅니다.",
+  "standards": [
+    "12화학03-01"
+  ],
+  "standardTexts": [
+    "가역 반응에서 나타나는 화학 평형 상태의 특징을 설명할 수 있다."
+  ],
+  "sensors": [
+    "COLB"
+  ],
+  "mode": "time",
+  "intervalMs": 1000,
+  "x": {
+    "label": "시간",
+    "unit": "s"
+  },
+  "y": [
+    {
+      "sensor": "COLB",
+      "label": "파랑",
+      "unit": "%",
+      "min": 0,
+      "max": 100
+    }
+  ],
+  "markers": {
+    "enabled": true,
+    "label": "관찰 기록",
+    "prompt": "한 일 (예: 시약 넣음)"
+  },
+  "analysis": [
+    "stats",
+    "fit"
+  ],
+  "steps": [
+    "K2CrO4 용액을 큐벳에 담고 흰 LED와 색 센서 사이에 둡니다.",
+    "HCl을 한 방울씩 넣고, 다시 NaOH를 넣으며 측정합니다 (‘관찰 기록’으로 표시).",
+    "‘계산 열 → 상용로그’로 흡광도 변화를 봅니다."
+  ],
+  "setup": {
+    "parts": [
+      "tcs34725"
+    ],
+    "choose": false,
+    "materials": [
+      "색 센서",
+      "흰 LED",
+      "큐벳",
+      "K2CrO4 용액",
+      "묽은 HCl·NaOH"
+    ],
+    "attach": [],
+    "cautions": [
+      "산·염기는 보안경과 장갑을 끼고 다루며, 피부에 묻으면 바로 물로 씻습니다.",
+      "크로뮴 폐액은 따로 모읍니다."
+    ]
+  },
+  "textbooks": []
+}

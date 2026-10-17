@@ -1,0 +1,78 @@
+{
+  "id": "cur-rx-vitc",
+  "order": 194,
+  "title": "비타민 C가 갈변을 막을까 (산화 방지)",
+  "subject": "화학 반응의 세계",
+  "level": "고2·3 선택",
+  "course": "화학 반응의 세계",
+  "area": "산화 환원 반응",
+  "summary": "사과 단면 색 변화를 RGB로 기록해 비타민 C의 환원 작용을 봅니다.",
+  "standards": [
+    "12반응02-05"
+  ],
+  "standardTexts": [
+    "생명 현상 및 화학 전지에서 이용되는 다양한 산화⋅환원 반응과 그 반응에 이용된 물질의 역할을 조사하여 화학의 신비로움을 느낄 수 있다."
+  ],
+  "sensors": [
+    "COLR",
+    "COLG",
+    "COLB"
+  ],
+  "mode": "time",
+  "intervalMs": 60000,
+  "x": {
+    "label": "시간",
+    "unit": "s"
+  },
+  "y": [
+    {
+      "sensor": "COLR",
+      "label": "빨강",
+      "unit": "%",
+      "min": 0,
+      "max": 100
+    },
+    {
+      "sensor": "COLG",
+      "label": "초록",
+      "unit": "%",
+      "min": 0,
+      "max": 100
+    },
+    {
+      "sensor": "COLB",
+      "label": "파랑",
+      "unit": "%",
+      "min": 0,
+      "max": 100
+    }
+  ],
+  "markers": {
+    "enabled": true,
+    "label": "관찰 기록",
+    "prompt": "한 일 (예: 시약 넣음)"
+  },
+  "analysis": [
+    "stats",
+    "fit"
+  ],
+  "steps": [
+    "사과 조각 두 개 중 하나에 비타민 C 용액을 바릅니다.",
+    "색 센서를 단면 가까이 두고 간격 1분으로 1시간 측정합니다 (조각마다 새 측정).",
+    "갈변(B·G 감소)이 늦는지 비교합니다."
+  ],
+  "setup": {
+    "parts": [
+      "tcs34725"
+    ],
+    "choose": false,
+    "materials": [
+      "색 센서",
+      "사과",
+      "비타민 C 용액"
+    ],
+    "attach": [],
+    "cautions": []
+  },
+  "textbooks": []
+}

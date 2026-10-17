@@ -1,0 +1,69 @@
+{
+  "id": "cur-m-buoyancy",
+  "order": 107,
+  "title": "물에 잠길수록 가벼워질까 (부력)",
+  "subject": "과학 1",
+  "level": "중학교",
+  "course": "과학 1",
+  "area": "힘의 작용",
+  "summary": "잠긴 깊이에 따라 줄어드는 무게로 부력을 구합니다.",
+  "standards": [
+    "9과05-02"
+  ],
+  "standardTexts": [
+    "중력, 탄성력, 마찰력, 부력을 이해하고, 각 힘의 특징을 크기와 방향으로 설명할 수 있다."
+  ],
+  "sensors": [
+    "M"
+  ],
+  "mode": "event",
+  "intervalMs": 500,
+  "x": {
+    "label": "잠긴 깊이",
+    "unit": "cm"
+  },
+  "y": [
+    {
+      "sensor": "M",
+      "label": "질량",
+      "unit": "g"
+    }
+  ],
+  "markers": {
+    "enabled": false,
+    "label": "관찰 기록",
+    "prompt": "한 일 (예: 시약 넣음)"
+  },
+  "analysis": [
+    "stats",
+    "fit"
+  ],
+  "steps": [
+    "로드셀에 원기둥 추를 매답니다.",
+    "추를 물에 1 cm씩 담글 때마다 ‘값 기록’을 누릅니다.",
+    "다 잠긴 뒤에도 몇 번 더 기록합니다.",
+    "줄어든 무게 = 부력, 다 잠기면 일정해지는지 봅니다."
+  ],
+  "setup": {
+    "parts": [
+      "hx711"
+    ],
+    "choose": false,
+    "materials": [
+      "로드셀+HX711",
+      "원기둥 추",
+      "수조",
+      "자"
+    ],
+    "attach": [],
+    "cautions": []
+  },
+  "textbooks": [],
+  "event": {
+    "label": "잠긴 깊이",
+    "unit": "cm",
+    "start": 0,
+    "step": 1,
+    "scale": "linear"
+  }
+}

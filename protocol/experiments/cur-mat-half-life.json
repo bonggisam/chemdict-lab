@@ -1,0 +1,66 @@
+{
+  "id": "cur-mat-half-life",
+  "order": 186,
+  "title": "크리스탈 바이올렛 탈색 (1차 반응의 반감기)",
+  "subject": "물질과 에너지",
+  "level": "고2·3 선택",
+  "course": "물질과 에너지",
+  "area": "화학 반응 속도",
+  "summary": "색이 옅어지는 흡광도 곡선으로 1차 반응과 반감기를 확인합니다.",
+  "standards": [
+    "12물에04-02"
+  ],
+  "standardTexts": [
+    "1차 반응의 반감기가 반응물의 농도에 의존하지 않음을 이해하고, 1차 반응의 반감기가 활용되는 사례를 조사⋅발표할 수 있다."
+  ],
+  "sensors": [
+    "COLG"
+  ],
+  "mode": "time",
+  "intervalMs": 5000,
+  "x": {
+    "label": "시간",
+    "unit": "s"
+  },
+  "y": [
+    {
+      "sensor": "COLG",
+      "label": "초록",
+      "unit": "%",
+      "min": 0,
+      "max": 100
+    }
+  ],
+  "markers": {
+    "enabled": true,
+    "label": "관찰 기록",
+    "prompt": "한 일 (예: 시약 넣음)"
+  },
+  "analysis": [
+    "stats",
+    "fit"
+  ],
+  "steps": [
+    "크리스탈 바이올렛 용액을 큐벳에 담고 LED와 색 센서 사이에 둡니다.",
+    "NaOH(과량)를 넣고 측정합니다.",
+    "‘계산 열 → 자연로그’ 또는 ‘함수 찾기 → 지수’로 k와 반감기를 구합니다."
+  ],
+  "setup": {
+    "parts": [
+      "tcs34725"
+    ],
+    "choose": false,
+    "materials": [
+      "색 센서",
+      "LED",
+      "큐벳",
+      "크리스탈 바이올렛",
+      "NaOH"
+    ],
+    "attach": [],
+    "cautions": [
+      "산·염기는 보안경과 장갑을 끼고 다루며, 피부에 묻으면 바로 물로 씻습니다."
+    ]
+  },
+  "textbooks": []
+}

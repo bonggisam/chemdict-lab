@@ -1,0 +1,80 @@
+{
+  "id": "cur-rx-weak-acid",
+  "order": 188,
+  "title": "센 산과 약한 산 비교 (이온화 상수)",
+  "subject": "화학 반응의 세계",
+  "level": "고2·3 선택",
+  "course": "화학 반응의 세계",
+  "area": "산 염기 평형",
+  "summary": "같은 농도 HCl과 아세트산의 pH·전도도, 희석에 따른 pH 변화를 비교합니다.",
+  "standards": [
+    "12반응01-02"
+  ],
+  "standardTexts": [
+    "이온화 상수를 이용하여 산과 염기의 상대적인 세기를 추론하고, 약산과 약염기 수용액의 pH를 구할 수 있다."
+  ],
+  "sensors": [
+    "pH",
+    "EC"
+  ],
+  "mode": "event",
+  "intervalMs": 1000,
+  "x": {
+    "label": "농도",
+    "unit": "M"
+  },
+  "y": [
+    {
+      "sensor": "pH",
+      "label": "pH",
+      "unit": "",
+      "min": 0,
+      "max": 14
+    },
+    {
+      "sensor": "EC",
+      "label": "전도도",
+      "unit": "µS/cm"
+    }
+  ],
+  "markers": {
+    "enabled": false,
+    "label": "관찰 기록",
+    "prompt": "한 일 (예: 시약 넣음)"
+  },
+  "analysis": [
+    "stats",
+    "fit"
+  ],
+  "steps": [
+    "0.1 M부터 10배씩 묽힌 HCl과 아세트산을 준비합니다.",
+    "진한 것부터 ‘값 기록’을 누릅니다 (산마다 새 측정).",
+    "log 농도–pH 기울기가 약 −1(센 산), −½(약한 산)인지 봅니다."
+  ],
+  "setup": {
+    "parts": [
+      "ph",
+      "ec"
+    ],
+    "choose": false,
+    "materials": [
+      "pH 센서",
+      "전도도 센서",
+      "HCl",
+      "아세트산",
+      "증류수"
+    ],
+    "attach": [],
+    "cautions": [
+      "산·염기는 보안경과 장갑을 끼고 다루며, 피부에 묻으면 바로 물로 씻습니다."
+    ]
+  },
+  "textbooks": [],
+  "event": {
+    "label": "농도",
+    "unit": "M",
+    "start": 0.1,
+    "step": 0.1,
+    "scale": "log"
+  }
+}

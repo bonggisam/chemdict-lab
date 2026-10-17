@@ -1,0 +1,74 @@
+{
+  "id": "cur-rx-titration-curve",
+  "order": 189,
+  "title": "적정 곡선 해석 (강산·약산)",
+  "subject": "화학 반응의 세계",
+  "level": "고2·3 선택",
+  "course": "화학 반응의 세계",
+  "area": "산 염기 평형",
+  "summary": "강산과 약산의 pH 적정 곡선에서 당량점, 반당량점, 완충 구간을 찾습니다.",
+  "standards": [
+    "12반응01-03"
+  ],
+  "standardTexts": [
+    "중화 적정 실험의 pH 변화를 데이터에 근거하여 해석할 수 있다."
+  ],
+  "sensors": [
+    "pH"
+  ],
+  "mode": "event",
+  "intervalMs": 1000,
+  "x": {
+    "label": "넣은 NaOH 부피",
+    "unit": "mL"
+  },
+  "y": [
+    {
+      "sensor": "pH",
+      "label": "pH",
+      "unit": "",
+      "min": 0,
+      "max": 14
+    }
+  ],
+  "markers": {
+    "enabled": false,
+    "label": "관찰 기록",
+    "prompt": "한 일 (예: 시약 넣음)"
+  },
+  "analysis": [
+    "stats",
+    "fit",
+    "equivalence"
+  ],
+  "steps": [
+    "0.1 M HCl 20 mL에 NaOH를 1 mL씩 넣으며 ‘값 기록’을 누릅니다 (당량점 근처는 0.5 mL씩).",
+    "새 측정에서 0.1 M 아세트산으로 반복합니다.",
+    "‘당량점 찾기’, ‘변화율 그래프’로 두 곡선을 비교하고 반당량점 pH(pKa)를 읽습니다."
+  ],
+  "setup": {
+    "parts": [
+      "ph"
+    ],
+    "choose": false,
+    "materials": [
+      "pH 센서",
+      "뷰렛",
+      "0.1 M HCl",
+      "0.1 M 아세트산",
+      "0.1 M NaOH"
+    ],
+    "attach": [],
+    "cautions": [
+      "산·염기는 보안경과 장갑을 끼고 다루며, 피부에 묻으면 바로 물로 씻습니다."
+    ]
+  },
+  "textbooks": [],
+  "event": {
+    "label": "넣은 NaOH 부피",
+    "unit": "mL",
+    "start": 0,
+    "step": 1,
+    "scale": "linear"
+  }
+}

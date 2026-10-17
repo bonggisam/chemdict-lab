@@ -45,5 +45,21 @@
   "analysis": [
     "stats",
     "fit"
+  ],
+  "level": "고2·3 선택",
+  "course": "화학",
+  "area": "역동적인 화학 반응",
+  "summary": "강산·강염기를 10배씩 묽힐 때 pH 변화를 봅니다.",
+  "standardTexts": [
+    "물의 자동 이온화와 물의 이온화 상수를 이해하고, 수소 이온의 농도를 pH로 표현할 수 있다.",
+    ""
+  ],
+  "textbooks": [
+    {
+      "publisher": "미래엔",
+      "course": "화학",
+      "note": "146쪽 강산 수용액을 희석할 때 pH 변화 측정하기 (도구 미확인)",
+      "sure": "mentioned"
+    }
   ]
 }

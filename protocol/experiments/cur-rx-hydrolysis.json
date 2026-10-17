@@ -1,0 +1,67 @@
+{
+  "id": "cur-rx-hydrolysis",
+  "order": 190,
+  "title": "염 수용액의 pH (가수 분해)",
+  "subject": "화학 반응의 세계",
+  "level": "고2·3 선택",
+  "course": "화학 반응의 세계",
+  "area": "산 염기 평형",
+  "summary": "NaCl, NH4Cl, CH3COONa, Na2CO3 수용액의 pH를 비교합니다.",
+  "standards": [
+    "12반응01-04"
+  ],
+  "standardTexts": [
+    "이온화 상수를 이용하여 염의 가수 분해를 설명할 수 있다."
+  ],
+  "sensors": [
+    "pH"
+  ],
+  "mode": "event",
+  "intervalMs": 500,
+  "x": {
+    "label": "시료 번호",
+    "unit": "번"
+  },
+  "y": [
+    {
+      "sensor": "pH",
+      "label": "pH",
+      "unit": "",
+      "min": 0,
+      "max": 14
+    }
+  ],
+  "markers": {
+    "enabled": false,
+    "label": "관찰 기록",
+    "prompt": "한 일 (예: 시약 넣음)"
+  },
+  "analysis": [
+    "stats"
+  ],
+  "steps": [
+    "네 염 수용액에 번호를 붙입니다.",
+    "전극을 담그고 안정되면 ‘값 기록’을 누릅니다.",
+    "짝산·짝염기의 세기로 pH 순서를 설명합니다."
+  ],
+  "setup": {
+    "parts": [
+      "ph"
+    ],
+    "choose": false,
+    "materials": [
+      "pH 센서",
+      "NaCl, NH4Cl, CH3COONa, Na2CO3 수용액"
+    ],
+    "attach": [],
+    "cautions": []
+  },
+  "textbooks": [],
+  "event": {
+    "label": "시료 번호",
+    "unit": "번",
+    "start": 1,
+    "step": 1,
+    "scale": "linear"
+  }
+}

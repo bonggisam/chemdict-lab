@@ -1,0 +1,76 @@
+{
+  "id": "cur-rx-electrolysis",
+  "order": 193,
+  "title": "구리 도금 (패러데이 법칙)",
+  "subject": "화학 반응의 세계",
+  "level": "고2·3 선택",
+  "course": "화학 반응의 세계",
+  "area": "산화 환원 반응",
+  "summary": "CuSO4 전기 분해에서 시간에 따라 늘어나는 음극 질량을 봅니다.",
+  "standards": [
+    "12반응02-04"
+  ],
+  "standardTexts": [
+    "전기 분해의 원리를 산화⋅환원 반응으로 설명하고, 산업 현장에서 활용되는 전기 분해의 예를 조사하여 발표할 수 있다."
+  ],
+  "sensors": [
+    "M",
+    "V"
+  ],
+  "mode": "event",
+  "intervalMs": 1000,
+  "x": {
+    "label": "전기 분해 시간",
+    "unit": "분"
+  },
+  "y": [
+    {
+      "sensor": "M",
+      "label": "질량",
+      "unit": "g"
+    },
+    {
+      "sensor": "V",
+      "label": "전압",
+      "unit": "V"
+    }
+  ],
+  "markers": {
+    "enabled": false,
+    "label": "관찰 기록",
+    "prompt": "한 일 (예: 시약 넣음)"
+  },
+  "analysis": [
+    "stats",
+    "fit"
+  ],
+  "steps": [
+    "회로에 기준저항 10 Ω을 넣고 양단을 A0(전압)에 연결합니다 (전류 = V/10).",
+    "5분마다 음극을 꺼내 말린 뒤 로드셀로 재고 ‘값 기록’을 누릅니다.",
+    "석출 질량을 (I·t/F)·(63.5/2)와 비교합니다."
+  ],
+  "setup": {
+    "parts": [
+      "hx711",
+      "voltage"
+    ],
+    "choose": false,
+    "materials": [
+      "로드셀(또는 전자저울)",
+      "CuSO4 용액",
+      "구리판 2장",
+      "건전지",
+      "10 Ω 저항"
+    ],
+    "attach": [],
+    "cautions": []
+  },
+  "textbooks": [],
+  "event": {
+    "label": "전기 분해 시간",
+    "unit": "분",
+    "start": 0,
+    "step": 5,
+    "scale": "linear"
+  }
+}

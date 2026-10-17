@@ -200,3 +200,14 @@ I2C는 Qwiic 단자(UNO R4 WiFi·Nano R4의 `Wire1`, `qwiic:`)와 SDA·SCL 핀(`
 
 - 해석: 함수 찾기(직선·비례·2차·3차·지수·지수 접근·거듭제곱·로그·반비례 + 자동), 접선, 넓이(사다리꼴 적분), 변화율 그래프, 부드럽게(이동 평균), 가로축 바꾸기(다른 센서), 선택 구간 확대, 표 계산 열, 점 제외. 코드: `web/src/lib/fit.ts`, `calc.ts`.
 - 저장: PNG(그래프+해석 한 장), PDF(A4, 페이지를 그림으로 넣어 한글 글꼴 불필요), .xlsx(측정별 시트 + 엑셀 분산형 그래프 + 추세선, Numbers에서 그대로 열림), CSV. 코드: `web/src/lib/report.ts`, `xlsx.ts`, `pdf.ts`.
+
+## 온도 센서 여러 개 (펌웨어 0.3.1)
+
+- DS18B20을 D2 한 줄에 여러 개 꽂으면 id `T`, `T_OW2`, `T_OW3`, `T_OW4`로 보냅니다 (R4·Mega 4개, UNO R3·Nano 2개). 1점 보정은 첫 번째(`T`)에만 적용됩니다.
+- 앱은 실험 템플릿의 y가 센서 종류(`T`)이면 그 종류의 센서마다 그래프를 하나씩 그립니다 ('온도 1', '온도 2').
+
+## 교육과정 실험 (protocol/experiments/cur-*.json)
+
+- `tools/make_experiments.py`로 생성합니다 (json 직접 수정 금지). 손으로 만든 실험 5개에는 같은 스크립트가 찾기 정보만 덧붙입니다.
+- 추가 필드: `level`(중학교 / 고1 공통 / 고2·3 선택 / 공통), `course`, `area`, `summary`, `standardTexts`, `textbooks[]`(publisher, course, note, sure = confirmed·mentioned·similar).
+- 성취기준 문장은 교육과정 정리본·교육청 자료에서 옮긴 것입니다. 수업 자료에 쓰기 전 NCIC 원문과 대조합니다.

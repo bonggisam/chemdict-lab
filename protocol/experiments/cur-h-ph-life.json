@@ -1,0 +1,70 @@
+{
+  "id": "cur-h-ph-life",
+  "order": 138,
+  "title": "생활 속 물질의 pH",
+  "subject": "통합과학2",
+  "level": "고1 공통",
+  "course": "통합과학2",
+  "area": "변화와 다양성",
+  "summary": "식초, 탄산음료, 비눗물 등의 pH를 재어 산·염기로 나눕니다.",
+  "standards": [
+    "10통과2-01-04"
+  ],
+  "standardTexts": [
+    "대표적인 산·염기 물질의 특징을 알고, 산과 염기를 혼합 할 때 나타나는 중화 반응을 생활 속에서 이용할 수 있다."
+  ],
+  "sensors": [
+    "pH"
+  ],
+  "mode": "event",
+  "intervalMs": 500,
+  "x": {
+    "label": "시료 번호",
+    "unit": "번"
+  },
+  "y": [
+    {
+      "sensor": "pH",
+      "label": "pH",
+      "unit": "",
+      "min": 0,
+      "max": 14
+    }
+  ],
+  "markers": {
+    "enabled": false,
+    "label": "관찰 기록",
+    "prompt": "한 일 (예: 시약 넣음)"
+  },
+  "analysis": [
+    "stats"
+  ],
+  "steps": [
+    "pH 센서를 4·7 완충액으로 보정합니다.",
+    "시료마다 전극을 담그고 안정되면 ‘값 기록’을 누릅니다.",
+    "시료 사이에 전극을 증류수로 헹굽니다.",
+    "pH 7을 기준으로 산성·염기성을 나눕니다."
+  ],
+  "setup": {
+    "parts": [
+      "ph"
+    ],
+    "choose": false,
+    "materials": [
+      "pH 센서",
+      "식초, 레몬즙, 탄산음료, 우유, 비눗물, 베이킹소다 용액"
+    ],
+    "attach": [],
+    "cautions": [
+      "산·염기는 보안경과 장갑을 끼고 다루며, 피부에 묻으면 바로 물로 씻습니다."
+    ]
+  },
+  "textbooks": [],
+  "event": {
+    "label": "시료 번호",
+    "unit": "번",
+    "start": 1,
+    "step": 1,
+    "scale": "linear"
+  }
+}

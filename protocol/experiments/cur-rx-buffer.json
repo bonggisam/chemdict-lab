@@ -1,0 +1,72 @@
+{
+  "id": "cur-rx-buffer",
+  "order": 191,
+  "title": "완충 용액은 pH를 지킬까",
+  "subject": "화학 반응의 세계",
+  "level": "고2·3 선택",
+  "course": "화학 반응의 세계",
+  "area": "산 염기 평형",
+  "summary": "물과 완충 용액에 같은 산을 넣을 때 pH 변화를 비교합니다.",
+  "standards": [
+    "12반응01-05"
+  ],
+  "standardTexts": [
+    "화학 평형으로 생체 내 완충 작용을 설명하고, 화학 원리의 신비로움을 느낄 수 있다."
+  ],
+  "sensors": [
+    "pH"
+  ],
+  "mode": "event",
+  "intervalMs": 1000,
+  "x": {
+    "label": "넣은 HCl",
+    "unit": "방울"
+  },
+  "y": [
+    {
+      "sensor": "pH",
+      "label": "pH",
+      "unit": "",
+      "min": 0,
+      "max": 14
+    }
+  ],
+  "markers": {
+    "enabled": false,
+    "label": "관찰 기록",
+    "prompt": "한 일 (예: 시약 넣음)"
+  },
+  "analysis": [
+    "stats",
+    "fit"
+  ],
+  "steps": [
+    "물 50 mL에 0.1 M HCl을 2방울씩 넣으며 ‘값 기록’을 누릅니다.",
+    "새 측정에서 아세트산 완충 용액으로 반복합니다.",
+    "두 곡선을 겹쳐 완충 용량을 찾습니다."
+  ],
+  "setup": {
+    "parts": [
+      "ph"
+    ],
+    "choose": false,
+    "materials": [
+      "pH 센서",
+      "스포이트",
+      "0.1 M HCl",
+      "아세트산+아세트산나트륨 완충 용액"
+    ],
+    "attach": [],
+    "cautions": [
+      "산·염기는 보안경과 장갑을 끼고 다루며, 피부에 묻으면 바로 물로 씻습니다."
+    ]
+  },
+  "textbooks": [],
+  "event": {
+    "label": "넣은 HCl",
+    "unit": "방울",
+    "start": 0,
+    "step": 2,
+    "scale": "linear"
+  }
+}

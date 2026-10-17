@@ -1,0 +1,68 @@
+{
+  "id": "cur-p-led",
+  "order": 156,
+  "title": "LED 색마다 켜지는 전압 (반도체)",
+  "subject": "물리학",
+  "level": "고2·3 선택",
+  "course": "물리학",
+  "area": "빛과 물질",
+  "summary": "가변저항으로 전압을 올리며 LED 색별 문턱 전압을 찾습니다.",
+  "standards": [
+    "12물리03-05"
+  ],
+  "standardTexts": [
+    "고체의 에너지띠 구조로부터 도체와 부도체의 차이를 알고, 반도체 소자의 원리를 설명할 수 있다."
+  ],
+  "sensors": [
+    "V"
+  ],
+  "mode": "event",
+  "intervalMs": 500,
+  "x": {
+    "label": "가변저항 단계",
+    "unit": "단계"
+  },
+  "y": [
+    {
+      "sensor": "V",
+      "label": "전압",
+      "unit": "V"
+    }
+  ],
+  "markers": {
+    "enabled": false,
+    "label": "관찰 기록",
+    "prompt": "한 일 (예: 시약 넣음)"
+  },
+  "analysis": [
+    "stats",
+    "fit"
+  ],
+  "steps": [
+    "가변저항 → 100 Ω → LED 순서로 연결하고, A0은 LED 양단, A1은 100 Ω 양단에 연결합니다.",
+    "가변저항을 조금씩 돌리며 ‘값 기록’을 누릅니다.",
+    "전류(A1 ÷ 100 Ω)가 늘기 시작하는 전압을 빨강·초록·파랑끼리 비교합니다."
+  ],
+  "setup": {
+    "parts": [
+      "voltage"
+    ],
+    "choose": false,
+    "materials": [
+      "LED 3색",
+      "100 Ω 저항",
+      "가변저항",
+      "전압 측정 선 2쌍"
+    ],
+    "attach": [],
+    "cautions": []
+  },
+  "textbooks": [],
+  "event": {
+    "label": "가변저항 단계",
+    "unit": "단계",
+    "start": 1,
+    "step": 1,
+    "scale": "linear"
+  }
+}

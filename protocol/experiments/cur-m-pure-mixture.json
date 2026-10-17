@@ -1,0 +1,67 @@
+{
+  "id": "cur-m-pure-mixture",
+  "order": 111,
+  "title": "물과 소금물, 어는 모습이 다를까 (순물질·혼합물)",
+  "subject": "과학 2",
+  "level": "중학교",
+  "course": "과학 2",
+  "area": "물질의 특성",
+  "summary": "순물질은 평탄 구간이 뚜렷하고 혼합물은 계속 내려가는지 봅니다.",
+  "standards": [
+    "9과08-02"
+  ],
+  "standardTexts": [
+    "물질의 특성을 근거로 우리 주변의 물질을 순물질과 혼합물로 분류할 수 있다."
+  ],
+  "sensors": [
+    "T"
+  ],
+  "mode": "time",
+  "intervalMs": 2000,
+  "x": {
+    "label": "시간",
+    "unit": "s"
+  },
+  "y": [
+    {
+      "sensor": "T",
+      "label": "온도",
+      "unit": "°C",
+      "min": -15,
+      "max": 25
+    }
+  ],
+  "markers": {
+    "enabled": true,
+    "label": "관찰 기록",
+    "prompt": "한 일 (예: 시약 넣음)"
+  },
+  "analysis": [
+    "stats",
+    "plateau",
+    "fit"
+  ],
+  "steps": [
+    "물과 소금물을 시험관에 각각 담고 센서를 넣습니다.",
+    "얼음+소금 냉각조에 함께 넣습니다.",
+    "얼기 시작하면 ‘관찰 기록’을 누릅니다.",
+    "‘평탄 구간 찾기’로 두 곡선을 비교합니다."
+  ],
+  "setup": {
+    "parts": [
+      "ds18b20"
+    ],
+    "choose": false,
+    "materials": [
+      "온도 센서 2개",
+      "시험관",
+      "얼음",
+      "소금"
+    ],
+    "attach": [
+      "온도 센서 2개를 같은 D2 선에 나란히 꽂으면 '온도 1', '온도 2' 그래프가 따로 나옵니다."
+    ],
+    "cautions": []
+  },
+  "textbooks": []
+}

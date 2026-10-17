@@ -1,0 +1,86 @@
+{
+  "id": "cur-m-color",
+  "order": 113,
+  "title": "물체의 색과 빛의 합성",
+  "subject": "과학 2",
+  "level": "중학교",
+  "course": "과학 2",
+  "area": "빛과 파동",
+  "summary": "색종이·셀로판을 RGB로 재어 빛의 합성을 숫자로 봅니다.",
+  "standards": [
+    "9과10-03"
+  ],
+  "standardTexts": [
+    "물체의 색을 빛의 반사와 관련지어 설명하고, 영상 장치에서 빛의 합성을 이용하여 다양한 색이 표현되는 원리를 이해할 수 있다."
+  ],
+  "sensors": [
+    "COLR",
+    "COLG",
+    "COLB"
+  ],
+  "mode": "event",
+  "intervalMs": 500,
+  "x": {
+    "label": "시료 번호",
+    "unit": "번"
+  },
+  "y": [
+    {
+      "sensor": "COLR",
+      "label": "빨강",
+      "unit": "%",
+      "min": 0,
+      "max": 100
+    },
+    {
+      "sensor": "COLG",
+      "label": "초록",
+      "unit": "%",
+      "min": 0,
+      "max": 100
+    },
+    {
+      "sensor": "COLB",
+      "label": "파랑",
+      "unit": "%",
+      "min": 0,
+      "max": 100
+    }
+  ],
+  "markers": {
+    "enabled": false,
+    "label": "관찰 기록",
+    "prompt": "한 일 (예: 시약 넣음)"
+  },
+  "analysis": [
+    "stats"
+  ],
+  "steps": [
+    "색 센서를 흰 종이에 대고 첫 기록을 합니다 (기준).",
+    "빨강·초록·파랑·노랑 색종이 순서로 대고 ‘값 기록’을 누릅니다.",
+    "셀로판을 겹쳐 빛을 통과시킨 값도 기록합니다.",
+    "노랑에서 R·G가 함께 큰지 봅니다."
+  ],
+  "setup": {
+    "parts": [
+      "tcs34725"
+    ],
+    "choose": false,
+    "materials": [
+      "색 센서(TCS34725)",
+      "색종이",
+      "셀로판",
+      "흰 종이"
+    ],
+    "attach": [],
+    "cautions": []
+  },
+  "textbooks": [],
+  "event": {
+    "label": "시료 번호",
+    "unit": "번",
+    "start": 1,
+    "step": 1,
+    "scale": "linear"
+  }
+}

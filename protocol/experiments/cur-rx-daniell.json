@@ -1,0 +1,67 @@
+{
+  "id": "cur-rx-daniell",
+  "order": 192,
+  "title": "다니엘 전지와 금속 조합의 전위차",
+  "subject": "화학 반응의 세계",
+  "level": "고2·3 선택",
+  "course": "화학 반응의 세계",
+  "area": "산화 환원 반응",
+  "summary": "측정한 전압을 표준 환원 전위로 구한 값과 비교합니다.",
+  "standards": [
+    "12반응02-03"
+  ],
+  "standardTexts": [
+    "화학 전지의 원리를 산화⋅환원 반응으로 설명하고, 표준 환원 전위를 이용하여 전위차를 구할 수 있다."
+  ],
+  "sensors": [
+    "V"
+  ],
+  "mode": "event",
+  "intervalMs": 500,
+  "x": {
+    "label": "조합 번호",
+    "unit": "번"
+  },
+  "y": [
+    {
+      "sensor": "V",
+      "label": "전압",
+      "unit": "V"
+    }
+  ],
+  "markers": {
+    "enabled": false,
+    "label": "관찰 기록",
+    "prompt": "한 일 (예: 시약 넣음)"
+  },
+  "analysis": [
+    "stats"
+  ],
+  "steps": [
+    "Zn|ZnSO4 ‖ CuSO4|Cu 전지를 염다리로 연결합니다.",
+    "조합(1 Zn–Cu, 2 Mg–Cu, 3 Fe–Cu…)마다 ‘값 기록’을 누릅니다.",
+    "E°(환원) − E°(산화)와 비교합니다 (Zn–Cu 1.10 V)."
+  ],
+  "setup": {
+    "parts": [
+      "voltage"
+    ],
+    "choose": false,
+    "materials": [
+      "전압 측정 선",
+      "금속 전극",
+      "황산염 용액",
+      "염다리"
+    ],
+    "attach": [],
+    "cautions": []
+  },
+  "textbooks": [],
+  "event": {
+    "label": "조합 번호",
+    "unit": "번",
+    "start": 1,
+    "step": 1,
+    "scale": "linear"
+  }
+}

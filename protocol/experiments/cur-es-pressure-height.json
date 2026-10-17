@@ -1,0 +1,66 @@
+{
+  "id": "cur-es-pressure-height",
+  "order": 204,
+  "title": "높이에 따른 기압 (정역학 평형)",
+  "subject": "지구시스템과학",
+  "level": "고2·3 선택",
+  "course": "지구시스템과학",
+  "area": "대기의 운동",
+  "summary": "층마다 기압을 재어 기울기로 공기 밀도를 구합니다.",
+  "standards": [
+    "12지시03-04"
+  ],
+  "standardTexts": [
+    "기압의 연직 분포로 정역학적 균형을 이해하고, 대기 중 연직 운동의 발생 원인을 추론할 수 있다."
+  ],
+  "sensors": [
+    "BP"
+  ],
+  "mode": "event",
+  "intervalMs": 1000,
+  "x": {
+    "label": "높이",
+    "unit": "m"
+  },
+  "y": [
+    {
+      "sensor": "BP",
+      "label": "기압",
+      "unit": "kPa"
+    }
+  ],
+  "markers": {
+    "enabled": false,
+    "label": "관찰 기록",
+    "prompt": "한 일 (예: 시약 넣음)"
+  },
+  "analysis": [
+    "stats",
+    "fit"
+  ],
+  "steps": [
+    "1층에서 첫 기록을 합니다 (0 m).",
+    "한 층(약 3 m) 올라갈 때마다 ‘값 기록’을 누릅니다 (태블릿+블루투스).",
+    "‘함수 찾기 → 직선’ 기울기로 ΔP = −ρgΔz의 ρ를 구합니다."
+  ],
+  "setup": {
+    "parts": [
+      "bmp280"
+    ],
+    "choose": false,
+    "materials": [
+      "기압 센서",
+      "UNO R4 WiFi + 태블릿 또는 노트북"
+    ],
+    "attach": [],
+    "cautions": []
+  },
+  "textbooks": [],
+  "event": {
+    "label": "높이",
+    "unit": "m",
+    "start": 0,
+    "step": 3,
+    "scale": "linear"
+  }
+}

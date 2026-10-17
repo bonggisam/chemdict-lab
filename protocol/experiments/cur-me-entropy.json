@@ -1,0 +1,63 @@
+{
+  "id": "cur-me-entropy",
+  "order": 175,
+  "title": "섞인 온도는 되돌아가지 않는다 (비가역 과정)",
+  "subject": "역학과 에너지",
+  "level": "고2·3 선택",
+  "course": "역학과 에너지",
+  "area": "열역학",
+  "summary": "열평형 과정을 기록하고 엔트로피 변화를 계산합니다.",
+  "standards": [
+    "12역학02-05"
+  ],
+  "standardTexts": [
+    "열의 이동, 기체의 확산과 같은 비가역 현상을 엔트로피를 이용하여 설명할 수 있다."
+  ],
+  "sensors": [
+    "T"
+  ],
+  "mode": "time",
+  "intervalMs": 1000,
+  "x": {
+    "label": "시간",
+    "unit": "s"
+  },
+  "y": [
+    {
+      "sensor": "T",
+      "label": "온도",
+      "unit": "°C"
+    }
+  ],
+  "markers": {
+    "enabled": true,
+    "label": "관찰 기록",
+    "prompt": "한 일 (예: 시약 넣음)"
+  },
+  "analysis": [
+    "stats",
+    "plateau",
+    "fit"
+  ],
+  "steps": [
+    "뜨거운 물 컵을 찬물 비커에 넣고 두 온도를 기록합니다.",
+    "두 온도가 같아질 때까지 측정합니다.",
+    "엑셀로 저장해 ΔS = Σ mc·ln(T₂/T₁)을 계산합니다."
+  ],
+  "setup": {
+    "parts": [
+      "ds18b20"
+    ],
+    "choose": false,
+    "materials": [
+      "온도 센서 2개",
+      "컵",
+      "비커"
+    ],
+    "attach": [
+      "온도 센서 2개를 같은 D2 선에 나란히 꽂으면 '온도 1', '온도 2' 그래프가 따로 나옵니다."
+    ],
+    "cautions": []
+  },
+  "textbooks": []
+}

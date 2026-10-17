@@ -1,0 +1,63 @@
+{
+  "id": "cur-mat-rate",
+  "order": 185,
+  "title": "농도에 따른 반응 속도 (반응 속도식)",
+  "subject": "물질과 에너지",
+  "level": "고2·3 선택",
+  "course": "물질과 에너지",
+  "area": "화학 반응 속도",
+  "summary": "Mg + HCl의 압력 증가 초기 기울기로 반응 차수를 구합니다.",
+  "standards": [
+    "12물에04-01"
+  ],
+  "standardTexts": [
+    "화학 반응 속도를 반응물의 농도로 표현할 수 있음을 알고, 자료 해석을 통하여 반응 속도식을 구할 수 있다."
+  ],
+  "sensors": [
+    "BP"
+  ],
+  "mode": "time",
+  "intervalMs": 500,
+  "x": {
+    "label": "시간",
+    "unit": "s"
+  },
+  "y": [
+    {
+      "sensor": "BP",
+      "label": "기압",
+      "unit": "kPa"
+    }
+  ],
+  "markers": {
+    "enabled": true,
+    "label": "관찰 기록",
+    "prompt": "한 일 (예: 시약 넣음)"
+  },
+  "analysis": [
+    "stats",
+    "fit"
+  ],
+  "steps": [
+    "농도가 다른 HCl을 같은 부피로 준비합니다.",
+    "같은 길이 Mg 리본을 넣고 바로 닫아 측정합니다 (농도마다 새 측정).",
+    "처음 기울기로 log(속도)–log(농도) 기울기(차수)를 구합니다."
+  ],
+  "setup": {
+    "parts": [
+      "bmp280"
+    ],
+    "choose": false,
+    "materials": [
+      "기압 센서",
+      "밀폐 플라스크",
+      "Mg 리본",
+      "HCl 여러 농도"
+    ],
+    "attach": [],
+    "cautions": [
+      "산·염기는 보안경과 장갑을 끼고 다루며, 피부에 묻으면 바로 물로 씻습니다."
+    ]
+  },
+  "textbooks": []
+}

@@ -1,0 +1,64 @@
+{
+  "id": "cur-b-yeast-growth",
+  "order": 165,
+  "title": "효모 개체군 생장 곡선 (탁도)",
+  "subject": "생명과학",
+  "level": "고2·3 선택",
+  "course": "생명과학",
+  "area": "생태계와 상호 작용",
+  "summary": "효모액을 통과한 빛이 줄어드는 것으로 S자 생장 곡선을 그립니다.",
+  "standards": [
+    "12생과01-07"
+  ],
+  "standardTexts": [
+    "개체군과 군집의 특성을 이해하고 이들의 상호작용의 예를 조사하여 발표할 수 있다."
+  ],
+  "sensors": [
+    "L"
+  ],
+  "mode": "time",
+  "intervalMs": 600000,
+  "x": {
+    "label": "시간",
+    "unit": "s"
+  },
+  "y": [
+    {
+      "sensor": "L",
+      "label": "빛",
+      "unit": "%",
+      "min": 0,
+      "max": 100
+    }
+  ],
+  "markers": {
+    "enabled": true,
+    "label": "관찰 기록",
+    "prompt": "한 일 (예: 시약 넣음)"
+  },
+  "analysis": [
+    "stats",
+    "fit"
+  ],
+  "steps": [
+    "설탕물에 효모를 조금 넣은 투명 병 한쪽에 LED, 반대쪽에 빛 센서를 둡니다.",
+    "간격 10분으로 24~48시간 기록합니다.",
+    "‘계산 열 → 상용로그’로 흡광도를 만들고 S자 곡선의 세 구간을 찾습니다."
+  ],
+  "setup": {
+    "parts": [
+      "ldr"
+    ],
+    "choose": false,
+    "materials": [
+      "빛 센서",
+      "LED",
+      "투명 병",
+      "효모",
+      "설탕"
+    ],
+    "attach": [],
+    "cautions": []
+  },
+  "textbooks": []
+}

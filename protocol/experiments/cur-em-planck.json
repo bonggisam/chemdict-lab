@@ -1,0 +1,68 @@
+{
+  "id": "cur-em-planck",
+  "order": 181,
+  "title": "LED 문턱 전압으로 플랑크 상수 어림하기",
+  "subject": "전자기와 양자",
+  "level": "고2·3 선택",
+  "course": "전자기와 양자",
+  "area": "빛과 물질",
+  "summary": "색(파장)이 다른 LED의 켜지는 전압으로 h를 추정합니다.",
+  "standards": [
+    "12전자02-04"
+  ],
+  "standardTexts": [
+    "광전효과에서 빛과 물질이 상호작용하는 방식을 알고, 디지털 영상 정보, 광센서, 태양전지 등 광전효과와 관련된 다양한 기술을 조사할 수 있다."
+  ],
+  "sensors": [
+    "V"
+  ],
+  "mode": "event",
+  "intervalMs": 500,
+  "x": {
+    "label": "LED 파장",
+    "unit": "nm"
+  },
+  "y": [
+    {
+      "sensor": "V",
+      "label": "전압",
+      "unit": "V"
+    }
+  ],
+  "markers": {
+    "enabled": false,
+    "label": "관찰 기록",
+    "prompt": "한 일 (예: 시약 넣음)"
+  },
+  "analysis": [
+    "stats",
+    "fit"
+  ],
+  "steps": [
+    "빨강(630 nm)부터 LED를 바꿔 끼웁니다.",
+    "빛이 처음 보일 때의 LED 양단 전압에서 ‘값 기록’을 누릅니다.",
+    "엑셀에서 1/λ–전압 직선의 기울기 = hc/e로 h를 구합니다."
+  ],
+  "setup": {
+    "parts": [
+      "voltage"
+    ],
+    "choose": false,
+    "materials": [
+      "LED 여러 색",
+      "가변저항",
+      "100 Ω 저항",
+      "전압 측정 선"
+    ],
+    "attach": [],
+    "cautions": []
+  },
+  "textbooks": [],
+  "event": {
+    "label": "LED 파장",
+    "unit": "nm",
+    "start": 630,
+    "step": -60,
+    "scale": "linear"
+  }
+}

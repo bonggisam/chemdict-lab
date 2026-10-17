@@ -1,0 +1,68 @@
+{
+  "id": "cur-ce-sea-level",
+  "order": 210,
+  "title": "물이 데워지면 해수면이 오를까 (열팽창)",
+  "subject": "기후변화와 환경생태",
+  "level": "고2·3 선택",
+  "course": "기후변화와 환경생태",
+  "area": "기후변화와 지구 환경",
+  "summary": "온도를 올리며 가는 관의 수위를 넣어 온도–수위 관계를 봅니다.",
+  "standards": [
+    "12기환02-02"
+  ],
+  "standardTexts": [
+    "빙상의 융해와 열팽창으로 인한 해수면 상승을 기후변화와 연계하여 설명할 수 있다."
+  ],
+  "sensors": [
+    "T"
+  ],
+  "mode": "event",
+  "intervalMs": 1000,
+  "x": {
+    "label": "관의 수위",
+    "unit": "mm"
+  },
+  "y": [
+    {
+      "sensor": "T",
+      "label": "온도",
+      "unit": "°C"
+    }
+  ],
+  "markers": {
+    "enabled": false,
+    "label": "관찰 기록",
+    "prompt": "한 일 (예: 시약 넣음)"
+  },
+  "analysis": [
+    "stats",
+    "fit"
+  ],
+  "steps": [
+    "물을 가득 채운 플라스크에 가는 관과 온도 센서를 꽂습니다.",
+    "물중탕으로 데우며 수위가 2 mm 오를 때마다 그 값을 넣고 ‘값 기록’을 누릅니다.",
+    "육지 얼음과 바다 얼음이 녹을 때 수위 변화도 비교해 봅니다."
+  ],
+  "setup": {
+    "parts": [
+      "ds18b20"
+    ],
+    "choose": false,
+    "materials": [
+      "온도 센서",
+      "플라스크",
+      "가는 관(피펫)",
+      "물중탕"
+    ],
+    "attach": [],
+    "cautions": []
+  },
+  "textbooks": [],
+  "event": {
+    "label": "관의 수위",
+    "unit": "mm",
+    "start": 0,
+    "step": 2,
+    "scale": "linear"
+  }
+}

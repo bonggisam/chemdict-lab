@@ -1,0 +1,69 @@
+{
+  "id": "cur-p-series-parallel",
+  "order": 154,
+  "title": "직렬·병렬 연결과 소비 전력",
+  "subject": "물리학",
+  "level": "고2·3 선택",
+  "course": "물리학",
+  "area": "전기와 자기",
+  "summary": "저항의 연결 방법에 따라 각 저항에 걸리는 전압과 전력을 비교합니다.",
+  "standards": [
+    "12물리02-02"
+  ],
+  "standardTexts": [
+    "전기 회로에서 저항의 연결에 따라 소비 전력이 달라짐을 알고, 다양한 전기 기구에서 적용되는 사례를 찾을 수 있다."
+  ],
+  "sensors": [
+    "V"
+  ],
+  "mode": "event",
+  "intervalMs": 500,
+  "x": {
+    "label": "회로 번호",
+    "unit": "번"
+  },
+  "y": [
+    {
+      "sensor": "V",
+      "label": "전압",
+      "unit": "V"
+    }
+  ],
+  "markers": {
+    "enabled": false,
+    "label": "관찰 기록",
+    "prompt": "한 일 (예: 시약 넣음)"
+  },
+  "analysis": [
+    "stats"
+  ],
+  "steps": [
+    "A0, A1을 두 저항 양단에 연결합니다 (‘센서 설정’에서 둘 다 전압).",
+    "직렬(1번), 병렬(2번)로 바꾸며 ‘값 기록’을 누릅니다.",
+    "P = V²/R로 전력을 계산해 비교합니다."
+  ],
+  "setup": {
+    "parts": [
+      "voltage"
+    ],
+    "choose": false,
+    "materials": [
+      "전압 측정 선 2쌍",
+      "저항 100 Ω·220 Ω",
+      "건전지 3개",
+      "브레드보드"
+    ],
+    "attach": [],
+    "cautions": [
+      "보드에는 0~5 V만 넣습니다."
+    ]
+  },
+  "textbooks": [],
+  "event": {
+    "label": "회로 번호",
+    "unit": "번",
+    "start": 1,
+    "step": 1,
+    "scale": "linear"
+  }
+}

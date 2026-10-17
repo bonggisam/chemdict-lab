@@ -1,0 +1,78 @@
+{
+  "id": "cur-m-cloud",
+  "order": 122,
+  "title": "페트병 속 구름 만들기",
+  "subject": "과학 3",
+  "level": "중학교",
+  "course": "과학 3",
+  "area": "날씨와 기후변화",
+  "summary": "압력을 갑자기 낮출 때 온도가 내려가며 구름이 생기는 것을 봅니다.",
+  "standards": [
+    "9과17-03"
+  ],
+  "standardTexts": [
+    "상대습도, 단열 팽창 및 응결 현상의 관계를 이해하고, 구름의 생성과 강수 과정을 설명할 수 있다."
+  ],
+  "sensors": [
+    "BP",
+    "TA",
+    "RH"
+  ],
+  "mode": "time",
+  "intervalMs": 200,
+  "x": {
+    "label": "시간",
+    "unit": "s"
+  },
+  "y": [
+    {
+      "sensor": "BP",
+      "label": "기압",
+      "unit": "kPa"
+    },
+    {
+      "sensor": "TA",
+      "label": "기온",
+      "unit": "°C"
+    },
+    {
+      "sensor": "RH",
+      "label": "습도",
+      "unit": "%",
+      "min": 0,
+      "max": 100
+    }
+  ],
+  "markers": {
+    "enabled": true,
+    "label": "관찰 기록",
+    "prompt": "한 일 (예: 시약 넣음)"
+  },
+  "analysis": [
+    "stats",
+    "fit"
+  ],
+  "steps": [
+    "페트병에 물을 조금 넣고 BME280 센서를 넣습니다.",
+    "향 연기를 조금 넣고 압축 마개로 여러 번 누릅니다.",
+    "측정을 시작하고 마개를 한 번에 엽니다.",
+    "기압이 떨어질 때 기온이 내려가는지, 뿌옇게 되는지 봅니다."
+  ],
+  "setup": {
+    "parts": [
+      "bme280"
+    ],
+    "choose": false,
+    "materials": [
+      "BME280(기압·온도·습도)",
+      "페트병",
+      "압축 펌프 마개",
+      "향"
+    ],
+    "attach": [],
+    "cautions": [
+      "센서 선은 병 입구에 끼워 새지 않게 합니다."
+    ]
+  },
+  "textbooks": []
+}

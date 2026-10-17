@@ -1,0 +1,75 @@
+{
+  "id": "cur-es-cloud",
+  "order": 203,
+  "title": "단열 팽창과 구름 (대기 안정도)",
+  "subject": "지구시스템과학",
+  "level": "고2·3 선택",
+  "course": "지구시스템과학",
+  "area": "대기의 운동",
+  "summary": "압력이 떨어질 때 온도가 이슬점 아래로 내려가 구름이 생기는 것을 봅니다.",
+  "standards": [
+    "12지시03-03"
+  ],
+  "standardTexts": [
+    "기온의 연직 분포와 대기의 안정도와의 관계를 이해하고, 단열변화를 통해 안개나 구름이 생성되는 과정 및 강수 과정을 분석할 수 있다."
+  ],
+  "sensors": [
+    "BP",
+    "TA",
+    "RH"
+  ],
+  "mode": "time",
+  "intervalMs": 200,
+  "x": {
+    "label": "시간",
+    "unit": "s"
+  },
+  "y": [
+    {
+      "sensor": "BP",
+      "label": "기압",
+      "unit": "kPa"
+    },
+    {
+      "sensor": "TA",
+      "label": "기온",
+      "unit": "°C"
+    },
+    {
+      "sensor": "RH",
+      "label": "습도",
+      "unit": "%",
+      "min": 0,
+      "max": 100
+    }
+  ],
+  "markers": {
+    "enabled": true,
+    "label": "관찰 기록",
+    "prompt": "한 일 (예: 시약 넣음)"
+  },
+  "analysis": [
+    "stats",
+    "fit"
+  ],
+  "steps": [
+    "물을 조금 넣은 페트병에 BME280과 향 연기를 넣고 압축합니다.",
+    "측정을 시작하고 마개를 한 번에 엽니다.",
+    "온습도로 이슬점을 계산해 구름이 생긴 때와 비교합니다."
+  ],
+  "setup": {
+    "parts": [
+      "bme280"
+    ],
+    "choose": false,
+    "materials": [
+      "BME280",
+      "페트병",
+      "압축 마개",
+      "향"
+    ],
+    "attach": [],
+    "cautions": []
+  },
+  "textbooks": []
+}

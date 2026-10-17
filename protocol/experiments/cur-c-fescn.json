@@ -1,0 +1,71 @@
+{
+  "id": "cur-c-fescn",
+  "order": 160,
+  "title": "흡광도로 평형 상수 구하기 (FeSCN²⁺)",
+  "subject": "화학",
+  "level": "고2·3 선택",
+  "course": "화학",
+  "area": "역동적인 화학 반응",
+  "summary": "검량선으로 평형 농도를 구해 평형 상수가 일정한지 봅니다.",
+  "standards": [
+    "12화학03-02"
+  ],
+  "standardTexts": [
+    "화학 반응에서 반응물과 생성물의 농도 자료를 통해 평형 상수의 의미를 설명할 수 있다."
+  ],
+  "sensors": [
+    "COLG"
+  ],
+  "mode": "event",
+  "intervalMs": 500,
+  "x": {
+    "label": "FeSCN²⁺ 농도",
+    "unit": "mM"
+  },
+  "y": [
+    {
+      "sensor": "COLG",
+      "label": "초록",
+      "unit": "%",
+      "min": 0,
+      "max": 100
+    }
+  ],
+  "markers": {
+    "enabled": false,
+    "label": "관찰 기록",
+    "prompt": "한 일 (예: 시약 넣음)"
+  },
+  "analysis": [
+    "stats",
+    "fit"
+  ],
+  "steps": [
+    "물을 넣은 큐벳으로 첫 기록을 합니다 (I₀).",
+    "표준 용액을 농도 순서로 넣으며 ‘값 기록’을 누릅니다.",
+    "저장한 엑셀에서 A = −log(I/I₀) 검량선을 만들고 시료 농도를 구합니다."
+  ],
+  "setup": {
+    "parts": [
+      "tcs34725"
+    ],
+    "choose": false,
+    "materials": [
+      "색 센서",
+      "초록 또는 흰 LED",
+      "큐벳",
+      "Fe(NO3)3",
+      "KSCN"
+    ],
+    "attach": [],
+    "cautions": []
+  },
+  "textbooks": [],
+  "event": {
+    "label": "FeSCN²⁺ 농도",
+    "unit": "mM",
+    "start": 0,
+    "step": 0.02,
+    "scale": "linear"
+  }
+}

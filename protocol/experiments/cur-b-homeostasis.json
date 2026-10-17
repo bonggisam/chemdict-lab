@@ -1,0 +1,62 @@
+{
+  "id": "cur-b-homeostasis",
+  "order": 166,
+  "title": "찬물에 담근 손의 온도 회복 (항상성)",
+  "subject": "생명과학",
+  "level": "고2·3 선택",
+  "course": "생명과학",
+  "area": "항상성과 몸의 기능",
+  "summary": "손등 피부 온도가 떨어졌다 회복되는 시간을 비교합니다.",
+  "standards": [
+    "12생과02-04"
+  ],
+  "standardTexts": [
+    "내분비계와 신경계 작용 원리와 상호작용의 이해를 바탕으로 우리 몸의 항상성이 유지되는 과정을 추론할 수 있다."
+  ],
+  "sensors": [
+    "T"
+  ],
+  "mode": "time",
+  "intervalMs": 2000,
+  "x": {
+    "label": "시간",
+    "unit": "s"
+  },
+  "y": [
+    {
+      "sensor": "T",
+      "label": "온도",
+      "unit": "°C"
+    }
+  ],
+  "markers": {
+    "enabled": true,
+    "label": "관찰 기록",
+    "prompt": "한 일 (예: 시약 넣음)"
+  },
+  "analysis": [
+    "stats",
+    "fit"
+  ],
+  "steps": [
+    "온도 센서를 손등에 테이프로 붙입니다.",
+    "1분 기록한 뒤 손을 찬물에 30초 담그고 꺼냅니다.",
+    "원래 온도로 돌아오는 시간을 사람별로 비교합니다."
+  ],
+  "setup": {
+    "parts": [
+      "ds18b20"
+    ],
+    "choose": false,
+    "materials": [
+      "온도 센서",
+      "의료용 테이프",
+      "찬물"
+    ],
+    "attach": [],
+    "cautions": [
+      "얼음물에 오래 담그지 않습니다."
+    ]
+  },
+  "textbooks": []
+}

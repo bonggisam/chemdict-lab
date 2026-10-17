@@ -1,0 +1,73 @@
+{
+  "id": "cur-h-mcu-motion",
+  "order": 149,
+  "title": "마이크로컨트롤러로 운동 데이터 모으기",
+  "subject": "과학탐구실험2",
+  "level": "고1 공통",
+  "course": "과학탐구실험2",
+  "area": "미래 사회와 첨단 과학 탐구",
+  "summary": "초음파 거리 센서로 물체의 운동을 수집·분석합니다.",
+  "standards": [
+    "10과탐2-02-01"
+  ],
+  "standardTexts": [
+    "(문장 요약) 첨단 과학기술 속 과학 원리를 찾아 활용 사례를 추론한다."
+  ],
+  "sensors": [
+    "DIST"
+  ],
+  "mode": "time",
+  "intervalMs": 100,
+  "x": {
+    "label": "시간",
+    "unit": "s"
+  },
+  "y": [
+    {
+      "sensor": "DIST",
+      "label": "거리",
+      "unit": "cm"
+    }
+  ],
+  "markers": {
+    "enabled": true,
+    "label": "관찰 기록",
+    "prompt": "한 일 (예: 시약 넣음)"
+  },
+  "analysis": [
+    "stats",
+    "fit"
+  ],
+  "steps": [
+    "초음파 센서를 보드에 연결합니다 (TRIG D7, ECHO D8).",
+    "공, 수레, 진자 등 움직이는 물체를 고릅니다.",
+    "측정하고 ‘변화율 그래프’로 속력을 봅니다.",
+    "센서가 거리를 재는 원리(음파 왕복 시간)를 설명합니다."
+  ],
+  "setup": {
+    "parts": [
+      "hcsr04"
+    ],
+    "choose": false,
+    "materials": [
+      "초음파 센서",
+      "움직일 물체"
+    ],
+    "attach": [],
+    "cautions": []
+  },
+  "textbooks": [
+    {
+      "publisher": "미래엔",
+      "course": "과학탐구실험2",
+      "note": "48·67쪽 마이크로컨트롤러로 물리적 현상 수집·분석 (적외선 거리 센서)",
+      "sure": "confirmed"
+    },
+    {
+      "publisher": "미래엔",
+      "course": "과학탐구실험2",
+      "note": "70~73쪽 초음파 센서를 활용한 자동 선풍기",
+      "sure": "confirmed"
+    }
+  ]
+}

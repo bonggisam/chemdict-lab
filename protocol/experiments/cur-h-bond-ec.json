@@ -1,0 +1,67 @@
+{
+  "id": "cur-h-bond-ec",
+  "order": 129,
+  "title": "결합에 따라 전기가 통할까",
+  "subject": "통합과학1",
+  "level": "고1 공통",
+  "course": "통합과학1",
+  "area": "물질과 규칙성",
+  "summary": "여러 물질의 전기 전도도를 재어 이온 결합과 공유 결합 물질을 비교합니다.",
+  "standards": [
+    "10통과1-02-04"
+  ],
+  "standardTexts": [
+    "인류의 생존에 필수적인 물, 산소, 소금 등이 만들어지는 결합의 차이를 이해하고 각 물질의 성질과 관련지어 설명할 수 있다."
+  ],
+  "sensors": [
+    "EC"
+  ],
+  "mode": "event",
+  "intervalMs": 500,
+  "x": {
+    "label": "시료 번호",
+    "unit": "번"
+  },
+  "y": [
+    {
+      "sensor": "EC",
+      "label": "전도도",
+      "unit": "µS/cm"
+    }
+  ],
+  "markers": {
+    "enabled": false,
+    "label": "관찰 기록",
+    "prompt": "한 일 (예: 시약 넣음)"
+  },
+  "analysis": [
+    "stats"
+  ],
+  "steps": [
+    "증류수, 수돗물, 설탕물, 에탄올 수용액, 소금물 순서로 번호를 정합니다.",
+    "전극을 시료에 담그고 안정되면 ‘값 기록’을 누릅니다.",
+    "시료를 바꿀 때마다 전극을 증류수로 헹굽니다.",
+    "소금물만 크게 나오는 까닭을 이온으로 설명합니다."
+  ],
+  "setup": {
+    "parts": [
+      "ec"
+    ],
+    "choose": false,
+    "materials": [
+      "전도도 센서",
+      "시료 5가지",
+      "증류수 세척병"
+    ],
+    "attach": [],
+    "cautions": []
+  },
+  "textbooks": [],
+  "event": {
+    "label": "시료 번호",
+    "unit": "번",
+    "start": 1,
+    "step": 1,
+    "scale": "linear"
+  }
+}

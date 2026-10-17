@@ -1,0 +1,77 @@
+{
+  "id": "cur-m-light-distance",
+  "order": 119,
+  "title": "광원에서 멀어지면 밝기는 (역제곱)",
+  "subject": "과학 2",
+  "level": "중학교",
+  "course": "과학 2",
+  "area": "별과 우주",
+  "summary": "거리가 2배가 되면 밝기가 1/4이 되는지 확인합니다.",
+  "standards": [
+    "9과15-01"
+  ],
+  "standardTexts": [
+    "연주시차를 이용하여 별까지의 거리를 구할 수 있고, 별의 등급과 밝기의 관계 및 표면 온도와 색의 관계를 설명할 수 있다."
+  ],
+  "sensors": [
+    "L"
+  ],
+  "mode": "event",
+  "intervalMs": 500,
+  "x": {
+    "label": "광원과의 거리",
+    "unit": "cm"
+  },
+  "y": [
+    {
+      "sensor": "L",
+      "label": "빛",
+      "unit": "%",
+      "min": 0,
+      "max": 100
+    }
+  ],
+  "markers": {
+    "enabled": false,
+    "label": "관찰 기록",
+    "prompt": "한 일 (예: 시약 넣음)"
+  },
+  "analysis": [
+    "stats",
+    "fit"
+  ],
+  "steps": [
+    "어두운 곳에서 작은 전구를 켭니다.",
+    "빛 센서를 10 cm씩 멀리 옮기며 ‘값 기록’을 누릅니다.",
+    "‘함수 찾기 → 거듭제곱’에서 지수가 약 −2인지 봅니다.",
+    "멀리 있는 별이 어둡게 보이는 까닭과 연결합니다."
+  ],
+  "setup": {
+    "parts": [
+      "ldr"
+    ],
+    "choose": false,
+    "materials": [
+      "빛 센서",
+      "작은 전구(점광원)",
+      "줄자"
+    ],
+    "attach": [],
+    "cautions": []
+  },
+  "textbooks": [
+    {
+      "publisher": "미래엔",
+      "course": "과학2",
+      "note": "284쪽 광원으로부터의 거리에 따른 빛의 밝기 실험하기",
+      "sure": "mentioned"
+    }
+  ],
+  "event": {
+    "label": "광원과의 거리",
+    "unit": "cm",
+    "start": 10,
+    "step": 10,
+    "scale": "linear"
+  }
+}

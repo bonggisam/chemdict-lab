@@ -1,0 +1,72 @@
+{
+  "id": "cur-ce-algae",
+  "order": 211,
+  "title": "따뜻하고 영양이 많으면 조류가 늘까 (물꽃)",
+  "subject": "기후변화와 환경생태",
+  "level": "고2·3 선택",
+  "course": "기후변화와 환경생태",
+  "area": "기후변화와 생태계",
+  "summary": "연못물의 초록빛 흡수와 수온을 1~2주 기록합니다.",
+  "standards": [
+    "12기환02-07"
+  ],
+  "standardTexts": [
+    "수생태계의 물꽃 현상을 이해하고, 기후변화가 수생태계의 생물다양성에 끼치는 영향을 추론할 수 있다."
+  ],
+  "sensors": [
+    "COLG",
+    "T"
+  ],
+  "mode": "time",
+  "intervalMs": 3600000,
+  "x": {
+    "label": "시간",
+    "unit": "s"
+  },
+  "y": [
+    {
+      "sensor": "COLG",
+      "label": "초록",
+      "unit": "%",
+      "min": 0,
+      "max": 100
+    },
+    {
+      "sensor": "T",
+      "label": "온도",
+      "unit": "°C"
+    }
+  ],
+  "markers": {
+    "enabled": true,
+    "label": "관찰 기록",
+    "prompt": "한 일 (예: 시약 넣음)"
+  },
+  "analysis": [
+    "stats",
+    "fit"
+  ],
+  "steps": [
+    "연못물 병 두 개 중 하나에 비료를 조금 넣습니다.",
+    "병 뒤 LED, 앞 색 센서를 두고 간격 1시간으로 기록합니다 (병마다 새 측정 또는 보드 2대).",
+    "초록 투과가 줄어드는(조류 증가) 빠르기를 비교합니다."
+  ],
+  "setup": {
+    "parts": [
+      "tcs34725",
+      "ds18b20"
+    ],
+    "choose": false,
+    "materials": [
+      "색 센서",
+      "온도 센서",
+      "투명 병",
+      "연못물",
+      "식물 비료",
+      "LED"
+    ],
+    "attach": [],
+    "cautions": []
+  },
+  "textbooks": []
+}

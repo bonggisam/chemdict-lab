@@ -1,0 +1,70 @@
+{
+  "id": "cur-h-boyle-history",
+  "order": 146,
+  "title": "보일의 실험 다시 하기 (가설 검증)",
+  "subject": "과학탐구실험1",
+  "level": "고1 공통",
+  "course": "과학탐구실험1",
+  "area": "과학 탐구의 과정과 절차",
+  "summary": "‘압력이 2배면 부피는 1/2’ 가설을 세우고 센서로 검증합니다.",
+  "standards": [
+    "10과탐1-02-02"
+  ],
+  "standardTexts": [
+    "(문장 요약) 가설 설정이 포함된 과학사 실험을 수행하여 연역적 탐구의 특징을 이해한다."
+  ],
+  "sensors": [
+    "BP"
+  ],
+  "mode": "event",
+  "intervalMs": 500,
+  "x": {
+    "label": "기체 부피",
+    "unit": "mL"
+  },
+  "y": [
+    {
+      "sensor": "BP",
+      "label": "기압",
+      "unit": "kPa"
+    }
+  ],
+  "markers": {
+    "enabled": false,
+    "label": "관찰 기록",
+    "prompt": "한 일 (예: 시약 넣음)"
+  },
+  "analysis": [
+    "stats",
+    "fit"
+  ],
+  "steps": [
+    "가설과 예상 그래프를 ‘예측 그리기’로 먼저 그립니다.",
+    "주사기를 2 mL씩 누르며 ‘값 기록’을 누릅니다.",
+    "‘함수 찾기 → 반비례’와 예측을 비교합니다.",
+    "벗어난 까닭(새는 공기, 온도)을 찾아 가설을 고칩니다."
+  ],
+  "setup": {
+    "parts": [
+      "bmp280"
+    ],
+    "choose": false,
+    "materials": [
+      "기압 센서",
+      "밀폐 용기",
+      "주사기"
+    ],
+    "attach": [],
+    "cautions": [
+      "압축은 10 % 안에서만 합니다."
+    ]
+  },
+  "textbooks": [],
+  "event": {
+    "label": "기체 부피",
+    "unit": "mL",
+    "start": 60,
+    "step": -2,
+    "scale": "linear"
+  }
+}

@@ -1,0 +1,68 @@
+{
+  "id": "cur-b-seed-heat",
+  "order": 162,
+  "title": "싹트는 씨앗이 내는 열과 CO2",
+  "subject": "생명과학",
+  "level": "고2·3 선택",
+  "course": "생명과학",
+  "area": "생명 시스템의 구성",
+  "summary": "보온병 속 발아 종자의 온도·CO2로 물질대사의 에너지 전환을 봅니다.",
+  "standards": [
+    "12생과01-03"
+  ],
+  "standardTexts": [
+    "물질대사 과정에서의 에너지 전환 과정을 바탕으로 다양한 생명 활동에서의 에너지 사용을 추론할 수 있다."
+  ],
+  "sensors": [
+    "T",
+    "CO2"
+  ],
+  "mode": "time",
+  "intervalMs": 60000,
+  "x": {
+    "label": "시간",
+    "unit": "s"
+  },
+  "y": [
+    {
+      "sensor": "T",
+      "label": "온도",
+      "unit": "°C"
+    },
+    {
+      "sensor": "CO2",
+      "label": "이산화탄소",
+      "unit": "ppm"
+    }
+  ],
+  "markers": {
+    "enabled": true,
+    "label": "관찰 기록",
+    "prompt": "한 일 (예: 시약 넣음)"
+  },
+  "analysis": [
+    "stats",
+    "fit"
+  ],
+  "steps": [
+    "보온병에 불린 콩을 채우고 센서를 넣습니다.",
+    "간격 1분으로 하루 기록합니다.",
+    "삶은 콩 보온병(대조군)과 비교합니다."
+  ],
+  "setup": {
+    "parts": [
+      "ds18b20",
+      "scd4x"
+    ],
+    "choose": false,
+    "materials": [
+      "온도 센서",
+      "CO2 센서",
+      "보온병",
+      "불린 콩"
+    ],
+    "attach": [],
+    "cautions": []
+  },
+  "textbooks": []
+}

@@ -7,7 +7,7 @@ import { flashStk500v2, type Progress } from './stk500v2';
 export type { Progress };
 
 /** 웹앱에 들어 있는 펌웨어 버전 (firmware/chemdict_lab.ino 의 FW_VERSION과 같게) */
-export const BUNDLED_FW = '0.3.0';
+export const BUNDLED_FW = '0.3.1';
 
 export interface FlashTarget {
   boardId: string;           // guide.json boards[].id

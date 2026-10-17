@@ -1,0 +1,64 @@
+{
+  "id": "cur-m-mass-conservation",
+  "order": 120,
+  "title": "반응 전후 질량은 같을까 (질량 보존)",
+  "subject": "과학 3",
+  "level": "중학교",
+  "course": "과학 3",
+  "area": "화학 반응의 규칙성",
+  "summary": "닫은 병과 연 병에서 반응할 때 질량 변화를 비교합니다.",
+  "standards": [
+    "9과16-03"
+  ],
+  "standardTexts": [
+    "화학 반응에서 질량이 보존됨을 실험을 통해 추론할 수 있다."
+  ],
+  "sensors": [
+    "M"
+  ],
+  "mode": "time",
+  "intervalMs": 1000,
+  "x": {
+    "label": "시간",
+    "unit": "s"
+  },
+  "y": [
+    {
+      "sensor": "M",
+      "label": "질량",
+      "unit": "g"
+    }
+  ],
+  "markers": {
+    "enabled": true,
+    "label": "관찰 기록",
+    "prompt": "한 일 (예: 시약 넣음)"
+  },
+  "analysis": [
+    "stats",
+    "plateau",
+    "fit"
+  ],
+  "steps": [
+    "페트병에 식초를 넣고, 작은 컵에 베이킹소다를 담아 병 안에 세웁니다.",
+    "마개를 닫고 로드셀 위에 올려 영점을 맞춘 뒤 측정을 시작합니다.",
+    "병을 기울여 섞습니다. 질량이 그대로인지 봅니다.",
+    "마개를 연 채로 다시 해서 줄어든 질량(빠져나간 CO2)을 구합니다."
+  ],
+  "setup": {
+    "parts": [
+      "hx711"
+    ],
+    "choose": false,
+    "materials": [
+      "로드셀+HX711",
+      "페트병",
+      "식초",
+      "베이킹소다",
+      "작은 컵"
+    ],
+    "attach": [],
+    "cautions": []
+  },
+  "textbooks": []
+}

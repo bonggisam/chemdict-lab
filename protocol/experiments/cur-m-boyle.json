@@ -1,0 +1,71 @@
+{
+  "id": "cur-m-boyle",
+  "order": 108,
+  "title": "주사기를 누르면 압력은 (보일 법칙)",
+  "subject": "과학 1",
+  "level": "중학교",
+  "course": "과학 1",
+  "area": "기체의 성질",
+  "summary": "기체의 부피를 줄일 때 압력이 어떻게 변하는지 봅니다.",
+  "standards": [
+    "9과06-02"
+  ],
+  "standardTexts": [
+    "기체의 압력과 부피 관계를 실험 결과로부터 알아내고, 이를 입자 모형으로 해석할 수 있다."
+  ],
+  "sensors": [
+    "BP"
+  ],
+  "mode": "event",
+  "intervalMs": 500,
+  "x": {
+    "label": "기체 부피",
+    "unit": "mL"
+  },
+  "y": [
+    {
+      "sensor": "BP",
+      "label": "기압",
+      "unit": "kPa"
+    }
+  ],
+  "markers": {
+    "enabled": false,
+    "label": "관찰 기록",
+    "prompt": "한 일 (예: 시약 넣음)"
+  },
+  "analysis": [
+    "stats",
+    "fit"
+  ],
+  "steps": [
+    "기압 센서를 넣은 작은 밀폐 용기에 주사기를 연결합니다.",
+    "전체 부피(용기+관+주사기)를 처음 값으로 넣습니다.",
+    "주사기를 2 mL씩 누를 때마다 ‘값 기록’을 누릅니다.",
+    "‘함수 찾기 → 반비례’로 P×V가 일정한지 봅니다."
+  ],
+  "setup": {
+    "parts": [
+      "bmp280"
+    ],
+    "choose": false,
+    "materials": [
+      "기압 센서(BMP280)",
+      "밀폐 용기",
+      "주사기",
+      "실리콘 관"
+    ],
+    "attach": [],
+    "cautions": [
+      "압축은 처음 부피의 10 % 안에서만 합니다 (센서 범위 약 110 kPa)."
+    ]
+  },
+  "textbooks": [],
+  "event": {
+    "label": "기체 부피",
+    "unit": "mL",
+    "start": 60,
+    "step": -2,
+    "scale": "linear"
+  }
+}

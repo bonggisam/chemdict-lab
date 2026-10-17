@@ -1,0 +1,103 @@
+{
+  "id": "cur-h-smart-pot",
+  "order": 150,
+  "title": "스마트 화분·온실 만들기 (센서 발명품)",
+  "subject": "과학탐구실험2",
+  "level": "고1 공통",
+  "course": "과학탐구실험2",
+  "area": "미래 사회와 첨단 과학 탐구",
+  "summary": "토양 수분·빛·온습도를 기록해 물 줄 때를 알려 주는 장치를 만듭니다.",
+  "standards": [
+    "10과탐2-02-01",
+    "10과탐2-02-02"
+  ],
+  "standardTexts": [
+    "(문장 요약) 첨단 과학기술 속 과학 원리를 찾아 활용 사례를 추론한다.",
+    "(문장 요약) 첨단 기술을 활용한 탐구 산출물을 발표·공유한다."
+  ],
+  "sensors": [
+    "SOIL",
+    "L",
+    "TA",
+    "RH"
+  ],
+  "mode": "time",
+  "intervalMs": 600000,
+  "x": {
+    "label": "시간",
+    "unit": "s"
+  },
+  "y": [
+    {
+      "sensor": "SOIL",
+      "label": "토양 수분",
+      "unit": "%",
+      "min": 0,
+      "max": 100
+    },
+    {
+      "sensor": "L",
+      "label": "빛",
+      "unit": "%",
+      "min": 0,
+      "max": 100
+    },
+    {
+      "sensor": "TA",
+      "label": "기온",
+      "unit": "°C"
+    },
+    {
+      "sensor": "RH",
+      "label": "습도",
+      "unit": "%",
+      "min": 0,
+      "max": 100
+    }
+  ],
+  "markers": {
+    "enabled": true,
+    "label": "한 일",
+    "prompt": "예: 물 줌"
+  },
+  "analysis": [
+    "stats",
+    "fit"
+  ],
+  "steps": [
+    "화분에 토양 수분 센서를 꽂고 빛·온습도 센서를 곁에 둡니다.",
+    "간격 10분으로 1주일 기록합니다.",
+    "물을 줄 때 ‘한 일’을 기록합니다.",
+    "수분이 줄어드는 기울기로 다음에 물 줄 날을 예측합니다."
+  ],
+  "setup": {
+    "parts": [
+      "soil",
+      "ldr",
+      "dht"
+    ],
+    "choose": false,
+    "materials": [
+      "토양 수분 센서",
+      "빛 센서",
+      "온습도 센서",
+      "화분"
+    ],
+    "attach": [],
+    "cautions": []
+  },
+  "textbooks": [
+    {
+      "publisher": "비상교육",
+      "course": "과학탐구실험2",
+      "note": "마이크로컨트롤러를 활용하여 스마트 온실 설계하기 (비바샘 자료 제목)",
+      "sure": "mentioned"
+    },
+    {
+      "publisher": "비상교육",
+      "course": "과학탐구실험2",
+      "note": "각종 센서를 활용한 생활 발명품 아이디어 고안",
+      "sure": "mentioned"
+    }
+  ]
+}

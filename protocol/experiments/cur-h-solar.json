@@ -1,0 +1,81 @@
+{
+  "id": "cur-h-solar",
+  "order": 144,
+  "title": "태양전지 각도와 전력 (에너지 효율)",
+  "subject": "통합과학2",
+  "level": "고1 공통",
+  "course": "통합과학2",
+  "area": "환경과 에너지",
+  "summary": "빛과 태양전지의 각도에 따라 전압(전력)이 어떻게 바뀌는지 봅니다.",
+  "standards": [
+    "10통과2-02-06"
+  ],
+  "standardTexts": [
+    "에너지 효율의 의미와 중요성을 이해하고, 지속가능한 발전과 지구 환경 문제 해결에 신재생 에너지 기술을 활용하는 방안을 탐색할 수 있다."
+  ],
+  "sensors": [
+    "V",
+    "L"
+  ],
+  "mode": "event",
+  "intervalMs": 500,
+  "x": {
+    "label": "빛과의 각도",
+    "unit": "°"
+  },
+  "y": [
+    {
+      "sensor": "V",
+      "label": "전압",
+      "unit": "V"
+    },
+    {
+      "sensor": "L",
+      "label": "빛",
+      "unit": "%",
+      "min": 0,
+      "max": 100
+    }
+  ],
+  "markers": {
+    "enabled": false,
+    "label": "관찰 기록",
+    "prompt": "한 일 (예: 시약 넣음)"
+  },
+  "analysis": [
+    "stats",
+    "fit"
+  ],
+  "steps": [
+    "작은 태양전지에 부하 저항(100 Ω)을 연결하고 양단을 A0(전압)에 연결합니다.",
+    "빛이 수직(0°)일 때 ‘값 기록’을 누릅니다.",
+    "15°씩 기울이며 기록합니다.",
+    "전력 P = V²/R을 계산해 각도와 비교합니다."
+  ],
+  "setup": {
+    "parts": [
+      "voltage",
+      "ldr"
+    ],
+    "choose": false,
+    "materials": [
+      "소형 태양전지(5 V 이하)",
+      "100 Ω 저항",
+      "전등",
+      "각도기",
+      "빛 센서"
+    ],
+    "attach": [],
+    "cautions": [
+      "태양전지 출력이 5 V를 넘지 않는지 먼저 확인합니다."
+    ]
+  },
+  "textbooks": [],
+  "event": {
+    "label": "빛과의 각도",
+    "unit": "°",
+    "start": 0,
+    "step": 15,
+    "scale": "linear"
+  }
+}

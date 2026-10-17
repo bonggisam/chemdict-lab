@@ -1,0 +1,71 @@
+{
+  "id": "cur-cl-light-color",
+  "order": 198,
+  "title": "빛의 색과 광합성",
+  "subject": "세포와 물질대사",
+  "level": "고2·3 선택",
+  "course": "세포와 물질대사",
+  "area": "세포 호흡과 광합성",
+  "summary": "빨강·초록·파랑 빛에서 밀폐 통의 CO2 감소 빠르기를 비교합니다.",
+  "standards": [
+    "12세포03-06"
+  ],
+  "standardTexts": [
+    "광합성의 명반응과 탄소 고정반응을 단계별로 구분하여 특징을 이해하고 두 반응의 상호 관계를 추론할 수 있다."
+  ],
+  "sensors": [
+    "CO2",
+    "L"
+  ],
+  "mode": "time",
+  "intervalMs": 10000,
+  "x": {
+    "label": "시간",
+    "unit": "s"
+  },
+  "y": [
+    {
+      "sensor": "CO2",
+      "label": "이산화탄소",
+      "unit": "ppm"
+    },
+    {
+      "sensor": "L",
+      "label": "빛",
+      "unit": "%",
+      "min": 0,
+      "max": 100
+    }
+  ],
+  "markers": {
+    "enabled": true,
+    "label": "관찰 기록",
+    "prompt": "한 일 (예: 시약 넣음)"
+  },
+  "analysis": [
+    "stats",
+    "fit"
+  ],
+  "steps": [
+    "식물을 CO2·빛 센서와 함께 투명 통에 넣습니다.",
+    "빨강·초록·파랑 LED를 바꿔 10분씩 측정합니다 (새 측정).",
+    "초록에서 느린 까닭을 엽록소 흡수와 연결합니다."
+  ],
+  "setup": {
+    "parts": [
+      "scd4x",
+      "ldr"
+    ],
+    "choose": false,
+    "materials": [
+      "CO2 센서",
+      "빛 센서",
+      "투명 통",
+      "식물",
+      "RGB LED"
+    ],
+    "attach": [],
+    "cautions": []
+  },
+  "textbooks": []
+}

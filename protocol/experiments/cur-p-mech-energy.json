@@ -1,0 +1,60 @@
+{
+  "id": "cur-p-mech-energy",
+  "order": 152,
+  "title": "튀는 공의 역학적 에너지",
+  "subject": "물리학",
+  "level": "고2·3 선택",
+  "course": "물리학",
+  "area": "힘과 에너지",
+  "summary": "튈 때마다 줄어드는 최고 높이로 에너지 전환과 손실을 봅니다.",
+  "standards": [
+    "12물리01-04"
+  ],
+  "standardTexts": [
+    "일과 운동 에너지의 관계를 이해하고, 위치 에너지와 역학적 에너지 보존 법칙을 설명할 수 있다."
+  ],
+  "sensors": [
+    "DIST"
+  ],
+  "mode": "time",
+  "intervalMs": 100,
+  "x": {
+    "label": "시간",
+    "unit": "s"
+  },
+  "y": [
+    {
+      "sensor": "DIST",
+      "label": "거리",
+      "unit": "cm"
+    }
+  ],
+  "markers": {
+    "enabled": true,
+    "label": "관찰 기록",
+    "prompt": "한 일 (예: 시약 넣음)"
+  },
+  "analysis": [
+    "stats",
+    "fit"
+  ],
+  "steps": [
+    "초음파 센서를 바닥을 향해 1.5 m 높이에 둡니다.",
+    "탁구공을 떨어뜨리며 측정합니다.",
+    "봉우리 높이의 비(다음/이전)가 일정한지 표에서 계산합니다."
+  ],
+  "setup": {
+    "parts": [
+      "hcsr04"
+    ],
+    "choose": false,
+    "materials": [
+      "초음파 센서",
+      "탁구공·고무공",
+      "스탠드"
+    ],
+    "attach": [],
+    "cautions": []
+  },
+  "textbooks": []
+}

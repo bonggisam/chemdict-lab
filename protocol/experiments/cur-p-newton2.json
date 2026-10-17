@@ -1,0 +1,61 @@
+{
+  "id": "cur-p-newton2",
+  "order": 151,
+  "title": "끄는 힘을 바꾸면 가속도는 (뉴턴 운동 법칙)",
+  "subject": "물리학",
+  "level": "고2·3 선택",
+  "course": "물리학",
+  "area": "힘과 에너지",
+  "summary": "추 질량을 바꾸며 수레의 가속도를 구해 F = ma를 확인합니다.",
+  "standards": [
+    "12물리01-02"
+  ],
+  "standardTexts": [
+    "뉴턴 운동 법칙으로 등가속도 운동을 설명하고, 교통안전 사고 예방에 적용할 수 있다."
+  ],
+  "sensors": [
+    "DIST"
+  ],
+  "mode": "time",
+  "intervalMs": 100,
+  "x": {
+    "label": "시간",
+    "unit": "s"
+  },
+  "y": [
+    {
+      "sensor": "DIST",
+      "label": "거리",
+      "unit": "cm"
+    }
+  ],
+  "markers": {
+    "enabled": true,
+    "label": "관찰 기록",
+    "prompt": "한 일 (예: 시약 넣음)"
+  },
+  "analysis": [
+    "stats",
+    "fit"
+  ],
+  "steps": [
+    "수레 뒤쪽에 초음파 센서를 두고 도르래로 추를 매답니다.",
+    "추를 놓으며 측정합니다.",
+    "‘변화율 그래프’ 직선의 기울기 = 가속도. 추 질량을 바꿔 반복합니다 (새 측정)."
+  ],
+  "setup": {
+    "parts": [
+      "hcsr04"
+    ],
+    "choose": false,
+    "materials": [
+      "초음파 센서",
+      "수레",
+      "도르래",
+      "추"
+    ],
+    "attach": [],
+    "cautions": []
+  },
+  "textbooks": []
+}

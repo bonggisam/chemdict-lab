@@ -27,5 +27,8 @@
     "stats",
     "fit",
     "plateau"
-  ]
+  ],
+  "level": "공통",
+  "course": "자유 측정",
+  "summary": "연결된 모든 센서를 바로 기록합니다."
 }

@@ -1,0 +1,71 @@
+{
+  "id": "cur-mat-catalyst",
+  "order": 187,
+  "title": "촉매와 온도에 따른 과산화수소 분해",
+  "subject": "물질과 에너지",
+  "level": "고2·3 선택",
+  "course": "물질과 에너지",
+  "area": "화학 반응 속도",
+  "summary": "촉매 종류와 온도를 바꿔 압력 증가 빠르기를 비교합니다.",
+  "standards": [
+    "12물에04-04"
+  ],
+  "standardTexts": [
+    "농도, 온도, 촉매에 따라 반응 속도가 달라짐을 이해하고, 일상생활에서 각각의 예를 찾아 화학의 유용성을 인식할 수 있다."
+  ],
+  "sensors": [
+    "BP",
+    "T"
+  ],
+  "mode": "time",
+  "intervalMs": 500,
+  "x": {
+    "label": "시간",
+    "unit": "s"
+  },
+  "y": [
+    {
+      "sensor": "BP",
+      "label": "기압",
+      "unit": "kPa"
+    },
+    {
+      "sensor": "T",
+      "label": "온도",
+      "unit": "°C"
+    }
+  ],
+  "markers": {
+    "enabled": true,
+    "label": "관찰 기록",
+    "prompt": "한 일 (예: 시약 넣음)"
+  },
+  "analysis": [
+    "stats",
+    "fit"
+  ],
+  "steps": [
+    "과산화수소수에 촉매(MnO2, 감자, 효모)를 넣고 바로 닫아 측정합니다.",
+    "온도를 바꿔 반복합니다 (새 측정).",
+    "처음 기울기를 비교합니다."
+  ],
+  "setup": {
+    "parts": [
+      "bmp280",
+      "ds18b20"
+    ],
+    "choose": false,
+    "materials": [
+      "기압 센서",
+      "온도 센서",
+      "밀폐 플라스크",
+      "3 % H2O2",
+      "MnO2·감자·효모"
+    ],
+    "attach": [],
+    "cautions": [
+      "압력이 너무 오르면 마개를 엽니다."
+    ]
+  },
+  "textbooks": []
+}

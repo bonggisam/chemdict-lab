@@ -1,0 +1,73 @@
+{
+  "id": "cur-b-ecosystem",
+  "order": 164,
+  "title": "물풀과 달팽이 병의 낮과 밤 (물질 순환)",
+  "subject": "생명과학",
+  "level": "고2·3 선택",
+  "course": "생명과학",
+  "area": "생태계와 상호 작용",
+  "summary": "명암 주기에 따른 물의 pH 변화로 생산자와 소비자의 물질 순환을 봅니다.",
+  "standards": [
+    "12생과01-06"
+  ],
+  "standardTexts": [
+    "생태계의 구조를 이해하고 물질의 순환과 에너지의 흐름을 추론하여 생태계 구성 요소들의 중요성을 설명할 수 있다."
+  ],
+  "sensors": [
+    "pH",
+    "L"
+  ],
+  "mode": "time",
+  "intervalMs": 300000,
+  "x": {
+    "label": "시간",
+    "unit": "s"
+  },
+  "y": [
+    {
+      "sensor": "pH",
+      "label": "pH",
+      "unit": "",
+      "min": 0,
+      "max": 14
+    },
+    {
+      "sensor": "L",
+      "label": "빛",
+      "unit": "%",
+      "min": 0,
+      "max": 100
+    }
+  ],
+  "markers": {
+    "enabled": true,
+    "label": "관찰 기록",
+    "prompt": "한 일 (예: 시약 넣음)"
+  },
+  "analysis": [
+    "stats",
+    "fit"
+  ],
+  "steps": [
+    "수초+달팽이 병에 pH 전극을 넣고 빛 센서를 곁에 둡니다.",
+    "간격 5분으로 2~3일 기록합니다.",
+    "낮에 pH가 오르고 밤에 내려가는지 봅니다. 달팽이만 넣은 병과 비교합니다."
+  ],
+  "setup": {
+    "parts": [
+      "ph",
+      "ldr"
+    ],
+    "choose": false,
+    "materials": [
+      "pH 센서",
+      "빛 센서",
+      "유리병",
+      "수초",
+      "달팽이"
+    ],
+    "attach": [],
+    "cautions": []
+  },
+  "textbooks": []
+}

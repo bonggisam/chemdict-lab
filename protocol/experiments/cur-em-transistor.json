@@ -1,0 +1,69 @@
+{
+  "id": "cur-em-transistor",
+  "order": 179,
+  "title": "다이오드와 트랜지스터 스위치",
+  "subject": "전자기와 양자",
+  "level": "고2·3 선택",
+  "course": "전자기와 양자",
+  "area": "전기와 자기",
+  "summary": "베이스 전압을 올릴 때 LED 전류가 켜지는 점을 찾습니다.",
+  "standards": [
+    "12전자01-07"
+  ],
+  "standardTexts": [
+    "다이오드, 트랜지스터 등 반도체 소자를 활용하는 전자회로를 분석하고, 현대 문명에서 반도체의 중요성을 인식할 수 있다."
+  ],
+  "sensors": [
+    "V"
+  ],
+  "mode": "event",
+  "intervalMs": 500,
+  "x": {
+    "label": "가변저항 단계",
+    "unit": "단계"
+  },
+  "y": [
+    {
+      "sensor": "V",
+      "label": "전압",
+      "unit": "V"
+    }
+  ],
+  "markers": {
+    "enabled": false,
+    "label": "관찰 기록",
+    "prompt": "한 일 (예: 시약 넣음)"
+  },
+  "analysis": [
+    "stats",
+    "fit"
+  ],
+  "steps": [
+    "A0은 베이스 전압, A1은 LED 직렬 100 Ω 양단에 연결합니다.",
+    "가변저항을 조금씩 돌리며 ‘값 기록’을 누릅니다.",
+    "베이스 약 0.7 V에서 전류가 켜지는지 봅니다."
+  ],
+  "setup": {
+    "parts": [
+      "voltage"
+    ],
+    "choose": false,
+    "materials": [
+      "NPN 트랜지스터",
+      "LED",
+      "저항",
+      "가변저항",
+      "전압 측정 선 2쌍"
+    ],
+    "attach": [],
+    "cautions": []
+  },
+  "textbooks": [],
+  "event": {
+    "label": "가변저항 단계",
+    "unit": "단계",
+    "start": 1,
+    "step": 1,
+    "scale": "linear"
+  }
+}

@@ -1,0 +1,66 @@
+{
+  "id": "cur-c-bond-ec",
+  "order": 158,
+  "title": "화학 결합의 전기적 성질",
+  "subject": "화학",
+  "level": "고2·3 선택",
+  "course": "화학",
+  "area": "물질의 구조와 성질",
+  "summary": "고체·수용액, 이온성·분자성 물질의 전기 전도도를 비교합니다.",
+  "standards": [
+    "12화학02-01"
+  ],
+  "standardTexts": [
+    "실험을 통해 화학 결합의 전기적 성질을 설명할 수 있다."
+  ],
+  "sensors": [
+    "EC"
+  ],
+  "mode": "event",
+  "intervalMs": 500,
+  "x": {
+    "label": "시료 번호",
+    "unit": "번"
+  },
+  "y": [
+    {
+      "sensor": "EC",
+      "label": "전도도",
+      "unit": "µS/cm"
+    }
+  ],
+  "markers": {
+    "enabled": false,
+    "label": "관찰 기록",
+    "prompt": "한 일 (예: 시약 넣음)"
+  },
+  "analysis": [
+    "stats"
+  ],
+  "steps": [
+    "NaCl(s), NaCl(aq), 설탕(aq), 에탄올(aq), KNO3(aq) 등에 번호를 붙입니다.",
+    "전극을 담그고 안정되면 ‘값 기록’을 누릅니다.",
+    "결합 종류와 전도성을 연결해 설명합니다."
+  ],
+  "setup": {
+    "parts": [
+      "ec"
+    ],
+    "choose": false,
+    "materials": [
+      "전도도 센서",
+      "시료",
+      "증류수"
+    ],
+    "attach": [],
+    "cautions": []
+  },
+  "textbooks": [],
+  "event": {
+    "label": "시료 번호",
+    "unit": "번",
+    "start": 1,
+    "step": 1,
+    "scale": "linear"
+  }
+}

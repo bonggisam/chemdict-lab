@@ -1,0 +1,94 @@
+{
+  "id": "cur-h-environment",
+  "order": 148,
+  "title": "학교 주변 물과 공기 조사",
+  "subject": "과학탐구실험2",
+  "level": "고1 공통",
+  "course": "과학탐구실험2",
+  "area": "생활 속의 과학 탐구",
+  "summary": "장소별 물의 pH·전도도와 공기의 CO2를 재어 지도로 나타냅니다.",
+  "standards": [
+    "10과탐2-01-02",
+    "10과탐2-01-03"
+  ],
+  "standardTexts": [
+    "(문장 요약) 사회적 이슈나 생활 속에서 탐구 문제를 찾아 탐구를 계획·수행한다.",
+    "(문장 요약) 과학 개념으로 실생활 문제의 해결안을 고안하고 도구를 설계·제작한다."
+  ],
+  "sensors": [
+    "pH",
+    "EC"
+  ],
+  "mode": "event",
+  "intervalMs": 1000,
+  "x": {
+    "label": "장소 번호",
+    "unit": "번"
+  },
+  "y": [
+    {
+      "sensor": "pH",
+      "label": "pH",
+      "unit": "",
+      "min": 0,
+      "max": 14
+    },
+    {
+      "sensor": "EC",
+      "label": "전도도",
+      "unit": "µS/cm"
+    }
+  ],
+  "markers": {
+    "enabled": false,
+    "label": "관찰 기록",
+    "prompt": "한 일 (예: 시약 넣음)"
+  },
+  "analysis": [
+    "stats"
+  ],
+  "steps": [
+    "조사할 장소에 번호를 붙입니다 (빗물, 연못, 수돗물 등).",
+    "장소마다 시료를 떠서 pH·전도도를 재고 ‘값 기록’을 누릅니다.",
+    "공기는 CO2 센서를 연결해 같은 방법으로 잽니다.",
+    "저장한 엑셀로 장소별 막대그래프를 만들어 기준값과 비교합니다."
+  ],
+  "setup": {
+    "parts": [
+      "ph",
+      "ec"
+    ],
+    "choose": false,
+    "materials": [
+      "pH 센서",
+      "전도도 센서",
+      "CO2 센서(선택)",
+      "시료 병"
+    ],
+    "attach": [],
+    "cautions": [
+      "물가에서는 둘이 함께 다닙니다."
+    ]
+  },
+  "textbooks": [
+    {
+      "publisher": "비상교육",
+      "course": "과학탐구실험2",
+      "note": "오염 물질 측정 장치를 활용한 학교 주변 환경 탐구하기 (비바샘 자료 제목)",
+      "sure": "mentioned"
+    },
+    {
+      "publisher": "미래엔",
+      "course": "과학탐구실험2",
+      "note": "32쪽 오염 물질 측정 공동 탐구",
+      "sure": "mentioned"
+    }
+  ],
+  "event": {
+    "label": "장소 번호",
+    "unit": "번",
+    "start": 1,
+    "step": 1,
+    "scale": "linear"
+  }
+}

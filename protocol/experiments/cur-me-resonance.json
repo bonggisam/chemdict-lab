@@ -1,0 +1,69 @@
+{
+  "id": "cur-me-resonance",
+  "order": 177,
+  "title": "공명관으로 음속 구하기 (정상파)",
+  "subject": "역학과 에너지",
+  "level": "고2·3 선택",
+  "course": "역학과 에너지",
+  "area": "진동과 파동",
+  "summary": "공기 기둥 길이에 따른 소리 크기 봉우리 간격으로 파장을 구합니다.",
+  "standards": [
+    "12역학03-05"
+  ],
+  "standardTexts": [
+    "현악기, 관악기 등에서 소리를 내는 원리를 정상파를 이용하여 설명할 수 있다."
+  ],
+  "sensors": [
+    "SND"
+  ],
+  "mode": "event",
+  "intervalMs": 200,
+  "x": {
+    "label": "공기 기둥 길이",
+    "unit": "cm"
+  },
+  "y": [
+    {
+      "sensor": "SND",
+      "label": "소리(상대값)",
+      "unit": "%",
+      "min": 0,
+      "max": 100
+    }
+  ],
+  "markers": {
+    "enabled": false,
+    "label": "관찰 기록",
+    "prompt": "한 일 (예: 시약 넣음)"
+  },
+  "analysis": [
+    "stats",
+    "fit"
+  ],
+  "steps": [
+    "물을 넣어 길이를 바꿀 수 있는 관 입구에 소리굽쇠(또는 스피커)와 소리 센서를 둡니다.",
+    "길이를 1 cm씩 바꾸며 ‘값 기록’을 누릅니다.",
+    "봉우리 간격 = λ/2로 음속 = f·λ를 계산합니다."
+  ],
+  "setup": {
+    "parts": [
+      "sound"
+    ],
+    "choose": false,
+    "materials": [
+      "사운드 센서",
+      "공명관(긴 관+물)",
+      "소리굽쇠 또는 스피커"
+    ],
+    "attach": [],
+    "cautions": []
+  },
+  "textbooks": [],
+  "event": {
+    "label": "공기 기둥 길이",
+    "unit": "cm",
+    "start": 5,
+    "step": 1,
+    "scale": "linear"
+  }
+}

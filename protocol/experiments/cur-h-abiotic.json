@@ -1,0 +1,72 @@
+{
+  "id": "cur-h-abiotic",
+  "order": 142,
+  "title": "빛의 세기와 광합성 (비생물 요인)",
+  "subject": "통합과학2",
+  "level": "고1 공통",
+  "course": "통합과학2",
+  "area": "환경과 에너지",
+  "summary": "빛 세기를 바꾸며 밀폐 통의 CO2 감소 빠르기로 광합성을 비교합니다.",
+  "standards": [
+    "10통과2-02-01"
+  ],
+  "standardTexts": [
+    "생태계 구성요소를 이해하고 생물과 환경 사이의 상호 관계를 설명할 수 있다."
+  ],
+  "sensors": [
+    "CO2",
+    "L"
+  ],
+  "mode": "time",
+  "intervalMs": 10000,
+  "x": {
+    "label": "시간",
+    "unit": "s"
+  },
+  "y": [
+    {
+      "sensor": "CO2",
+      "label": "이산화탄소",
+      "unit": "ppm"
+    },
+    {
+      "sensor": "L",
+      "label": "빛",
+      "unit": "%",
+      "min": 0,
+      "max": 100
+    }
+  ],
+  "markers": {
+    "enabled": true,
+    "label": "관찰 기록",
+    "prompt": "한 일 (예: 시약 넣음)"
+  },
+  "analysis": [
+    "stats",
+    "fit"
+  ],
+  "steps": [
+    "식물을 CO2·빛 센서와 함께 투명 통에 넣고 닫습니다.",
+    "LED 거리를 20, 40, 60 cm로 바꾸며 10분씩 측정합니다 (새 측정).",
+    "각 측정의 CO2 기울기를 구합니다.",
+    "빛이 셀수록 빨라지다가 일정해지는지 봅니다."
+  ],
+  "setup": {
+    "parts": [
+      "scd4x",
+      "ldr"
+    ],
+    "choose": false,
+    "materials": [
+      "CO2 센서",
+      "빛 센서",
+      "투명 밀폐 통",
+      "식물",
+      "LED 전등"
+    ],
+    "attach": [],
+    "cautions": []
+  },
+  "textbooks": []
+}

@@ -1,0 +1,79 @@
+{
+  "id": "cur-e-star-color",
+  "order": 171,
+  "title": "뜨거울수록 파랗다 (별의 색과 온도)",
+  "subject": "지구과학",
+  "level": "고2·3 선택",
+  "course": "지구과학",
+  "area": "우주",
+  "summary": "백열전구 전압을 올리며 빛의 R·B 비가 바뀌는 것을 봅니다.",
+  "standards": [
+    "12지구03-02"
+  ],
+  "standardTexts": [
+    "별의 분광형 결정 및 별의 분류 과정을 이해하고, 흑체복사 법칙을 이용하여 별의 물리량을 추론할 수 있다."
+  ],
+  "sensors": [
+    "COLR",
+    "COLB"
+  ],
+  "mode": "event",
+  "intervalMs": 500,
+  "x": {
+    "label": "전구 전압",
+    "unit": "V"
+  },
+  "y": [
+    {
+      "sensor": "COLR",
+      "label": "빨강",
+      "unit": "%",
+      "min": 0,
+      "max": 100
+    },
+    {
+      "sensor": "COLB",
+      "label": "파랑",
+      "unit": "%",
+      "min": 0,
+      "max": 100
+    }
+  ],
+  "markers": {
+    "enabled": false,
+    "label": "관찰 기록",
+    "prompt": "한 일 (예: 시약 넣음)"
+  },
+  "analysis": [
+    "stats",
+    "fit"
+  ],
+  "steps": [
+    "작은 백열전구(손전등 전구)를 가변 전원에 연결합니다.",
+    "전압을 1 V씩 올리며 색 센서로 ‘값 기록’을 누릅니다.",
+    "B/R 비가 커지는지(파래지는지) 표의 값으로 계산합니다."
+  ],
+  "setup": {
+    "parts": [
+      "tcs34725"
+    ],
+    "choose": false,
+    "materials": [
+      "색 센서",
+      "작은 백열전구",
+      "가변 전원(또는 전지 개수)"
+    ],
+    "attach": [],
+    "cautions": [
+      "LED는 흑체가 아니므로 백열전구를 씁니다."
+    ]
+  },
+  "textbooks": [],
+  "event": {
+    "label": "전구 전압",
+    "unit": "V",
+    "start": 2,
+    "step": 1,
+    "scale": "linear"
+  }
+}

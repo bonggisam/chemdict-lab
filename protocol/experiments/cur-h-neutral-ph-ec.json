@@ -1,0 +1,82 @@
+{
+  "id": "cur-h-neutral-ph-ec",
+  "order": 140,
+  "title": "중화 반응에서 pH와 전기 전도도",
+  "subject": "통합과학2",
+  "level": "고1 공통",
+  "course": "통합과학2",
+  "area": "변화와 다양성",
+  "summary": "NaOH를 넣을 때 pH는 급하게 오르고 전도도는 V자로 바뀌는 것을 봅니다.",
+  "standards": [
+    "10통과2-01-04"
+  ],
+  "standardTexts": [
+    "대표적인 산·염기 물질의 특징을 알고, 산과 염기를 혼합 할 때 나타나는 중화 반응을 생활 속에서 이용할 수 있다."
+  ],
+  "sensors": [
+    "pH",
+    "EC"
+  ],
+  "mode": "event",
+  "intervalMs": 1000,
+  "x": {
+    "label": "넣은 NaOH 부피",
+    "unit": "mL"
+  },
+  "y": [
+    {
+      "sensor": "pH",
+      "label": "pH",
+      "unit": "",
+      "min": 0,
+      "max": 14
+    },
+    {
+      "sensor": "EC",
+      "label": "전도도",
+      "unit": "µS/cm"
+    }
+  ],
+  "markers": {
+    "enabled": false,
+    "label": "관찰 기록",
+    "prompt": "한 일 (예: 시약 넣음)"
+  },
+  "analysis": [
+    "stats",
+    "fit",
+    "equivalence"
+  ],
+  "steps": [
+    "묽은 HCl 20 mL에 pH 전극과 전도도 전극을 함께 넣습니다.",
+    "NaOH를 1 mL씩 넣고 저은 뒤 ‘값 기록’을 누릅니다.",
+    "pH 그래프에서 ‘당량점 찾기’, 전도도 그래프에서 가장 낮은 점을 찾습니다.",
+    "두 방법의 중화점이 같은지 비교합니다."
+  ],
+  "setup": {
+    "parts": [
+      "ph",
+      "ec"
+    ],
+    "choose": false,
+    "materials": [
+      "pH 센서",
+      "전도도 센서",
+      "0.1 M HCl",
+      "0.1 M NaOH",
+      "뷰렛"
+    ],
+    "attach": [],
+    "cautions": [
+      "산·염기는 보안경과 장갑을 끼고 다루며, 피부에 묻으면 바로 물로 씻습니다."
+    ]
+  },
+  "textbooks": [],
+  "event": {
+    "label": "넣은 NaOH 부피",
+    "unit": "mL",
+    "start": 0,
+    "step": 1,
+    "scale": "linear"
+  }
+}

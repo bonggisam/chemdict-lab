@@ -1,0 +1,63 @@
+{
+  "id": "cur-ps-transit",
+  "order": 205,
+  "title": "행성이 별 앞을 지날 때 (트랜짓)",
+  "subject": "행성우주과학",
+  "level": "고2·3 선택",
+  "course": "행성우주과학",
+  "area": "외계 행성",
+  "summary": "전구 앞을 지나는 공 때문에 밝기가 잠깐 줄어드는 곡선을 봅니다.",
+  "standards": [
+    "12행우01-05"
+  ],
+  "standardTexts": [
+    "외계 행성 탐사의 원리를 이해하고, 외계 행성에 생명체가 존재할 수 있는 조건과 외계 생명체의 존재 가능성에 대해 논증할 수 있다."
+  ],
+  "sensors": [
+    "L"
+  ],
+  "mode": "time",
+  "intervalMs": 100,
+  "x": {
+    "label": "시간",
+    "unit": "s"
+  },
+  "y": [
+    {
+      "sensor": "L",
+      "label": "빛",
+      "unit": "%",
+      "min": 0,
+      "max": 100
+    }
+  ],
+  "markers": {
+    "enabled": true,
+    "label": "관찰 기록",
+    "prompt": "한 일 (예: 시약 넣음)"
+  },
+  "analysis": [
+    "stats",
+    "fit"
+  ],
+  "steps": [
+    "전구 앞에 빛 센서를 두고, 실에 매단 공(행성)을 전구 앞으로 지나가게 합니다.",
+    "공 크기를 바꿔 반복합니다 (새 측정).",
+    "밝기 감소율이 (행성/별 반지름)²에 비례하는지 봅니다."
+  ],
+  "setup": {
+    "parts": [
+      "ldr"
+    ],
+    "choose": false,
+    "materials": [
+      "빛 센서",
+      "전구",
+      "크기가 다른 공",
+      "실"
+    ],
+    "attach": [],
+    "cautions": []
+  },
+  "textbooks": []
+}

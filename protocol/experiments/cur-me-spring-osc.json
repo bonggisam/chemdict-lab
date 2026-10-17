@@ -1,0 +1,61 @@
+{
+  "id": "cur-me-spring-osc",
+  "order": 176,
+  "title": "용수철 진자의 단진동",
+  "subject": "역학과 에너지",
+  "level": "고2·3 선택",
+  "course": "역학과 에너지",
+  "area": "진동과 파동",
+  "summary": "변위–시간 곡선과 변화율 그래프로 단진동을 분석합니다.",
+  "standards": [
+    "12역학03-01"
+  ],
+  "standardTexts": [
+    "용수철 진자를 통해 단진동을 이해하고, 가속도와 변위 사이의 관계를 설명할 수 있다."
+  ],
+  "sensors": [
+    "DIST"
+  ],
+  "mode": "time",
+  "intervalMs": 100,
+  "x": {
+    "label": "시간",
+    "unit": "s"
+  },
+  "y": [
+    {
+      "sensor": "DIST",
+      "label": "거리",
+      "unit": "cm"
+    }
+  ],
+  "markers": {
+    "enabled": true,
+    "label": "관찰 기록",
+    "prompt": "한 일 (예: 시약 넣음)"
+  },
+  "analysis": [
+    "stats",
+    "fit"
+  ],
+  "steps": [
+    "용수철에 추를 매달고 아래에 초음파 센서를 위로 향하게 둡니다.",
+    "추를 당겼다 놓으며 20초 측정합니다.",
+    "주기를 재고 추 질량을 바꿔 m–T² 직선으로 k를 구합니다."
+  ],
+  "setup": {
+    "parts": [
+      "hcsr04"
+    ],
+    "choose": false,
+    "materials": [
+      "초음파 센서",
+      "용수철",
+      "추",
+      "스탠드"
+    ],
+    "attach": [],
+    "cautions": []
+  },
+  "textbooks": []
+}

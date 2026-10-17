@@ -1,0 +1,67 @@
+{
+  "id": "cur-mat-hess",
+  "order": 184,
+  "title": "커피컵 열량계로 헤스 법칙 확인하기",
+  "subject": "물질과 에너지",
+  "level": "고2·3 선택",
+  "course": "물질과 에너지",
+  "area": "화학 반응과 열의 출입",
+  "summary": "세 반응의 온도 변화로 반응 엔탈피를 구해 더해 봅니다.",
+  "standards": [
+    "12물에03-01",
+    "12물에03-02"
+  ],
+  "standardTexts": [
+    "엔탈피의 의미를 알고, 엔탈피를 이용하여 열화학 반응식을 표현할 수 있다.",
+    "측정하기 어려운 화학 반응의 엔탈피를 헤스 법칙으로 구하여 화학 법칙의 유용성을 인식할 수 있다."
+  ],
+  "sensors": [
+    "T"
+  ],
+  "mode": "time",
+  "intervalMs": 1000,
+  "x": {
+    "label": "시간",
+    "unit": "s"
+  },
+  "y": [
+    {
+      "sensor": "T",
+      "label": "온도",
+      "unit": "°C"
+    }
+  ],
+  "markers": {
+    "enabled": true,
+    "label": "관찰 기록",
+    "prompt": "한 일 (예: 시약 넣음)"
+  },
+  "analysis": [
+    "stats",
+    "fit"
+  ],
+  "steps": [
+    "① NaOH(s)를 물에, ② NaOH(aq)+HCl(aq), ③ NaOH(s)를 HCl(aq)에 넣으며 각각 측정합니다 (새 측정).",
+    "각 측정의 ΔT로 q = mcΔT를 구합니다.",
+    "ΔH₁ + ΔH₂ ≈ ΔH₃인지 확인합니다."
+  ],
+  "setup": {
+    "parts": [
+      "ds18b20"
+    ],
+    "choose": false,
+    "materials": [
+      "온도 센서",
+      "스티로폼 컵 2겹",
+      "NaOH(s)",
+      "1 M HCl",
+      "1 M NaOH"
+    ],
+    "attach": [],
+    "cautions": [
+      "산·염기는 보안경과 장갑을 끼고 다루며, 피부에 묻으면 바로 물로 씻습니다.",
+      "NaOH 고체는 피부에 닿으면 위험합니다."
+    ]
+  },
+  "textbooks": []
+}

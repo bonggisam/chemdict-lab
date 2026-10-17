@@ -1,0 +1,60 @@
+{
+  "id": "cur-em-rc-energy",
+  "order": 178,
+  "title": "축전기에 저장된 에너지 (RC 방전)",
+  "subject": "전자기와 양자",
+  "level": "고2·3 선택",
+  "course": "전자기와 양자",
+  "area": "전기와 자기",
+  "summary": "방전 곡선으로 시간 상수를 구하고 저장 에너지를 계산합니다.",
+  "standards": [
+    "12전자01-06"
+  ],
+  "standardTexts": [
+    "저항, 축전기, 인덕터를 활용하는 장치를 찾아 에너지 관점에서 정성적으로 설명할 수 있다."
+  ],
+  "sensors": [
+    "V"
+  ],
+  "mode": "time",
+  "intervalMs": 100,
+  "x": {
+    "label": "시간",
+    "unit": "s"
+  },
+  "y": [
+    {
+      "sensor": "V",
+      "label": "전압",
+      "unit": "V"
+    }
+  ],
+  "markers": {
+    "enabled": true,
+    "label": "관찰 기록",
+    "prompt": "한 일 (예: 시약 넣음)"
+  },
+  "analysis": [
+    "stats",
+    "fit"
+  ],
+  "steps": [
+    "1000 µF 축전기를 5 V로 충전한 뒤 10 kΩ으로 방전하며 측정합니다.",
+    "‘함수 찾기 → 지수’로 τ를 구합니다.",
+    "½CV²와 LED를 켤 수 있는 시간을 비교합니다."
+  ],
+  "setup": {
+    "parts": [
+      "voltage"
+    ],
+    "choose": false,
+    "materials": [
+      "축전기 1000 µF",
+      "저항 10 kΩ",
+      "LED"
+    ],
+    "attach": [],
+    "cautions": []
+  },
+  "textbooks": []
+}

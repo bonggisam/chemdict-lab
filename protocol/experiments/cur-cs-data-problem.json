@@ -1,0 +1,72 @@
+{
+  "id": "cur-cs-data-problem",
+  "order": 214,
+  "title": "교실 공기와 졸음 (데이터로 문제 찾기)",
+  "subject": "융합과학 탐구",
+  "level": "고2·3 선택",
+  "course": "융합과학 탐구",
+  "area": "융합과학 탐구의 과정",
+  "summary": "교실 CO2 기록과 설문을 겹쳐 탐구 문제를 찾습니다.",
+  "standards": [
+    "12융탐02-01"
+  ],
+  "standardTexts": [
+    "실생활에서 관찰이나 경험을 통해 직접 얻은 데이터나 공개된 데이터를 가공하여 융합적 탐구 문제를 스스로 발견할 수 있다."
+  ],
+  "sensors": [
+    "CO2",
+    "TA",
+    "RH"
+  ],
+  "mode": "time",
+  "intervalMs": 60000,
+  "x": {
+    "label": "시간",
+    "unit": "s"
+  },
+  "y": [
+    {
+      "sensor": "CO2",
+      "label": "이산화탄소",
+      "unit": "ppm"
+    },
+    {
+      "sensor": "TA",
+      "label": "기온",
+      "unit": "°C"
+    },
+    {
+      "sensor": "RH",
+      "label": "습도",
+      "unit": "%",
+      "min": 0,
+      "max": 100
+    }
+  ],
+  "markers": {
+    "enabled": true,
+    "label": "한 일",
+    "prompt": "예: 졸음 설문"
+  },
+  "analysis": [
+    "stats",
+    "fit"
+  ],
+  "steps": [
+    "하루 동안 교실 CO2·온습도를 기록합니다.",
+    "교시마다 졸음 설문을 하고 ‘한 일’로 표시합니다.",
+    "상관과 인과를 구분해 탐구 문제를 세웁니다."
+  ],
+  "setup": {
+    "parts": [
+      "scd4x"
+    ],
+    "choose": false,
+    "materials": [
+      "CO2 센서(SCD40)"
+    ],
+    "attach": [],
+    "cautions": []
+  },
+  "textbooks": []
+}

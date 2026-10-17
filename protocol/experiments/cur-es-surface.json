@@ -1,0 +1,71 @@
+{
+  "id": "cur-es-surface",
+  "order": 202,
+  "title": "지표 종류별 하루 온도 (열수지)",
+  "subject": "지구시스템과학",
+  "level": "고2·3 선택",
+  "course": "지구시스템과학",
+  "area": "대기의 열 출입",
+  "summary": "모래·흙·잔디·물의 하루 온도와 햇빛을 함께 기록합니다.",
+  "standards": [
+    "12지시03-02"
+  ],
+  "standardTexts": [
+    "지표와 대기의 열 출입과 관련된 물리 과정 및 전 지구 평균 열수지를 해석할 수 있다."
+  ],
+  "sensors": [
+    "T",
+    "L"
+  ],
+  "mode": "time",
+  "intervalMs": 600000,
+  "x": {
+    "label": "시간",
+    "unit": "s"
+  },
+  "y": [
+    {
+      "sensor": "T",
+      "label": "온도",
+      "unit": "°C"
+    },
+    {
+      "sensor": "L",
+      "label": "빛",
+      "unit": "%",
+      "min": 0,
+      "max": 100
+    }
+  ],
+  "markers": {
+    "enabled": true,
+    "label": "관찰 기록",
+    "prompt": "한 일 (예: 시약 넣음)"
+  },
+  "analysis": [
+    "stats",
+    "fit"
+  ],
+  "steps": [
+    "지표 종류마다 온도 센서를 표면 아래 1 cm에 묻고 빛 센서를 곁에 둡니다.",
+    "간격 10분으로 24시간 기록합니다.",
+    "햇빛 봉우리와 온도 봉우리의 시간 차를 비교합니다."
+  ],
+  "setup": {
+    "parts": [
+      "ds18b20",
+      "ldr"
+    ],
+    "choose": false,
+    "materials": [
+      "온도 센서 여러 개",
+      "빛 센서",
+      "USB 전원"
+    ],
+    "attach": [
+      "온도 센서 2개를 같은 D2 선에 나란히 꽂으면 '온도 1', '온도 2' 그래프가 따로 나옵니다."
+    ],
+    "cautions": []
+  },
+  "textbooks": []
+}

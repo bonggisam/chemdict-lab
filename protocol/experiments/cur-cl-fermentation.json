@@ -1,0 +1,61 @@
+{
+  "id": "cur-cl-fermentation",
+  "order": 197,
+  "title": "당의 종류와 효모 발효",
+  "subject": "세포와 물질대사",
+  "level": "고2·3 선택",
+  "course": "세포와 물질대사",
+  "area": "세포 호흡과 광합성",
+  "summary": "포도당·설탕·젖당에서 효모가 만드는 CO2를 비교합니다.",
+  "standards": [
+    "12세포03-04"
+  ],
+  "standardTexts": [
+    "산소호흡과 발효의 공통점과 차이점을 이해하고, 실생활에서 발효를 이용한 사례 조사 계획을 세워 조사할 수 있다."
+  ],
+  "sensors": [
+    "CO2"
+  ],
+  "mode": "time",
+  "intervalMs": 10000,
+  "x": {
+    "label": "시간",
+    "unit": "s"
+  },
+  "y": [
+    {
+      "sensor": "CO2",
+      "label": "이산화탄소",
+      "unit": "ppm"
+    }
+  ],
+  "markers": {
+    "enabled": true,
+    "label": "관찰 기록",
+    "prompt": "한 일 (예: 시약 넣음)"
+  },
+  "analysis": [
+    "stats",
+    "fit"
+  ],
+  "steps": [
+    "같은 농도의 포도당·설탕·젖당 효모액을 만듭니다.",
+    "하나씩 밀폐 통에 넣고 20분 측정합니다 (새 측정).",
+    "젖당에서 CO2가 거의 늘지 않는 까닭을 효소로 설명합니다."
+  ],
+  "setup": {
+    "parts": [
+      "scd4x"
+    ],
+    "choose": false,
+    "materials": [
+      "CO2 센서",
+      "밀폐 통",
+      "효모",
+      "포도당·설탕·젖당"
+    ],
+    "attach": [],
+    "cautions": []
+  },
+  "textbooks": []
+}

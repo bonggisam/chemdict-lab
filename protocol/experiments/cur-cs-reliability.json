@@ -1,0 +1,66 @@
+{
+  "id": "cur-cs-reliability",
+  "order": 215,
+  "title": "두 센서는 믿을 만할까 (타당성·신뢰성)",
+  "subject": "융합과학 탐구",
+  "level": "고2·3 선택",
+  "course": "융합과학 탐구",
+  "area": "융합과학 탐구의 과정",
+  "summary": "같은 대상을 다른 센서 두 개로 재어 차이와 흩어짐을 평가합니다.",
+  "standards": [
+    "12융탐02-03"
+  ],
+  "standardTexts": [
+    "디지털 탐구 도구를 포함한 다양한 도구를 활용하여 데이터를 수집하고, 수집한 데이터의 타당성과 신뢰성을 평가할 수 있다."
+  ],
+  "sensors": [
+    "T",
+    "TA"
+  ],
+  "mode": "time",
+  "intervalMs": 2000,
+  "x": {
+    "label": "시간",
+    "unit": "s"
+  },
+  "y": [
+    {
+      "sensor": "T",
+      "label": "온도",
+      "unit": "°C"
+    },
+    {
+      "sensor": "TA",
+      "label": "기온",
+      "unit": "°C"
+    }
+  ],
+  "markers": {
+    "enabled": true,
+    "label": "관찰 기록",
+    "prompt": "한 일 (예: 시약 넣음)"
+  },
+  "analysis": [
+    "stats",
+    "fit"
+  ],
+  "steps": [
+    "방수 온도 센서와 온습도 센서를 나란히 둡니다.",
+    "10분 측정한 뒤 손으로 데웠다 놓아 반응 속도도 봅니다.",
+    "평균 차이(편향)와 표준편차(정밀도)를 비교하고 ‘보정’ 뒤 다시 잽니다."
+  ],
+  "setup": {
+    "parts": [
+      "ds18b20",
+      "dht"
+    ],
+    "choose": false,
+    "materials": [
+      "DS18B20",
+      "DHT22(또는 다른 온도 센서)"
+    ],
+    "attach": [],
+    "cautions": []
+  },
+  "textbooks": []
+}
