@@ -382,3 +382,7 @@ details.bb-note summary { cursor: pointer; min-height: 32px; }
 .level-seg button { flex: 1 1 auto; }
 .stepper button { min-width: 0; }
 .stepper .t { white-space: normal; line-height: 1.2; text-align: left; overflow-wrap: anywhere; }
+
+/* ---- 오프라인 모드 알림 */
+.pwa-bar { display: flex; flex-wrap: wrap; gap: 6px 16px; align-items: center; max-width: 1100px; margin: 8px auto 0; padding: 8px 14px; border-radius: var(--radius); background: var(--tint); font-size: 14px; }
+.pwa-bar .link { min-height: 32px; font-weight: 600; }

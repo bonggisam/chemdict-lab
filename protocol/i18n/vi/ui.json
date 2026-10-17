@@ -421,5 +421,12 @@
  "해석": "Phân tích",
  "그래프": "Đồ thị",
  "측정 {n}": "Lần đo {n}",
- "시뮬레이터": "Mô phỏng"
+ "시뮬레이터": "Mô phỏng",
+ "오프라인입니다. 측정과 저장은 그대로 됩니다.": "Đang ngoại tuyến. Vẫn đo và lưu bình thường.",
+ "오프라인 모드 준비 완료: 이제 인터넷 없이도 열립니다.": "Chế độ ngoại tuyến đã sẵn sàng: ứng dụng mở được khi không có internet.",
+ "새 버전이 있습니다.": "Có phiên bản mới.",
+ "측정을 마친 뒤 업데이트하세요.": "Hãy cập nhật sau khi đo xong.",
+ "지금 업데이트": "Cập nhật ngay",
+ "앱으로 설치": "Cài đặt ứng dụng",
+ "바탕화면·홈 화면에 아이콘이 생깁니다.": "Thêm biểu tượng vào màn hình nền hoặc màn hình chính."
 }

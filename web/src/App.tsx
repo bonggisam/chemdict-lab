@@ -11,6 +11,7 @@ import { BoardStep, type FwState } from './components/BoardStep';
 import { loadInfo, saveInfo, type ExpInfo } from './lib/info';
 import { LANGS, initialLang, loadLang, t, tk, type Lang } from './lib/i18n';
 import { relocalize } from './lib/l10n';
+import { PwaBar } from './components/PwaBar';
 import { BUNDLED_FW, FlashError, TARGETS, boardFromUsb, flashBoard, older } from './lib/flash';
 import { experiments } from './lib/experiments';
 import { parseLine, type BoardMsg, type Experiment, type HelloMsg } from './lib/protocol';
@@ -399,6 +400,7 @@ export default function App() {
         </label>
       </header>
       <Fragment key={lang}>
+      <PwaBar running={running} />
 
       {screen === 'connect' && (
         <BoardStep

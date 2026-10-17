@@ -421,5 +421,12 @@
  "해석": "Analysis",
  "그래프": "Graph",
  "측정 {n}": "Run {n}",
- "시뮬레이터": "Simulator"
+ "시뮬레이터": "Simulator",
+ "오프라인입니다. 측정과 저장은 그대로 됩니다.": "You are offline. Measuring and saving still work.",
+ "오프라인 모드 준비 완료: 이제 인터넷 없이도 열립니다.": "Offline mode ready: the app now opens without internet.",
+ "새 버전이 있습니다.": "A new version is available.",
+ "측정을 마친 뒤 업데이트하세요.": "Update after you finish measuring.",
+ "지금 업데이트": "Update now",
+ "앱으로 설치": "Install app",
+ "바탕화면·홈 화면에 아이콘이 생깁니다.": "Adds an icon to your desktop or home screen."
 }
