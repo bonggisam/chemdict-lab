@@ -320,7 +320,7 @@
  "평탄 구간 찾기": "Find plateau",
  "R² = {r2} · 오차(RMSE) {rmse} · 점 {n}개": "R² = {r2} · error (RMSE) {rmse} · {n} points",
  "다른 후보:": "Other candidates:",
- "이 데이터에는 이 함수를 맞출 수 없습니다 (점이 너무 적거나 0·음수 값).": "This function cannot be fitted to this data (too few points, or zero/negative values).",
+ "이 데이터에는 이 함수를 맞출 수 없습니다 (점이 너무 적거나 0·음수 값).": "This function cannot be fitted to this data (too few points, or 0 or negative values).",
  "{name} 표": "{name} table",
  "계산 열": "Calculated column",
  "기준: {name}": "Based on: {name}",
