@@ -100,6 +100,36 @@ export function CalibrationSheet({ sensors, initialId, live, stable, running, la
           </ol>
         )}
 
+        {kind === 'scale' && (
+          <ol className="cal-steps">
+            <li className="on">
+              <p>센서를 {s?.spec?.cal.hint ?? '기준 상태'}에 두고 값이 '안정'이 되면, 그때의 실제 값을 입력해 맞춥니다.</p>
+              <div className="row">
+                <input id="cal-scale" inputMode="decimal" value={ref1} onChange={(e) => setRef1(e.target.value)} aria-label="기준값" />
+                <button className="primary" disabled={!running || ref1 === ''} onClick={() => send(`CAL ${id} SCL ${ref1}`)}>이 값으로 맞추기</button>
+              </div>
+            </li>
+          </ol>
+        )}
+
+        {kind === 'tare-scale' && (
+          <ol className="cal-steps">
+            <li className={step === 1 ? 'on' : 'done'}>
+              <p>접시를 비우고 값이 '안정'이 되면 영점을 맞춥니다.</p>
+              <div className="row">
+                <button className="primary" disabled={step !== 1 || !running} onClick={() => { send(`CAL ${id} OFS 0`); setStep(2); }}>영점 맞추기 (0 g)</button>
+              </div>
+            </li>
+            <li className={step === 2 ? 'on' : step > 2 || done ? 'done' : ''}>
+              <p>무게를 아는 추를 올리고 값이 '안정'이 되면, 추의 질량을 입력합니다.</p>
+              <div className="row">
+                <input id="cal-mass" inputMode="decimal" value={ref2} onChange={(e) => setRef2(e.target.value)} aria-label="추의 질량 (g)" />
+                <button className="primary" disabled={step !== 2 || !running || ref2 === ''} onClick={() => { send(`CAL ${id} SCL ${ref2}`); setStep(3); }}>이 질량으로 맞추기</button>
+              </div>
+            </li>
+          </ol>
+        )}
+
         {done && lastCal && <p className="ok-text">보정 완료 · 보드에 저장했습니다 (기울기 {lastCal.slope}, 절편 {lastCal.offset}).</p>}
 
         <div className="sheet-actions">

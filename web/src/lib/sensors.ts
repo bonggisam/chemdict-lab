@@ -1,7 +1,7 @@
 import catalog from '../../../protocol/sensors.json';
 import type { SensorInfo } from './protocol';
 
-export interface CalSpec { kind: 'none' | 'one-point' | 'two-point'; refs?: number[]; hint?: string }
+export interface CalSpec { kind: 'none' | 'one-point' | 'two-point' | 'scale' | 'tare-scale'; refs?: number[]; hint?: string }
 export interface SensorType {
   type: string;
   name: string;

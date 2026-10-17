@@ -3,6 +3,9 @@ import { Measure } from './components/Measure';
 import { SensorSetup } from './components/SensorSetup';
 import { CalibrationSheet } from './components/CalibrationSheet';
 import { Guide } from './components/Guide';
+import { SensorPicker } from './components/SensorPicker';
+import { QuickSheet, type QuickStatus } from './components/QuickSheet';
+import { boardByName, boards, loadBoardId, quickExperiment, type Part } from './lib/guide';
 import { experiments } from './lib/experiments';
 import { parseLine, type BoardMsg, type Experiment, type HelloMsg } from './lib/protocol';
 import { BleTransport, SerialTransport, SimTransport, hasBluetooth, hasSerial, type Transport } from './lib/transports';
@@ -29,6 +32,9 @@ export default function App() {
   const [cal, setCal] = useState<{ id?: string } | null>(null);
   const [lastCal, setLastCal] = useState<CalMsg | null>(null);
   const [calRows, setCalRows] = useState<Row[]>([]);
+  const [quick, setQuick] = useState<{ part: Part; status: QuickStatus } | null>(null);
+  const quickTimer = useRef<number | null>(null);
+  const autoStartRef = useRef(false);
   const [guideFrom, setGuideFrom] = useState<{ screen: Screen; expId?: string }>({ screen: 'connect' });
   const openGuide = (expId?: string) => { setGuideFrom({ screen: screen === 'guide' ? 'connect' : screen, expId }); setScreen('guide'); };
   const rescan = () => { transportRef.current?.send('HELLO'); say('ok', '센서를 다시 찾았습니다.'); };
@@ -122,7 +128,7 @@ export default function App() {
 
   // Esc로 열린 창 닫기
   const escRef = useRef<() => void>(() => {});
-  escRef.current = () => { if (cal) closeCal(); else if (setupOpen) setSetupOpen(false); };
+  escRef.current = () => { if (quick) setQuick(null); else if (cal) closeCal(); else if (setupOpen) setSetupOpen(false); };
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') escRef.current(); };
     window.addEventListener('keydown', onKey);
@@ -132,6 +138,8 @@ export default function App() {
   const send = useCallback((cmd: string) => { transportRef.current?.send(cmd); }, []);
 
   const sensors = useMemo(() => (hello?.sensors ?? []).map(resolveSensor), [hello]);
+  const detectedBoard = boardByName(hello?.board);
+  const board = detectedBoard ?? boards.find((b) => b.id === loadBoardId()) ?? boards[0];
   const available = (e: Experiment) => e.sensors.includes('*') || e.sensors.every((t) => sensors.some((s) => s.type === t || s.id === t));
 
   // ---- 센서 설정
@@ -156,6 +164,35 @@ export default function App() {
     setActiveId(r.id);
     setScreen('measure');
   };
+
+  // ---- 바로 측정: 센서 카드 → 연결 → [측정 시작] 한 번
+  const quickFound = (p: Part) => {
+    if (p.analogType) return sensors.some((s) => s.type === p.analogType);
+    const sim = transportRef.current?.kind === 'sim';
+    return p.provides.every((t) => sensors.some((s) => s.type === t && (sim || s.src !== 'demo')));
+  };
+  const quickStart = (port?: string) => {
+    if (!quick) return;
+    const p = quick.part;
+    setQuick({ part: p, status: 'finding' });
+    if (p.analogType && port) setPort(port, p.analogType); // 보드가 설정 후 센서 목록(hello)을 다시 보냄
+    else send('HELLO');                                      // 보드가 센서를 다시 찾음
+    if (quickTimer.current) clearTimeout(quickTimer.current);
+    quickTimer.current = window.setTimeout(() => setQuick((q) => (q && q.status === 'finding' ? { ...q, status: 'notfound' } : q)), 8000);
+  };
+  useEffect(() => {
+    if (!quick || quick.status !== 'finding' || !quickFound(quick.part)) return;
+    if (quickTimer.current) clearTimeout(quickTimer.current);
+    const e = quickExperiment(quick.part);
+    setQuick(null);
+    autoStartRef.current = true;
+    pickExperiment(e);
+    const spec = quick.part.analogType ? analogTypes.find((t) => t.type === quick.part.analogType) : undefined;
+    if (spec?.requiresCal) say('ok', '측정을 시작합니다. 정확한 값은 [보정] 후에 나옵니다.');
+  }, [hello]); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    if (autoStartRef.current && exp && screen === 'measure') { autoStartRef.current = false; start(); }
+  }, [exp, screen]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const start = () => {
     if (!exp) return;
@@ -218,7 +255,7 @@ export default function App() {
         </div>
         <nav className="top-nav">
           <button className={screen !== 'guide' ? 'on' : ''} aria-current={screen !== 'guide' ? 'page' : undefined} onClick={() => screen === 'guide' && setScreen(guideFrom.screen)}>실험</button>
-          <button className={screen === 'guide' ? 'on' : ''} aria-current={screen === 'guide' ? 'page' : undefined} onClick={() => screen !== 'guide' && openGuide(exp?.id)}>연결 안내</button>
+          <button className={screen === 'guide' ? 'on' : ''} aria-current={screen === 'guide' ? 'page' : undefined} onClick={() => screen !== 'guide' && openGuide(screen === 'measure' ? exp?.id : undefined)}>연결 안내</button>
         </nav>
         {connLabel && (
           <div className="conn">
@@ -259,7 +296,7 @@ export default function App() {
       {screen === 'pick' && (
         <main className="wide">
           <div className="row-head">
-            <h1>실험 고르기</h1>
+            <h1>무엇을 잴까요?</h1>
             {hello && hello.fw !== 'sim' && (
               <label className="switch">
                 <input type="checkbox" checked={hello.demo} onChange={(e) => send(`DEMO ${e.target.checked ? 'ON' : 'OFF'}`)} />
@@ -267,11 +304,17 @@ export default function App() {
               </label>
             )}
           </div>
+          <p className="lede">센서를 누르면 연결 그림이 나옵니다. 그대로 꽂고 <b>측정 시작</b>을 누르면 바로 기록됩니다.</p>
+          <p className="note board-line">
+            보드: <b>{board.name}</b>{detectedBoard ? ' (자동 인식)' : ''}
+            {sensors.filter((s) => !/^A\d$/.test(s.src) && s.src !== 'demo').length > 0 &&
+              <> · 인식된 센서: {sensors.filter((s) => !/^A\d$/.test(s.src) && s.src !== 'demo').map((s) => s.displayName).join(', ')}</>}
+          </p>
 
-          {hello ? <SensorSetup sensors={sensors} disabled={false} onSetPort={setPort} onRescan={rescan} /> : <p className="note">센서 정보를 불러오는 중…</p>}
+          <SensorPicker board={board} connectedTypes={sensors.filter((s) => s.src !== 'demo').map((s) => s.type)} onPick={(p) => setQuick({ part: p, status: 'idle' })} />
 
           <div className="row-head sub">
-            <h2>실험</h2>
+            <h2>수업 실험</h2>
             <button className="ghost" disabled={!sensors.some((s) => s.spec && s.spec.cal.kind !== 'none')} onClick={() => openCal()}>센서 보정</button>
           </div>
           <div className="cards">
@@ -284,13 +327,33 @@ export default function App() {
                   {e.standards.length > 0 && <span className="codes">{e.standards.map((s) => `[${s}]`).join(' ')}</span>}
                   <span className="need">
                     {e.sensors.includes('*') ? '모든 센서' : e.sensors.map((t) => analogTypes.find((a) => a.type === t)?.name ?? sensors.find((s) => s.type === t)?.displayName ?? t).join(' · ')}
-                    {!ok && ' — 위에서 센서를 연결하세요'}
+                    {!ok && ' — 위에서 센서를 먼저 연결하세요'}
                   </span>
                 </button>
               );
             })}
           </div>
+
+          {hello && (
+            <details className="advanced">
+              <summary>포트 직접 설정 (고급)</summary>
+              <SensorSetup sensors={sensors} disabled={false} onSetPort={setPort} onRescan={rescan} />
+            </details>
+          )}
         </main>
+      )}
+
+      {quick && (
+        <QuickSheet
+          board={board}
+          boardDetected={!!detectedBoard}
+          part={quick.part}
+          sensors={sensors}
+          connected={!!hello}
+          status={quick.status}
+          onStart={quickStart}
+          onClose={() => { if (quickTimer.current) clearTimeout(quickTimer.current); setQuick(null); }}
+        />
       )}
 
       {screen === 'measure' && exp && (
@@ -319,7 +382,8 @@ export default function App() {
       {screen === 'guide' && (
         <Guide
           experiments={experiments}
-          initialExpId={guideFrom.expId}
+          initialExpId={guideFrom.expId?.startsWith('quick-') ? undefined : guideFrom.expId}
+          initialPartId={guideFrom.expId?.startsWith('quick-') ? guideFrom.expId.slice(6) : undefined}
           boardName={hello?.board}
           sensors={sensors}
           connected={!!hello}

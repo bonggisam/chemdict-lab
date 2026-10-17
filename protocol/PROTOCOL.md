@@ -1,4 +1,4 @@
-# ChemDict Lab 통신 규칙 v1.2
+# ChemDict Lab 통신 규칙 v1.3
 
 보드(UNO R4 WiFi)와 앱(웹앱, 애플 앱)이 주고받는 약속입니다. USB 시리얼과 블루투스(BLE) 모두 **같은 내용**을 씁니다.
 
@@ -28,7 +28,7 @@ BLE는 한 번에 보낼 수 있는 길이가 짧습니다. 보드는 한 줄을
 ### hello — 연결 직후, 그리고 `HELLO` 명령을 받았을 때
 
 ```json
-{"type":"hello","fw":"0.2.2","board":"UNO R4 WiFi","station":3,"demo":false,
+{"type":"hello","fw":"0.3.0","board":"UNO R4 WiFi","station":3,"demo":false,
  "sensors":[
   {"id":"pH","type":"pH","name":"pH","unit":"","src":"A0","cal":true},
   {"id":"L","type":"L","name":"L","unit":"","src":"A1","cal":false},
@@ -39,7 +39,7 @@ BLE는 한 번에 보낼 수 있는 길이가 짧습니다. 보드는 한 줄을
 
 - `sensors`: 보드가 지금 읽을 수 있는 센서 목록. 앱은 이 목록으로 화면을 만듭니다.
 - `type`: 센서 종류. **이름·단위·소수 자리·보정 방법은 앱이 `protocol/sensors.json`에서 찾습니다.** (보드는 `name`에 type을 그대로 넣음)
-- `id`: 데이터 메시지의 키. 보통 type과 같고, 같은 종류가 두 포트에 있으면 두 번째부터 `pH_A2`처럼 포트가 붙습니다.
+- `id`: 데이터 메시지의 키. 보통 type과 같고, 같은 종류가 둘 이상이면 두 번째부터 꼬리표가 붙습니다 (`pH_A2`, `TA_D4`, `TA_QW`, `TA_I2C`, `TA_SCD`).
 - `board`: 보드 이름 (`UNO R4 WiFi`, `UNO R4 Minima`, `UNO R3`). 앱의 연결 안내가 이 이름으로 보드를 자동 선택합니다.
 - `src`: 센서가 연결된 곳 (`A0`~`A3`, `onewire`, `i2c:0x44`, `i2c:0x45`, `D4:DHT22` 등, 데모면 `demo`)
 - `cal`: 저장된 보정값이 있는지 여부
@@ -77,7 +77,8 @@ BLE는 한 번에 보낼 수 있는 길이가 짧습니다. 보드는 한 줄을
 | `PORT <A0~A3> <type> [slope offset]` | 아날로그 포트에 꽂은 센서 종류와 기본 변환식(값 = slope × 전압 + offset) 지정. EEPROM에 저장, 보정은 초기화, 이어서 hello 전송 |
 | `PORT <A0~A3> OFF` | 포트 사용 안 함 |
 | `CAL <id> <n> <값>` | 2점 보정: 지금 측정값을 기준값 `<값>`으로 기록 (`<n>`은 1 또는 2) |
-| `CAL <id> OFS <값>` | 1점(영점) 보정: 지금 값이 `<값>`이 되도록 절편만 이동 |
+| `CAL <id> OFS <값>` | 1점(영점) 보정: 지금 값이 `<값>`이 되도록 절편만 이동. 무게(`M`)는 영점 맞추기 |
+| `CAL <id> SCL <값>` | 1점(비례) 보정: 지금 값이 `<값>`이 되도록 기울기 조정 (산소·탁도, 무게는 기준 추) |
 | `CAL <id> CLEAR` | 보정 표시 지우기 (아날로그는 앱이 PORT로 기본 변환식을 다시 보냄) |
 | `STATION <n>` | 모둠 번호 설정 (1~8, BLE 이름이 바뀜, 재부팅 후 적용) |
 
@@ -104,16 +105,24 @@ CAL pH 2 4.00     ← pH 4 완충 용액에 담근 상태에서
 
 처음 켠 보드의 기본 배정: A0 `pH`, A1 `L`, A2 `EC`, A3 `V`. 앱의 "센서 연결"에서 포트마다 바꿀 수 있습니다.
 
-디지털 센서는 자동 인식합니다.
+디지털 센서는 꽂아 두면 자동 인식합니다 (`HELLO` = 다시 찾기). 핀은 모든 보드에서 같습니다 (Leonardo의 DS18B20만 D9).
 
-| 연결 | 센서 id | 이름 | 인식 방법 |
+| 연결 | type | 센서 | `src` 예 |
 |---|---|---|---|
-| D2 (OneWire) | `T` | 온도 | DS18B20 장치 검색 |
-| Qwiic 0x44 | `TA`, `RH` | 기온, 습도 | Modulino Thermo 구형 (HS3003) |
-| Qwiic 0x45 | `TA`, `RH` | 기온, 습도 | Modulino Thermo 신형 V0.5~ (GXHT30, SHT3x 방식) |
-| D4 | `TA`, `RH` | 기온, 습도 | DHT11 / DHT22 응답 (`src`: `D4:DHT11` 또는 `D4:DHT22`). Modulino와 함께 있으면 id가 `TA_D4`, `RH_D4` |
+| D2 (OneWire) | `T` | DS18B20 방수 온도 | `onewire` |
+| D4 | `TA`, `RH` | DHT11 / DHT22 | `D4:DHT22` |
+| D5 DT · D6 SCK | `M` (g) | 로드셀 + HX711 | `D5:HX711` |
+| D7 TRIG · D8 ECHO | `DIST` (cm) | HC-SR04 초음파 | `D7:HC-SR04` |
+| D10 CS · D12 SO · D13 SCK | `TK` (°C) | MAX6675 K형 열전대 | `D10:MAX6675` |
+| I2C 0x44·0x45 | `TA`, `RH` | Modulino Thermo, SHT30/31 | `qwiic:SHT3x`, `i2c:HS3003` |
+| I2C 0x76·0x77 | `TA`, `BP`, (`RH`) | BMP280, BME280 | `i2c:BME280` |
+| I2C 0x5C·0x5D | `BP`, `TA` | Modulino Pressure (LPS22) | `qwiic:LPS22` |
+| I2C 0x62 | `CO2`, `TA`, `RH` | SCD40 / SCD41 | `i2c:SCD4x` |
+| I2C 0x29 | `COLR`, `COLG`, `COLB` (%) | TCS34725 컬러 | `i2c:TCS34725` |
 
-Qwiic 버스: UNO R4 WiFi는 Qwiic 단자(`Wire1`, 3.3 V), UNO R4 Minima·R3는 SDA·SCL 핀(`Wire`). 데모 모드에서는 `T`, `TA`, `RH`도 가짜 값을 보냅니다.
+I2C는 Qwiic 단자(UNO R4 WiFi·Nano R4의 `Wire1`, `qwiic:`)와 SDA·SCL 핀(`Wire`, `i2c:`)을 모두 검색합니다. 데모 모드에서는 `T`, `TA`, `RH`가 없으면 가짜 값을 보냅니다.
+
+보드별 펌웨어 범위: 전체(UNO R4 WiFi·R4 Minima·Nano R4·Mega 2560), 가벼운 버전(UNO R3·Nano: LPS22·SCD4x·TCS34725·MAX6675·HC-SR04 제외), 가장 가벼운 버전(Leonardo: BMP/BME280·HX711도 제외).
 
 ## 6. 실험 템플릿
 
@@ -146,13 +155,16 @@ Qwiic 버스: UNO R4 WiFi는 Qwiic 단자(`Wire1`, 3.3 V), UNO R4 Minima·R3는 
 - `setup`: 연결 안내 — `parts`(`protocol/guide.json`의 부품 id), `materials`(준비물), `attach`(실험 장치에 붙이는 방법), `cautions`(실험할 때 주의). 없으면 앱이 필요한 센서로 부품을 추정하고 부착 안내는 "준비 중"으로 표시.
 - `analysis`: 해석 도구 — `stats`(구간 통계), `fit`(직선 맞춤), `equivalence`(당량점·반당량점), `plateau`(평탄 구간, 예: 어는점).
 
-## 7. 연결 안내 (`protocol/guide.json`)
+## 7. 연결 안내 (`protocol/guide.json`, `tools/make_guide.py`로 생성)
 
 보드 종류별 연결 방법과 주의할 점을 적은 파일입니다. 웹앱과 애플 앱이 같은 파일을 읽습니다.
 
 - `common`: 모든 실험 공통 규칙
 - `boards[]`: `id`, `name`, `match`(hello의 board 이름과 맞춰 볼 문자열), `firmware`(`supported`·`partial`·`none`), USB·블루투스·핀 전압·아날로그·Qwiic 정보, `connectors.{qwiic,onewire,analog}`의 연결 순서와 주의
-- `parts[]`: 부품 — `provides`(센서 종류), `connector`, `items`(준비물), `cautions`
+- `connectors{}`: 연결 방식별 배선 — `wires[]`(센서 단자 → 보드 핀 역할), `cable`(Qwiic), `resistor`
+- `boards[].pins`: 핀 역할 → 이 보드의 핀 이름 (`SDA` → `D20 (SDA)` 등), `sensorSet`: 펌웨어 범위
+- `parts[]`: 센서 — `category`, `connector`, `provides`(센서 종류), `minSet`(필요한 펌웨어 범위), `analogType`(아날로그 포트에 지정할 종류), `items`, `cautions`
+- 앱의 "바로 측정": 센서를 고르면 아날로그는 `PORT`, 디지털은 `HELLO`를 보내고, 해당 종류가 hello에 나타나면 측정을 시작합니다.
 
 ## 8. 시뮬레이터 전용 명령
 

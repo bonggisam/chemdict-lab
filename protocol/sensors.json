@@ -1,5 +1,5 @@
 {
- "version": 1,
+ "version": 2,
  "analog": [
   {
    "type": "pH",
@@ -35,7 +35,7 @@
     "kind": "none"
    },
    "stableBand": 0.5,
-   "note": "광센서(포토트랜지스터·LDR). 비색계·탁도 실험."
+   "note": "조도 센서(CdS·포토트랜지스터). 비색계·탁도 실험."
   },
   {
    "type": "EC",
@@ -108,6 +108,189 @@
    "note": "MPX5700AP 계열 절대압 센서 (주사기 연결)."
   },
   {
+   "type": "TM36",
+   "name": "온도(TMP36)",
+   "unit": "°C",
+   "decimals": 1,
+   "slope": 100.0,
+   "offset": -50.0,
+   "cal": {
+    "kind": "one-point",
+    "refs": [
+     0.0
+    ],
+    "hint": "얼음물"
+   },
+   "stableBand": 0.2,
+   "note": "TMP36 온도 센서 (10 mV/°C, 0.5 V = 0 °C)."
+  },
+  {
+   "type": "TDS",
+   "name": "TDS",
+   "unit": "ppm",
+   "decimals": 0,
+   "slope": 450.0,
+   "offset": 0.0,
+   "cal": {
+    "kind": "two-point",
+    "refs": [
+     0,
+     342
+    ],
+    "hint": "증류수, 표준 용액"
+   },
+   "stableBand": 5,
+   "requiresCal": true,
+   "note": "TDS(총용존고형물) 탐침. 보정 후 사용하세요."
+  },
+  {
+   "type": "TURB",
+   "name": "투명도",
+   "unit": "%",
+   "decimals": 1,
+   "slope": 23.8,
+   "offset": 0.0,
+   "min": 0,
+   "max": 100,
+   "cal": {
+    "kind": "scale",
+    "refs": [
+     100.0
+    ],
+    "hint": "깨끗한 물"
+   },
+   "stableBand": 0.5,
+   "note": "탁도 센서. 깨끗한 물 = 100 %."
+  },
+  {
+   "type": "LEVEL",
+   "name": "수위",
+   "unit": "%",
+   "decimals": 0,
+   "slope": 20.0,
+   "offset": 0.0,
+   "min": 0,
+   "max": 100,
+   "cal": {
+    "kind": "none"
+   },
+   "stableBand": 1,
+   "note": "수위 센서 (상대값)."
+  },
+  {
+   "type": "SOIL",
+   "name": "토양 수분",
+   "unit": "%",
+   "decimals": 0,
+   "slope": -62.5,
+   "offset": 175.0,
+   "min": 0,
+   "max": 100,
+   "cal": {
+    "kind": "two-point",
+    "refs": [
+     0,
+     100
+    ],
+    "hint": "마른 흙, 물"
+   },
+   "stableBand": 1,
+   "note": "정전식 토양 수분 센서."
+  },
+  {
+   "type": "GAS",
+   "name": "가스(상대값)",
+   "unit": "%",
+   "decimals": 1,
+   "slope": 20.0,
+   "offset": 0.0,
+   "min": 0,
+   "max": 100,
+   "cal": {
+    "kind": "none"
+   },
+   "stableBand": 0.5,
+   "note": "MQ 가스 센서. 농도가 아닌 상대 변화입니다. 3분 이상 예열하세요."
+  },
+  {
+   "type": "O2",
+   "name": "산소",
+   "unit": "%",
+   "decimals": 1,
+   "slope": 20.9,
+   "offset": 0.0,
+   "min": 0,
+   "max": 25,
+   "cal": {
+    "kind": "scale",
+    "refs": [
+     20.9
+    ],
+    "hint": "맑은 공기"
+   },
+   "stableBand": 0.1,
+   "requiresCal": true,
+   "note": "아날로그 산소 센서. 공기에서 20.9 %로 보정하세요."
+  },
+  {
+   "type": "UV",
+   "name": "자외선 지수",
+   "unit": "",
+   "decimals": 1,
+   "slope": 10.0,
+   "offset": 0.0,
+   "cal": {
+    "kind": "none"
+   },
+   "stableBand": 0.1,
+   "note": "GUVA-S12SD 자외선 센서 (근삿값)."
+  },
+  {
+   "type": "SND",
+   "name": "소리(상대값)",
+   "unit": "%",
+   "decimals": 0,
+   "slope": 20.0,
+   "offset": 0.0,
+   "min": 0,
+   "max": 100,
+   "cal": {
+    "kind": "none"
+   },
+   "stableBand": 2,
+   "note": "사운드 센서 AO 출력."
+  },
+  {
+   "type": "POT",
+   "name": "가변저항",
+   "unit": "%",
+   "decimals": 0,
+   "slope": 20.0,
+   "offset": 0.0,
+   "min": 0,
+   "max": 100,
+   "cal": {
+    "kind": "none"
+   },
+   "stableBand": 1,
+   "note": "돌린 정도 0~100 %."
+  },
+  {
+   "type": "FSR",
+   "name": "힘(상대값)",
+   "unit": "%",
+   "decimals": 0,
+   "slope": 20.0,
+   "offset": 0.0,
+   "min": 0,
+   "max": 100,
+   "cal": {
+    "kind": "none"
+   },
+   "stableBand": 1,
+   "note": "FSR 압력 센서 + 10 kΩ 저항."
+  },
+  {
    "type": "RAW",
    "name": "사용자 정의",
    "unit": "V",
@@ -150,7 +333,7 @@
    "cal": {
     "kind": "none"
    },
-   "note": "Modulino Thermo (Qwiic) 또는 DHT11·DHT22 (D4)"
+   "note": "온습도 센서 (DHT, Modulino Thermo, SHT3x, BME280, SCD4x)"
   },
   {
    "type": "RH",
@@ -162,7 +345,109 @@
    "cal": {
     "kind": "none"
    },
-   "note": "Modulino Thermo (Qwiic) 또는 DHT11·DHT22 (D4)"
+   "note": "온습도 센서 (DHT, Modulino Thermo, SHT3x, BME280, SCD4x)"
+  },
+  {
+   "type": "BP",
+   "name": "기압",
+   "unit": "kPa",
+   "decimals": 2,
+   "src": "i2c",
+   "stableBand": 0.02,
+   "cal": {
+    "kind": "none"
+   },
+   "note": "BMP280·BME280·Modulino Pressure"
+  },
+  {
+   "type": "CO2",
+   "name": "이산화탄소",
+   "unit": "ppm",
+   "decimals": 0,
+   "src": "i2c:0x62",
+   "stableBand": 10,
+   "cal": {
+    "kind": "none"
+   },
+   "note": "SCD40·SCD41 (5초마다 갱신)"
+  },
+  {
+   "type": "COLR",
+   "name": "빨강(R)",
+   "unit": "%",
+   "decimals": 1,
+   "src": "i2c:0x29",
+   "stableBand": 0.3,
+   "cal": {
+    "kind": "none"
+   },
+   "note": "TCS34725 컬러 센서"
+  },
+  {
+   "type": "COLG",
+   "name": "초록(G)",
+   "unit": "%",
+   "decimals": 1,
+   "src": "i2c:0x29",
+   "stableBand": 0.3,
+   "cal": {
+    "kind": "none"
+   },
+   "note": "TCS34725 컬러 센서"
+  },
+  {
+   "type": "COLB",
+   "name": "파랑(B)",
+   "unit": "%",
+   "decimals": 1,
+   "src": "i2c:0x29",
+   "stableBand": 0.3,
+   "cal": {
+    "kind": "none"
+   },
+   "note": "TCS34725 컬러 센서"
+  },
+  {
+   "type": "M",
+   "name": "질량",
+   "unit": "g",
+   "decimals": 2,
+   "src": "D5",
+   "stableBand": 0.05,
+   "cal": {
+    "kind": "tare-scale",
+    "refs": [
+     0,
+     100
+    ],
+    "hint": "빈 접시, 기준 추"
+   },
+   "requiresCal": true,
+   "note": "로드셀 + HX711"
+  },
+  {
+   "type": "DIST",
+   "name": "거리",
+   "unit": "cm",
+   "decimals": 1,
+   "src": "D7",
+   "stableBand": 0.3,
+   "cal": {
+    "kind": "none"
+   },
+   "note": "HC-SR04 초음파"
+  },
+  {
+   "type": "TK",
+   "name": "고온(열전대)",
+   "unit": "°C",
+   "decimals": 1,
+   "src": "D10",
+   "stableBand": 0.5,
+   "cal": {
+    "kind": "none"
+   },
+   "note": "MAX6675 K형 열전대"
   }
  ]
 }

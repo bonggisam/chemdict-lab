@@ -8,15 +8,20 @@
 4. `chemdict_lab/chemdict_lab.ino` 열기 → 보드 `Arduino UNO R4 WiFi` 선택 → 업로드
 5. 시리얼 모니터(115200, 줄 끝: 새 줄)를 열면 `{"type":"hello",...}` 한 줄이 보입니다.
 
-### 보드별 준비 (R4 WiFi는 2026-10-17 실제 보드 확인: 프로그램 45%, 메모리 38%)
+### 보드별 준비 (2026-10-17 컴파일 확인, 펌웨어 0.3.0)
 
-| 보드 | 보드 매니저 | 라이브러리 | 연결 |
-|---|---|---|---|
-| UNO R4 WiFi (기준) | Arduino UNO R4 Boards 1.6.0 | ArduinoBLE 2.1.0, OneWire 2.3.8, DallasTemperature 4.0.6 (확인한 버전) | USB·블루투스 |
-| UNO R4 Minima | Arduino UNO R4 Boards | OneWire, DallasTemperature | USB만 |
-| UNO R3 | Arduino AVR Boards | OneWire, DallasTemperature | USB만 (메모리가 작아 시험용) |
+| 보드 | 보드 매니저 | 센서 범위 | 프로그램 / 메모리 | 연결 |
+|---|---|---|---|---|
+| UNO R4 WiFi (기준, 실제 확인) | Arduino UNO R4 Boards | 전체 | 48% / 40% | USB·블루투스 |
+| UNO R4 Minima | Arduino UNO R4 Boards | 전체 | 34% / 20% | USB |
+| Nano R4 | Arduino UNO R4 Boards | 전체 | 34% / 24% | USB |
+| Mega 2560 | Arduino AVR Boards | 전체 | 13% / 17% | USB |
+| UNO R3 | Arduino AVR Boards | 가벼운 버전 | 93% / 54% | USB |
+| Nano | Arduino AVR Boards | 가벼운 버전 | 97% / 54% | USB |
+| Leonardo | Arduino AVR Boards | 가장 가벼운 버전 | 98% / 38% | USB |
 
-보드 종류는 펌웨어가 자동으로 구분합니다. 센서 연결 방법은 앱의 **연결 안내** 탭을 보세요.
+라이브러리: `OneWire`, `DallasTemperature` (+ UNO R4 WiFi는 `ArduinoBLE`). 그 밖의 센서는 라이브러리 없이 직접 읽습니다.
+보드 종류와 센서 범위는 펌웨어가 자동으로 정합니다. 센서 연결 방법은 앱의 **연결 안내** 탭을 보세요.
 
 ## 바로 시험하기 (센서 없이)
 

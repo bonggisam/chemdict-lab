@@ -44,6 +44,10 @@ npm run dev      # http://localhost:5173
 - [x] 연결 안내 탭: 보드 고르기(UNO R4 WiFi·R4 Minima·R3·UNO Q), 실험별 센서 연결 그림·순서·부착·주의 (`protocol/guide.json`)
 - [x] 첫 실험 안내 완성: 입김 속 수증기 (Modulino Thermo 기온·습도)
 - [x] 펌웨어 0.2.1: Modulino Thermo 신형(0x45) 인식, "센서 다시 찾기", 보드별 빌드(R4 Minima·R3는 시험용)
+- [x] 바로 측정: 센서 카드(30종) → 보드에 맞춘 연결 그림 → [측정 시작] 한 번 (아날로그는 포트 자동 설정)
+- [x] 보드 13종 연결 안내, 펌웨어 0.3.0은 7종 컴파일 확인 (UNO R4 WiFi·R4 Minima·Nano R4·Mega·UNO R3·Nano·Leonardo)
+- [x] 펌웨어 0.3.0 센서: BMP/BME280, SHT3x, LPS22, SCD4x CO₂, TCS34725 색, HX711 무게, MAX6675 열전대, HC-SR04 거리 (실제 센서 확인 전)
+- [ ] 펌웨어 0.3.0을 실제 보드에 올려 확인, 센서별 실물 확인
 - [ ] 연결 안내: 나머지 실험(어는점·적정·희석)의 부착 안내
 - [ ] 애플 앱: 값 입력 모드·해석 도구·센서 설정 (웹앱 기능 따라잡기), 연결 그림
 - [x] 실제 보드(UNO R4 WiFi) 펌웨어 0.2.1 컴파일·업로드·명령 확인 (2026-10-17, 센서 없이 HELLO·START·STOP·DEMO·PORT·CAL)

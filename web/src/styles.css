@@ -228,3 +228,38 @@ button.small { min-height: 44px; padding: 4px 12px; font-size: 14px; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
 }
+
+/* ---------- 바로 측정 · 센서 카드 ---------- */
+.board-line { margin: -8px 0 14px; font-size: 15px; }
+.cat-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+.cat-chips button { min-height: 44px; padding: 6px 14px; border-radius: 999px; }
+.cat-chips button.on { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); font-weight: 600; }
+.sensor-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; }
+.sensor-card { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; text-align: left; padding: 14px; min-height: 96px; border-radius: var(--radius); }
+.sensor-card:not(:disabled):hover { border-color: var(--accent); }
+.sensor-card b { font-size: 16px; line-height: 1.3; }
+.sensor-card .measures { font-size: 14px; color: var(--muted); }
+.sensor-card .badges { display: flex; gap: 6px; flex-wrap: wrap; margin-top: auto; }
+.sensor-card.dim { opacity: 0.6; }
+.badge { font-size: 13px; padding: 1px 8px; border-radius: 999px; background: var(--tint); color: var(--muted); }
+.badge.ok { color: var(--ok); background: color-mix(in srgb, var(--ok) 12%, transparent); font-weight: 600; }
+.advanced { margin-top: 24px; }
+.advanced summary { cursor: pointer; min-height: 44px; display: flex; align-items: center; color: var(--muted); font-weight: 600; }
+.sheet.quick { max-width: 980px; }
+.quick-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; margin-bottom: 8px; }
+.quick-head h2 { margin: 0; }
+.port-pick { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin: 6px 0 12px; font-weight: 600; }
+.port-pick button { min-width: 56px; }
+.port-pick button.on, .seg button.on { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); font-weight: 600; }
+.seg { display: flex; gap: 4px; }
+.big-action { min-height: 52px; padding: 10px 22px; font-size: 17px; }
+.wire-table { border-collapse: collapse; width: 100%; font-size: 15px; margin-bottom: 8px; }
+.wire-table caption { text-align: left; font-weight: 700; padding-bottom: 6px; }
+.wire-table td { padding: 7px 6px; border-bottom: 1px solid var(--line); vertical-align: middle; }
+.wire-dot { display: inline-block; width: 12px; height: 12px; border-radius: 50%; margin-right: 8px; vertical-align: -1px; box-shadow: 0 0 0 1px #a1a1aa; }
+.wire-dot.red { background: #dc2626; } .wire-dot.black { background: #27272a; } .wire-dot.yellow { background: #ca8a04; }
+.wire-dot.blue { background: #2563eb; } .wire-dot.green { background: #16a34a; } .wire-dot.orange { background: #ea580c; } .wire-dot.white { background: #d4d4d8; }
+.wire-steps { margin: 6px 0 0; padding-left: 20px; font-size: 14px; color: var(--muted); }
+.caution summary { cursor: pointer; font-weight: 700; min-height: 32px; }
+.dg-pin-sub { fill: #cfe9eb; font-size: 11px; }
+.board-notes { margin: 6px 0 0; padding-left: 20px; font-size: 14px; }
