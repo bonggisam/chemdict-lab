@@ -569,6 +569,66 @@
         "아날로그 입력은 보드 전압(5 V 또는 3.3 V)을 넘으면 안 됩니다."
       ]
     },
+    "analog-3v3": {
+      "name": "아날로그 3선 (3.3 V 전원)",
+      "wires": [
+        {
+          "term": "VCC (3.3 V)",
+          "pin": "PWR3",
+          "color": "red"
+        },
+        {
+          "term": "GND",
+          "pin": "GND",
+          "color": "black"
+        },
+        {
+          "term": "OUT (신호)",
+          "pin": "A",
+          "color": "yellow"
+        }
+      ],
+      "steps": [
+        "VCC는 반드시 3.3V 핀에 꽂습니다 (5V를 넣으면 망가짐).",
+        "신호선은 A0~A3 중 하나에 꽂고 '꽂을 포트'에서 같은 포트를 누릅니다."
+      ],
+      "cautions": [
+        "3.3 V 전용 모듈입니다. 5V 핀에 연결하지 않습니다."
+      ]
+    },
+    "uart-3v3": {
+      "name": "UART 4선 (3.3 V 전원, TX·RX 엇갈려)",
+      "wires": [
+        {
+          "term": "VCC (3.3 V)",
+          "pin": "PWR3",
+          "color": "red"
+        },
+        {
+          "term": "GND",
+          "pin": "GND",
+          "color": "black"
+        },
+        {
+          "term": "TX (센서가 보냄)",
+          "pin": "U_RX",
+          "color": "green"
+        },
+        {
+          "term": "RX (센서가 받음)",
+          "pin": "U_TX",
+          "color": "yellow"
+        }
+      ],
+      "steps": [
+        "센서의 TX는 보드의 RX에, 센서의 RX는 보드의 TX에 엇갈려 연결합니다.",
+        "VCC는 반드시 3.3V 핀에 꽂습니다."
+      ],
+      "cautions": [
+        "UNO R3·Nano·Leonardo는 UART 센서를 지원하지 않습니다.",
+        "5 V 보드의 TX(5 V)가 센서 RX로 들어갑니다. 설명서에 5 V 입력 불가라고 되어 있으면 분압 저항(1 kΩ+2 kΩ)을 넣습니다."
+      ]
+    },
     "analog-divider": {
       "name": "아날로그 + 10 kΩ 저항",
       "wires": [
@@ -2255,7 +2315,7 @@
       "id": "adxl335",
       "name": "가속도 센서 ADXL335 (아날로그 3축)",
       "category": "움직임·자기",
-      "connector": "analog",
+      "connector": "analog-3v3",
       "provides": [
         "AXA"
       ],
@@ -2266,8 +2326,7 @@
         "점퍼선 5개"
       ],
       "cautions": [
-        "X·Y·Z 출력을 A0·A1·A2에 꽂고 각 포트를 AXA·AYA·AZA로 고릅니다.",
-        "VCC는 3.3V에 연결합니다."
+        "X·Y·Z 출력을 A0·A1·A2에 꽂고 각 포트를 AXA·AYA·AZA로 고릅니다 ('포트 직접 설정')."
       ],
       "analogType": "AXA"
     },
@@ -2576,7 +2635,8 @@
         "점퍼선 3개"
       ],
       "cautions": [
-        "전극이 쉽게 부식됩니다. 오래 꽂아 둘 때는 정전식을 씁니다."
+        "전극이 쉽게 부식됩니다. 오래 꽂아 둘 때는 정전식을 씁니다.",
+        "모듈에 따라 값 방향이 반대일 수 있으니 마른 흙(0 %)·물(100 %)로 2점 보정 후 씁니다."
       ],
       "analogType": "SOIL"
     },
@@ -2811,7 +2871,8 @@
       ],
       "cautions": [
         "값싼 온도 센서입니다. 얼음물(0 °C)로 1점 보정하면 정확해집니다.",
-        "B 값이 3950이 아니면 보정 후 씁니다."
+        "B 값이 3950이 아니면 보정 후 씁니다.",
+        "연결 그림대로 NTC를 5V 쪽, 10 kΩ 저항을 GND 쪽에 둡니다 (반대로 꽂으면 온도가 거꾸로 나옴)."
       ],
       "analogType": "TNTC"
     },
@@ -3129,7 +3190,7 @@
       "id": "cozir",
       "name": "이산화탄소 센서 COZIR / SprintIR (UART)",
       "category": "기체",
-      "connector": "uart",
+      "connector": "uart-3v3",
       "provides": [
         "CO2"
       ],
@@ -3137,11 +3198,10 @@
       "support": "firmware",
       "items": [
         "GSS COZIR·SprintIR·ExplorIR",
-        "점퍼선 4개 (3.3 V 전원)"
+        "점퍼선 4개"
       ],
       "cautions": [
-        "SprintIR은 빨라서 반응 속도 실험에 좋습니다. 배율은 자동으로 읽습니다.",
-        "전원은 3.3 V입니다. 5 V에 연결하지 않습니다."
+        "SprintIR은 빨라서 반응 속도 실험에 좋습니다. 배율은 자동으로 읽습니다."
       ]
     },
     {
@@ -3295,7 +3355,7 @@
       "id": "ml8511",
       "name": "자외선 센서 ML8511 (아날로그)",
       "category": "빛·색",
-      "connector": "analog",
+      "connector": "analog-3v3",
       "provides": [
         "UVML"
       ],
@@ -3306,7 +3366,7 @@
         "점퍼선 3개 (3.3 V 전원)"
       ],
       "cautions": [
-        "자외선 세기(mW/cm²)입니다. VCC는 3.3V에 연결합니다."
+        "자외선 세기(mW/cm²)입니다. 모듈의 EN 핀은 3.3V에 함께 연결합니다."
       ],
       "analogType": "UVML"
     },

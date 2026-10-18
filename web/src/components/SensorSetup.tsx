@@ -6,7 +6,7 @@ interface Props {
   disabled: boolean;
   onSetPort: (port: string, type: string) => void;
   onRescan?: () => void;
-  pulse?: boolean;   // D3 펄스 입력이 되는 보드 (전체 버전)
+  pulse?: boolean;   // 전체 버전 보드: D3 펄스 입력과 곡선 변환(full) 종류가 됨
 }
 
 const PORTS = ['A0', 'A1', 'A2', 'A3'];
@@ -35,7 +35,7 @@ export function SensorSetup({ sensors, disabled, onSetPort, onRescan, pulse }: P
                 onChange={(e) => onSetPort(port, e.target.value)}
               >
                 <option value="OFF">{t('사용 안 함')}</option>
-                {analogTypes.filter((x) => (port === 'D3') === (x.port === 'pulse')).map((t) => (
+                {analogTypes.filter((x) => (port === 'D3') === (x.port === 'pulse') && (pulse || !x.full)).map((t) => (
                   <option key={t.type} value={t.type}>{t.name}{t.unit ? ` (${t.unit})` : ''}</option>
                 ))}
               </select>

@@ -28,7 +28,7 @@ BLE는 한 번에 보낼 수 있는 길이가 짧습니다. 보드는 한 줄을
 ### hello — 연결 직후, 그리고 `HELLO` 명령을 받았을 때
 
 ```json
-{"type":"hello","fw":"0.3.0","board":"UNO R4 WiFi","station":3,"demo":false,
+{"type":"hello","fw":"0.5.0","board":"UNO R4 WiFi","station":3,"demo":false,
  "sensors":[
   {"id":"pH","type":"pH","name":"pH","unit":"","src":"A0","cal":true},
   {"id":"L","type":"L","name":"L","unit":"","src":"A1","cal":false},
@@ -74,8 +74,8 @@ BLE는 한 번에 보낼 수 있는 길이가 짧습니다. 보드는 한 줄을
 | `START <ms>` | `<ms>` 밀리초 간격으로 측정 시작 (최소 100, 기본 1000) |
 | `STOP` | 측정 정지 |
 | `DEMO ON` / `DEMO OFF` | 데모 모드 켜기/끄기 (센서 없이 가짜 데이터) |
-| `PORT <A0~A3> <type> [slope offset]` | 아날로그 포트에 꽂은 센서 종류와 기본 변환식(값 = slope × 전압 + offset) 지정. EEPROM에 저장, 보정은 초기화, 이어서 hello 전송 |
-| `PORT <A0~A3> OFF` | 포트 사용 안 함 |
+| `PORT <A0~A3|D3> <type> [slope offset]` | 아날로그 포트에 꽂은 센서 종류와 기본 변환식(값 = slope × 전압 + offset) 지정. EEPROM에 저장, 보정은 초기화, 이어서 hello 전송 |
+| `PORT <A0~A3|D3> OFF` | 포트 사용 안 함 |
 | `CAL <id> <n> <값>` | 2점 보정: 지금 측정값을 기준값 `<값>`으로 기록 (`<n>`은 1 또는 2) |
 | `CAL <id> OFS <값>` | 1점(영점) 보정: 지금 값이 `<값>`이 되도록 절편만 이동. 무게(`M`)는 영점 맞추기 |
 | `CAL <id> SCL <값>` | 1점(비례) 보정: 지금 값이 `<값>`이 되도록 기울기 조정 (산소·탁도, 무게는 기준 추) |
@@ -292,7 +292,7 @@ MQ-2·3·4·7·8·9·135, MG811은 기존 `GAS`, 마이크 앰프는 `SND`, 저�
 | `WNDP` | 펄스형 풍속계 | 0.062 × Hz m/s |
 | `RPM` / `FREQ` | 회전수 / 주파수 | Hz × 60 / Hz |
 
-**곡선 변환 아날로그 type** (펌웨어가 x를 먼저 계산, 전체 버전만, sensors.json `full: true`): `IRD` GP2Y0A21 (x = V^−1.15, ×27.86 cm), `IRDS` GP2Y0A41 (x = V^−1.058, ×12.08 cm), `TNTC` 10 kΩ NTC B3950 (x = °C, 10 kΩ 저항이 5V 쪽).
+**곡선 변환 아날로그 type** (펌웨어가 x를 먼저 계산, 전체 버전만, sensors.json `full: true`): `IRD` GP2Y0A21 (x = V^−1.15, ×27.86 cm), `IRDS` GP2Y0A41 (x = V^−1.058, ×12.08 cm), `TNTC` 10 kΩ NTC B3950 (x = °C, NTC가 5V 쪽·10 kΩ 저항이 GND 쪽 = 분압 연결 안내와 같음).
 
 **그 밖의 아날로그 type**: `UVML` ML8511, `WPRS` 수압 SEN0257, `DP` MPX5010DP, `WIND` SEN0170, `ANGA` SEN0221, `I5B` ACS723, `I50A` ACS758, `DUS` MaxBotix.
 
@@ -318,4 +318,4 @@ MQ-2·3·4·7·8·9·135, MG811은 기존 `GAS`, 마이크 앰프는 `SND`, 저�
 | UART 115200 | `DIST` | TFmini-S·TFmini Plus·TF-Luna |
 
 - 아직 안 되는 것: 열화상(AMG8833·MLX90640), GP2Y1014AU·PPD42NS, TCS3200, RS485 토양 센서, SEN0321·MiCS-4514, HTU31D·SHT1x·ICP-10111·MS5540C·HPMA115, MAX32664.
-- 메모리(2026-10-18 컴파일): UNO R4 WiFi 약 157 KB (60%) / RAM 44%, Mega 약 74 KB (29%) / RAM 46%, UNO R3 30556 B (94%).
+- 메모리(2026-10-18 컴파일): UNO R4 WiFi 약 157 KB (60%) / RAM 44%, Mega 약 74 KB (29%) / RAM 46%, UNO R3 30568 B (95%), Nano 30566 B (99%).

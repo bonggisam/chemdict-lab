@@ -275,6 +275,9 @@ export class SimTransport implements Transport {
       } else if (S === 'OFS') {
         if (port) { port.offsetAdj += Number(ref) - (this.value(port.type, this.t()) + port.offsetAdj); port.cal = true; }
         this.emit({ type: 'cal', id, slope: 1, offset: r4(port?.offsetAdj ?? 0), points: 1 });
+      } else if (S === 'SCL') {
+        if (port) port.cal = true;   // 배율 보정(산소·탁도·유량 등): 시뮬레이터는 이미 맞는 값이라 그대로
+        this.emit({ type: 'cal', id, slope: 1, offset: 0, points: 1 });
       } else if (S === '1') {
         this.calStep1.add(id);
         this.emit({ type: 'ack', cmd: 'CAL' });

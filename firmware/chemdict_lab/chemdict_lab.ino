@@ -202,8 +202,17 @@ int8_t regDS(const char* type, const char* tag, const char* src, uint8_t dec) {
   bool dup = false;
   for (uint8_t i = 0; i < nds; i++) if (!strcmp(dsx[i].type, type)) dup = true;
   for (int i = 0; i < NPORT && !dup; i++) if (portOn(i) && !strcmp(P(i).type, type)) dup = true;
-  if (dup) snprintf(d.id, sizeof(d.id), "%s_%s", type, tag);
-  else { strncpy(d.id, type, sizeof(d.id) - 1); d.id[sizeof(d.id) - 1] = 0; }
+  if (dup) {
+    snprintf(d.id, sizeof(d.id), "%s_%s", type, tag);
+#if FULL_SENSORS   // 같은 꼬리표가 또 있으면 번호를 붙임 (TA_QW, TA_QW2…) — 가벼운 버전은 센서가 적어 생략(메모리)
+    for (uint8_t n = 2; n < 10; n++) {
+      bool same = false;
+      for (uint8_t i = 0; i < nds; i++) if (!strcmp(dsx[i].id, d.id)) same = true;
+      if (!same) break;
+      snprintf(d.id, sizeof(d.id), "%s_%s%u", type, tag, n);
+    }
+#endif
+  } else { strncpy(d.id, type, sizeof(d.id) - 1); d.id[sizeof(d.id) - 1] = 0; }
   d.src = src; d.v = NAN; d.dec = dec; d.cal = 0;
   return nds++;
 }
@@ -768,6 +777,7 @@ float tc31855Temp(uint32_t v) { return (v & 0x00010000UL) ? NAN : ((int32_t)v >>
 void detectTc() {
   tcIdx = -1;
   tc31855 = false;
+  pinMode(RTD_CS, OUTPUT); digitalWrite(RTD_CS, HIGH);   // MAX31865가 같은 SO·SCK를 쓰므로 먼저 떼어 둠
   pinMode(TC_CS, OUTPUT); digitalWrite(TC_CS, HIGH);
   pinMode(TC_SCK, OUTPUT); digitalWrite(TC_SCK, LOW);
   pinMode(TC_SO, INPUT_PULLUP);
@@ -1125,12 +1135,12 @@ unsigned long pulseSecMs = 0;
 void pulseUpdate() {
   unsigned long el = millis() - pulseSecMs;
   if (el < 1000) return;
-  uint8_t k = el / 1000;                 // 센서 찾기 등으로 늦어지면 여러 칸에 나눠 넣음
+  unsigned long k = el / 1000;           // 센서 찾기 등으로 늦어지면 여러 칸에 나눠 넣음
   if (k > 60) k = 60;
   pulseSecMs = millis() - (el % 1000);
   noInterrupts(); uint32_t c = pulseCount; interrupts();
   uint32_t d = (c - pulsePrev) / k; pulsePrev = c;
-  for (uint8_t j = 0; j < k; j++) {
+  for (unsigned long j = 0; j < k; j++) {
     pulseHist[pulseHead] = d > 65535UL ? 65535 : d;
     pulseHead = (pulseHead + 1) % 60;
     if (pulseFilled < 60) pulseFilled++;
@@ -1154,9 +1164,9 @@ float xform(const char* t, float v) {
 #if FULL_SENSORS
   if (!strcmp(t, "IRD")) return v > 0.25f ? pow(v, -1.15f) : NAN;     // GP2Y0A21 (cm = 27.86 × V^-1.15)
   if (!strcmp(t, "IRDS")) return v > 0.25f ? pow(v, -1.058f) : NAN;   // GP2Y0A41 (cm = 12.08 × V^-1.058)
-  if (!strcmp(t, "TNTC")) {                                            // 10 kΩ NTC (B 3950) — 10 kΩ 저항이 5V 쪽
+  if (!strcmp(t, "TNTC")) {                                            // 10 kΩ NTC (B 3950) — NTC가 5V 쪽, 10 kΩ 저항이 GND 쪽 (연결 안내와 같음)
     if (v < 0.02f || v > VREF - 0.02f) return NAN;
-    float r = 10000.0f * v / (VREF - v);
+    float r = 10000.0f * (VREF - v) / v;
     return 1.0f / (1.0f / 298.15f + log(r / 10000.0f) / 3950.0f) - 273.15f;
   }
 #endif
@@ -1184,6 +1194,7 @@ void tick() {
   for (int i = 0; i < NPORT; i++) {
     if (!portOn(i)) continue;
     float v = demo ? demoAnalog(P(i).type, t) : analogValue(i, portX(i));
+    if (isnan(v)) continue;   // 범위 밖(적외선 거리 등)은 빼고 보냄 — JSON에 nan이 들어가면 줄 전체가 버려짐
     if (!first) out.print(F(","));
     first = false;
     out.str(portId(i).c_str()); out.print(F(":")); out.num(v, 3);

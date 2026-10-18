@@ -59,8 +59,9 @@ enum Kind : uint8_t { K_BH1750, K_VEML, K_AHT, K_HTU, K_SHT4, K_BMP180, K_MLX, K
 struct More {
   TwoWire* w; uint8_t addr; Kind kind; uint8_t step;
   int8_t i0, i1, i2; unsigned long last;
-  int16_t cal[11];   // BMP180 보정값 (AC1..MD)
+  int16_t cal[11];   // BMP180 보정값 (AC1..MD); 다른 드라이버는 칸 번호 저장에 씀
   uint16_t ucal[3];  // BMP180 AC4..AC6
+  long tmp;          // 드라이버가 단계 사이에 들고 있는 값 (BMP180 ut, MS5611 d1)
 };
 const uint8_t MAX_MORE = 16;
 More more[MAX_MORE];
@@ -70,6 +71,9 @@ int8_t addMoreIdx(TwoWire* w, uint8_t a, uint8_t k) {
   if (nMore >= MAX_MORE) return -1;
   More& m = more[nMore];
   m.w = w; m.addr = a; m.kind = (Kind)k; m.step = 0; m.i0 = m.i1 = m.i2 = -1; m.last = 0;
+  for (uint8_t i = 0; i < 11; i++) m.cal[i] = -1;   // 다른 드라이버가 칸 번호로도 씀 → -1(없음)
+  for (uint8_t i = 0; i < 3; i++) m.ucal[i] = 0;
+  m.tmp = 0;
   return nMore++;
 }
 #define addMore(w, a, k) (addMoreIdx(w, a, k) >= 0 ? &more[nMore - 1] : (More*)0)
@@ -110,16 +114,19 @@ void detectMore() {
     static const uint8_t A2[] = { 0x40, 0x41, 0x44, 0x45 };
     for (uint8_t a : A2) {
       if (!i2cHas(w, a) || thermoAt(w, a)) continue;
-      uint16_t cfg, mid;
-      if (i2cRead16(w, a, 0xFE, mid, false) && mid == 0x5449) {   // INA260 (TI)
+      uint16_t cfg, mid, did;
+      if (i2cRead16(w, a, 0xFE, mid, false) && mid == 0x5449) {   // TI: INA260(DIE_ID 0x227x)만, INA226(0x226x)은 아님
+        if (!i2cRead16(w, a, 0xFF, did, false) || (did & 0xFFF0) != 0x2270) continue;
         if ((m = addMore(w, a, K_INA260))) { m->i0 = regDS("VDC", "260", SRC(b, "INA260"), 3); m->i1 = regDS("IDC", "260", SRC(b, "INA260"), 1); }
         continue;
       }
-      if (!i2cRead16(w, a, 0x00, cfg, false) || cfg != 0x399F) continue;
+      if (!i2cRead16(w, a, 0x00, cfg, false) || cfg != 0x399F) { if (a == 0x40) delay(15); continue; }   // 0xFE는 HTU21D 초기화 명령 → 잠깐 기다림
       if ((m = addMore(w, a, K_INA))) { m->i0 = regDS("VDC", tag, SRC(b, "INA219"), 3); m->i1 = regDS("IDC", tag, SRC(b, "INA219"), 1); }
     }
     // 온습도: HTU21D · SHT21 · Si7021 (0x40, INA219가 아니면)
-    if (i2cHas(w, 0x40) && !(nMore && more[nMore - 1].kind == K_INA && more[nMore - 1].addr == 0x40 && more[nMore - 1].w == w)) {
+    bool inaAt40 = false;
+    for (uint8_t i = 0; i < nMore; i++) if (more[i].w == w && more[i].addr == 0x40) inaAt40 = true;
+    if (i2cHas(w, 0x40) && !inaAt40) {
       uint8_t ur;
       w->beginTransmission(0x40); w->write(0xE7);
       if (w->endTransmission() == 0 && i2cReadRaw(w, 0x40, &ur, 1) && (ur == 0x02 || ur == 0x3A || ur == 0x3B)) {
@@ -245,7 +252,7 @@ void detectMore() {
     // 산소: DFRobot Gravity I2C O2 (SEN0322, 0x70~0x73)
     for (uint8_t a = 0x70; a <= 0x73; a++) {
       uint8_t d[3];
-      if (!i2cHas(w, a) || !i2cRead(w, a, 0x03, d, 3) || d[0] > 30) continue;
+      if (!i2cHas(w, a) || !i2cRead(w, a, 0x03, d, 3) || d[1] > 9 || d[2] > 99) continue;   // 원시값(퍼센트 아님): 소수 자리만 확인
       if ((m = addMore(w, a, K_O2))) m->i0 = regDS("O2I", tag, SRC(b, "SEN0322"), 2);
       break;
     }
@@ -330,7 +337,7 @@ void pollMore() {
       case K_BH1750: {
         if (now - m.last < 200) break; m.last = now;
         uint8_t d[2];
-        if (i2cReadRaw(m.w, m.addr, d, 2)) setDS(m.i0, ((d[0] << 8) | d[1]) / 1.2f);
+        if (i2cReadRaw(m.w, m.addr, d, 2)) setDS(m.i0, (uint16_t)(((uint16_t)d[0] << 8) | d[1]) / 1.2f);
         break;
       }
       case K_VEML: {
@@ -378,10 +385,10 @@ void pollMore() {
         break;
       }
       case K_BMP180: {   // 온도 → 기압 차례로
-        static long ut = 0;
+        long ut = m.tmp;   // 센서마다 따로
         if (m.step == 0) { if (now - m.last < 1000) break; if (i2cWrite8(m.w, m.addr, 0xF4, 0x2E)) { m.step = 1; m.last = now; } }
         else if (m.step == 1 && now - m.last >= 5) {
-          uint16_t v; if (i2cRead16(m.w, m.addr, 0xF6, v, false)) ut = v;
+          uint16_t v; if (i2cRead16(m.w, m.addr, 0xF6, v, false)) { ut = v; m.tmp = ut; }
           if (i2cWrite8(m.w, m.addr, 0xF4, 0x34)) { m.step = 2; m.last = now; } else m.step = 0;
         } else if (m.step == 2 && now - m.last >= 8) {
           uint8_t d[3];
@@ -489,7 +496,7 @@ void pollMore() {
         if (now - m.last < 150) break; m.last = now;
         uint8_t d[4];
         if (!i2cRead(m.w, m.addr, 0xA0 | 0x14, d, 4)) break;
-        float c0 = d[0] | (d[1] << 8), c1 = d[2] | (d[3] << 8);
+        float c0 = (uint16_t)(d[0] | ((uint16_t)d[1] << 8)), c1 = (uint16_t)(d[2] | ((uint16_t)d[3] << 8));
         if (c0 < 1) { setDS(m.i0, 0); break; }
         float cpl = (100.0f * 25.0f) / 408.0f;   // 적분 100 ms × 이득 25
         setDS(m.i0, max(0.0f, (c0 - c1) * (1.0f - c1 / c0) / cpl));
@@ -648,6 +655,7 @@ void detectUart() {
   if (uartKind == U_NONE) {
   uartLastOk = millis();
   pmsST = false;
+  Serial1.end();
   Serial1.begin(9600);
   uartKind = uartListen();
   if (uartKind == U_NONE && uartAsk(MHZ_Q, 9, 0xFF, 0x86, 300)) uartKind = U_MHZ;

@@ -320,7 +320,7 @@ void detectExtra() {
           if (nds + 8 <= MAX_DS && (m = addMore(w, 0x39, K_AS7341))) {   // 8칸이 이어져야 함
             static const char* const N[] = { "S415", "S445", "S480", "S515", "S555", "S590", "S630", "S680" };
             m->i0 = regDS(N[0], "AS", SRC(b, "AS7341"), 0);
-            for (uint8_t k = 1; k < 8; k++) regDS(N[k], "AS", SRC(b, "AS7341"), 0);
+            for (uint8_t k = 1; k < 8; k++) regDS(N[k], "AS", SRC(b, "AS7341"), 0);   // i0 다음 7칸 (nds+8 <= MAX_DS 확인함)
           }
         } else if (id == 0xAB || id == 0x9C || id == 0xA8) {
           i2cWrite8(w, 0x39, 0x81, 0xDB); i2cWrite8(w, 0x39, 0x8F, 0x01); i2cWrite8(w, 0x39, 0x80, 0x03);   // 100 ms, 4배, 켜기
@@ -453,6 +453,7 @@ void detectNau() {
     hxNau = true;
     hxIdx = regDS("M", "NAU", SRC(b, "NAU7802"), 2);
     hxAvg = NAN;
+    if (hxIdx < 0) { hxNau = false; nMore--; return; }   // 칸이 다 찼으면 포기
     dsx[hxIdx].cal = settings.massCalValid;
     m->i0 = hxIdx;
     return;
@@ -508,11 +509,11 @@ void pollExtra(uint8_t i) {
       break;
     }
     case K_MS56: {   // D1(기압) → D2(온도), 각각 4096배 과표본 9 ms
-      uint32_t d1 = ((uint32_t)(uint16_t)m.cal[6] << 16) | (uint16_t)m.cal[7];   // 센서마다 따로
+      uint32_t d1 = (uint32_t)m.tmp;   // 센서마다 따로
       if (m.step == 0) { if (now - m.last < 500) break; if (i2cCmd8(m.w, m.addr, 0x48)) { m.step = 1; m.last = now; } }
       else if (m.step == 1 && now - m.last >= 10) {
         if (!ms56Adc(m.w, m.addr, d1)) { m.step = 0; break; }
-        m.cal[6] = (int16_t)(d1 >> 16); m.cal[7] = (int16_t)(d1 & 0xFFFF);
+        m.tmp = (long)d1;
         if (i2cCmd8(m.w, m.addr, 0x58)) { m.step = 2; m.last = now; } else m.step = 0;
       } else if (m.step == 2 && now - m.last >= 10) {
         uint32_t d2; m.step = 0;
@@ -617,7 +618,7 @@ void pollExtra(uint8_t i) {
         uint8_t d[8];
         if (i2cRead(m.w, 0x39, 0x95, d, 8)) {
           int8_t base = m.i0 + (m.step == 1 ? 0 : 4);
-          for (uint8_t k = 0; k < 4; k++) setDS(base + k, d[2 * k] | (d[2 * k + 1] << 8));
+          for (uint8_t k = 0; k < 4; k++) setDS(base + k, (uint16_t)(d[2 * k] | (d[2 * k + 1] << 8)));
         }
         m.step = m.step == 1 ? 2 : 0;
         if (m.step == 0) m.last = now;
