@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { t, tk } from '../lib/i18n';
 
-export type ExportKind = 'png' | 'pdf' | 'excel' | 'numbers' | 'csv' | 'copy';
+export type ExportKind = 'png' | 'pdf' | 'excel' | 'numbers' | 'csv' | 'copy' | 'file';
 
 interface Props {
   onExport: (k: ExportKind) => Promise<void> | void;
@@ -15,6 +15,7 @@ const ITEMS: { k: ExportKind; title: string; desc: string }[] = [
   { k: 'excel', title: tk('엑셀 (.xlsx)'), desc: tk('측정마다 시트 + 엑셀 그래프(추세선 포함). 엑셀에서 바로 고칠 수 있습니다.') },
   { k: 'numbers', title: tk('Numbers (.xlsx)'), desc: tk('맥·아이패드 Numbers에서 그대로 열리는 파일입니다 (엑셀과 같은 파일).') },
   { k: 'csv', title: tk('CSV'), desc: tk('숫자만. 구글 시트·다른 프로그램에서 읽을 때.') },
+  { k: 'file', title: tk('측정 파일 (.chemdict)'), desc: tk('나중에 [측정 파일 열기]로 다시 열어 이어서 분석합니다. 다른 기기로 옮길 때도 씁니다.') },
   { k: 'copy', title: tk('표 복사'), desc: tk('지금 고른 측정의 표를 복사합니다. 엑셀·Numbers에 붙여넣기.') },
 ];
 

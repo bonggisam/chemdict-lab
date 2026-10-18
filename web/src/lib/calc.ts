@@ -1,6 +1,6 @@
 import { t, tk } from './i18n';
 // 표의 계산 열 (Vernier '계산 열'처럼 자주 쓰는 것만)
-export type CalcId = 'none' | 'delta' | 'rate' | 'inv' | 'ln' | 'log' | 'sq' | 'kelvin';
+export type CalcId = 'none' | 'delta' | 'rate' | 'inv' | 'ln' | 'log' | 'sq' | 'kelvin' | 'custom';
 
 export const CALCS: { id: CalcId; name: string; title: (y: string) => string; tempOnly?: boolean }[] = [
   { id: 'none', name: tk('없음'), title: () => '' },
@@ -11,6 +11,7 @@ export const CALCS: { id: CalcId; name: string; title: (y: string) => string; te
   { id: 'log', name: tk('상용로그 (log y)'), title: (y) => `log ${y}` },
   { id: 'sq', name: tk('제곱 (y²)'), title: (y) => `${y}²` },
   { id: 'kelvin', name: tk('절대온도 (K = °C + 273.15)'), title: () => t('절대온도(K)'), tempOnly: true },
+  { id: 'custom', name: tk('직접 만들기 (수식)'), title: () => '' },
 ];
 
 /** xs, ys 같은 길이 (값이 없으면 NaN) → 계산 열 */

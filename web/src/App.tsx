@@ -1,12 +1,18 @@
 import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Measure } from './components/Measure';
+import { Measure, type Trigger } from './components/Measure';
+import { RecentSessions } from './components/RecentSessions';
+import { ShareSheet } from './components/ShareSheet';
+import { SupplySheet } from './components/SupplySheet';
+import { hasData, newSessionId, saveSession, sessionBlob, type Session } from './lib/session';
+import { shareUrl, takeShareFromUrl } from './lib/share';
+import type { CustomCalc } from './lib/formula';
 import { SensorSetup } from './components/SensorSetup';
 import { CalibrationSheet } from './components/CalibrationSheet';
 import { Guide } from './components/Guide';
 import { SensorPicker } from './components/SensorPicker';
 import { ExperimentBrowser } from './components/ExperimentBrowser';
 import { QuickSheet, type QuickStatus } from './components/QuickSheet';
-import { boardByName, boards, loadBoardId, quickExperiment, saveBoardId, type Part } from './lib/guide';
+import { boardByName, boards, loadBoardId, partById, quickExperiment, saveBoardId, type Part } from './lib/guide';
 import { BoardStep, type FwState } from './components/BoardStep';
 import { loadInfo, saveInfo, type ExpInfo } from './lib/info';
 import { LANGS, initialLang, loadLang, t, tk, type Lang } from './lib/i18n';
@@ -14,11 +20,11 @@ import { relocalize } from './lib/l10n';
 import { PwaBar } from './components/PwaBar';
 import { BUNDLED_FW, FlashError, TARGETS, boardFromUsb, flashBoard, older } from './lib/flash';
 import { experiments } from './lib/experiments';
-import { parseLine, type BoardMsg, type Experiment, type HelloMsg } from './lib/protocol';
+import { parseLine, type BoardMsg, type Experiment, type HelloMsg, type SensorInfo } from './lib/protocol';
 import { BleTransport, SerialTransport, SimTransport, hasBluetooth, hasSerial, type Transport } from './lib/transports';
 import { analogTypes, resolveSensor } from './lib/sensors';
 import { isStable } from './lib/analysis';
-import { newRun, type Row, type Run } from './lib/runs';
+import { newRun, saveFile, type Row, type Run } from './lib/runs';
 
 type Screen = 'connect' | 'pick' | 'measure' | 'guide';
 type CalMsg = { id: string; slope: number; offset: number; points: number };
@@ -48,6 +54,16 @@ export default function App() {
   const pickBoard = (id: string) => { setBoardId(id); saveBoardId(id); };
   const [fw, setFw] = useState<FwState | null>(null);
   const [info, setInfoState] = useState<ExpInfo>(loadInfo);
+  // 자동 저장·측정 파일·공유·조건 시작·준비물
+  const sessionIdRef = useRef(newSessionId());
+  const [savedSensors, setSavedSensors] = useState<SensorInfo[]>([]);
+  const [custom, setCustom] = useState<CustomCalc | null>(null);
+  const [shareOpen, setShareOpen] = useState(false);
+  const [supplyOpen, setSupplyOpen] = useState(false);
+  const [sharedTitle, setSharedTitle] = useState('');
+  const [waiting, setWaiting] = useState<{ value?: number } | null>(null);
+  const triggerRef = useRef<Trigger | null>(null);
+  const tOffsetRef = useRef(0);
   // 언어: 처음에는 저장된 언어(없으면 브라우저 언어)로
   const [lang, setLangState] = useState<Lang>('ko');
   const changeLang = async (l: Lang) => { await loadLang(l); relocalize(); setLangState(l); };
@@ -77,7 +93,18 @@ export default function App() {
         helloRef.current?.(m);
         break;
       case 'd': {
-        const row = { t: m.t, v: m.v };
+        let row = { t: m.t, v: m.v };
+        const trig = triggerRef.current;
+        if (recordingRef.current && trig) {
+          const v = m.v[trig.id];
+          const met = typeof v === 'number' && (trig.dir === 'up' ? v >= trig.value : v <= trig.value);
+          if (!met) { setWaiting({ value: typeof v === 'number' ? v : undefined }); break; }
+          triggerRef.current = null;
+          tOffsetRef.current = m.t;
+          setWaiting(null);
+          say('ok', t('조건이 맞아 기록을 시작했습니다.'));
+        }
+        if (tOffsetRef.current) row = { t: Number((m.t - tOffsetRef.current).toFixed(3)), v: m.v };
         if (recordingRef.current) {
           const id = activeIdRef.current;
           setRunsState((rs) => rs.map((r) => (r.id === id ? { ...r, rows: [...r.rows, row] } : r)));
@@ -248,9 +275,66 @@ export default function App() {
 
   const send = useCallback((cmd: string) => { transportRef.current?.send(cmd); }, []);
 
-  const sensors = useMemo(() => (hello?.sensors ?? []).map(resolveSensor), [hello]);
   const detectedBoard = boardByName(hello?.board);
   const board = detectedBoard ?? boards.find((b) => b.id === boardId) ?? boards[0];
+  const sensors = useMemo(() => (hello?.sensors ?? (exp ? savedSensors : [])).map(resolveSensor), [hello, exp, savedSensors]);
+
+  // ---- 자동 저장: 측정 데이터가 바뀌면 3초 안에 이 기기에 저장 (최근 5개)
+  const saveTimer = useRef<number | null>(null);
+  const currentSession = (): Session | null => (exp ? {
+    app: 'chemdict-lab', v: 1, id: sessionIdRef.current, savedAt: new Date().toISOString(),
+    exp, runs, intervalMs, sensors: hello?.sensors ?? savedSensors, info, custom,
+  } : null);
+  const sessionRef = useRef(currentSession);
+  sessionRef.current = currentSession;
+  useEffect(() => {
+    if (!exp || !hasData(runs) || saveTimer.current) return;
+    saveTimer.current = window.setTimeout(() => {
+      saveTimer.current = null;
+      const s = sessionRef.current();
+      if (s) saveSession(s);
+    }, 3000);
+  }, [runs, exp, custom]); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    const flush = () => { const s = sessionRef.current(); if (s) saveSession(s); };
+    window.addEventListener('pagehide', flush);
+    return () => window.removeEventListener('pagehide', flush);
+  }, []);
+
+  const openSession = (s: Session) => {
+    if (running) { say('err', t('측정 중입니다. 먼저 [정지]를 누르세요.')); return; }
+    sessionIdRef.current = s.id;
+    setSavedSensors(s.sensors);
+    setExp(s.exp);
+    setIntervalMs(s.intervalMs);
+    setRuns(() => s.runs.length ? s.runs : [newRun(s.exp.mode ?? 'time', 0)]);
+    setActiveId((s.runs[s.runs.length - 1] ?? { id: '' }).id);
+    setCustom(s.custom ?? null);
+    if (s.info) setInfoState(s.info);
+    setScreen('measure');
+    say('ok', t('‘{title}’ 측정을 열었습니다.', { title: s.exp.title }));
+  };
+  const saveSessionFile = () => {
+    const s = currentSession();
+    if (!s) return;
+    const z = (n: number) => String(n).padStart(2, '0'), d = new Date();
+    saveFile(sessionBlob(s), `chemdict_${s.exp.id}_${d.getFullYear()}${z(d.getMonth() + 1)}${z(d.getDate())}-${z(d.getHours())}${z(d.getMinutes())}.chemdict`);
+  };
+
+  // ---- 공유 링크로 열기: 실험을 미리 골라 두고, 보드를 연결하면 바로 측정 화면으로
+  useEffect(() => {
+    const sp = takeShareFromUrl();
+    if (!sp) return;
+    const e = sp.e.startsWith('quick-') ? (() => { const pt = partById(sp.e.slice(6)); return pt ? quickExperiment(pt) : undefined; })() : experiments.find((x) => x.id === sp.e);
+    if (!e) { say('err', t('공유받은 실험을 찾지 못했습니다. 앱을 새로고침해 보세요.')); return; }
+    if (sp.b && boards.some((b) => b.id === sp.b)) pickBoard(sp.b);
+    pickExperiment(e);
+    if (sp.i) setIntervalMs(sp.i);
+    if (sp.c) setCustom(sp.c);
+    setScreen('connect');
+    setSharedTitle(e.title);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  const shareLink = exp ? shareUrl({ e: exp.id, i: intervalMs, b: board.id, ...(custom?.expr ? { c: custom } : {}) }) : '';
 
   // ---- 센서 설정
   const setPort = (port: string, type: string) => {
@@ -268,6 +352,9 @@ export default function App() {
   const pickExperiment = (e: Experiment) => {
     const mode = e.mode ?? 'time';
     const r = newRun(mode, 0);
+    sessionIdRef.current = newSessionId();
+    setSavedSensors([]);
+    setCustom(null);
     setExp(e);
     setIntervalMs(e.intervalMs);
     setRuns(() => [r]);
@@ -304,8 +391,11 @@ export default function App() {
     if (autoStartRef.current && exp && screen === 'measure') { autoStartRef.current = false; start(); }
   }, [exp, screen]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const start = () => {
+  const start = (trigger?: Trigger) => {
     if (!exp) return;
+    triggerRef.current = trigger ?? null;
+    tOffsetRef.current = 0;
+    setWaiting(trigger ? {} : null);
     let id = activeIdRef.current;
     const cur = runs.find((r) => r.id === id);
     // 시간 기록 모드에서 이미 데이터가 있으면 새 측정으로 (이전 측정은 비교용으로 남김)
@@ -329,6 +419,8 @@ export default function App() {
   };
   const stop = () => {
     recordingRef.current = false;
+    triggerRef.current = null;
+    setWaiting(null);
     send('STOP');
   };
 
@@ -415,6 +507,10 @@ export default function App() {
           onNext={() => { setFw(null); setScreen(exp ? 'measure' : 'pick'); }}
         />
       )}
+      {screen === 'connect' && sharedTitle && (
+        <p className="shared-bar" role="status">🔗 {t('공유받은 실험: ‘{title}’ — 보드를 연결하면 바로 측정 화면이 열립니다.', { title: sharedTitle })}</p>
+      )}
+      {screen === 'connect' && <div className="wide connect-recent"><RecentSessions compact onOpen={openSession} say={say} /></div>}
 
       {screen === 'pick' && (
         <main className="wide">
@@ -435,10 +531,13 @@ export default function App() {
               <> · {t('인식된 센서:')} {sensors.filter((s) => !/^(A\d|D3)$/.test(s.src) && s.src !== 'demo').map((s) => s.displayName).join(', ')}</>}
           </p>
 
+          <RecentSessions onOpen={openSession} say={say} />
+
           <SensorPicker board={board} connectedTypes={sensors.filter((s) => s.src !== 'demo').map((s) => s.type)} onPick={(p) => setQuick({ part: p, status: 'idle' })} />
 
           <div className="row-head sub">
             <h2>{t('실험으로 찾기 (교육과정)')}</h2>
+            <button className="ghost" onClick={() => setSupplyOpen(true)}>{t('준비물 목록')}</button>
             <button className="ghost" disabled={!sensors.some((s) => s.spec && s.spec.cal.kind !== 'none')} onClick={() => openCal()}>{t('센서 보정')}</button>
           </div>
           <ExperimentBrowser experiments={experiments} connectedTypes={sensors.filter((x) => x.src !== 'demo' || transportRef.current?.kind === 'sim').map((x) => x.type)} onPick={pickExperiment} />
@@ -479,6 +578,12 @@ export default function App() {
           setIntervalMs={setIntervalMs}
           onStart={start}
           onStop={stop}
+          connected={!!hello}
+          waiting={waiting}
+          custom={custom}
+          setCustom={setCustom}
+          onShare={() => setShareOpen(true)}
+          onSaveFile={saveSessionFile}
           onBack={() => setScreen('pick')}
           onOpenSetup={() => setSetupOpen(true)}
           onOpenCal={openCal}
@@ -515,6 +620,9 @@ export default function App() {
           </div>
         </div>
       )}
+
+      {shareOpen && exp && <ShareSheet url={shareLink} title={exp.title} say={say} onClose={() => setShareOpen(false)} />}
+      {supplyOpen && <SupplySheet board={board} experiments={experiments} initialExp={exp ?? undefined} say={say} onClose={() => setSupplyOpen(false)} />}
 
       {cal && (
         <CalibrationSheet

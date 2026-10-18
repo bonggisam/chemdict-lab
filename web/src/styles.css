@@ -388,3 +388,61 @@ details.bb-note summary { cursor: pointer; min-height: 32px; }
 .pwa-bar { display: flex; flex-wrap: wrap; gap: 6px 16px; align-items: center; max-width: 1100px; margin: 8px auto 0; padding: 8px 14px; border-radius: var(--radius); background: var(--tint); font-size: 14px; }
 .pwa-bar .link { min-height: 32px; font-weight: 600; }
 .site-foot { max-width: 1100px; margin: 32px auto 24px; padding: 0 16px; text-align: center; } .site-foot p { margin: 2px 0; }
+
+/* ---- 이어서 하기 (자동 저장·측정 파일) */
+.recent { margin: 8px 0 18px; }
+.recent-list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 8px; }
+.recent-list li { display: flex; align-items: stretch; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); }
+.recent-open { flex: 1; display: flex; flex-direction: column; align-items: flex-start; gap: 2px; text-align: left; border: 0; background: none; padding: 10px 12px; min-height: var(--target); }
+.recent-list .x { border: 0; background: none; min-width: var(--target); color: var(--muted); }
+.connect-recent { margin-top: 0; }
+.connect-recent .recent-empty { text-align: center; }
+.shared-bar { max-width: 1100px; margin: 0 auto 12px; padding: 10px 14px; border-radius: var(--radius); background: var(--tint); border: 1px solid var(--accent); }
+
+/* ---- 실험 공유 */
+.share-sheet { width: min(460px, 100%); text-align: center; }
+.share-sheet .qr { display: flex; justify-content: center; margin: 12px 0; }
+.share-sheet .qr svg { width: min(300px, 80vw); height: auto; border-radius: var(--radius-sm); }
+.share-link { display: flex; gap: 8px; }
+.share-link input { flex: 1; min-width: 0; min-height: var(--target); }
+.share-sheet .sheet-actions { gap: 8px; justify-content: flex-end; }
+
+/* ---- 조건 시작 */
+.trigger { margin: 8px 0; border: 1px solid var(--line); border-radius: var(--radius); padding: 6px 12px; background: var(--surface); }
+.trigger summary { min-height: var(--target); display: flex; align-items: center; cursor: pointer; font-weight: 600; }
+.trigger-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.trigger-row input[inputmode] { width: 110px; min-height: var(--target); }
+.trigger-row select { min-height: var(--target); }
+.waiting { padding: 8px 12px; border-radius: var(--radius); background: var(--tint); color: var(--ink); }
+
+/* ---- 직접 만드는 계산 열 */
+.custom-calc { border: 1px dashed var(--field); border-radius: var(--radius); padding: 10px 12px; margin: 8px 0; }
+.custom-row { display: flex; flex-wrap: wrap; gap: 8px; }
+.custom-row label { display: flex; flex-direction: column; font-size: 13px; color: var(--muted); gap: 4px; }
+.custom-row label input { min-height: var(--target); width: 120px; }
+.custom-row label.grow { flex: 1; min-width: 200px; }
+.custom-row label.grow input { width: 100%; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+
+/* ---- 준비물 목록 */
+.supply-form { display: flex; flex-wrap: wrap; gap: 12px; margin: 8px 0; }
+.supply-form label { display: flex; flex-direction: column; gap: 4px; font-size: 13px; color: var(--muted); }
+.supply-form select { min-height: var(--target); max-width: 100%; }
+.supply-form input { min-height: var(--target); width: 90px; }
+.supply-pick { margin: 8px 0; }
+.supply-pick summary { min-height: var(--target); display: flex; align-items: center; cursor: pointer; }
+.supply-parts { max-height: 260px; overflow: auto; border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 6px 10px; margin-top: 6px; }
+.supply-parts fieldset { border: 0; padding: 0; margin: 6px 0; }
+.supply-parts legend { font-weight: 600; font-size: 13px; color: var(--muted); }
+.supply-parts label { display: flex; align-items: center; gap: 6px; min-height: 36px; }
+.supply-table tr.group td { padding-top: 12px; }
+.supply-sheet .sheet-actions { gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+.print-only { display: none; }
+
+@media print {
+  body:has(.share-sheet) .app > *:not(.sheet-backdrop),
+  body:has(.supply-sheet) .app > *:not(.sheet-backdrop) { display: none !important; }
+  .sheet-backdrop { position: static !important; background: none !important; padding: 0 !important; }
+  .sheet { box-shadow: none !important; width: 100% !important; max-height: none !important; overflow: visible !important; }
+  .sheet-actions, .share-link, .supply-form, .supply-pick, .supply-sheet > h2, .supply-sheet > .note { display: none !important; }
+  .print-only { display: block; }
+}

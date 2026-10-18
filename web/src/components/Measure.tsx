@@ -16,6 +16,9 @@ import { BreadboardNote } from './PartWiring';
 import { InfoSheet } from './InfoSheet';
 import { t, tk } from '../lib/i18n';
 import { infoRows, infoSummary, type ExpInfo } from '../lib/info';
+import { FORMULA_EXAMPLES, FormulaError, compile, evalColumn, type CustomCalc } from '../lib/formula';
+
+export interface Trigger { id: string; dir: 'up' | 'down'; value: number }
 
 interface Props {
   exp: Experiment;
@@ -27,7 +30,13 @@ interface Props {
   running: boolean;
   intervalMs: number;
   setIntervalMs: (ms: number) => void;
-  onStart: () => void;
+  onStart: (trigger?: Trigger) => void;
+  connected: boolean;
+  waiting: { value?: number } | null;     // 조건 시작을 기다리는 중
+  custom: CustomCalc | null;
+  setCustom: (c: CustomCalc | null) => void;
+  onShare: () => void;
+  onSaveFile: () => void;
   onStop: () => void;
   onBack: () => void;
   onOpenSetup: () => void;
@@ -71,7 +80,13 @@ export function Measure(p: Props) {
   // ---- 기타
   const [drawing, setDrawing] = useState(false);
   const [showTable, setShowTable] = useState(false);
-  const [calc, setCalc] = useState<CalcId>('none');
+  const [calc, setCalc] = useState<CalcId>(p.custom ? 'custom' : 'none');
+  const [showCalcChart, setShowCalcChart] = useState(false);
+  // ---- 조건 시작
+  const [trigOn, setTrigOn] = useState(false);
+  const [trigId, setTrigId] = useState('');
+  const [trigDir, setTrigDir] = useState<'up' | 'down'>('up');
+  const [trigVal, setTrigVal] = useState('');
   const [exportOpen, setExportOpen] = useState(false);
   const [infoOpen, setInfoOpen] = useState(false);
   const [eventX, setEventX] = useState<string>(String(ev?.start ?? 0));
@@ -252,7 +267,18 @@ export function Measure(p: Props) {
     : sensors.map((s) => ({ id: s.id, title: s.displayName, decimals: s.decimals }));
   const calcInfo = CALCS.find((c) => c.id === calc)!;
   const anaCol = cols.find((c) => c.id === anaId);
-  const calcTitle = calc !== 'none' && anaCol ? calcInfo.title(anaCol.title) : '';
+  const custom = p.custom ?? { name: '', unit: '', expr: '' };
+  const customFn = useMemo(() => {
+    if (calc !== 'custom' || !custom.expr.trim()) return { fn: null, err: '' };
+    try { return { fn: compile(custom.expr, sensors.map((x) => x.id)), err: '' }; }
+    catch (e) { return { fn: null, err: e instanceof FormulaError ? e.message : '?' }; }
+  }, [calc, custom.expr, sensors]);
+  const customTitle = `${custom.name.trim() || t('계산 값')}${custom.unit.trim() ? `(${custom.unit.trim()})` : ''}`;
+  const calcTitle = calc === 'custom' ? (customFn.fn ? customTitle : '') : calc !== 'none' && anaCol ? calcInfo.title(anaCol.title) : '';
+  const extraColumn = (xs: number[], vs: Record<string, number>[]) => {
+    if (calc === 'custom') return customFn.fn ? evalColumn(customFn.fn, xs, vs, anaId) : null;
+    return calc !== 'none' && anaId ? calcColumn(calc, xs, vs.map((v) => v[anaId] ?? NaN)) : null;
+  };
   const isTemp = (anaChart?.unit ?? '').includes('°C');
 
   /** 측정 하나의 숫자 표: [x, 센서들..., 계산 열?] + 행마다 제외 여부 */
@@ -261,7 +287,7 @@ export function Measure(p: Props) {
       ? run.events.map((e, i) => ({ i, x: e.x, v: e.v })).sort((a, b) => a.x - b.x)
       : run.rows.map((r, i) => ({ i, x: r.t, v: r.v }));
     const ex = new Set(run.excluded ?? []);
-    const extra = calc !== 'none' && anaId ? calcColumn(calc, items.map((it) => it.x), items.map((it) => it.v[anaId] ?? NaN)) : null;
+    const extra = extraColumn(items.map((it) => it.x), items.map((it) => it.v));
     return items.map((it, k) => ({
       idx: it.i,
       excluded: ex.has(it.i),
@@ -341,6 +367,7 @@ export function Measure(p: Props) {
       return;
     }
     if (k === 'copy') { await copyTable(); return; }
+    if (k === 'file') { p.onSaveFile(); return; }
     const r = buildReport();
     if (k === 'png') {
       const c = reportImage(r);
@@ -360,6 +387,19 @@ export function Measure(p: Props) {
   };
 
   const hasData = !!active && (active.rows.length > 0 || active.events.length > 0);
+  const calcPts = (run: Run): Pt[] => {
+    if (!calcTitle) return [];
+    return numericTable(run).filter((r) => !r.excluded && isFinite(r.cells[r.cells.length - 1])).map((r) => [r.cells[0], r.cells[r.cells.length - 1]] as Pt);
+  };
+  const startClick = () => {
+    const v = Number(trigVal);
+    if (trigOn && mode === 'time') {
+      const id = trigId || charts[0]?.sensor.id;
+      if (!id || trigVal.trim() === '' || !isFinite(v)) { p.say('err', t('조건 시작: 기준값을 숫자로 입력하세요.')); return; }
+      p.onStart({ id, dir: trigDir, value: v });
+    } else p.onStart();
+  };
+  const trigSensor = charts.find((c) => c.sensor.id === (trigId || charts[0]?.sensor.id));
   const derivPts = (run: Run) => (anaChart ? derivative(smooth(pointsFor(run, anaId), Math.max(3, smoothWin))) : []);
   const otherSensors = mode === 'time' ? allCharts : [];
 
@@ -374,10 +414,32 @@ export function Measure(p: Props) {
         <div className="controls">
           {mode === 'time' && <IntervalPicker value={p.intervalMs} disabled={running} onChange={p.setIntervalMs} />}
           {!running
-            ? <button className="primary" onClick={p.onStart}>{t('측정 시작')}</button>
+            ? <button className="primary" disabled={!p.connected} onClick={startClick}>{trigOn && mode === 'time' ? t('조건 기다리며 시작') : t('측정 시작')}</button>
             : <button className="danger" onClick={p.onStop}>{t('정지')}</button>}
         </div>
       </div>
+      {!p.connected && <p className="note warn">{t('저장된 측정을 보는 중입니다. 새로 측정하려면 보드를 연결하세요.')}</p>}
+      {mode === 'time' && charts.length > 0 && (
+        <details className="trigger" open={trigOn}>
+          <summary>{t('조건 시작')}{trigOn ? ` · ${t('켜짐')}` : ''}</summary>
+          <div className="trigger-row">
+            <label><input type="checkbox" checked={trigOn} disabled={running} onChange={(e) => setTrigOn(e.target.checked)} /> {t('값이 기준을 넘으면 기록 시작')}</label>
+            <select aria-label={t('조건 센서')} value={trigId || charts[0]?.sensor.id} disabled={running} onChange={(e) => setTrigId(e.target.value)}>
+              {charts.map((c) => <option key={c.sensor.id} value={c.sensor.id}>{c.label}</option>)}
+            </select>
+            <select aria-label={t('조건 방향')} value={trigDir} disabled={running} onChange={(e) => setTrigDir(e.target.value as 'up' | 'down')}>
+              <option value="up">{t('이상이 되면')}</option>
+              <option value="down">{t('이하가 되면')}</option>
+            </select>
+            <input aria-label={t('기준값')} inputMode="decimal" placeholder={t('기준값')} value={trigVal} disabled={running} onChange={(e) => setTrigVal(e.target.value)} />
+            <span className="unit">{trigSensor?.unit}</span>
+          </div>
+          <p className="note">{t('예: 반응 용액 온도가 25 °C 이상이 되면 기록 시작. 시간은 조건이 맞은 순간부터 0초로 셉니다.')}</p>
+        </details>
+      )}
+      {p.waiting && (
+        <p className="note waiting" role="status">⏳ {t('조건을 기다리는 중 · 지금 {v}', { v: p.waiting.value !== undefined ? `${fmt(p.waiting.value)} ${trigSensor?.unit ?? ''}` : '—' })}</p>
+      )}
       {mode === 'time' && p.intervalMs >= 2000 && !running && (
         <p className="note">{t('간격이 길면 그래프 점이 드문드문 찍힙니다. 온습도(DHT)는 2초, 이산화탄소(SCD4x)는 5초보다 짧으면 같은 값이 반복됩니다.')}</p>
       )}
@@ -507,6 +569,23 @@ export function Measure(p: Props) {
             exportName={`${baseName}_${anaId}_rate`}
           />
         )}
+        {showCalcChart && calcTitle && !xSensor && (
+          <Chart
+            title={calcTitle}
+            unit={calc === 'custom' ? custom.unit : ''}
+            series={visibleRuns.map((r) => ({ id: r.id, name: r.name, color: `--s${r.colorIndex + 1}`, pts: calcPts(r), points: effStyle !== 'line', line: effStyle !== 'points' }))}
+            xLabel={xLabel}
+            xUnit={xUnit}
+            xLog={logX}
+            timeAxis={mode === 'time'}
+            xRange={zoom}
+            selection={selection}
+            onSelect={setSelection}
+            tool={tool}
+            tangentPts={active ? calcPts(active) : undefined}
+            exportName={`${baseName}_calc`}
+          />
+        )}
       </div>
 
       {/* 도구 막대 */}
@@ -529,6 +608,7 @@ export function Measure(p: Props) {
                 : <button className="ghost" onClick={() => setDrawing(true)}>{t('예측 그리기')}</button>
           )}
           <button className="ghost" onClick={() => setShowTable((v) => !v)}>{showTable ? t('표 닫기') : t('표 보기')}</button>
+          <button className="ghost" onClick={p.onShare}>{t('QR 공유')}</button>
           <button className="primary" disabled={!dataRuns.length} onClick={() => setExportOpen(true)}>{t('저장하기')}</button>
         </div>
       </div>
@@ -611,10 +691,26 @@ export function Measure(p: Props) {
                 {CALCS.filter((c) => !c.tempOnly || isTemp).map((c) => <option key={c.id} value={c.id}>{t(c.name)}</option>)}
               </select>
             </label>
-            {calc !== 'none' && anaCol && <span className="note">{t('기준: {name}', { name: anaCol.title })}</span>}
+            {calc !== 'none' && calc !== 'custom' && anaCol && <span className="note">{t('기준: {name}', { name: anaCol.title })}</span>}
+            {calcTitle && !xSensor && <label className="mini"><input type="checkbox" checked={showCalcChart} onChange={(e) => setShowCalcChart(e.target.checked)} /> {t('그래프로 보기')}</label>}
             {!!active.excluded?.length && <button className="link" onClick={() => patchRun(active.id, { excluded: [] })}>{t('제외 {n}개 모두 되돌리기', { n: active.excluded.length })}</button>}
             <button className="link" disabled={!hasData} onClick={copyTable}>{t('표 복사')}</button>
           </div>
+          {calc === 'custom' && (
+            <div className="custom-calc">
+              <div className="custom-row">
+                <label>{t('이름')}<input value={custom.name} placeholder={t('예: 절대온도')} onChange={(e) => p.setCustom({ ...custom, name: e.target.value })} /></label>
+                <label>{t('단위')}<input value={custom.unit} placeholder="K" onChange={(e) => p.setCustom({ ...custom, unit: e.target.value })} /></label>
+                <label className="grow">{t('수식')}<input value={custom.expr} spellCheck={false} placeholder="y + 273.15" onChange={(e) => p.setCustom({ ...custom, expr: e.target.value })} /></label>
+              </div>
+              {customFn.err && <p className="note warn">{t('수식을 읽을 수 없습니다: ‘{tok}’ 부근을 확인하세요.', { tok: customFn.err === 'end' ? t('끝') : customFn.err })}</p>}
+              <p className="note">{t('쓸 수 있는 것: y = {name} 값, x = 가로축({x}), y0 = 첫 값, 센서 이름({ids}), + − * / ^ ( ), ln log sqrt abs exp sin cos, pi', { name: anaCol?.title ?? '', x: xUnit, ids: sensors.map((x) => x.id).join(', ') })}</p>
+              <div className="cands">
+                <span className="note">{t('예시:')}</span>
+                {FORMULA_EXAMPLES.map((f) => <button key={f.expr} className="chip-btn" onClick={() => p.setCustom({ name: t(f.name), unit: f.unit, expr: f.expr })}>{t(f.name)} · {f.expr}</button>)}
+              </div>
+            </div>
+          )}
           <p className="note">{t('튀는 값은 ‘제외’를 눌러 그래프와 해석에서 뺄 수 있습니다 (데이터는 지워지지 않음).')}</p>
           <DataTable
             head={[mode === 'event' ? xTitle : t('시간(s)'), ...cols.map((c) => c.title), ...(calcTitle ? [calcTitle] : [])]}
