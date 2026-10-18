@@ -530,6 +530,12 @@ export default function App() {
         />
       )}
 
+      {screen !== 'measure' && (
+        <footer className="site-foot note">
+          <p>{t('© 2026 ChemDict 화학사전 · 학교·개인 비상업 사용 무료 · 무단 판매·재배포 금지')}</p>
+          <p>{t('Arduino는 Arduino SA의 상표이며, 이 앱은 Arduino 공식 제품이 아닙니다.')}</p>
+        </footer>
+      )}
       </Fragment>
       {toast && <div className={`toast ${toast.kind}`} role="status">{toast.text}</div>}
     </div>

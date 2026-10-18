@@ -1,0 +1,20 @@
+Required Notice: Copyright (c) 2026 bonggisam (ChemDict 화학사전). https://github.com/bonggisam/chemdict-lab
+
+The ChemDict Lab firmware source in this folder is licensed under the
+PolyForm Noncommercial License 1.0.0 (see ../LICENSE), with the following
+additional permission.
+
+Additional permission (LGPL compatibility)
+------------------------------------------
+The compiled firmware (*.hex) is linked with libraries licensed under the
+GNU Lesser General Public License v2.1 (Arduino core, ArduinoBLE,
+DallasTemperature). For those libraries, anyone who receives the compiled
+firmware may, for any purpose, modify those libraries, relink them with
+this firmware source, and reverse-engineer the firmware to debug such
+modifications, as required by section 6 of the LGPL v2.1. This permission
+covers only what the LGPL requires and does not otherwise allow
+commercial use of the ChemDict Lab firmware.
+
+추가 허가: 펌웨어에 들어간 LGPL 라이브러리를 고쳐서 다시 링크하거나,
+그 디버깅을 위한 역분석은 LGPL 2.1 제6조에 따라 누구나 할 수 있습니다.
+그 밖의 상업적 이용은 허용하지 않습니다.

@@ -14,7 +14,6 @@ UNO R4 WiFi + 센서로 측정하고, 맥·윈도우(웹앱)와 아이패드·�
 | `protocol/` | 보드↔앱 통신 규칙, 실험 템플릿(JSON) — 두 앱이 함께 씀 |
 | `firmware/` | UNO R4 WiFi 펌웨어 (USB+BLE, 데모 모드, 2점 보정) |
 | `web/` | 웹앱 (React + TypeScript, Web Serial·Web Bluetooth, 시뮬레이터) |
-| `apple/` | SwiftUI 앱 (iOS·iPadOS 16+, macOS 13+, CoreBluetooth) |
 
 ## 웹앱 실행
 
@@ -31,7 +30,7 @@ npm run dev      # http://localhost:5173
 
 ## 실험 추가하기
 
-`protocol/experiments/`에 JSON 파일 하나를 추가하면 웹앱과 애플 앱에 함께 나타납니다. 형식은 `protocol/PROTOCOL.md` 6절.
+`protocol/experiments/`에 JSON 파일 하나를 추가하면 웹앱(과 아이패드·맥 앱)에 함께 나타납니다. 형식은 `protocol/PROTOCOL.md` 6절.
 
 ## 현재 상태 (v0.2)
 
@@ -54,3 +53,10 @@ npm run dev      # http://localhost:5173
 - [x] DHT 온습도 센서(D4) 실제 보드에서 인식·측정 확인 (펌웨어 0.2.2, 2026-10-17)
 - [ ] 실제 센서(Modulino Thermo, DS18B20, pH) 연결 확인, 웹앱 USB·블루투스 연결 확인
 - [ ] 반 전체 결과 비교
+
+## 라이선스
+
+- 웹앱·펌웨어·센서 데이터: **PolyForm Noncommercial 1.0.0** — 학교·개인 비상업 사용 무료, 판매·상업적 재배포 금지. 요약은 [NOTICE.md](NOTICE.md), 정식 조건은 [LICENSE](LICENSE).
+- 펌웨어의 LGPL 라이브러리 관련 추가 허가: [firmware/LICENSE](firmware/LICENSE), 제3자 고지: [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+- 아이패드·맥 앱은 별도 비공개 저장소의 유료 제품입니다.
+- Arduino는 Arduino SA의 상표이며, ChemDict Lab은 Arduino 공식 제품이 아닙니다.

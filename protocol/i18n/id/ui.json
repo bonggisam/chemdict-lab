@@ -431,5 +431,7 @@
  "바탕화면·홈 화면에 아이콘이 생깁니다.": "Menambahkan ikon ke desktop atau layar utama.",
  "센서 이름·부품 번호로 찾기 (예: MQ-3, BH1750)": "Cari nama sensor atau nomor komponen (mis. MQ-3, BH1750)",
  "센서 찾기": "Cari sensor",
- "찾는 센서가 없습니다. 아날로그 출력 센서는 '기타 아날로그 센서'로 잴 수 있습니다.": "Sensor tidak ditemukan. Sensor dengan keluaran analog dapat diukur dengan 'Sensor analog lain'."
+ "찾는 센서가 없습니다. 아날로그 출력 센서는 '기타 아날로그 센서'로 잴 수 있습니다.": "Sensor tidak ditemukan. Sensor dengan keluaran analog dapat diukur dengan 'Sensor analog lain'.",
+ "© 2026 ChemDict 화학사전 · 학교·개인 비상업 사용 무료 · 무단 판매·재배포 금지": "© 2026 ChemDict · Gratis untuk sekolah dan pribadi non-komersial · Dilarang menjual atau mendistribusikan ulang",
+ "Arduino는 Arduino SA의 상표이며, 이 앱은 Arduino 공식 제품이 아닙니다.": "Arduino adalah merek dagang Arduino SA. Aplikasi ini bukan produk resmi Arduino."
 }

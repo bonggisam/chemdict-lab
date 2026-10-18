@@ -387,3 +387,4 @@ details.bb-note summary { cursor: pointer; min-height: 32px; }
 /* ---- 오프라인 모드 알림 */
 .pwa-bar { display: flex; flex-wrap: wrap; gap: 6px 16px; align-items: center; max-width: 1100px; margin: 8px auto 0; padding: 8px 14px; border-radius: var(--radius); background: var(--tint); font-size: 14px; }
 .pwa-bar .link { min-height: 32px; font-weight: 600; }
+.site-foot { max-width: 1100px; margin: 32px auto 24px; padding: 0 16px; text-align: center; } .site-foot p { margin: 2px 0; }
