@@ -1,4 +1,6 @@
 import type { Board } from '../lib/guide';
+import { Ico } from './Ico';
+import { ICON } from '../lib/icons';
 import { t, tk } from '../lib/i18n';
 import { troubles } from '../lib/guide';
 import { BUNDLED_FW, IDE_ONLY, TARGETS } from '../lib/flash';
@@ -42,24 +44,24 @@ export function BoardStep({ board, detectedId, onPickBoard, connected, busy, fw,
       <h1><span className="step-no">1</span>{t('보드 연결')}</h1>
 
       <section className="guide-block">
-        <h2>{t('보드 고르기')}</h2>
+        <h2><Ico e={ICON.board} />{t('보드 고르기')}</h2>
         <p className="note">{t('가지고 있는 보드를 누르세요. USB로 연결하면 자동으로 맞춰집니다.')}</p>
         <BoardPicker board={board} detectedId={detectedId} onPick={onPickBoard} />
       </section>
 
       <section className="guide-block">
-        <h2>{t('연결하기')}</h2>
+        <h2><Ico e={ICON.usb} />{t('연결하기')}</h2>
         <div className="connect-grid">
           <button className="big" disabled={!hasSerial() || busy || connected} onClick={() => onConnect('serial')}>
-            <b>{t('USB로 연결')}</b>
+            <span className="big-ico" aria-hidden="true">{ICON.usb}</span><b>{t('USB로 연결')}</b>
             <span>{hasSerial() ? t('맥·윈도우·크롬북 (크롬·엣지)') : t('이 브라우저에서는 사용할 수 없음')}</span>
           </button>
           <button className="big" disabled={!hasBluetooth() || busy || connected || !board.ble} onClick={() => onConnect('ble')}>
-            <b>{t('블루투스로 연결')}</b>
+            <span className="big-ico" aria-hidden="true">{ICON.ble}</span><b>{t('블루투스로 연결')}</b>
             <span>{!board.ble ? t('이 보드는 USB만 됩니다') : hasBluetooth() ? 'ChemDict-01 ~ 08' : t('이 브라우저에서는 사용할 수 없음')}</span>
           </button>
           <button className="big alt" disabled={busy || connected} onClick={() => onConnect('sim')}>
-            <b>{t('보드 없이 체험')}</b>
+            <span className="big-ico" aria-hidden="true">{ICON.sim}</span><b>{t('보드 없이 체험')}</b>
             <span>{t('시뮬레이터 데이터')}</span>
           </button>
         </div>

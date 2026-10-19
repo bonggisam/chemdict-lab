@@ -1,4 +1,6 @@
 import { useRef, useState } from 'react';
+import { Ico } from './Ico';
+import { ICON } from '../lib/icons';
 import { listSessions, readSessionFile, removeSession, sessionSummary, type Session } from '../lib/session';
 import { t } from '../lib/i18n';
 
@@ -16,7 +18,7 @@ export function RecentSessions({ onOpen, say, compact }: { onOpen: (s: Session) 
   if (compact && !list.length) {
     return (
       <p className="note recent-empty">
-        <button className="link" onClick={() => fileRef.current?.click()}>{t('측정 파일 열기')}</button>
+        <button className="link" onClick={() => fileRef.current?.click()}><Ico e={ICON.open} />{t('측정 파일 열기')}</button>
         <input ref={fileRef} type="file" accept=".chemdict,.json,application/json" hidden onChange={(e) => openFile(e.target.files?.[0])} />
       </p>
     );
@@ -24,8 +26,8 @@ export function RecentSessions({ onOpen, say, compact }: { onOpen: (s: Session) 
   return (
     <section className="recent">
       <div className="row-head sub">
-        <h2>{t('이어서 하기')}</h2>
-        <button className="ghost" onClick={() => fileRef.current?.click()}>{t('측정 파일 열기')}</button>
+        <h2><Ico e={ICON.recent} />{t('이어서 하기')}</h2>
+        <button className="ghost" onClick={() => fileRef.current?.click()}><Ico e={ICON.open} />{t('측정 파일 열기')}</button>
         <input ref={fileRef} type="file" accept=".chemdict,.json,application/json" hidden onChange={(e) => openFile(e.target.files?.[0])} />
       </div>
       {list.length
@@ -36,7 +38,7 @@ export function RecentSessions({ onOpen, say, compact }: { onOpen: (s: Session) 
               return (
                 <li key={s.id}>
                   <button className="recent-open" onClick={() => onOpen(s)}>
-                    <b>{m.title}</b>
+                    <b><Ico e="📈" />{m.title}</b>
                     <span className="note">{fmtWhen(m.when)} · {t('측정 {n}개', { n: m.runs })} · {t('{n}점', { n: m.points })}</span>
                   </button>
                   <button className="x" aria-label={t('{name} 지우기', { name: m.title })} onClick={() => { removeSession(s.id); setList(listSessions()); }}>×</button>

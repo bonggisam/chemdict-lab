@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { Ico } from './Ico';
+import { catIcon } from '../lib/icons';
 import { categories, partSupported, parts, type Board, type Part } from '../lib/guide';
 import { typeInfo } from '../lib/sensors';
 import { t } from '../lib/i18n';
@@ -27,7 +29,7 @@ export function SensorPicker({ board, connectedTypes, onPick }: Props) {
         placeholder={t('센서 이름·부품 번호로 찾기 (예: MQ-3, BH1750)')} aria-label={t('센서 찾기')} />
       <div className="cat-chips" role="tablist" aria-label={t('센서 분류')}>
         {['전체', ...categories].map((c) => (
-          <button key={c} role="tab" aria-selected={c === cat} className={c === cat ? 'on' : ''} onClick={() => setCat(c)}>{c === '전체' ? t('전체') : catName(c)}</button>
+          <button key={c} role="tab" aria-selected={c === cat} className={c === cat ? 'on' : ''} onClick={() => setCat(c)}><Ico e={catIcon(c)} />{c === '전체' ? t('전체') : catName(c)}</button>
         ))}
       </div>
       <div className="sensor-cards">
@@ -35,7 +37,8 @@ export function SensorPicker({ board, connectedTypes, onPick }: Props) {
           const ok = partSupported(board, p);
           const on = isOn(p);
           return (
-            <button key={p.id} className={`sensor-card ${ok ? '' : 'dim'}`} onClick={() => onPick(p)}>
+            <button key={p.id} className={`sensor-card ${ok ? '' : 'dim'} ${on ? 'is-on' : ''}`} onClick={() => onPick(p)}>
+              <span className="sc-ico" aria-hidden="true">{catIcon(p.category)}</span>
               <b>{p.name}</b>
               <span className="measures">{p.provides.map((ty) => typeInfo(ty)?.name ?? ty).join(' · ')}</span>
               <span className="badges">

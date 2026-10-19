@@ -1,4 +1,6 @@
 import { useMemo, useState } from 'react';
+import { Ico } from './Ico';
+import { ICON } from '../lib/icons';
 import { Chart, fmt, type ChartTool, type Overlays, type Series } from './Chart';
 import { IntervalPicker, intervalText } from './IntervalPicker';
 import { ExportSheet, type ExportKind } from './ExportSheet';
@@ -414,14 +416,14 @@ export function Measure(p: Props) {
         <div className="controls">
           {mode === 'time' && <IntervalPicker value={p.intervalMs} disabled={running} onChange={p.setIntervalMs} />}
           {!running
-            ? <button className="primary" disabled={!p.connected} onClick={startClick}>{trigOn && mode === 'time' ? t('조건 기다리며 시작') : t('측정 시작')}</button>
-            : <button className="danger" onClick={p.onStop}>{t('정지')}</button>}
+            ? <button className="primary rec" disabled={!p.connected} onClick={startClick}><Ico e={ICON.start} />{trigOn && mode === 'time' ? t('조건 기다리며 시작') : t('측정 시작')}</button>
+            : <button className="danger" onClick={p.onStop}><Ico e={ICON.stop} />{t('정지')}</button>}
         </div>
       </div>
       {!p.connected && <p className="note warn">{t('저장된 측정을 보는 중입니다. 새로 측정하려면 보드를 연결하세요.')}</p>}
       {mode === 'time' && charts.length > 0 && (
         <details className="trigger" open={trigOn}>
-          <summary>{t('조건 시작')}{trigOn ? ` · ${t('켜짐')}` : ''}</summary>
+          <summary><Ico e={ICON.trigger} />{t('조건 시작')}{trigOn ? ` · ${t('켜짐')}` : ''}</summary>
           <div className="trigger-row">
             <label><input type="checkbox" checked={trigOn} disabled={running} onChange={(e) => setTrigOn(e.target.checked)} /> {t('값이 기준을 넘으면 기록 시작')}</label>
             <select aria-label={t('조건 센서')} value={trigId || charts[0]?.sensor.id} disabled={running} onChange={(e) => setTrigId(e.target.value)}>
@@ -445,7 +447,7 @@ export function Measure(p: Props) {
       )}
 
       <div className="info-bar">
-        <span><b>{t('실험 정보')}</b> {infoSummary(p.info) || <span className="note">{t('모둠·이름·날짜 (선택) — 저장할 때 함께 남습니다')}</span>}</span>
+        <span><Ico e={ICON.info} /><b>{t('실험 정보')}</b> {infoSummary(p.info) || <span className="note">{t('모둠·이름·날짜 (선택) — 저장할 때 함께 남습니다')}</span>}</span>
         <button className="ghost" onClick={() => setInfoOpen(true)}>{infoSummary(p.info) ? t('수정') : t('입력')}</button>
       </div>
 
@@ -472,7 +474,7 @@ export function Measure(p: Props) {
       </div>
 
       <details className="steps">
-        <summary>{t('실험 순서 보기')}</summary>
+        <summary><Ico e="🧑‍🔬" />{t('실험 순서 보기')}</summary>
         <ol>{exp.steps.map((s, i) => <li key={i}>{s}</li>)}</ol>
       </details>
       {bb && <BreadboardNote need={bb.need} why={bb.why} circuit={bb.circuit} />}
@@ -593,23 +595,23 @@ export function Measure(p: Props) {
         {mode === 'time' && exp.markers.enabled && (
           <div className="marker">
             <input id="marker-note" aria-label={exp.markers.label} value={markerNote} placeholder={exp.markers.prompt} onChange={(e) => setMarkerNote(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter') addMarker(); }} />
-            <button onClick={addMarker} disabled={!running}>{exp.markers.label}</button>
+            <button onClick={addMarker} disabled={!running}><Ico e={ICON.marker} />{exp.markers.label}</button>
           </div>
         )}
         <div className="actions">
-          <button className="ghost" onClick={p.onOpenGuide}>{t('연결 안내')}</button>
-          <button className="ghost" disabled={running} onClick={p.onOpenSetup}>{t('센서 설정')}</button>
-          <button className="ghost" disabled={!sensors.some((s) => s.spec && s.spec.cal.kind !== 'none')} onClick={() => p.onOpenCal(charts[0]?.sensor.id)}>{t('보정')}</button>
+          <button className="ghost" onClick={p.onOpenGuide}><Ico e={ICON.guide} />{t('연결 안내')}</button>
+          <button className="ghost" disabled={running} onClick={p.onOpenSetup}><Ico e={ICON.setup} />{t('센서 설정')}</button>
+          <button className="ghost" disabled={!sensors.some((s) => s.spec && s.spec.cal.kind !== 'none')} onClick={() => p.onOpenCal(charts[0]?.sensor.id)}><Ico e={ICON.cal} />{t('보정')}</button>
           {charts.length > 0 && !xSensor && (
             drawing
               ? <button className="ghost" onClick={() => setDrawing(false)}>{t('그리기 취소')}</button>
               : active?.prediction.length || runs.some((r) => r.prediction.length)
                 ? <button className="ghost" onClick={() => setRuns((rs) => rs.map((r) => ({ ...r, prediction: [] })))}>{t('예측 지우기')}</button>
-                : <button className="ghost" onClick={() => setDrawing(true)}>{t('예측 그리기')}</button>
+                : <button className="ghost" onClick={() => setDrawing(true)}><Ico e={ICON.predict} />{t('예측 그리기')}</button>
           )}
-          <button className="ghost" onClick={() => setShowTable((v) => !v)}>{showTable ? t('표 닫기') : t('표 보기')}</button>
-          <button className="ghost" onClick={p.onShare}>{t('QR 공유')}</button>
-          <button className="primary" disabled={!dataRuns.length} onClick={() => setExportOpen(true)}>{t('저장하기')}</button>
+          <button className="ghost" onClick={() => setShowTable((v) => !v)}><Ico e={ICON.table} />{showTable ? t('표 닫기') : t('표 보기')}</button>
+          <button className="ghost" onClick={p.onShare}><Ico e={ICON.share} />{t('QR 공유')}</button>
+          <button className="primary" disabled={!dataRuns.length} onClick={() => setExportOpen(true)}><Ico e={ICON.save} />{t('저장하기')}</button>
         </div>
       </div>
 
@@ -617,7 +619,7 @@ export function Measure(p: Props) {
       {anaChart && analysis && (
         <section className="analysis">
           <div className="ana-head">
-            <h2>{t('데이터 해석')}</h2>
+            <h2><Ico e={ICON.analysis} />{t('데이터 해석')}</h2>
             {charts.length > 1 && (
               <select id="ana-sensor" value={anaId} onChange={(e) => setAnaSensor(e.target.value)} aria-label={t('해석할 센서')}>
                 {charts.map((c) => <option key={c.sensor.id} value={c.sensor.id}>{c.label}</option>)}

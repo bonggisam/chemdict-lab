@@ -1,4 +1,6 @@
 import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { Ico } from './components/Ico';
+import { ICON } from './lib/icons';
 import { Measure, type Trigger } from './components/Measure';
 import { RecentSessions } from './components/RecentSessions';
 import { ShareSheet } from './components/ShareSheet';
@@ -536,9 +538,9 @@ export default function App() {
           <SensorPicker board={board} connectedTypes={sensors.filter((s) => s.src !== 'demo').map((s) => s.type)} onPick={(p) => setQuick({ part: p, status: 'idle' })} />
 
           <div className="row-head sub">
-            <h2>{t('실험으로 찾기 (교육과정)')}</h2>
-            <button className="ghost" onClick={() => setSupplyOpen(true)}>{t('준비물 목록')}</button>
-            <button className="ghost" disabled={!sensors.some((s) => s.spec && s.spec.cal.kind !== 'none')} onClick={() => openCal()}>{t('센서 보정')}</button>
+            <h2><Ico e={ICON.experiment} />{t('실험으로 찾기 (교육과정)')}</h2>
+            <button className="ghost" onClick={() => setSupplyOpen(true)}><Ico e={ICON.supply} />{t('준비물 목록')}</button>
+            <button className="ghost" disabled={!sensors.some((s) => s.spec && s.spec.cal.kind !== 'none')} onClick={() => openCal()}><Ico e={ICON.cal} />{t('센서 보정')}</button>
           </div>
           <ExperimentBrowser experiments={experiments} connectedTypes={sensors.filter((x) => x.src !== 'demo' || transportRef.current?.kind === 'sim').map((x) => x.type)} onPick={pickExperiment} />
 

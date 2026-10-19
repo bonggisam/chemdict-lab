@@ -1,23 +1,27 @@
 /* 디자인 기준: docs/DESIGN.md — 색·글자·크기는 여기 토큰만 씁니다. */
 :root {
-  --bg: #eef3f4; --surface: #ffffff; --ink: #10222b; --muted: #56687a;
-  --line: #d5dee2;      /* 구분선(장식) */
-  --field: #7d8c99;     /* 입력칸·선택칸 테두리 (3:1 이상) */
-  --accent: #0b6e79; --accent-ink: #ffffff; --tint: rgba(11, 110, 121, 0.08);
-  --mark: #b45309; --danger: #b91c1c; --danger-ink: #ffffff; --ok: #15803d;
+  /* 브랜드 (유튜브 채널 로고): 숲빛 검정 · 민트 육각형 · 주황 원자 */
+  --brand-deep: #0f1a17; --brand-deep-2: #17271f; --mint: #00d49a; --atom: #ff7a3d;
+  --bg: #eef4f1; --surface: #ffffff; --ink: #10211c; --muted: #52665d;
+  --line: #d3dfda;      /* 구분선(장식) */
+  --field: #7a8d85;     /* 입력칸·선택칸 테두리 (3:1 이상) */
+  --accent: #007a5e; --accent-ink: #ffffff; --tint: rgba(0, 212, 154, 0.11);
+  --mark: #c2410c; --danger: #c62828; --danger-ink: #ffffff; --ok: #15803d;
   /* 측정(run) 색: dataviz 검증 팔레트 1~5번 — 순서 고정, 색약 검사 통과 */
   --s1: #2a78d6; --s2: #eb6834; --s3: #1baf7a; --s4: #eda100; --s5: #e87ba4;
-  --radius: 10px; --radius-sm: 6px; --target: 44px;
+  --radius: 14px; --radius-sm: 8px; --target: 44px;
+  --shadow: 0 1px 0 rgba(15, 26, 23, 0.04), 0 6px 18px -8px rgba(15, 26, 23, 0.18);
   font-family: "Pretendard Variable", "Pretendard", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
   color-scheme: light;
 }
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #0f1720; --surface: #16212c; --ink: #e4ebf2; --muted: #93a2b1; --line: #283746;
-    --field: #6b7f90;
-    --accent: #5cc6d0; --accent-ink: #0f1720; --tint: rgba(92, 198, 208, 0.12);
-    --mark: #f2b45a; --danger: #f87171; --danger-ink: #0f1720; --ok: #4ade80;
+    --bg: #0b1411; --surface: #13211c; --ink: #e3eee9; --muted: #93a89f; --line: #24362f;
+    --field: #5f7770;
+    --accent: #2ee6b0; --accent-ink: #06231a; --tint: rgba(46, 230, 176, 0.12);
+    --mark: #ff8a52; --danger: #f87171; --danger-ink: #0f1a17; --ok: #4ade80;
     --s1: #3987e5; --s2: #d95926; --s3: #199e70; --s4: #c98500; --s5: #d55181;
+    --shadow: 0 1px 0 rgba(0, 0, 0, 0.3), 0 8px 22px -10px rgba(0, 0, 0, 0.6);
     color-scheme: dark;
   }
 }
@@ -446,3 +450,94 @@ details.bb-note summary { cursor: pointer; min-height: 32px; }
   .sheet-actions, .share-link, .supply-form, .supply-pick, .supply-sheet > h2, .supply-sheet > .note { display: none !important; }
   .print-only { display: block; }
 }
+
+
+/* =========================================================
+   v0.7 브랜드 디자인 — 채널 로고(숲빛 검정·민트 육각형·주황 원자)에서 가져옴
+   대담함은 한 곳(위쪽 띠: 분자 사슬 단계 표시)에만, 나머지는 조용하게.
+   ========================================================= */
+body { letter-spacing: -0.005em; }
+h1 { font-weight: 800; letter-spacing: -0.025em; }
+h2 { font-weight: 700; letter-spacing: -0.015em; }
+.ico { display: inline-block; margin-right: 6px; font-size: 1.05em; line-height: 1; transform: translateY(1px); }
+button .ico { margin-right: 6px; }
+h1 .ico, h2 .ico { margin-right: 8px; }
+
+/* 위쪽 띠: 화면 전체 폭 숲빛 검정 */
+.app { padding-top: 0; }
+.top {
+  max-width: none; margin: 0 calc(-1 * max(16px, env(safe-area-inset-left))) 0;
+  padding: 12px max(16px, calc((100vw - 1100px) / 2), env(safe-area-inset-left));
+  padding-top: max(12px, env(safe-area-inset-top));
+  background: radial-gradient(120% 140% at 0% 0%, var(--brand-deep-2) 0%, var(--brand-deep) 60%);
+  color: #e8f3ee; border-bottom: 0;
+}
+.top > * { position: relative; }
+.brand { color: #fff; font-size: 19px; font-weight: 800; letter-spacing: -0.02em; }
+.brand .logo { width: 40px; height: 40px; border-radius: 12px; box-shadow: 0 0 0 1px rgba(0, 212, 154, 0.35); }
+.conn { color: #b9cdc4; }
+.conn .dot { background: var(--mint); box-shadow: 0 0 0 4px rgba(0, 212, 154, 0.18); }
+.top button.ghost, .conn button { background: rgba(255, 255, 255, 0.06); border-color: rgba(255, 255, 255, 0.16); color: #e8f3ee; }
+.lang-pick { color: #b9cdc4; }
+.lang-pick select { background: rgba(255, 255, 255, 0.06); border-color: rgba(255, 255, 255, 0.22); color: #e8f3ee; }
+.lang-pick select option { color: #10211c; }
+
+/* 단계 표시: 분자 사슬 — 단계는 원자, 사이는 점선 결합, 지금 단계는 주황 원자 */
+.top-nav.stepper { background: transparent; padding: 6px 0 2px; gap: 0; border-radius: 0; }
+.stepper button { position: relative; background: transparent; color: #a9bfb5; font-weight: 600; }
+.stepper button + button::before {
+  content: ""; position: absolute; left: -14%; width: 28%; top: 50%; border-top: 2px dashed rgba(0, 212, 154, 0.45);
+}
+.stepper .n { width: 30px; height: 30px; border: 2px solid rgba(0, 212, 154, 0.55); color: #d6efe5; font-weight: 800; background: transparent; }
+.stepper button.on { background: transparent; color: #fff; box-shadow: none; }
+.stepper button.on .n {
+  background: radial-gradient(circle at 35% 30%, #ffc3a2 0%, var(--atom) 45%, #e8571b 100%);
+  border-color: transparent; color: #2a0f02; box-shadow: 0 0 0 5px rgba(255, 122, 61, 0.22);
+}
+.stepper button.done .n { background: var(--mint); border-color: var(--mint); color: var(--brand-deep); }
+.stepper button:not(.on):hover { color: #fff; }
+
+/* 본문 카드: 반지름은 위계에 따라 — 큰 덩어리 14px, 작은 칩 999px, 표 8px */
+.guide-block, .setup, .steps, .trigger, .chart, .analysis, .data-table, .recent-list li, .info-bar { box-shadow: var(--shadow); }
+.guide-block { border-radius: 18px; }
+.step-no { width: 34px; height: 34px; background: var(--brand-deep); color: var(--mint); font-weight: 800; border-radius: 10px; }
+
+/* 버튼 */
+button { border-radius: 10px; font-weight: 600; transition: background-color .15s, border-color .15s, transform .08s; }
+button:not(:disabled):active { transform: translateY(1px); }
+button.primary { box-shadow: 0 6px 16px -8px color-mix(in srgb, var(--accent) 80%, transparent); }
+button.primary.rec { background: var(--atom); border-color: var(--atom); color: #2a0f02; box-shadow: 0 6px 18px -8px rgba(255, 122, 61, 0.9); }
+button.primary.rec:disabled { box-shadow: none; }
+button.ghost:not(:disabled):hover { background: var(--tint); border-color: var(--accent); }
+
+/* 1단계: 연결 방법 큰 버튼 */
+button.big { padding: 22px 16px 18px; border-radius: 18px; box-shadow: var(--shadow); }
+button.big .big-ico { font-size: 34px; line-height: 1; margin-bottom: 6px; }
+button.big.alt { background: linear-gradient(160deg, var(--tint), transparent 70%), var(--surface); border-color: color-mix(in srgb, var(--accent) 40%, var(--line)); }
+
+/* 센서 카드: 분류 아이콘 타일 */
+.cat-chips button { background: var(--surface); }
+.cat-chips button.on { background: var(--brand-deep); border-color: var(--brand-deep); color: #fff; }
+.sensor-card { position: relative; display: grid; grid-template-columns: 44px 1fr; grid-template-areas: "ico name" "ico meas" "ico badge"; column-gap: 12px; row-gap: 2px; align-items: start; padding: 14px; border-radius: 16px; box-shadow: var(--shadow); }
+.sensor-card .sc-ico { grid-area: ico; width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center; font-size: 22px; background: var(--tint); }
+.sensor-card b { grid-area: name; }
+.sensor-card .measures { grid-area: meas; }
+.sensor-card .badges { grid-area: badge; margin-top: 6px; }
+.sensor-card.is-on { border-color: var(--accent); }
+.sensor-card.is-on .sc-ico { background: var(--mint); }
+.sensor-card:not(:disabled):hover { border-color: var(--accent); transform: translateY(-1px); }
+
+/* 측정 화면: 지금 값은 크게, 측정 중이면 주황 원자 점이 숨 쉼 */
+.chart { border-radius: 18px; padding: 14px 14px 8px; }
+.chart-value { font-size: 40px; font-weight: 800; letter-spacing: -0.03em; }
+.chart .stable { font-weight: 600; }
+.chart .stable::before { content: ""; display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--atom); margin-right: 6px; vertical-align: 1px; animation: atom-pulse 1.4s ease-in-out infinite; }
+.chart .stable.on::before { background: var(--ok); animation: none; }
+@keyframes atom-pulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(255, 122, 61, 0.55); } 50% { box-shadow: 0 0 0 6px rgba(255, 122, 61, 0); } }
+@media (prefers-reduced-motion: reduce) { .chart .stable::before { animation: none; } button { transition: none; } }
+.run { box-shadow: var(--shadow); }
+.mode-badge { background: var(--tint); border-color: transparent; font-weight: 600; }
+.toolbar .actions button.ghost { background: var(--surface); }
+.sheet { border-radius: 20px; }
+.toast { border-radius: 12px; box-shadow: var(--shadow); }
+.site-foot { opacity: .85; }

@@ -21,12 +21,13 @@ export default defineConfig({
         start_url: '.',
         scope: '.',
         display: 'standalone',
-        background_color: '#eef3f4',
-        theme_color: '#0b6e79',
+        background_color: '#0f1a17',
+        theme_color: '#0f1a17',
         icons: [
           { src: 'logo-180.png', sizes: '180x180', type: 'image/png' },
           { src: 'logo-256.png', sizes: '256x256', type: 'image/png' },
           { src: 'logo-512.png', sizes: '512x512', type: 'image/png', purpose: 'any' },
+          { src: 'logo-512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
         ],
       },
       workbox: {
