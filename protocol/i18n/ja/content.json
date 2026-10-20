@@ -67,7 +67,7 @@
  "board.giga-r1.adc": "ボードの資料を確認",
  "board.giga-r1.qwiic": "なし",
  "board.giga-r1.notes.0": "3.3 Vのボードです。5 Vの信号を出すモジュール(MQガス、HC-SR04、5 V専用pHモジュールなど)の信号線を直接つながないでください。",
- "board.uno-q.firmwareNote": "すべてのセンサーに対応。測定はBluetoothのみです（USB-Cは電源とプログラム書き込み用）。最初に一度だけArduino IDEで測定プログラムを書き込みます。",
+ "board.uno-q.firmwareNote": "すべてのセンサーに対応。実機で確認しました。測定はBluetoothのみです（USB-Cは電源とプログラム書き込み用）。最初に一度だけArduino IDEで測定プログラムを書き込みます。",
  "board.uno-q.adc": "12ビット（0〜3.3 V）",
  "board.uno-q.qwiic": "あり（3.3 V）",
  "board.uno-q.notes.0": "I2CセンサーはQwiic端子かAREF横のSDA・SCLピンにつなぎます。UNO QではA4・A5はI2Cではありません。",

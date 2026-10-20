@@ -67,7 +67,7 @@
  "board.giga-r1.adc": "Xem tài liệu bo mạch",
  "board.giga-r1.qwiic": "Không có",
  "board.giga-r1.notes.0": "Đây là bo mạch 3.3 V. Không nối trực tiếp dây tín hiệu của mô-đun xuất tín hiệu 5 V (cảm biến khí MQ, HC-SR04, mô-đun pH chỉ dùng 5 V…).",
- "board.uno-q.firmwareNote": "Hỗ trợ tất cả cảm biến. Chỉ đo qua Bluetooth (USB-C dùng để cấp nguồn và nạp chương trình). Nạp chương trình đo một lần bằng Arduino IDE.",
+ "board.uno-q.firmwareNote": "Hỗ trợ tất cả cảm biến. Đã kiểm tra trên bo mạch thật. Chỉ đo qua Bluetooth (USB-C dùng để cấp nguồn và nạp chương trình). Nạp chương trình đo một lần bằng Arduino IDE.",
  "board.uno-q.adc": "12 bit (0–3,3 V)",
  "board.uno-q.qwiic": "Có (3,3 V)",
  "board.uno-q.notes.0": "Cắm cảm biến I2C vào cổng Qwiic hoặc chân SDA·SCL cạnh AREF. Trên UNO Q, A4·A5 không phải I2C.",

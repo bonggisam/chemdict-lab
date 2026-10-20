@@ -67,7 +67,7 @@
  "board.giga-r1.adc": "Veja a documentação da placa",
  "board.giga-r1.qwiic": "Não",
  "board.giga-r1.notes.0": "Placa de 3.3 V. Não ligue diretamente o fio de sinal de módulos que enviam 5 V (gás MQ, HC-SR04, módulos de pH só de 5 V etc.).",
- "board.uno-q.firmwareNote": "Compatível com todos os sensores. Mede apenas por Bluetooth (o USB-C é para alimentação e envio do programa). Envie o programa de medição uma vez pelo Arduino IDE.",
+ "board.uno-q.firmwareNote": "Compatível com todos os sensores. Testado em uma placa real. Mede apenas por Bluetooth (o USB-C é para alimentação e envio do programa). Envie o programa de medição uma vez pelo Arduino IDE.",
  "board.uno-q.adc": "12 bits (0–3,3 V)",
  "board.uno-q.qwiic": "Sim (3,3 V)",
  "board.uno-q.notes.0": "Ligue os sensores I2C ao conector Qwiic ou aos pinos SDA·SCL ao lado de AREF. Na UNO Q, A4·A5 não são I2C.",

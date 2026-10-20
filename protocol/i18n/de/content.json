@@ -67,7 +67,7 @@
  "board.giga-r1.adc": "Siehe Board-Dokumentation",
  "board.giga-r1.qwiic": "Nein",
  "board.giga-r1.notes.0": "3.3-V-Board. Signalleitungen von Modulen mit 5-V-Ausgang (MQ-Gassensoren, HC-SR04, reine 5-V-pH-Module usw.) nicht direkt anschließen.",
- "board.uno-q.firmwareNote": "Alle Sensoren werden unterstützt. Messung nur über Bluetooth (USB-C dient zur Stromversorgung und zum Hochladen). Das Messprogramm einmal mit der Arduino IDE hochladen.",
+ "board.uno-q.firmwareNote": "Alle Sensoren werden unterstützt. Auf einem echten Board getestet. Messung nur über Bluetooth (USB-C dient zur Stromversorgung und zum Hochladen). Das Messprogramm einmal mit der Arduino IDE hochladen.",
  "board.uno-q.adc": "12 Bit (0–3,3 V)",
  "board.uno-q.qwiic": "Ja (3,3 V)",
  "board.uno-q.notes.0": "I2C-Sensoren an den Qwiic-Anschluss oder die SDA·SCL-Pins neben AREF anschließen. Beim UNO Q sind A4·A5 kein I2C.",

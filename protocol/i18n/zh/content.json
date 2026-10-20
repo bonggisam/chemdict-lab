@@ -67,7 +67,7 @@
  "board.giga-r1.adc": "请查阅开发板文档",
  "board.giga-r1.qwiic": "无",
  "board.giga-r1.notes.0": "这是3.3 V开发板。输出5 V信号的模块（MQ气体、HC-SR04、仅支持5 V的pH模块等）的信号线不要直接连接。",
- "board.uno-q.firmwareNote": "支持所有传感器。仅通过蓝牙测量（USB-C用于供电和上传程序）。首次需用Arduino IDE上传一次测量程序。",
+ "board.uno-q.firmwareNote": "支持所有传感器。已在实际开发板上确认。仅通过蓝牙测量（USB-C用于供电和上传程序）。首次需用Arduino IDE上传一次测量程序。",
  "board.uno-q.adc": "12位（0~3.3 V）",
  "board.uno-q.qwiic": "有（3.3 V）",
  "board.uno-q.notes.0": "I2C传感器接到Qwiic接口或AREF旁的SDA·SCL引脚。UNO Q的A4·A5不是I2C。",

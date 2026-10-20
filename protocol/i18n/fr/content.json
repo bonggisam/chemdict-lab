@@ -67,7 +67,7 @@
  "board.giga-r1.adc": "Voir la documentation de la carte",
  "board.giga-r1.qwiic": "Non",
  "board.giga-r1.notes.0": "Carte en 3.3 V. Ne branchez pas directement la sortie d’un module qui envoie un signal 5 V (gaz MQ, HC-SR04, module pH 5 V uniquement, etc.).",
- "board.uno-q.firmwareNote": "Tous les capteurs sont pris en charge. Mesure uniquement par Bluetooth (l’USB-C sert à l’alimentation et au téléversement). Téléversez une fois le programme de mesure avec l’Arduino IDE.",
+ "board.uno-q.firmwareNote": "Tous les capteurs sont pris en charge. Testé sur une vraie carte. Mesure uniquement par Bluetooth (l’USB-C sert à l’alimentation et au téléversement). Téléversez une fois le programme de mesure avec l’Arduino IDE.",
  "board.uno-q.adc": "12 bits (0–3,3 V)",
  "board.uno-q.qwiic": "Oui (3,3 V)",
  "board.uno-q.notes.0": "Branchez les capteurs I2C sur le connecteur Qwiic ou sur les broches SDA·SCL à côté d’AREF. Sur l’UNO Q, A4·A5 ne sont pas en I2C.",

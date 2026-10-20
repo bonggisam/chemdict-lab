@@ -67,7 +67,7 @@
  "board.giga-r1.adc": "Lihat dokumen papan",
  "board.giga-r1.qwiic": "Tidak ada",
  "board.giga-r1.notes.0": "Ini papan 3.3 V. Jangan langsung menghubungkan kabel sinyal dari modul yang mengeluarkan sinyal 5 V (gas MQ, HC-SR04, modul pH khusus 5 V, dll.).",
- "board.uno-q.firmwareNote": "Mendukung semua sensor. Mengukur hanya lewat Bluetooth (USB-C untuk daya dan mengunggah program). Unggah program pengukuran sekali dengan Arduino IDE.",
+ "board.uno-q.firmwareNote": "Mendukung semua sensor. Sudah diuji pada papan asli. Mengukur hanya lewat Bluetooth (USB-C untuk daya dan mengunggah program). Unggah program pengukuran sekali dengan Arduino IDE.",
  "board.uno-q.adc": "12-bit (0–3,3 V)",
  "board.uno-q.qwiic": "Ada (3,3 V)",
  "board.uno-q.notes.0": "Pasang sensor I2C ke konektor Qwiic atau pin SDA·SCL di sebelah AREF. Pada UNO Q, A4·A5 bukan I2C.",

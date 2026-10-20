@@ -77,7 +77,7 @@
  "board.giga-r1.adc": "보드 문서 확인",
  "board.giga-r1.qwiic": "없음",
  "board.giga-r1.notes.0": "3.3 V 보드입니다. 5 V 신호를 내는 모듈(MQ 가스, HC-SR04, 5 V 전용 pH 모듈 등)의 신호선을 바로 연결하지 않습니다.",
- "board.uno-q.firmwareNote": "모든 센서 지원. 블루투스로만 측정합니다 (USB-C는 전원과 프로그램 올리기용). 처음 한 번 Arduino IDE로 측정 프로그램을 올립니다.",
+ "board.uno-q.firmwareNote": "모든 센서 지원. 실제 보드에서 확인했습니다. 블루투스로만 측정합니다 (USB-C는 전원과 프로그램 올리기용). 처음 한 번 Arduino IDE로 측정 프로그램을 올립니다.",
  "board.uno-q.usb": "USB-C (전원·프로그램 올리기)",
  "board.uno-q.adc": "12비트 (0~3.3 V)",
  "board.uno-q.qwiic": "있음 (3.3 V)",

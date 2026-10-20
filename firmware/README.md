@@ -13,7 +13,7 @@
 | 보드 | 보드 매니저 | 센서 범위 | 프로그램 / 메모리 | 연결 |
 |---|---|---|---|---|
 | UNO R4 WiFi (기준, 실제 확인) | Arduino UNO R4 Boards | 전체 | 60% / 44% | USB·블루투스 |
-| UNO Q (2026-10-20 업로드 확인) | Arduino Q Boards 1.0.0 | 전체 | 34% / 47% | 블루투스만 |
+| UNO Q (2026-10-20 아이패드 연결 확인) | Arduino Q Boards 1.0.0 | 전체 | 34% / 47% | 블루투스만 |
 | UNO R4 Minima | Arduino UNO R4 Boards | 전체 | 0.3.0 기준 34% / 20% (0.5.0 미확인) | USB |
 | Nano R4 | Arduino UNO R4 Boards | 전체 | 0.3.0 기준 34% / 24% (0.5.0 미확인) | USB |
 | Mega 2560 | Arduino AVR Boards | 전체 | 29% / 46% | USB |

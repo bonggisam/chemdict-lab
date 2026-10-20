@@ -507,10 +507,10 @@
       "match": [
         "UNO Q"
       ],
-      "firmware": "compiled",
+      "firmware": "verified",
       "sensorSet": "full",
       "bleOnly": true,
-      "firmwareNote": "모든 센서 지원. 블루투스로만 측정합니다 (USB-C는 전원과 프로그램 올리기용). 처음 한 번 Arduino IDE로 측정 프로그램을 올립니다.",
+      "firmwareNote": "모든 센서 지원. 실제 보드에서 확인했습니다. 블루투스로만 측정합니다 (USB-C는 전원과 프로그램 올리기용). 처음 한 번 Arduino IDE로 측정 프로그램을 올립니다.",
       "usb": "USB-C (전원·프로그램 올리기)",
       "ble": true,
       "logic": "3.3 V",
