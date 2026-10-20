@@ -538,7 +538,7 @@ export function Measure(p: Props) {
           {mode === 'time' && !xSensor && (
             <label className="mini">{t('시간 표기')}
               <select value={view.timeFmt} onChange={(e) => setView({ timeFmt: e.target.value as ChartView['timeFmt'] })}>
-                <option value="s">{t('초 (s)')}</option><option value="min">{t('분 (min)')}</option><option value="mmss">{t('분:초')}</option><option value="clock">{t('시각')}</option>
+                <option value="auto">{t('자동')}</option><option value="s">{t('초 (s)')}</option><option value="min">{t('분 (min)')}</option><option value="mmss">{t('분:초')}</option><option value="clock">{t('시각')}</option>
               </select>
             </label>
           )}

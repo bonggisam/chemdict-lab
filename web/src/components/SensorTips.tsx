@@ -8,7 +8,13 @@ import { R } from './Rich';
 
 interface Method { tool: string; why: string; example: string }
 interface SensorGuide { name: string; graph: string; methods: Method[]; tips: string[] }
-const data = raw as { bySensor: Record<string, SensorGuide> };
+const data = raw as { bySensor: Record<string, SensorGuide>; aliases?: Record<string, string> };
+/** 센서 type → 안내 키 (변형 코드는 aliases로 가족 코드에 묶음) */
+export function guideKey(type: string): string | null {
+  const base = type.replace(/_.*$/, '');
+  for (const k of [type, base, data.aliases?.[type] ?? '', data.aliases?.[base] ?? '']) if (k && k in data.bySensor) return k;
+  return null;
+}
 
 /** 도구 이름(한국어) → 앱 조작 */
 export type Apply = { fit?: ModelId; tool?: ChartTool; area?: boolean; deriv?: boolean; plateau?: boolean; eq?: boolean; calc?: CalcId };
@@ -39,9 +45,9 @@ export function applyFor(tool: string): Apply | null {
 /** 지금 해석하는 센서에 맞는 그래프·해석 방법 안내 (교육용 측정 프로그램의 표준 분석을 참고) */
 export function SensorTips({ type, onApply }: { type: string; onApply: (a: Apply) => void }) {
   const [open, setOpen] = useState(false);
-  const key = type in data.bySensor ? type : type.replace(/_.*$/, '');
+  const key = guideKey(type);
+  if (!key) return null;
   const g = data.bySensor[key];
-  if (!g) return null;
   const k = `ana.${key}`;
   return (
     <details className="sensor-tips" open={open} onToggle={(e) => setOpen((e.target as HTMLDetailsElement).open)}>

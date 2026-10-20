@@ -19,14 +19,20 @@ export interface Overlays {
 }
 
 export type GridMode = 'both' | 'y' | 'none' | 'fine';
-export type TimeFmt = 's' | 'min' | 'mmss' | 'clock';
+export type TimeFmt = 'auto' | 's' | 'min' | 'mmss' | 'clock';
+/** 자동: 2분까지 초, 그 뒤 분:초, 1시간이 넘으면 시각 (참고 프로그램들의 관행) */
+export function resolveTimeFmt(f: TimeFmt, spanSec: number, startedAt?: string): Exclude<TimeFmt, 'auto'> {
+  if (f !== 'auto') return f;
+  if (spanSec > 3600 && startedAt) return 'clock';
+  return spanSec > 120 ? 'mmss' : 's';
+}
 /** 그래프 보기 설정 (화면·그림 저장 공용, localStorage에 저장) */
 export interface ChartView {
   grid: GridMode;      // 격자: 가로+세로 · 가로만 · 없음 · 촘촘하게(보조 눈금)
   timeFmt: TimeFmt;    // 시간축: 초 · 분 · 분:초 · 시각
   yLabel: boolean;     // 세로축에 이름(단위) 표시
 }
-export const DEFAULT_VIEW: ChartView = { grid: 'both', timeFmt: 's', yLabel: true };
+export const DEFAULT_VIEW: ChartView = { grid: 'both', timeFmt: 'auto', yLabel: true };
 const VIEW_KEY = 'chemdict.chartView';
 export function loadView(): ChartView {
   try { return { ...DEFAULT_VIEW, ...(JSON.parse(localStorage.getItem(VIEW_KEY) ?? '{}') as Partial<ChartView>) }; } catch { return DEFAULT_VIEW; }
@@ -34,7 +40,8 @@ export function loadView(): ChartView {
 export function saveView(v: ChartView) { try { localStorage.setItem(VIEW_KEY, JSON.stringify(v)); } catch { /* noop */ } }
 
 /** 시간축 눈금 글자: 초를 설정에 맞게 */
-export function fmtTime(sec: number, f: TimeFmt, startedAt?: string): string {
+export function fmtTime(sec: number, f0: TimeFmt, startedAt?: string): string {
+  const f = f0 === 'auto' ? 's' : f0;
   if (f === 'min') return fmt(sec / 60);
   if (f === 'mmss') {
     const neg = sec < 0, a = Math.abs(sec), m = Math.floor(a / 60), ss = a - m * 60;
@@ -169,7 +176,8 @@ export function drawChart(ctx: CanvasRenderingContext2D, W: number, H: number, o
     ctx.fillText(fmt(v), L - 6, yy);
   }
   ctx.textAlign = 'center'; ctx.textBaseline = 'top';
-  const xTickText = (v: number) => (timeAxis ? fmtTime(v, view.timeFmt, startedAt) : fmt(v));
+  const tf = resolveTimeFmt(view.timeFmt, x1 - x0, startedAt);
+  const xTickText = (v: number) => (timeAxis ? fmtTime(v, tf, startedAt) : fmt(v));
   const xs = xLog ? Array.from({ length: Math.max(0, Math.floor(x1) - Math.ceil(x0) + 1) }, (_, i) => 10 ** (Math.ceil(x0) + i)) : xT;
   for (const v of xs) {
     const xx = Math.round(X(v)) + 0.5;
@@ -188,7 +196,7 @@ export function drawChart(ctx: CanvasRenderingContext2D, W: number, H: number, o
     ctx.textBaseline = 'top';
   }
   ctx.textAlign = 'right'; ctx.fillStyle = cInk;
-  ctx.fillText(timeAxis && view.timeFmt !== 's' ? xLabel.replace(/\(s\)$/, `(${timeUnitLabel(view.timeFmt)})`).replace(/\(\)$/, '').trim() : xLabel, W - R, H - 13);
+  ctx.fillText(timeAxis && tf !== 's' ? xLabel.replace(/\(s\)$/, `(${timeUnitLabel(tf)})`).replace(/\(\)$/, '').trim() : xLabel, W - R, H - 13);
 
   ctx.save();
   ctx.beginPath(); ctx.rect(L, T, pw, ph); ctx.clip();
