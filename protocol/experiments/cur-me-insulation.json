@@ -59,7 +59,41 @@
     ],
     "cautions": []
   },
-  "textbooks": [],
+  "textbooks": [
+    {
+      "publisher": "동아출판",
+      "course": "역학과 에너지",
+      "level": "고2·3 선택",
+      "note": "56쪽 단열재의 종류에 따른 보온/보냉 효과 비교하기",
+      "sure": "confirmed",
+      "page": "56",
+      "activity": "단열재의 종류에 따른 보온/보냉 효과 비교하기",
+      "unit": "Ⅱ. 열과 에너지",
+      "uses": false
+    },
+    {
+      "publisher": "미래엔",
+      "course": "역학과 에너지",
+      "level": "고2·3 선택",
+      "note": "56쪽 단열재의 종류에 따른 보온, 보냉 효과 비교하기",
+      "sure": "confirmed",
+      "page": "56",
+      "activity": "단열재의 종류에 따른 보온, 보냉 효과 비교하기",
+      "unit": "Ⅱ. 열과 에너지",
+      "uses": false
+    },
+    {
+      "publisher": "천재교과서",
+      "course": "역학과 에너지",
+      "level": "고2·3 선택",
+      "note": "60쪽 단열재의 종류에 따른 보온·보냉 효과 비교하기",
+      "sure": "confirmed",
+      "page": "60",
+      "activity": "단열재의 종류에 따른 보온·보냉 효과 비교하기",
+      "unit": "Ⅱ. 열과 에너지",
+      "uses": false
+    }
+  ],
   "breadboard": {
     "need": "recommended",
     "why": "온도 센서 2개 이상을 같은 줄에 나란히 꽂습니다 (센서 1개면 필요 없음).",

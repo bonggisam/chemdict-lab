@@ -21,6 +21,19 @@ const sensorNames = (e: Experiment) => e.sensors.includes('*') ? t('모든 센�
 export const pubBase = (p: string) => p.replace(/\s*\(.*\)$/, '');
 const refText = (tb: TextbookRef) => tb.activity ? `${tb.page ? `${tb.page}${/^\d/.test(tb.page) ? '쪽' : ''} ` : ''}${tb.activity}` : tb.note;
 
+/** 교과서 단원 이름에서 대단원만: 'Ⅵ. 동물과 에너지/1. 소화와 순환' → '동물과 에너지' */
+const unitName = (u?: string) => (u ?? '').split(/\s*[/>]\s*/)[0].replace(/^\s*([IVXⅠ-Ⅻ]+|\d+)\.?\s*/, '').trim();
+/** 실험이 실린 과목들: 원래 과목 + 같은 활동이 실린 다른 과목 */
+const placesOf = (e: Experiment) => {
+  const out: { level: string; course: string; area: string }[] = [];
+  if (e.course) out.push({ level: levelOf(e), course: e.course, area: e.area ?? '' });
+  for (const tb of e.textbooks ?? []) {
+    if (!tb.level || out.some((p) => p.course === tb.course)) continue;
+    out.push({ level: tb.level, course: tb.course, area: unitName(tb.unit) });
+  }
+  return out;
+};
+
 type Pick = { level: string; course: string };
 const loadPick = (): Pick => { try { return JSON.parse(localStorage.getItem(KEY) ?? '') as Pick; } catch { return { level: '', course: '' }; } };
 
@@ -36,19 +49,23 @@ export function ExperimentBrowser({ experiments, connectedTypes, selectedId, onP
   const tree = useMemo(() => LEVELS.map((lv) => {
     const courses: { name: string; n: number }[] = [];
     for (const e of experiments) {
-      if (levelOf(e) !== lv || !e.course) continue;
-      const c = courses.find((x) => x.name === e.course);
-      if (c) c.n++; else courses.push({ name: e.course, n: 1 });
+      for (const pl of placesOf(e)) {
+        if (pl.level !== lv) continue;
+        const c = courses.find((x) => x.name === pl.course);
+        if (c) c.n++; else courses.push({ name: pl.course, n: 1 });
+      }
     }
-    return { level: lv, courses, n: courses.reduce((s, c) => s + c.n, 0) };
+    return { level: lv, courses, n: experiments.filter((e) => placesOf(e).some((p) => p.level === lv)).length };
   }), [experiments]);
   const publishers = useMemo(() => [...new Set(experiments.flatMap((e) => (e.textbooks ?? []).map((tb) => pubBase(tb.publisher))))].sort(), [experiments]);
 
   const query = q.trim().toLowerCase();
-  const refsOf = (e: Experiment) => (e.textbooks ?? []).filter((tb) => !pub || pubBase(tb.publisher) === pub);
+  const refsOf = (e: Experiment) => (e.textbooks ?? [])
+    .filter((tb) => !pub || pubBase(tb.publisher) === pub)
+    .sort((a, b) => Number(b.course === pick.course) - Number(a.course === pick.course));
+  const placeIn = (e: Experiment) => placesOf(e).find((p) => (!pick.level || p.level === pick.level) && (!pick.course || p.course === pick.course));
   const list = experiments
-    .filter((e) => !pick.level || levelOf(e) === pick.level || (levelOf(e) === '공통' && !pick.course))
-    .filter((e) => !pick.course || e.course === pick.course)
+    .filter((e) => !pick.level ? true : !!placeIn(e) || (levelOf(e) === '공통' && !pick.course))
     .filter((e) => (!pub && !onlyBook) || refsOf(e).some((tb) => tb.sure !== 'similar'))
     .filter((e) => !query || [e.title, e.subject, e.course, e.area, courseName(e.course), areaName(e.area), e.summary, ...e.standards, ...(e.textbooks ?? []).flatMap((tb) => [tb.publisher, tb.activity ?? '', tb.note]), sensorNames(e)]
       .some((s) => s?.toLowerCase().includes(query)));
@@ -56,8 +73,10 @@ export function ExperimentBrowser({ experiments, connectedTypes, selectedId, onP
   // 단원(area)별로 묶기 — 과목을 고르지 않았으면 과목 · 단원으로
   const groups: { key: string; title: string; items: Experiment[] }[] = [];
   for (const e of list) {
-    const key = pick.course ? (e.area ?? '') : `${e.course ?? ''}|${e.area ?? ''}`;
-    const title = pick.course ? areaName(e.area) || t('기타') : [courseName(e.course), areaName(e.area)].filter(Boolean).join(' · ') || t('기타');
+    const pl = placeIn(e) ?? { course: e.course ?? '', area: e.area ?? '' };
+    const area = pl.area === e.area ? areaName(e.area) : pl.area;
+    const key = pick.course ? area : `${pl.course}|${area}`;
+    const title = pick.course ? area || t('기타') : [courseName(pl.course), area].filter(Boolean).join(' · ') || t('기타');
     const g = groups.find((x) => x.key === key);
     if (g) g.items.push(e); else groups.push({ key, title, items: [e] });
   }

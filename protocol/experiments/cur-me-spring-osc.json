@@ -57,5 +57,39 @@
     "attach": [],
     "cautions": []
   },
-  "textbooks": []
+  "textbooks": [
+    {
+      "publisher": "동아출판",
+      "course": "역학과 에너지",
+      "level": "고2·3 선택",
+      "note": "95쪽 단진동을 하는 물체의 시간에 따른 변위 측정하기",
+      "sure": "confirmed",
+      "page": "95",
+      "activity": "단진동을 하는 물체의 시간에 따른 변위 측정하기",
+      "unit": "Ⅲ. 탄성파와 소리",
+      "uses": true
+    },
+    {
+      "publisher": "미래엔",
+      "course": "역학과 에너지",
+      "level": "고2·3 선택",
+      "note": "93쪽 용수철 진자의 변위와 가속도 관계 분석하기",
+      "sure": "confirmed",
+      "page": "93",
+      "activity": "용수철 진자의 변위와 가속도 관계 분석하기",
+      "unit": "Ⅲ. 탄성파와 소리",
+      "uses": true
+    },
+    {
+      "publisher": "천재교과서",
+      "course": "물리학",
+      "level": "고2·3 선택",
+      "note": "58쪽 역학적 에너지 보존 확인하기",
+      "sure": "confirmed",
+      "page": "58",
+      "activity": "역학적 에너지 보존 확인하기",
+      "unit": "Ⅰ. 힘과 에너지",
+      "uses": true
+    }
+  ]
 }

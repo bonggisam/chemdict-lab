@@ -65,15 +65,36 @@
   "textbooks": [
     {
       "publisher": "미래엔",
-      "course": "과학1",
+      "course": "과학 1",
+      "level": "중학교",
       "note": "96쪽 온도 센서를 이용하여 물과 식용유의 온도 변화 비교하기",
-      "sure": "confirmed"
+      "sure": "confirmed",
+      "page": "96",
+      "activity": "온도 센서를 이용하여 물과 식용유의 온도 변화 비교하기",
+      "unit": "Ⅲ. 열 / 2. 비열과 열팽창 - 비열",
+      "uses": true
     },
     {
-      "publisher": "천재교과서",
-      "course": "과학1",
-      "note": "여러 가지 액체의 온도 변화 비교 (교사 블로그)",
-      "sure": "mentioned"
+      "publisher": "천재교과서(임성숙)",
+      "course": "과학 1",
+      "level": "중학교",
+      "note": "88쪽 온도 센서를 이용하여 여러 가지 액체의 온도 변화 비교하기",
+      "sure": "confirmed",
+      "page": "88",
+      "activity": "온도 센서를 이용하여 여러 가지 액체의 온도 변화 비교하기",
+      "unit": "Ⅲ. 열 / 2. 비열과 열팽창 - 물질에 따라 다른 온도 변화",
+      "uses": true
+    },
+    {
+      "publisher": "천재교과서(정대홍)",
+      "course": "과학 1",
+      "level": "중학교",
+      "note": "99쪽 온도 센서를 이용하여 액체의 비열 비교하기",
+      "sure": "confirmed",
+      "page": "99",
+      "activity": "온도 센서를 이용하여 액체의 비열 비교하기",
+      "unit": "Ⅲ. 열 / 2. 비열과 열팽창",
+      "uses": true
     }
   ],
   "breadboard": {

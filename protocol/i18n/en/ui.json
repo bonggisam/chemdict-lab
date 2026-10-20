@@ -131,9 +131,7 @@
  "{title} 그래프": "{title} graph",
  "그림 저장": "Save image",
  "모든 센서": "All sensors",
- "학교급": "School level",
  "전체": "All",
- "과목": "Subject",
  "실험·센서·성취기준·출판사 찾기": "Search experiments, sensors, standards, publishers",
  "실험 찾기": "Find experiments",
  "{n}개 실험": "{n} experiments",
@@ -141,7 +139,6 @@
  "✓ 바로 측정": "✓ Ready to measure",
  "센서 연결 필요": "Sensor connection needed",
  "브레드보드": "Breadboard",
- "교과서 {list}": "Textbooks {list}",
  "찾는 실험이 없습니다. 검색어를 바꾸거나 '전체'를 눌러 보세요.": "No matching experiments. Try a different search or tap 'All'.",
  "그림 (PNG)": "Image (PNG)",
  "그래프와 해석 결과를 한 장의 그림으로. 보고서·발표 자료에 붙이기 좋습니다.": "Graph and analysis results in one image. Good for reports and slides.",
@@ -502,5 +499,12 @@
  "보드 고르기 · 연결": "Choose · Connect",
  "센서 고르기 · 측정": "Choose sensor · Measure",
  "연결 그림 · 브레드보드": "Wiring · Breadboard",
- "이 보드는 블루투스로만 측정합니다": "This board measures over Bluetooth only"
+ "이 보드는 블루투스로만 측정합니다": "This board measures over Bluetooth only",
+ "기타": "Other",
+ "과정·과목": "Level · Course",
+ "출판사": "Publisher",
+ "모든 출판사": "All publishers",
+ "교과서에 실린 실험만": "Textbook experiments only",
+ "센서 사용": "Uses sensors",
+ "외 {n}곳": "+{n} more"
 }

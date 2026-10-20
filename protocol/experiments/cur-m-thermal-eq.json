@@ -64,7 +64,41 @@
       "뜨거운 물·가열 기구에 데지 않게 장갑을 끼고, 센서 선이 열원에 닿지 않게 합니다."
     ]
   },
-  "textbooks": [],
+  "textbooks": [
+    {
+      "publisher": "미래엔",
+      "course": "과학 1",
+      "level": "중학교",
+      "note": "84쪽 온도가 다른 두 물체가 접촉할 때의 온도 변화 관찰하기",
+      "sure": "confirmed",
+      "page": "84",
+      "activity": "온도가 다른 두 물체가 접촉할 때의 온도 변화 관찰하기",
+      "unit": "Ⅲ. 열 / 1. 열 - 열평형",
+      "uses": true
+    },
+    {
+      "publisher": "천재교과서(임성숙)",
+      "course": "과학 1",
+      "level": "중학교",
+      "note": "78쪽 뜨거운 물과 찬물의 온도 변화 측정하기",
+      "sure": "confirmed",
+      "page": "78",
+      "activity": "뜨거운 물과 찬물의 온도 변화 측정하기",
+      "unit": "Ⅲ. 열 / 1. 온도와 열 - 열평형 과정에서의 입자 운동 변화",
+      "uses": true
+    },
+    {
+      "publisher": "천재교과서(정대홍)",
+      "course": "과학 1",
+      "level": "중학교",
+      "note": "86쪽 찬물과 뜨거운 물이 접촉할 때 온도 변화 측정하기",
+      "sure": "confirmed",
+      "page": "86",
+      "activity": "찬물과 뜨거운 물이 접촉할 때 온도 변화 측정하기",
+      "unit": "Ⅲ. 열 / 1. 온도와 열",
+      "uses": false
+    }
+  ],
   "breadboard": {
     "need": "recommended",
     "why": "온도 센서 2개 이상을 같은 줄에 나란히 꽂습니다 (센서 1개면 필요 없음).",

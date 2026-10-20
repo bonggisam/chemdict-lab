@@ -63,5 +63,39 @@
       "NaOH 고체는 피부에 닿으면 위험합니다."
     ]
   },
-  "textbooks": []
+  "textbooks": [
+    {
+      "publisher": "동아출판",
+      "course": "물질과 에너지",
+      "level": "고2·3 선택",
+      "note": "82쪽 헤스 법칙 확인하기",
+      "sure": "confirmed",
+      "page": "82",
+      "activity": "헤스 법칙 확인하기",
+      "unit": "Ⅲ. 화학 변화의 자발성",
+      "uses": false
+    },
+    {
+      "publisher": "미래엔",
+      "course": "물질과 에너지",
+      "level": "고2·3 선택",
+      "note": "78쪽 중화 반응으로 헤스 법칙 확인하기",
+      "sure": "confirmed",
+      "page": "78",
+      "activity": "중화 반응으로 헤스 법칙 확인하기",
+      "unit": "Ⅲ. 화학 변화의 자발성",
+      "uses": false
+    },
+    {
+      "publisher": "천재교과서",
+      "course": "물질과 에너지",
+      "level": "고2·3 선택",
+      "note": "82쪽 반응 경로에 따른 반응 엔탈피 측정하기",
+      "sure": "confirmed",
+      "page": "82",
+      "activity": "반응 경로에 따른 반응 엔탈피 측정하기",
+      "unit": "Ⅲ. 화학 변화의 자발성",
+      "uses": false
+    }
+  ]
 }

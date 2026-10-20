@@ -58,7 +58,74 @@
       "보드에는 0~5 V만 넣습니다."
     ]
   },
-  "textbooks": [],
+  "textbooks": [
+    {
+      "publisher": "동아출판",
+      "course": "물리학",
+      "level": "고2·3 선택",
+      "note": "73쪽 전지의 전위차 확인하기",
+      "sure": "similar",
+      "page": "73",
+      "activity": "전지의 전위차 확인하기",
+      "unit": "Ⅱ. 전기와 자기",
+      "uses": false
+    },
+    {
+      "publisher": "동아출판",
+      "course": "물리학",
+      "level": "고2·3 선택",
+      "note": "77쪽 전기 회로를 구성하여 선풍기 작동시키기",
+      "sure": "similar",
+      "page": "77",
+      "activity": "전기 회로를 구성하여 선풍기 작동시키기",
+      "unit": "Ⅱ. 전기와 자기",
+      "uses": false
+    },
+    {
+      "publisher": "동아출판",
+      "course": "물리학",
+      "level": "고2·3 선택",
+      "note": "78쪽 저항의 직렬연결과 병렬연결에서 전류와 전압 측정하여 비교하기",
+      "sure": "confirmed",
+      "page": "78",
+      "activity": "저항의 직렬연결과 병렬연결에서 전류와 전압 측정하여 비교하기",
+      "unit": "Ⅱ. 전기와 자기",
+      "uses": false
+    },
+    {
+      "publisher": "미래엔",
+      "course": "물리학",
+      "level": "고2·3 선택",
+      "note": "84쪽 저항의 직렬연결과 병렬연결에서 전류와 전압 측정하여 비교하기",
+      "sure": "confirmed",
+      "page": "84",
+      "activity": "저항의 직렬연결과 병렬연결에서 전류와 전압 측정하여 비교하기",
+      "unit": "Ⅱ. 전기와 자기",
+      "uses": false
+    },
+    {
+      "publisher": "천재교과서",
+      "course": "물리학",
+      "level": "고2·3 선택",
+      "note": "92쪽 저항의 직렬연결과 병렬연결에서 전류와 전압 측정하여 비교하기",
+      "sure": "confirmed",
+      "page": "92",
+      "activity": "저항의 직렬연결과 병렬연결에서 전류와 전압 측정하여 비교하기",
+      "unit": "Ⅱ. 전기와 자기",
+      "uses": false
+    },
+    {
+      "publisher": "천재교과서(임성숙)",
+      "course": "과학 2",
+      "level": "중학교",
+      "note": "248쪽 전구의 직렬연결과 병렬연결 특징 비교하기",
+      "sure": "confirmed",
+      "page": "248",
+      "activity": "전구의 직렬연결과 병렬연결 특징 비교하기",
+      "unit": "Ⅶ. 전기와 자기/1. 전기",
+      "uses": false
+    }
+  ],
   "event": {
     "label": "회로 번호",
     "unit": "번",

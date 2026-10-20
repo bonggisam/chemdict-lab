@@ -78,10 +78,81 @@
       "sure": "mentioned"
     },
     {
+      "publisher": "동아출판",
+      "course": "과학탐구실험2",
+      "level": "고1 공통",
+      "note": "20쪽 오염 물질 측정 장치를 활용한 학교 주변 환경 탐구하기",
+      "sure": "confirmed",
+      "page": "20",
+      "activity": "오염 물질 측정 장치를 활용한 학교 주변 환경 탐구하기",
+      "unit": "Ⅰ. 생활 속의 과학 탐구",
+      "uses": true
+    },
+    {
+      "publisher": "동아출판",
+      "course": "통합과학2",
+      "level": "고1 공통",
+      "note": "135쪽 디지털 탐구 도구를 활용한 실시간 생활 데이터 측정하기",
+      "sure": "confirmed",
+      "page": "135",
+      "activity": "디지털 탐구 도구를 활용한 실시간 생활 데이터 측정하기",
+      "unit": "Ⅲ. 과학과 미래 사회 / 1. 과학과 미래 사회",
+      "uses": true
+    },
+    {
+      "publisher": "미래엔",
+      "course": "과학탐구실험1",
+      "level": "고1 공통",
+      "note": "38쪽 우리 주변의 자연 현상으로 귀납적 탐구 수행하기",
+      "sure": "similar",
+      "page": "38",
+      "activity": "우리 주변의 자연 현상으로 귀납적 탐구 수행하기",
+      "unit": "Ⅱ. 과학 탐구의 과정과 절차",
+      "uses": false
+    },
+    {
       "publisher": "미래엔",
       "course": "과학탐구실험2",
-      "note": "32쪽 오염 물질 측정 공동 탐구",
-      "sure": "mentioned"
+      "level": "고1 공통",
+      "note": "31쪽 오염 물질 측정 장치를 활용한 우리 주변 환경 탐구하기",
+      "sure": "confirmed",
+      "page": "31",
+      "activity": "오염 물질 측정 장치를 활용한 우리 주변 환경 탐구하기",
+      "unit": "Ⅰ. 생활 속의 과학 탐구",
+      "uses": true
+    },
+    {
+      "publisher": "미래엔",
+      "course": "과학탐구실험2",
+      "level": "고1 공통",
+      "note": "34쪽 빗물의 산성도 측정하기",
+      "sure": "confirmed",
+      "page": "34",
+      "activity": "빗물의 산성도 측정하기",
+      "unit": "Ⅰ. 생활 속의 과학 탐구",
+      "uses": true
+    },
+    {
+      "publisher": "천재교과서",
+      "course": "과학탐구실험2",
+      "level": "고1 공통",
+      "note": "46쪽 오염 물질 측정 도구로 학교 및 주변 탐구하기",
+      "sure": "confirmed",
+      "page": "46",
+      "activity": "오염 물질 측정 도구로 학교 및 주변 탐구하기",
+      "unit": "Ⅰ. 생활 속의 과학 탐구",
+      "uses": true
+    },
+    {
+      "publisher": "천재교과서",
+      "course": "융합과학 탐구",
+      "level": "고2·3 선택",
+      "note": "98쪽 디지털 탐구 도구를 활용하여 데이터를 측정하고 측정한 데이터 평가하기",
+      "sure": "confirmed",
+      "page": "98",
+      "activity": "디지털 탐구 도구를 활용하여 데이터를 측정하고 측정한 데이터 평가하기",
+      "unit": "II. 융합과학 탐구의 과정 > 03 디지털 탐구 도구를 활용한 데이터 수집",
+      "uses": true
     }
   ],
   "event": {

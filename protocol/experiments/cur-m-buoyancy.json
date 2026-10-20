@@ -58,7 +58,41 @@
     "attach": [],
     "cautions": []
   },
-  "textbooks": [],
+  "textbooks": [
+    {
+      "publisher": "미래엔",
+      "course": "과학 1",
+      "level": "중학교",
+      "note": "172쪽 물속에서 부력 측정하기",
+      "sure": "confirmed",
+      "page": "172",
+      "activity": "물속에서 부력 측정하기",
+      "unit": "Ⅴ. 힘의 작용 / 1. 여러 가지 힘 - 부력",
+      "uses": true
+    },
+    {
+      "publisher": "천재교과서(임성숙)",
+      "course": "과학 1",
+      "level": "중학교",
+      "note": "168쪽 물속에서 부력 측정하기",
+      "sure": "confirmed",
+      "page": "168",
+      "activity": "물속에서 부력 측정하기",
+      "unit": "Ⅴ. 힘의 작용 / 1. 여러 가지 힘 - 물체를 떠오르게 하는 힘",
+      "uses": true
+    },
+    {
+      "publisher": "천재교과서(정대홍)",
+      "course": "과학 1",
+      "level": "중학교",
+      "note": "168쪽 물속에서 부력 측정하기",
+      "sure": "confirmed",
+      "page": "168",
+      "activity": "물속에서 부력 측정하기",
+      "unit": "Ⅴ. 힘의 작용 / 1. 여러 가지 힘",
+      "uses": true
+    }
+  ],
   "event": {
     "label": "잠긴 깊이",
     "unit": "cm",

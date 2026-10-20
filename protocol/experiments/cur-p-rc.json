@@ -58,7 +58,19 @@
       "전해 축전기는 +, − 방향을 맞춥니다."
     ]
   },
-  "textbooks": [],
+  "textbooks": [
+    {
+      "publisher": "동아출판",
+      "course": "물리학",
+      "level": "고2·3 선택",
+      "note": "84쪽 축전기를 이용하여 전구에 불 켜기",
+      "sure": "confirmed",
+      "page": "84",
+      "activity": "축전기를 이용하여 전구에 불 켜기",
+      "unit": "Ⅱ. 전기와 자기",
+      "uses": false
+    }
+  ],
   "breadboard": {
     "need": "required",
     "why": "저항과 축전기를 직렬로 꽂습니다.",

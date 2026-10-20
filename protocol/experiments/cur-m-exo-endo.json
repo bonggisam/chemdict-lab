@@ -62,12 +62,5 @@
       "반응한 물질은 맨손으로 만지지 않습니다."
     ]
   },
-  "textbooks": [
-    {
-      "publisher": "미래엔",
-      "course": "과학3",
-      "note": "42쪽 화학 반응이 일어날 때 열에너지의 출입 알아보기",
-      "sure": "mentioned"
-    }
-  ]
+  "textbooks": []
 }

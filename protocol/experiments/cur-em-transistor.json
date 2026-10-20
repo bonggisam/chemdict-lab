@@ -58,7 +58,41 @@
     "attach": [],
     "cautions": []
   },
-  "textbooks": [],
+  "textbooks": [
+    {
+      "publisher": "동아출판",
+      "course": "물리학",
+      "level": "고2·3 선택",
+      "note": "166쪽 다이오드의 특성 관찰하기",
+      "sure": "confirmed",
+      "page": "166",
+      "activity": "다이오드의 특성 관찰하기",
+      "unit": "Ⅲ. 빛과 물질",
+      "uses": false
+    },
+    {
+      "publisher": "미래엔",
+      "course": "물리학",
+      "level": "고2·3 선택",
+      "note": "184쪽 전기 회로에서 다이오드의 특성 알아보기",
+      "sure": "confirmed",
+      "page": "184",
+      "activity": "전기 회로에서 다이오드의 특성 알아보기",
+      "unit": "Ⅲ. 빛과 물질",
+      "uses": false
+    },
+    {
+      "publisher": "천재교과서",
+      "course": "물리학",
+      "level": "고2·3 선택",
+      "note": "180쪽 다이오드의 모습과 특성 살펴보기",
+      "sure": "confirmed",
+      "page": "180",
+      "activity": "다이오드의 모습과 특성 살펴보기",
+      "unit": "Ⅲ. 빛과 물질",
+      "uses": false
+    }
+  ],
   "event": {
     "label": "가변저항 단계",
     "unit": "단계",

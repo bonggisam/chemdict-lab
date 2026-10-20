@@ -1,0 +1,179 @@
+{
+  "id": "cur-h-ride-accel",
+  "order": 232,
+  "title": "놀이기구의 가속도 (가속도 센서)",
+  "subject": "과학탐구실험2",
+  "level": "고1 공통",
+  "course": "과학탐구실험2",
+  "area": "생활 속의 과학 탐구",
+  "summary": "모형 놀이기구·엘리베이터·흔들기 운동의 가속도를 기록해 비교합니다.",
+  "standards": [
+    "10과탐2-01-01",
+    "12역학01-01"
+  ],
+  "standardTexts": [
+    "영화, 건축, 요리, 스포츠, 미디어 등 생활 속의 과학 원리를 실험 등을 통해 탐구 하고, 과학 원리를 활용한 놀이 체험을 통해 과학의 즐거움과 유용성을 느낄 수 있다.",
+    "물체에 작용하는 여러 가지 힘의 합력을 구하여 물체의 운동을 정량적으로 예측할 수 있다."
+  ],
+  "sensors": [
+    "AX",
+    "AY",
+    "AZ"
+  ],
+  "mode": "time",
+  "intervalMs": 50,
+  "x": {
+    "label": "시간",
+    "unit": "s"
+  },
+  "y": [
+    {
+      "sensor": "AX",
+      "label": "가속도 X",
+      "unit": "m/s²"
+    },
+    {
+      "sensor": "AY",
+      "label": "가속도 Y",
+      "unit": "m/s²"
+    },
+    {
+      "sensor": "AZ",
+      "label": "가속도 Z",
+      "unit": "m/s²"
+    }
+  ],
+  "markers": {
+    "enabled": true,
+    "label": "관찰 기록",
+    "prompt": "한 일 (예: 시약 넣음)"
+  },
+  "analysis": [
+    "stats",
+    "fit"
+  ],
+  "steps": [
+    "가속도 센서를 보드와 함께 상자에 단단히 고정합니다 (블루투스로 연결).",
+    "회전 그네 모형, 진자, 엘리베이터에서 각각 새 측정을 합니다.",
+    "Z축이 9.8에서 얼마나 커지고 작아지는지(무게감) 봅니다.",
+    "최대 가속도를 g 단위로 바꿔 실제 놀이기구와 비교합니다."
+  ],
+  "setup": {
+    "parts": [
+      "mpu6050",
+      "adxl345",
+      "lsm6ds"
+    ],
+    "choose": true,
+    "materials": [
+      "가속도 센서(MPU6050 등)",
+      "보조 배터리",
+      "모형 놀이기구 또는 진자"
+    ],
+    "attach": [],
+    "cautions": [
+      "보드를 떨어뜨리지 않게 끈으로 묶습니다."
+    ]
+  },
+  "textbooks": [
+    {
+      "publisher": "동아출판",
+      "course": "과학탐구실험2",
+      "level": "고1 공통",
+      "note": "12쪽 놀이공원에서 다양한 운동의 가속도 비교하기",
+      "sure": "confirmed",
+      "page": "12",
+      "activity": "놀이공원에서 다양한 운동의 가속도 비교하기",
+      "unit": "Ⅰ. 생활 속의 과학 탐구",
+      "uses": true
+    },
+    {
+      "publisher": "동아출판",
+      "course": "역학과 에너지",
+      "level": "고2·3 선택",
+      "note": "14쪽 스마트폰을 이용하여 다양한 놀이 기구의 운동 분석하기",
+      "sure": "confirmed",
+      "page": "14",
+      "activity": "스마트폰을 이용하여 다양한 놀이 기구의 운동 분석하기",
+      "unit": "Ⅰ. 시공간과 운동",
+      "uses": true
+    },
+    {
+      "publisher": "미래엔",
+      "course": "과학탐구실험2",
+      "level": "고1 공통",
+      "note": "22쪽 스마트 기기를 이용해 놀이기구의 운동 비교하기",
+      "sure": "confirmed",
+      "page": "22",
+      "activity": "스마트 기기를 이용해 놀이기구의 운동 비교하기",
+      "unit": "Ⅰ. 생활 속의 과학 탐구",
+      "uses": true
+    },
+    {
+      "publisher": "미래엔",
+      "course": "물리학",
+      "level": "고2·3 선택",
+      "note": "68쪽 걸음 수를 세는 장치 만들기",
+      "sure": "similar",
+      "page": "68",
+      "activity": "걸음 수를 세는 장치 만들기",
+      "unit": "Ⅰ. 힘과 에너지",
+      "uses": true
+    },
+    {
+      "publisher": "미래엔",
+      "course": "역학과 에너지",
+      "level": "고2·3 선택",
+      "note": "39쪽 엘리베이터에서 관성력 관찰하기",
+      "sure": "similar",
+      "page": "39",
+      "activity": "엘리베이터에서 관성력 관찰하기",
+      "unit": "Ⅰ. 시공간과 운동",
+      "uses": false
+    },
+    {
+      "publisher": "천재교과서",
+      "course": "과학탐구실험2",
+      "level": "고1 공통",
+      "note": "33쪽 가속도 측정 앱 사용해 보기",
+      "sure": "confirmed",
+      "page": "33",
+      "activity": "가속도 측정 앱 사용해 보기",
+      "unit": "Ⅰ. 생활 속의 과학 탐구",
+      "uses": true
+    },
+    {
+      "publisher": "천재교과서",
+      "course": "과학탐구실험2",
+      "level": "고1 공통",
+      "note": "35쪽 모형으로 놀이기구의 가속도 측정하기",
+      "sure": "confirmed",
+      "page": "35",
+      "activity": "모형으로 놀이기구의 가속도 측정하기",
+      "unit": "Ⅰ. 생활 속의 과학 탐구",
+      "uses": true
+    },
+    {
+      "publisher": "천재교과서",
+      "course": "과학탐구실험2",
+      "level": "고1 공통",
+      "note": "40쪽 충격 흡수 장치를 제작하고 시험해 보기",
+      "sure": "similar",
+      "page": "40",
+      "activity": "충격 흡수 장치를 제작하고 시험해 보기",
+      "unit": "Ⅰ. 생활 속의 과학 탐구",
+      "uses": false
+    },
+    {
+      "publisher": "천재교과서",
+      "course": "역학과 에너지",
+      "level": "고2·3 선택",
+      "note": "17쪽 스마트 기기를 이용하여 여러 가지 놀이 기구의 운동 분석하기",
+      "sure": "confirmed",
+      "page": "17",
+      "activity": "스마트 기기를 이용하여 여러 가지 놀이 기구의 운동 분석하기",
+      "unit": "Ⅰ. 시공간과 운동",
+      "uses": true
+    }
+  ]
+}

@@ -62,5 +62,17 @@
     "attach": [],
     "cautions": []
   },
-  "textbooks": []
+  "textbooks": [
+    {
+      "publisher": "천재교과서",
+      "course": "융합과학 탐구",
+      "level": "고2·3 선택",
+      "note": "100쪽 디지털 탐구 도구를 활용하여 데이터 측정하기",
+      "sure": "confirmed",
+      "page": "100",
+      "activity": "디지털 탐구 도구를 활용하여 데이터 측정하기",
+      "unit": "II. 융합과학 탐구의 과정 > 03 디지털 탐구 도구를 활용한 데이터 수집",
+      "uses": true
+    }
+  ]
 }

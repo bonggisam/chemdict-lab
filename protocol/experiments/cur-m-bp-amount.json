@@ -63,7 +63,30 @@
       "에탄올은 직접 가열하지 않고 물중탕을 씁니다."
     ]
   },
-  "textbooks": [],
+  "textbooks": [
+    {
+      "publisher": "천재교과서(임성숙)",
+      "course": "과학 2",
+      "level": "중학교",
+      "note": "22쪽 물과 에탄올의 끓는점 비교하기",
+      "sure": "confirmed",
+      "page": "22",
+      "activity": "물과 에탄올의 끓는점 비교하기",
+      "unit": "Ⅰ. 물질의 특성/1. 물질의 특성",
+      "uses": true
+    },
+    {
+      "publisher": "천재교과서(정대홍)",
+      "course": "과학 2",
+      "level": "중학교",
+      "note": "21쪽 액체의 종류와 양에 따른 끓는점 확인하기",
+      "sure": "confirmed",
+      "page": "21",
+      "activity": "액체의 종류와 양에 따른 끓는점 확인하기",
+      "unit": "Ⅰ. 물질의 특성/1. 물질의 특성",
+      "uses": true
+    }
+  ],
   "breadboard": {
     "need": "recommended",
     "why": "온도 센서 2개 이상을 같은 줄에 나란히 꽂습니다 (센서 1개면 필요 없음).",

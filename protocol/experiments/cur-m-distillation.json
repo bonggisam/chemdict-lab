@@ -62,5 +62,28 @@
       "에탄올 증기에 불이 붙지 않게 환기합니다."
     ]
   },
-  "textbooks": []
+  "textbooks": [
+    {
+      "publisher": "미래엔",
+      "course": "과학 2",
+      "level": "중학교",
+      "note": "38쪽 물과 에탄올 혼합물 분리하기",
+      "sure": "confirmed",
+      "page": "38",
+      "activity": "물과 에탄올 혼합물 분리하기",
+      "unit": "Ⅰ. 물질의 특성/2. 혼합물의 분리",
+      "uses": true
+    },
+    {
+      "publisher": "천재교과서(정대홍)",
+      "course": "과학 2",
+      "level": "중학교",
+      "note": "37쪽 증류를 이용하여 주스 분리하기",
+      "sure": "confirmed",
+      "page": "37",
+      "activity": "증류를 이용하여 주스 분리하기",
+      "unit": "Ⅰ. 물질의 특성/2. 혼합물의 분리",
+      "uses": false
+    }
+  ]
 }

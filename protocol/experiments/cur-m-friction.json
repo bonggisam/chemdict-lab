@@ -1,0 +1,97 @@
+{
+  "id": "cur-m-friction",
+  "order": 219,
+  "title": "마찰력은 무엇에 따라 달라질까",
+  "subject": "과학 1",
+  "level": "중학교",
+  "course": "과학 1",
+  "area": "힘의 작용",
+  "summary": "나무 도막을 끌 때 드는 힘을 접촉면과 무게에 따라 비교합니다.",
+  "standards": [
+    "9과05-02"
+  ],
+  "standardTexts": [
+    "중력, 탄성력, 마찰력, 부력을 이해하고, 각 힘의 특징을 크기와 방향으로 설명할 수 있다."
+  ],
+  "sensors": [
+    "M"
+  ],
+  "mode": "time",
+  "intervalMs": 200,
+  "x": {
+    "label": "시간",
+    "unit": "s"
+  },
+  "y": [
+    {
+      "sensor": "M",
+      "label": "질량",
+      "unit": "g"
+    }
+  ],
+  "markers": {
+    "enabled": true,
+    "label": "관찰 기록",
+    "prompt": "한 일 (예: 시약 넣음)"
+  },
+  "analysis": [
+    "stats",
+    "fit"
+  ],
+  "steps": [
+    "로드셀 고리에 실로 나무 도막을 연결합니다.",
+    "도막을 천천히 일정하게 끌며 측정합니다 (처음 꼭대기 = 최대 정지 마찰력).",
+    "사포·유리·책상 면, 추 개수를 바꿔 새 측정으로 비교합니다.",
+    "그래프 값(g)에 ×0.0098을 하면 N입니다."
+  ],
+  "setup": {
+    "parts": [
+      "hx711"
+    ],
+    "choose": false,
+    "materials": [
+      "로드셀+HX711",
+      "나무 도막",
+      "추",
+      "사포·유리판",
+      "실"
+    ],
+    "attach": [],
+    "cautions": []
+  },
+  "textbooks": [
+    {
+      "publisher": "미래엔",
+      "course": "과학 1",
+      "level": "중학교",
+      "note": "168쪽 마찰력 알아보기",
+      "sure": "confirmed",
+      "page": "168",
+      "activity": "마찰력 알아보기",
+      "unit": "Ⅴ. 힘의 작용 / 1. 여러 가지 힘 - 마찰력",
+      "uses": true
+    },
+    {
+      "publisher": "천재교과서(정대홍)",
+      "course": "과학 1",
+      "level": "중학교",
+      "note": "164쪽 운동을 방해하는 힘 알아보기",
+      "sure": "confirmed",
+      "page": "164",
+      "activity": "운동을 방해하는 힘 알아보기",
+      "unit": "Ⅴ. 힘의 작용 / 1. 여러 가지 힘",
+      "uses": false
+    },
+    {
+      "publisher": "천재교과서(정대홍)",
+      "course": "과학 1",
+      "level": "중학교",
+      "note": "175쪽 알짜힘 측정하기",
+      "sure": "similar",
+      "page": "175",
+      "activity": "알짜힘 측정하기",
+      "unit": "Ⅴ. 힘의 작용 / 2. 힘과 우리 생활",
+      "uses": false
+    }
+  ]
+}

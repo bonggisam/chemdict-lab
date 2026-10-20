@@ -131,9 +131,7 @@
  "{title} 그래프": "Grafik {title}",
  "그림 저장": "Simpan gambar",
  "모든 센서": "Semua sensor",
- "학교급": "Jenjang",
  "전체": "Semua",
- "과목": "Mata pelajaran",
  "실험·센서·성취기준·출판사 찾기": "Cari percobaan, sensor, capaian, penerbit",
  "실험 찾기": "Cari percobaan",
  "{n}개 실험": "{n} percobaan",
@@ -141,7 +139,6 @@
  "✓ 바로 측정": "✓ Siap ukur",
  "센서 연결 필요": "Perlu sambungan sensor",
  "브레드보드": "Breadboard",
- "교과서 {list}": "Buku teks {list}",
  "찾는 실험이 없습니다. 검색어를 바꾸거나 '전체'를 눌러 보세요.": "Percobaan tidak ditemukan. Ubah kata kunci atau tekan 'Semua'.",
  "그림 (PNG)": "Gambar (PNG)",
  "그래프와 해석 결과를 한 장의 그림으로. 보고서·발표 자료에 붙이기 좋습니다.": "Grafik dan hasil analisis dalam satu gambar. Cocok untuk laporan dan presentasi.",
@@ -502,5 +499,12 @@
  "보드 고르기 · 연결": "Pilih · Hubungkan papan",
  "센서 고르기 · 측정": "Pilih sensor · Ukur",
  "연결 그림 · 브레드보드": "Diagram kabel · Breadboard",
- "이 보드는 블루투스로만 측정합니다": "Papan ini hanya mengukur lewat Bluetooth"
+ "이 보드는 블루투스로만 측정합니다": "Papan ini hanya mengukur lewat Bluetooth",
+ "기타": "Lainnya",
+ "과정·과목": "Jenjang · mata pelajaran",
+ "출판사": "Penerbit",
+ "모든 출판사": "Semua penerbit",
+ "교과서에 실린 실험만": "Hanya percobaan di buku teks",
+ "센서 사용": "Pakai sensor",
+ "외 {n}곳": "dan {n} lainnya"
 }

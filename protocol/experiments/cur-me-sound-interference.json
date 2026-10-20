@@ -1,0 +1,93 @@
+{
+  "id": "cur-me-sound-interference",
+  "order": 238,
+  "title": "두 스피커 소리의 간섭",
+  "subject": "역학과 에너지",
+  "level": "고2·3 선택",
+  "course": "역학과 에너지",
+  "area": "탄성파와 소리",
+  "summary": "같은 소리를 내는 두 스피커 앞을 옆으로 움직이며 크고 작은 곳을 찾습니다.",
+  "standards": [
+    "12역학03-04"
+  ],
+  "standardTexts": [
+    "음향 장치 또는 실내외 공간에서의 소음 제어에 음파의 간섭이 활용됨을 이해하고, 실생활에 사용되는 사례를 조사할 수 있다."
+  ],
+  "sensors": [
+    "DBA"
+  ],
+  "mode": "event",
+  "intervalMs": 200,
+  "x": {
+    "label": "옆으로 옮긴 거리",
+    "unit": "cm"
+  },
+  "y": [
+    {
+      "sensor": "DBA",
+      "label": "소리 크기",
+      "unit": "dBA",
+      "min": 30,
+      "max": 130
+    }
+  ],
+  "markers": {
+    "enabled": false,
+    "label": "관찰 기록",
+    "prompt": "한 일 (예: 시약 넣음)"
+  },
+  "analysis": [
+    "stats",
+    "fit"
+  ],
+  "steps": [
+    "두 스피커를 50 cm 떨어뜨리고 같은 진동수(약 1 kHz) 소리를 냅니다.",
+    "1 m 앞에서 소리 센서를 5 cm씩 옆으로 옮기며 ‘값 기록’을 누릅니다.",
+    "크고 작아지는 간격으로 파장을 구해 계산값과 비교합니다."
+  ],
+  "setup": {
+    "parts": [
+      "sound-level"
+    ],
+    "choose": false,
+    "materials": [
+      "소리 크기 센서(dBA)",
+      "스피커 2개",
+      "신호 발생 앱",
+      "자"
+    ],
+    "attach": [],
+    "cautions": []
+  },
+  "textbooks": [
+    {
+      "publisher": "미래엔",
+      "course": "역학과 에너지",
+      "level": "고2·3 선택",
+      "note": "112쪽 두 스피커에서 발생한 음파의 간섭",
+      "sure": "confirmed",
+      "page": "112",
+      "activity": "두 스피커에서 발생한 음파의 간섭",
+      "unit": "Ⅲ. 탄성파와 소리",
+      "uses": true
+    },
+    {
+      "publisher": "천재교과서",
+      "course": "역학과 에너지",
+      "level": "고2·3 선택",
+      "note": "116쪽 두 개의 스피커를 이용한 간섭 실험",
+      "sure": "confirmed",
+      "page": "116",
+      "activity": "두 개의 스피커를 이용한 간섭 실험",
+      "unit": "Ⅲ. 탄성파와 소리",
+      "uses": false
+    }
+  ],
+  "event": {
+    "label": "옆으로 옮긴 거리",
+    "unit": "cm",
+    "start": 0,
+    "step": 5,
+    "scale": "linear"
+  }
+}

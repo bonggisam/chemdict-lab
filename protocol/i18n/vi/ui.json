@@ -131,9 +131,7 @@
  "{title} 그래프": "Đồ thị {title}",
  "그림 저장": "Lưu hình",
  "모든 센서": "Tất cả cảm biến",
- "학교급": "Cấp học",
  "전체": "Tất cả",
- "과목": "Môn học",
  "실험·센서·성취기준·출판사 찾기": "Tìm thí nghiệm · cảm biến · chuẩn đầu ra · nhà xuất bản",
  "실험 찾기": "Tìm thí nghiệm",
  "{n}개 실험": "{n} thí nghiệm",
@@ -141,7 +139,6 @@
  "✓ 바로 측정": "✓ Đo ngay",
  "센서 연결 필요": "Cần kết nối cảm biến",
  "브레드보드": "Breadboard",
- "교과서 {list}": "Sách giáo khoa {list}",
  "찾는 실험이 없습니다. 검색어를 바꾸거나 '전체'를 눌러 보세요.": "Không có thí nghiệm cần tìm. Hãy đổi từ khóa hoặc nhấn 'Tất cả'.",
  "그림 (PNG)": "Hình (PNG)",
  "그래프와 해석 결과를 한 장의 그림으로. 보고서·발표 자료에 붙이기 좋습니다.": "Đồ thị và kết quả phân tích trong một hình. Tiện dán vào báo cáo · bài trình bày.",
@@ -502,5 +499,12 @@
  "보드 고르기 · 연결": "Chọn · Kết nối bo mạch",
  "센서 고르기 · 측정": "Chọn cảm biến · Đo",
  "연결 그림 · 브레드보드": "Sơ đồ nối · Breadboard",
- "이 보드는 블루투스로만 측정합니다": "Bo mạch này chỉ đo qua Bluetooth"
+ "이 보드는 블루투스로만 측정합니다": "Bo mạch này chỉ đo qua Bluetooth",
+ "기타": "Khác",
+ "과정·과목": "Cấp học · môn học",
+ "출판사": "Nhà xuất bản",
+ "모든 출판사": "Tất cả nhà xuất bản",
+ "교과서에 실린 실험만": "Chỉ thí nghiệm có trong sách giáo khoa",
+ "센서 사용": "Dùng cảm biến",
+ "외 {n}곳": "và {n} nơi khác"
 }

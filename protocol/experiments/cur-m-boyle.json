@@ -60,7 +60,41 @@
       "압축은 처음 부피의 10 % 안에서만 합니다 (센서 범위 약 110 kPa)."
     ]
   },
-  "textbooks": [],
+  "textbooks": [
+    {
+      "publisher": "미래엔",
+      "course": "과학 1",
+      "level": "중학교",
+      "note": "200쪽 기체의 압력과 부피 관계 알아보기",
+      "sure": "confirmed",
+      "page": "200",
+      "activity": "기체의 압력과 부피 관계 알아보기",
+      "unit": "Ⅵ. 기체의 성질 / 1. 기체의 압력과 부피 관계",
+      "uses": true
+    },
+    {
+      "publisher": "천재교과서(임성숙)",
+      "course": "과학 1",
+      "level": "중학교",
+      "note": "198쪽 기체의 압력과 부피 관계",
+      "sure": "confirmed",
+      "page": "198",
+      "activity": "기체의 압력과 부피 관계",
+      "unit": "Ⅵ. 기체의 성질 / 1. 기체의 압력과 부피 - 압력에 따른 기체의 부피 변화",
+      "uses": true
+    },
+    {
+      "publisher": "천재교과서(정대홍)",
+      "course": "과학 1",
+      "level": "중학교",
+      "note": "198쪽 기체의 압력과 부피 관계 알아보기",
+      "sure": "confirmed",
+      "page": "198",
+      "activity": "기체의 압력과 부피 관계 알아보기",
+      "unit": "Ⅵ. 기체의 성질 / 1. 기체의 압력과 부피",
+      "uses": true
+    }
+  ],
   "event": {
     "label": "기체 부피",
     "unit": "mL",

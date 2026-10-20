@@ -1,0 +1,97 @@
+{
+  "id": "cur-m-evaporation-mass",
+  "order": 217,
+  "title": "손 소독제는 어디로 사라질까 (증발과 질량)",
+  "subject": "과학 1",
+  "level": "중학교",
+  "course": "과학 1",
+  "area": "물질의 상태 변화",
+  "summary": "증발하면서 줄어드는 질량을 시간에 따라 기록합니다.",
+  "standards": [
+    "9과04-01"
+  ],
+  "standardTexts": [
+    "확산 및 증발 현상을 관찰하여 물질을 구성하는 입자가 운동하고 있음을 추론할 수 있다."
+  ],
+  "sensors": [
+    "M"
+  ],
+  "mode": "time",
+  "intervalMs": 5000,
+  "x": {
+    "label": "시간",
+    "unit": "s"
+  },
+  "y": [
+    {
+      "sensor": "M",
+      "label": "질량",
+      "unit": "g"
+    }
+  ],
+  "markers": {
+    "enabled": true,
+    "label": "관찰 기록",
+    "prompt": "한 일 (예: 시약 넣음)"
+  },
+  "analysis": [
+    "stats",
+    "fit"
+  ],
+  "steps": [
+    "로드셀 위에 페트리 접시를 올리고 영점을 맞춥니다.",
+    "손 소독제(또는 에탄올) 약 5 g을 떨어뜨리고 측정을 시작합니다.",
+    "10분 동안 줄어드는 질량을 봅니다 (물도 새 측정으로 비교).",
+    "‘함수 찾기 → 직선’ 기울기로 증발 빠르기를 비교합니다."
+  ],
+  "setup": {
+    "parts": [
+      "hx711"
+    ],
+    "choose": false,
+    "materials": [
+      "로드셀+HX711",
+      "페트리 접시",
+      "손 소독제·에탄올·물"
+    ],
+    "attach": [],
+    "cautions": [
+      "에탄올·소독제는 불에서 멀리 둡니다."
+    ]
+  },
+  "textbooks": [
+    {
+      "publisher": "미래엔",
+      "course": "과학 1",
+      "level": "중학교",
+      "note": "118쪽 손 소독제의 증발 현상 관찰하기",
+      "sure": "confirmed",
+      "page": "118",
+      "activity": "손 소독제의 증발 현상 관찰하기",
+      "unit": "Ⅳ. 물질의 상태 변화 / 1. 입자의 운동과 물질의 상태 - 입자의 운동",
+      "uses": false
+    },
+    {
+      "publisher": "천재교과서(임성숙)",
+      "course": "과학 1",
+      "level": "중학교",
+      "note": "110쪽 사라진 손 소독제",
+      "sure": "confirmed",
+      "page": "110",
+      "activity": "사라진 손 소독제",
+      "unit": "Ⅳ. 물질의 상태 변화 / 1. 물질의 상태 변화 - 스스로 운동하는 입자",
+      "uses": false
+    },
+    {
+      "publisher": "천재교과서(정대홍)",
+      "course": "과학 1",
+      "level": "중학교",
+      "note": "116쪽 확산과 증발 현상 관찰하기 (활동 2 증발)",
+      "sure": "confirmed",
+      "page": "116",
+      "activity": "확산과 증발 현상 관찰하기 (활동 2 증발)",
+      "unit": "Ⅳ. 물질의 상태 변화 / 1. 물질의 세 가지 상태",
+      "uses": false
+    }
+  ]
+}

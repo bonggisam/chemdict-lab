@@ -1,0 +1,91 @@
+{
+  "id": "cur-p-torque",
+  "order": 233,
+  "title": "회전하지 않는 막대의 돌림힘",
+  "subject": "물리학",
+  "level": "고2·3 선택",
+  "course": "물리학",
+  "area": "힘과 에너지",
+  "summary": "추의 위치를 바꿀 때 받침에서 잰 힘으로 돌림힘의 평형을 확인합니다.",
+  "standards": [
+    "12물리01-01"
+  ],
+  "standardTexts": [
+    "물체에 작용하는 알짜힘과 돌림힘이 0일 때 평형을 이룸을 알고, 다양한 구조물의 안정 성을 분석할 수 있다."
+  ],
+  "sensors": [
+    "M"
+  ],
+  "mode": "event",
+  "intervalMs": 500,
+  "x": {
+    "label": "추의 위치",
+    "unit": "cm"
+  },
+  "y": [
+    {
+      "sensor": "M",
+      "label": "질량",
+      "unit": "g"
+    }
+  ],
+  "markers": {
+    "enabled": false,
+    "label": "관찰 기록",
+    "prompt": "한 일 (예: 시약 넣음)"
+  },
+  "analysis": [
+    "stats",
+    "fit"
+  ],
+  "steps": [
+    "막대 한쪽 끝을 경첩에, 다른 끝을 로드셀 위에 걸칩니다.",
+    "추를 10 cm씩 옮기며 로드셀 값을 기록합니다.",
+    "‘함수 찾기 → 직선’으로 힘 × 거리가 일정한지 봅니다."
+  ],
+  "setup": {
+    "parts": [
+      "hx711"
+    ],
+    "choose": false,
+    "materials": [
+      "로드셀+HX711",
+      "막대",
+      "추",
+      "경첩·스탠드"
+    ],
+    "attach": [],
+    "cautions": []
+  },
+  "textbooks": [
+    {
+      "publisher": "미래엔",
+      "course": "물리학",
+      "level": "고2·3 선택",
+      "note": "16쪽 물체가 회전하지 않을 때 돌림힘들의 관계 알아보기",
+      "sure": "confirmed",
+      "page": "16",
+      "activity": "물체가 회전하지 않을 때 돌림힘들의 관계 알아보기",
+      "unit": "Ⅰ. 힘과 에너지",
+      "uses": true
+    },
+    {
+      "publisher": "천재교과서",
+      "course": "물리학",
+      "level": "고2·3 선택",
+      "note": "22쪽 힘이 작용하는 위치에 따른 회전에 대한 영향 비교하기",
+      "sure": "confirmed",
+      "page": "22",
+      "activity": "힘이 작용하는 위치에 따른 회전에 대한 영향 비교하기",
+      "unit": "Ⅰ. 힘과 에너지",
+      "uses": false
+    }
+  ],
+  "event": {
+    "label": "추의 위치",
+    "unit": "cm",
+    "start": 10,
+    "step": 10,
+    "scale": "linear"
+  }
+}

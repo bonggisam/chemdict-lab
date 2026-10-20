@@ -60,5 +60,39 @@
       "압력이 너무 오르면 마개를 엽니다 (센서 범위 약 110 kPa)."
     ]
   },
-  "textbooks": []
+  "textbooks": [
+    {
+      "publisher": "동아출판",
+      "course": "통합과학1",
+      "level": "고1 공통",
+      "note": "141쪽 카탈레이스의 작용 원리 탐구하기",
+      "sure": "confirmed",
+      "page": "141",
+      "activity": "카탈레이스의 작용 원리 탐구하기",
+      "unit": "Ⅲ. 시스템과 상호작용 / 3. 생명 시스템",
+      "uses": false
+    },
+    {
+      "publisher": "미래엔",
+      "course": "통합과학1",
+      "level": "고1 공통",
+      "note": "147쪽 효소 작용의 원리에 관한 실험하기",
+      "sure": "confirmed",
+      "page": "147",
+      "activity": "효소 작용의 원리에 관한 실험하기",
+      "unit": "Ⅲ. 시스템과 상호작용 / 3. 생명 시스템",
+      "uses": false
+    },
+    {
+      "publisher": "천재교과서",
+      "course": "통합과학1",
+      "level": "고1 공통",
+      "note": "148쪽 효소의 작용 확인하기",
+      "sure": "confirmed",
+      "page": "148",
+      "activity": "효소의 작용 확인하기",
+      "unit": "Ⅲ. 시스템과 상호작용 / 3. 생명 시스템과 정보의 흐름",
+      "uses": false
+    }
+  ]
 }

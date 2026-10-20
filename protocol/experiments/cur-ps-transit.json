@@ -59,5 +59,17 @@
     "attach": [],
     "cautions": []
   },
-  "textbooks": []
+  "textbooks": [
+    {
+      "publisher": "동아출판",
+      "course": "행성우주과학",
+      "level": "고2·3 선택",
+      "note": "47쪽 식현상을 이용한 외계 행성 탐사 모형실험 (문항 17)",
+      "sure": "confirmed",
+      "page": "47",
+      "activity": "식현상을 이용한 외계 행성 탐사 모형실험 (문항 17)",
+      "unit": "Ⅰ. 우주 탐사와 행성계 > 대단원 마무리",
+      "uses": false
+    }
+  ]
 }

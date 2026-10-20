@@ -1,0 +1,117 @@
+{
+  "id": "cur-h-pasteur",
+  "order": 231,
+  "title": "고깃국물은 왜 상할까 (파스퇴르 실험 재연)",
+  "subject": "과학탐구실험1",
+  "level": "고1 공통",
+  "course": "과학탐구실험1",
+  "area": "과학 탐구의 과정과 절차",
+  "summary": "입구 모양이 다른 플라스크의 pH와 탁도 변화로 미생물 증식을 비교합니다.",
+  "standards": [
+    "10과탐1-02-02"
+  ],
+  "standardTexts": [
+    "가설 설정을 포함한 과학사의 대표적인 탐구실험을 수행하고, 연역적 탐구 방법의 특징을 예증할 수 있다."
+  ],
+  "sensors": [
+    "pH",
+    "TURB"
+  ],
+  "mode": "event",
+  "intervalMs": 1000,
+  "x": {
+    "label": "지난 날",
+    "unit": "일"
+  },
+  "y": [
+    {
+      "sensor": "pH",
+      "label": "pH",
+      "unit": "",
+      "min": 0,
+      "max": 14
+    },
+    {
+      "sensor": "TURB",
+      "label": "투명도",
+      "unit": "%",
+      "min": 0,
+      "max": 100
+    }
+  ],
+  "markers": {
+    "enabled": false,
+    "label": "관찰 기록",
+    "prompt": "한 일 (예: 시약 넣음)"
+  },
+  "analysis": [
+    "stats",
+    "fit"
+  ],
+  "steps": [
+    "끓인 고깃국물(또는 우유)을 곧은 입구 병과 S자 관 병에 나눠 담습니다.",
+    "매일 같은 시각에 pH와 탁도를 재어 ‘값 기록’을 누릅니다 (병마다 새 측정).",
+    "pH가 떨어지고 탁해지는 병이 어느 쪽인지 비교합니다."
+  ],
+  "setup": {
+    "parts": [
+      "ph",
+      "turbidity"
+    ],
+    "choose": false,
+    "materials": [
+      "pH 센서",
+      "탁도 센서",
+      "플라스크 2개",
+      "S자 유리관",
+      "고깃국물 또는 우유"
+    ],
+    "attach": [],
+    "cautions": [
+      "상한 시료는 마시지 않고 실험 뒤 바로 버립니다.",
+      "뜨거운 물·가열 기구에 데지 않게 장갑을 끼고, 센서 선이 열원에 닿지 않게 합니다."
+    ]
+  },
+  "textbooks": [
+    {
+      "publisher": "동아출판",
+      "course": "과학탐구실험1",
+      "level": "고1 공통",
+      "note": "34쪽 파스퇴르의 생물속생설 도출 과정 재연하기(2)",
+      "sure": "confirmed",
+      "page": "34",
+      "activity": "파스퇴르의 생물속생설 도출 과정 재연하기(2)",
+      "unit": "Ⅱ. 과학 탐구의 과정",
+      "uses": false
+    },
+    {
+      "publisher": "미래엔",
+      "course": "과학탐구실험1",
+      "level": "고1 공통",
+      "note": "42쪽 파스퇴르의 생물속생설 도출 과정 재연하기",
+      "sure": "confirmed",
+      "page": "42",
+      "activity": "파스퇴르의 생물속생설 도출 과정 재연하기",
+      "unit": "Ⅱ. 과학 탐구의 과정과 절차",
+      "uses": false
+    },
+    {
+      "publisher": "천재교과서",
+      "course": "과학탐구실험1",
+      "level": "고1 공통",
+      "note": "44쪽 파스퇴르 실험 재연하기",
+      "sure": "confirmed",
+      "page": "44",
+      "activity": "파스퇴르 실험 재연하기",
+      "unit": "Ⅱ. 과학 탐구의 과정과 절차",
+      "uses": false
+    }
+  ],
+  "event": {
+    "label": "지난 날",
+    "unit": "일",
+    "start": 0,
+    "step": 1,
+    "scale": "linear"
+  }
+}

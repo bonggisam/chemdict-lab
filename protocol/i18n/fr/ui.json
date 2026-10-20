@@ -131,9 +131,7 @@
  "{title} 그래프": "Graphique {title}",
  "그림 저장": "Enregistrer l’image",
  "모든 센서": "Tous les capteurs",
- "학교급": "Niveau",
  "전체": "Tous",
- "과목": "Matière",
  "실험·센서·성취기준·출판사 찾기": "Chercher une expérience, un capteur, un objectif ou un éditeur",
  "실험 찾기": "Chercher une expérience",
  "{n}개 실험": "{n} expériences",
@@ -141,7 +139,6 @@
  "✓ 바로 측정": "✓ Mesure immédiate",
  "센서 연결 필요": "Capteur à connecter",
  "브레드보드": "Platine d’essai",
- "교과서 {list}": "Manuel {list}",
  "찾는 실험이 없습니다. 검색어를 바꾸거나 '전체'를 눌러 보세요.": "Aucune expérience trouvée. Changez les mots-clés ou touchez ‘Tous’.",
  "그림 (PNG)": "Image (PNG)",
  "그래프와 해석 결과를 한 장의 그림으로. 보고서·발표 자료에 붙이기 좋습니다.": "Graphique et analyse en une seule image. Pratique pour un compte rendu ou une présentation.",
@@ -502,5 +499,12 @@
  "보드 고르기 · 연결": "Choisir · Connecter",
  "센서 고르기 · 측정": "Choisir le capteur · Mesurer",
  "연결 그림 · 브레드보드": "Câblage · Breadboard",
- "이 보드는 블루투스로만 측정합니다": "Cette carte mesure uniquement par Bluetooth"
+ "이 보드는 블루투스로만 측정합니다": "Cette carte mesure uniquement par Bluetooth",
+ "기타": "Autres",
+ "과정·과목": "Cursus et matière",
+ "출판사": "Éditeur",
+ "모든 출판사": "Tous les éditeurs",
+ "교과서에 실린 실험만": "Seulement les expériences du manuel",
+ "센서 사용": "Avec capteur",
+ "외 {n}곳": "et {n} autres"
 }

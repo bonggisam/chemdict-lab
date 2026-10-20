@@ -61,7 +61,41 @@
       "산·염기는 보안경과 장갑을 끼고 다루며, 피부에 묻으면 바로 물로 씻습니다."
     ]
   },
-  "textbooks": [],
+  "textbooks": [
+    {
+      "publisher": "동아출판",
+      "course": "화학 반응의 세계",
+      "level": "고2·3 선택",
+      "note": "30쪽 물과 완충 용액의 pH 변화 비교하기",
+      "sure": "confirmed",
+      "page": "30",
+      "activity": "물과 완충 용액의 pH 변화 비교하기",
+      "unit": "Ⅰ. 산 염기 평형",
+      "uses": true
+    },
+    {
+      "publisher": "미래엔",
+      "course": "화학 반응의 세계",
+      "level": "고2·3 선택",
+      "note": "24쪽 물과 완충 용액의 pH 변화 비교하기",
+      "sure": "confirmed",
+      "page": "24",
+      "activity": "물과 완충 용액의 pH 변화 비교하기",
+      "unit": "Ⅰ. 산 염기 평형",
+      "uses": true
+    },
+    {
+      "publisher": "천재교과서",
+      "course": "화학 반응의 세계",
+      "level": "고2·3 선택",
+      "note": "37쪽 완충 용액의 역할 알아보기",
+      "sure": "confirmed",
+      "page": "37",
+      "activity": "완충 용액의 역할 알아보기",
+      "unit": "Ⅰ. 산 염기 평형",
+      "uses": true
+    }
+  ],
   "event": {
     "label": "넣은 HCl",
     "unit": "방울",

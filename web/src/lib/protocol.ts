@@ -77,6 +77,7 @@ export type AnalysisTool = 'stats' | 'fit' | 'equivalence' | 'plateau';
 export interface TextbookRef {
   publisher: string;           // 미래엔, 동아출판, 천재교과서(임성숙) …
   course: string;
+  level?: string;              // 그 교과서의 학교급 (실험이 여러 과목에 실릴 때 찾기에 씀)
   note: string;                // 예전 형식: '96쪽 …' (activity가 없을 때 표시)
   sure: 'confirmed' | 'mentioned' | 'similar';
   page?: string;               // 교과서 쪽

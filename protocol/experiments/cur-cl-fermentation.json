@@ -57,5 +57,50 @@
     "attach": [],
     "cautions": []
   },
-  "textbooks": []
+  "textbooks": [
+    {
+      "publisher": "동아출판",
+      "course": "세포와 물질대사",
+      "level": "고2·3 선택",
+      "note": "92쪽 알코올발효 실험 설계하여 수행하기",
+      "sure": "confirmed",
+      "page": "92",
+      "activity": "알코올발효 실험 설계하여 수행하기",
+      "unit": "Ⅲ. 세포호흡과 광합성",
+      "uses": false
+    },
+    {
+      "publisher": "미래엔",
+      "course": "과학탐구실험2",
+      "level": "고1 공통",
+      "note": "18쪽 그리스식 요구르트 만들기",
+      "sure": "similar",
+      "page": "18",
+      "activity": "그리스식 요구르트 만들기",
+      "unit": "Ⅰ. 생활 속의 과학 탐구",
+      "uses": false
+    },
+    {
+      "publisher": "미래엔",
+      "course": "세포와 물질대사",
+      "level": "고2·3 선택",
+      "note": "98쪽 발효 실험 설계하여 수행하기",
+      "sure": "confirmed",
+      "page": "98",
+      "activity": "발효 실험 설계하여 수행하기",
+      "unit": "Ⅲ. 세포호흡과 광합성",
+      "uses": false
+    },
+    {
+      "publisher": "천재교과서",
+      "course": "세포와 물질대사",
+      "level": "고2·3 선택",
+      "note": "100쪽 알코올발효 실험하기",
+      "sure": "confirmed",
+      "page": "100",
+      "activity": "알코올발효 실험하기",
+      "unit": "Ⅲ. 세포호흡과 광합성",
+      "uses": false
+    }
+  ]
 }

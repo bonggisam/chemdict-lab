@@ -75,7 +75,41 @@
     "attach": [],
     "cautions": []
   },
-  "textbooks": [],
+  "textbooks": [
+    {
+      "publisher": "미래엔",
+      "course": "과학 2",
+      "level": "중학교",
+      "note": "113쪽 빛의 합성 관찰하기",
+      "sure": "confirmed",
+      "page": "113",
+      "activity": "빛의 합성 관찰하기",
+      "unit": "Ⅲ. 빛과 파동/1. 빛",
+      "uses": false
+    },
+    {
+      "publisher": "천재교과서(임성숙)",
+      "course": "과학 2",
+      "level": "중학교",
+      "note": "110쪽 조명에 따른 물체의 색 관찰하기",
+      "sure": "confirmed",
+      "page": "110",
+      "activity": "조명에 따른 물체의 색 관찰하기",
+      "unit": "Ⅲ. 빛과 파동/1. 빛",
+      "uses": false
+    },
+    {
+      "publisher": "천재교과서(정대홍)",
+      "course": "과학 2",
+      "level": "중학교",
+      "note": "115쪽 여러 색의 빛을 반사하는 물체의 색 관찰하기",
+      "sure": "confirmed",
+      "page": "115",
+      "activity": "여러 색의 빛을 반사하는 물체의 색 관찰하기",
+      "unit": "Ⅲ. 빛과 파동/1. 빛",
+      "uses": false
+    }
+  ],
   "event": {
     "label": "시료 번호",
     "unit": "번",

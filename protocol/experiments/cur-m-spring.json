@@ -58,7 +58,52 @@
     "attach": [],
     "cautions": []
   },
-  "textbooks": [],
+  "textbooks": [
+    {
+      "publisher": "동아출판",
+      "course": "물리학",
+      "level": "고2·3 선택",
+      "note": "40쪽 용수철의 탄성력 알아보기",
+      "sure": "confirmed",
+      "page": "40",
+      "activity": "용수철의 탄성력 알아보기",
+      "unit": "Ⅰ. 힘과 에너지",
+      "uses": true
+    },
+    {
+      "publisher": "미래엔",
+      "course": "과학 1",
+      "level": "중학교",
+      "note": "166쪽 용수철의 탄성력 측정하기",
+      "sure": "confirmed",
+      "page": "166",
+      "activity": "용수철의 탄성력 측정하기",
+      "unit": "Ⅴ. 힘의 작용 / 1. 여러 가지 힘 - 탄성력",
+      "uses": true
+    },
+    {
+      "publisher": "천재교과서(임성숙)",
+      "course": "과학 1",
+      "level": "중학교",
+      "note": "162쪽 용수철의 탄성력 측정하기",
+      "sure": "confirmed",
+      "page": "162",
+      "activity": "용수철의 탄성력 측정하기",
+      "unit": "Ⅴ. 힘의 작용 / 1. 여러 가지 힘 - 원래 모양으로 되돌아가려는 힘",
+      "uses": true
+    },
+    {
+      "publisher": "천재교과서(정대홍)",
+      "course": "과학 1",
+      "level": "중학교",
+      "note": "162쪽 용수철의 탄성력 측정하기",
+      "sure": "confirmed",
+      "page": "162",
+      "activity": "용수철의 탄성력 측정하기",
+      "unit": "Ⅴ. 힘의 작용 / 1. 여러 가지 힘",
+      "uses": true
+    }
+  ],
   "event": {
     "label": "늘어난 길이",
     "unit": "cm",

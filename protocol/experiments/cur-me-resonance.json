@@ -58,7 +58,52 @@
     "attach": [],
     "cautions": []
   },
-  "textbooks": [],
+  "textbooks": [
+    {
+      "publisher": "동아출판",
+      "course": "역학과 에너지",
+      "level": "고2·3 선택",
+      "note": "119쪽 정상파를 이용한 음파의 진행 속력 측정하기",
+      "sure": "confirmed",
+      "page": "119",
+      "activity": "정상파를 이용한 음파의 진행 속력 측정하기",
+      "unit": "Ⅲ. 탄성파와 소리",
+      "uses": true
+    },
+    {
+      "publisher": "동아출판",
+      "course": "역학과 에너지",
+      "level": "고2·3 선택",
+      "note": "122쪽 악기의 원리 알아보기",
+      "sure": "confirmed",
+      "page": "122",
+      "activity": "악기의 원리 알아보기",
+      "unit": "Ⅲ. 탄성파와 소리",
+      "uses": false
+    },
+    {
+      "publisher": "미래엔",
+      "course": "역학과 에너지",
+      "level": "고2·3 선택",
+      "note": "120쪽 정상파를 이용한 음파의 진행 속력 측정하기",
+      "sure": "confirmed",
+      "page": "120",
+      "activity": "정상파를 이용한 음파의 진행 속력 측정하기",
+      "unit": "Ⅲ. 탄성파와 소리",
+      "uses": false
+    },
+    {
+      "publisher": "천재교과서",
+      "course": "역학과 에너지",
+      "level": "고2·3 선택",
+      "note": "123쪽 정상파를 이용한 음파의 진행 속력 측정하기",
+      "sure": "confirmed",
+      "page": "123",
+      "activity": "정상파를 이용한 음파의 진행 속력 측정하기",
+      "unit": "Ⅲ. 탄성파와 소리",
+      "uses": true
+    }
+  ],
   "event": {
     "label": "공기 기둥 길이",
     "unit": "cm",
