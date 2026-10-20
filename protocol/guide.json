@@ -1493,7 +1493,7 @@
       "cautions": [
         "R·G·B를 전체 빛에 대한 비율(%)로 보여 줍니다. 지시약 색 변화·용액 농도 비교에 씁니다.",
         "모듈의 흰색 LED가 켜집니다. 시료와 거리를 일정하게(약 1 cm) 유지합니다.",
-        "주소 0x29가 같은 고감도 조도 센서 TSL2591·레이저 거리 센서 VL53L0X·레이저 거리 센서 VL53L1X·Modulino Distance·근거리 레이저 와 한 버스에 함께 꽂지 않습니다 (하나만 인식됨). UNO R4 WiFi·Nano R4·UNO Q는 Qwiic 단자와 SDA·SCL 핀에 하나씩 나누면 됩니다."
+        "주소 0x29가 같은 고감도 조도 센서 TSL2591·레이저 거리 센서 VL53L0X·레이저 거리 센서 VL53L1X·Modulino Distance·근거리 레이저 센서 VL6180X와 한 버스에 함께 꽂지 않습니다 (하나만 인식됨). UNO R4 WiFi·Nano R4·UNO Q는 Qwiic 단자와 SDA·SCL 핀에 하나씩 나누면 됩니다."
       ],
       "addr": "0x29"
     },
@@ -2289,7 +2289,7 @@
       ],
       "cautions": [
         "아주 어두운 빛(루미놀 발광 등)도 잽니다.",
-        "주소 0x29가 같은 컬러 센서 TCS34725·레이저 거리 센서 VL53L0X·레이저 거리 센서 VL53L1X·Modulino Distance·근거리 레이저 센서 와 한 버스에 함께 꽂지 않습니다 (하나만 인식됨). UNO R4 WiFi·Nano R4·UNO Q는 Qwiic 단자와 SDA·SCL 핀에 하나씩 나누면 됩니다."
+        "주소 0x29가 같은 컬러 센서 TCS34725·레이저 거리 센서 VL53L0X·레이저 거리 센서 VL53L1X·Modulino Distance·근거리 레이저 센서 VL6180X와 한 버스에 함께 꽂지 않습니다 (하나만 인식됨). UNO R4 WiFi·Nano R4·UNO Q는 Qwiic 단자와 SDA·SCL 핀에 하나씩 나누면 됩니다."
       ],
       "addr": "0x29"
     },
@@ -2367,7 +2367,7 @@
       "cautions": [
         "약 3~200 cm. 초음파보다 작은 물체·짧은 거리에 좋습니다.",
         "펌웨어를 직접 올릴 때는 Pololu VL53L0X 라이브러리가 필요합니다.",
-        "주소 0x29가 같은 컬러 센서 TCS34725·고감도 조도 센서 TSL2591·레이저 거리 센서 VL53L1X·Modulino Distance·근거리 레이저 센서 와 한 버스에 함께 꽂지 않습니다 (하나만 인식됨). UNO R4 WiFi·Nano R4·UNO Q는 Qwiic 단자와 SDA·SCL 핀에 하나씩 나누면 됩니다."
+        "주소 0x29가 같은 컬러 센서 TCS34725·고감도 조도 센서 TSL2591·레이저 거리 센서 VL53L1X·Modulino Distance·근거리 레이저 센서 VL6180X와 한 버스에 함께 꽂지 않습니다 (하나만 인식됨). UNO R4 WiFi·Nano R4·UNO Q는 Qwiic 단자와 SDA·SCL 핀에 하나씩 나누면 됩니다."
       ],
       "addr": "0x29"
     },
@@ -3624,7 +3624,7 @@
       ],
       "cautions": [
         "4 cm~4 m. 라이브러리 없이 바로 됩니다. 물체 낙하·수레 운동에 좋습니다.",
-        "주소 0x29가 같은 컬러 센서 TCS34725·고감도 조도 센서 TSL2591·레이저 거리 센서 VL53L0X·Modulino Distance·근거리 레이저 센서 와 한 버스에 함께 꽂지 않습니다 (하나만 인식됨). UNO R4 WiFi·Nano R4·UNO Q는 Qwiic 단자와 SDA·SCL 핀에 하나씩 나누면 됩니다."
+        "주소 0x29가 같은 컬러 센서 TCS34725·고감도 조도 센서 TSL2591·레이저 거리 센서 VL53L0X·Modulino Distance·근거리 레이저 센서 VL6180X와 한 버스에 함께 꽂지 않습니다 (하나만 인식됨). UNO R4 WiFi·Nano R4·UNO Q는 Qwiic 단자와 SDA·SCL 핀에 하나씩 나누면 됩니다."
       ],
       "addr": "0x29"
     },
@@ -3644,7 +3644,7 @@
       ],
       "cautions": [
         "1~130 cm. Qwiic 케이블로 꽂으면 바로 됩니다.",
-        "주소 0x29가 같은 컬러 센서 TCS34725·고감도 조도 센서 TSL2591·레이저 거리 센서 VL53L0X·레이저 거리 센서 VL53L1X·근거리 레이저 센서 와 한 버스에 함께 꽂지 않습니다 (하나만 인식됨). UNO R4 WiFi·Nano R4·UNO Q는 Qwiic 단자와 SDA·SCL 핀에 하나씩 나누면 됩니다."
+        "주소 0x29가 같은 컬러 센서 TCS34725·고감도 조도 센서 TSL2591·레이저 거리 센서 VL53L0X·레이저 거리 센서 VL53L1X·근거리 레이저 센서 VL6180X와 한 버스에 함께 꽂지 않습니다 (하나만 인식됨). UNO R4 WiFi·Nano R4·UNO Q는 Qwiic 단자와 SDA·SCL 핀에 하나씩 나누면 됩니다."
       ],
       "addr": "0x29"
     },
@@ -3664,7 +3664,7 @@
       ],
       "cautions": [
         "0~20 cm를 mm 단위로 잽니다. 용수철 진동처럼 짧은 움직임에 씁니다.",
-        "주소 0x29가 같은 컬러 센서 TCS34725·고감도 조도 센서 TSL2591·레이저 거리 센서 VL53L0X·레이저 거리 센서 VL53L1X·Modulino Di와 한 버스에 함께 꽂지 않습니다 (하나만 인식됨). UNO R4 WiFi·Nano R4·UNO Q는 Qwiic 단자와 SDA·SCL 핀에 하나씩 나누면 됩니다."
+        "주소 0x29가 같은 컬러 센서 TCS34725·고감도 조도 센서 TSL2591·레이저 거리 센서 VL53L0X·레이저 거리 센서 VL53L1X·Modulino Distance와 한 버스에 함께 꽂지 않습니다 (하나만 인식됨). UNO R4 WiFi·Nano R4·UNO Q는 Qwiic 단자와 SDA·SCL 핀에 하나씩 나누면 됩니다."
       ],
       "addr": "0x29"
     },

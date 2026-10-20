@@ -755,7 +755,7 @@ def _apply_audit():
     for a, ps in addrs.items():
         if len(ps) < 2: continue
         for p in ps:
-            others = "·".join(q["name"].split(" (")[0] for q in ps if q is not p)[:80]
+            others = "·".join(q["name"].split(" (")[0].strip() for q in ps if q is not p)
             c = f"주소 {a}가 같은 {others}와 한 버스에 함께 꽂지 않습니다 (하나만 인식됨). UNO R4 WiFi·Nano R4·UNO Q는 Qwiic 단자와 SDA·SCL 핀에 하나씩 나누면 됩니다."
             if not any(f"주소 {a}가 같은" in x for x in p["cautions"]): p["cautions"].append(c)
     # 보드가 지원하지 않는 연결 방식의 핀 역할은 '—' (lite: 열전대·PT100·초음파 없음, mini: HX711도 없음)
