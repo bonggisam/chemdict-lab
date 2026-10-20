@@ -163,7 +163,8 @@ I2C는 Qwiic 단자(UNO R4 WiFi·Nano R4의 `Wire1`, `qwiic:`)와 SDA·SCL 핀(`
 - `boards[]`: `id`, `name`, `match`(hello의 board 이름과 맞춰 볼 문자열), `firmware`(`supported`·`partial`·`none`), USB·블루투스·핀 전압·아날로그·Qwiic 정보, `connectors.{qwiic,onewire,analog}`의 연결 순서와 주의
 - `connectors{}`: 연결 방식별 배선 — `wires[]`(센서 단자 → 보드 핀 역할), `cable`(Qwiic), `resistor`
 - `boards[].pins`: 핀 역할 → 이 보드의 핀 이름 (`SDA` → `D20 (SDA)` 등), `sensorSet`: 펌웨어 범위
-- `parts[]`: 센서 — `category`, `connector`, `provides`(센서 종류), `minSet`(필요한 펌웨어 범위), `analogType`(아날로그 포트에 지정할 종류), `items`, `cautions`
+- `parts[]`: 센서 — `category`, `connector`, `provides`(센서 종류), `minSet`(필요한 펌웨어 범위), `analogType`(아날로그 포트에 지정할 종류), `items`, `cautions`, `addr`(I2C 주소)
+- 전원·전압 표시 (v2.1, 공식 데이터시트 점검 반영): `parts[].needs5V`(전원 5 V 전용 → 연결 방식 `analog-5v`·`uart`·`pulse`·`ultrasonic`은 VCC를 핀 역할 `PWR5`에 둠), `outOver33`(출력이 3.3 V를 넘어 3.3 V 보드에서는 2:1 분압 필요), `currentMa`(대략 소비 전류). `boards[].pins.PWR5`는 '항상 5 V인 핀'(5 V 보드 = 5V, UNO Q = 전원 헤더 5V, Nano ESP32 = VBUS). 앱은 3.3 V 보드 + `needs5V` 부품에 경고를, `outOver33`이면 분압 안내를 띄운다. 같은 I2C 주소를 쓰는 부품끼리는 생성기가 '한 버스에 함께 꽂지 않음' caution을 자동으로 붙인다. 가벼운 펌웨어 보드(lite·mini)는 지원하지 않는 연결의 핀 역할이 `—`로 나온다.
 - 앱의 "바로 측정": 센서를 고르면 아날로그는 `PORT`, 디지털은 `HELLO`를 보내고, 해당 종류가 hello에 나타나면 측정을 시작합니다.
 
 ## 8. 시뮬레이터 전용 명령
@@ -218,6 +219,12 @@ I2C는 Qwiic 단자(UNO R4 WiFi·Nano R4의 `Wire1`, `qwiic:`)와 SDA·SCL 핀(`
 - 날짜·시간을 비우면 첫 측정의 시작 시각(`Run.startedAt`)이 들어갑니다. 측정마다 시작 시각과 '저장한 때'도 함께 남깁니다.
 - 저장 파일: PNG·PDF는 제목 아래 정보 상자, 엑셀은 '그래프'·'해석' 시트 위쪽, CSV는 표 위 이름–값 줄로 들어갑니다.
 - 모둠·이름·반·장소는 브라우저 저장소에 기억해 다음 실험에 미리 채웁니다 (그 기기에만).
+
+## 참고 자료 파일 (웹앱·애플 앱 공통, v2.1)
+
+- `protocol/analysis_methods.json` — 센서 가족별 추천 그래프·해석 도구·읽는 요령. `bySensor[type]` + `aliases{변형 type → 가족 type}`. `methods[].tool`은 앱 도구 이름(평탄 구간·당량점 찾기·접선·넓이·변화율 그래프·값 읽기·구간 선택·계산 열 → …·함수 찾기 → …)으로 시작해야 [적용] 단추가 그 도구를 켠다.
+- `protocol/sensor_checks.json` (`tools/make_sensor_checks.py`로 생성) — 센서 점검: `range`·`accuracy`·`resolution`·`response`(사양), `refs[]`(기준 상황: `expect`±`tol` 또는 `min`~`max`, 단위는 sensors.json과 같음), `test[]`(정상 작동 테스트 절차), `fail[]`(고장 신호 → 원인), `errorNote`. 앱의 '센서 점검' 화면은 최근 값 평균·흔들림(표준편차)을 기준 상황과 비교해 오차(절대·상대)와 통과 여부를 보여 주고, 해석 패널의 '기준값과 비교'는 선택 구간 평균(없으면 평탄 구간 평균, 없으면 마지막 값)과 이론값의 오차를 계산한다.
+- `protocol/reagents.json` — 실험 준비물에 나오는 시약의 위험·보호구·조제·보관·폐기·응급 처치. `matches`(+`name`·`aliases`)가 준비물 문구의 부분 문자열이면 연결되며, 긴 이름부터 맞추고 맞은 글자는 지워 '아세트산 나트륨'이 '아세트산'으로 다시 잡히지 않게 한다.
 
 ## 다국어 (웹앱)
 

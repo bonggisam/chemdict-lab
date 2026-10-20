@@ -1,4 +1,4 @@
-import { breadboard, partSupported, wiring, type Board, type Part } from '../lib/guide';
+import { breadboard, partSupported, v33Warning, wiring, type Board, type Part } from '../lib/guide';
 import { BreadboardDiagram } from './Breadboard';
 import { t } from '../lib/i18n';
 import { WiringDiagram } from './WiringDiagram';
@@ -18,9 +18,17 @@ export function PartWiring({ board, part, port, compact }: Props) {
   const { connector, cable, wires } = wiring(b, part);
   const ok = partSupported(board, part);
   const cautions = [...connector.cautions, ...part.cautions];
+  const v33 = v33Warning(board, part);
 
   return (
     <div className="part-wiring">
+      {v33 && (
+        <p className="caution strong">
+          <R t={v33 === 'divider'
+            ? t('{board}는 3.3 V 보드입니다. 이 센서는 5 V 전용이라 전원은 [5V] 핀에서 받고, 신호가 3.3 V를 넘으므로 신호선에 2:1 분압(10 kΩ+10 kΩ)을 넣은 뒤 [센서 보정]에서 배율을 2배로 맞춥니다. 분압 없이 꽂으면 보드가 망가질 수 있습니다.', { board: board.name })
+            : t('{board}는 3.3 V 보드입니다. 이 센서는 전원 5 V 전용이라 VCC를 [5V] 핀에 꽂습니다 (신호는 3.3 V 이하).', { board: board.name })} />
+        </p>
+      )}
       {!ok && (
         <p className="caution strong">
           {board.sensorSet === 'none'

@@ -17,12 +17,13 @@ import type { XSeries } from '../lib/xlsx';
 import { breadboardFor } from '../lib/guide';
 import { BreadboardNote } from './PartWiring';
 import { InfoSheet } from './InfoSheet';
-import { t, tk } from '../lib/i18n';
+import { c, t, tk } from '../lib/i18n';
 import { infoRows, infoSummary, type ExpInfo } from '../lib/info';
 import { FORMULA_EXAMPLES, FormulaError, compile, evalColumn, type CustomCalc } from '../lib/formula';
 import { R } from './Rich';
 import { ReagentNotes } from './ReagentNotes';
 import { SensorTips } from './SensorTips';
+import { checkFor, checkKey } from '../lib/sensorChecks';
 
 export interface Trigger { id: string; dir: 'up' | 'down'; value: number }
 
@@ -47,6 +48,7 @@ interface Props {
   onBack: () => void;
   onOpenSetup: () => void;
   onOpenCal: (id?: string) => void;
+  onOpenCheck: (id?: string) => void;
   onOpenGuide: () => void;
   say: (kind: 'ok' | 'err', text: string) => void;
   onEventX?: (nextX: number) => void;
@@ -628,6 +630,7 @@ export function Measure(p: Props) {
           <button className="ghost" onClick={p.onOpenGuide}><Ico e={ICON.guide} />{t('연결 안내')}</button>
           <button className="ghost" disabled={running} onClick={p.onOpenSetup}><Ico e={ICON.setup} />{t('센서 설정')}</button>
           <button className="ghost" disabled={!sensors.some((s) => s.spec && s.spec.cal.kind !== 'none')} onClick={() => p.onOpenCal(charts[0]?.sensor.id)}><Ico e={ICON.cal} />{t('보정')}</button>
+          <button className="ghost" onClick={() => p.onOpenCheck(charts[0]?.sensor.id)}><Ico e={ICON.test} />{t('점검')}</button>
           {charts.length > 0 && !xSensor && (
             drawing
               ? <button className="ghost" onClick={() => setDrawing(false)}>{t('그리기 취소')}</button>
@@ -707,6 +710,16 @@ export function Measure(p: Props) {
             </table>
           </div>
           <Interpret fit={fitSel !== 'off'} area={showArea} deriv={showDeriv} tool={tool} showEq={showEq} showPlateau={showPlateau} mode={mode} logX={logX} unit={anaChart.unit} xUnit={xUnit} />
+          {activeAna?.st && (
+            <CompareRef
+              unit={anaChart.unit}
+              decimals={anaChart.sensor.decimals}
+              source={selection ? 'sel' : showPlateau && activeAna.plateau ? 'plateau' : 'last'}
+              value={selection ? activeAna.st.mean : showPlateau && activeAna.plateau ? activeAna.plateau.mean : activeAna.st.last}
+              sd={selection ? activeAna.st.sd : showPlateau && activeAna.plateau ? activeAna.plateau.sd : 0}
+              accuracy={(() => { const k = checkKey(anaChart.sensor.type); return k ? c(`check.${k}.accuracy`, checkFor(anaChart.sensor.type)!.accuracy) : undefined; })()}
+            />
+          )}
           <SensorTips type={anaChart.sensor.type} onApply={(a) => {
             if (a.fit) setFitSel(a.fit);
             if (a.tool) setTool(a.tool);
@@ -798,6 +811,33 @@ function DataTable({ head, rows, decimals, calcCol, onToggle, onDelete }: {
       </div>
       {rows.length > LIMIT && <p className="note">{t('최근 {n}개만 보여 줍니다. 전체는 저장하기로 내보내세요.', { n: LIMIT })}</p>}
     </>
+  );
+}
+
+/** 측정값을 이론값·문헌값과 비교해 오차를 봄 (선택 구간 평균 → 평탄 구간 → 마지막 값 순) */
+function CompareRef({ unit, decimals, source, value, sd, accuracy }: { unit: string; decimals?: number; source: 'sel' | 'plateau' | 'last'; value: number; sd: number; accuracy?: string }) {
+  const [ref, setRef] = useState('');
+  const [tol, setTol] = useState('');
+  const r = Number(ref), tl = Number(tol);
+  const ok = ref !== '' && Number.isFinite(r);
+  const err = ok ? value - r : 0;
+  const rel = ok && r !== 0 ? (err / r) * 100 : null;
+  const pass = ok && tol !== '' && Number.isFinite(tl) ? Math.abs(err) <= tl : null;
+  const f = (x: number) => fmtValue(x, decimals);
+  const srcName = source === 'sel' ? t('선택 구간 평균') : source === 'plateau' ? t('평탄 구간 평균') : t('마지막 값');
+  return (
+    <div className="compare-ref" data-nav={t('기준값과 비교')}>
+      <b>{t('기준값과 비교')}</b>
+      <span className="note">{srcName}: <b className="k-num">{f(value)} {unit}</b>{sd ? ` ±${f(sd)}` : ''}</span>
+      <label className="mini">{t('이론값·문헌값')} <input inputMode="decimal" value={ref} onChange={(e) => setRef(e.target.value)} placeholder={unit} aria-label={t('이론값·문헌값')} /></label>
+      <label className="mini">{t('허용 오차')} <input inputMode="decimal" value={tol} onChange={(e) => setTol(e.target.value)} placeholder="±" aria-label={t('허용 오차')} /></label>
+      {ok && (
+        <span className={`cr-out ${pass === null ? '' : pass ? 'pass' : 'fail'}`}>
+          {t('오차')} {err > 0 ? '+' : ''}{f(err)} {unit}{rel !== null && Math.abs(rel) < 1000 ? ` (${rel > 0 ? '+' : ''}${rel.toFixed(1)} %)` : ''}{pass === null ? '' : pass ? ' ✓' : ' ✗'}
+        </span>
+      )}
+      {accuracy && <small className="note">{t('센서 정확도')}: {accuracy}</small>}
+    </div>
   );
 }
 

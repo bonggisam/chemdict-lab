@@ -1,7 +1,7 @@
 """
 번역할 한국어 문장 모으기 → protocol/i18n/source/content.json  (키 → 한국어)
 
-- 실행: python3 tools/i18n_extract.py   (guide.json·experiments·sensors.json·analysis_methods.json·reagents.json을 고친 뒤 다시 실행)
+- 실행: python3 tools/i18n_extract.py   (guide.json·experiments·sensors.json·analysis_methods.json·reagents.json·sensor_checks.json을 고친 뒤 다시 실행)
 - 각 언어 번역은 protocol/i18n/<lang>/content.json 에 같은 키로 둡니다 (빠진 키는 한국어로 보임).
 - 확인: python3 tools/i18n_check.py
 """
@@ -123,6 +123,18 @@ for code, g in a.get("bySensor", {}).items():
         put(f"{k}.m.{i}.why", m.get("why"))
         put(f"{k}.m.{i}.ex", m.get("example"))
     walk_list(f"{k}.tip", g.get("tips"))
+
+# ---------------------------------------------------------------- sensor_checks.json (센서 점검)
+sc = json.loads((P / "sensor_checks.json").read_text(encoding="utf-8"))
+for code, g in sc.get("bySensor", {}).items():
+    k = f"check.{code}"
+    for fld in ("name", "range", "accuracy", "resolution", "response", "errorNote"):
+        put(f"{k}.{fld}", g.get(fld))
+    for i, r in enumerate(g.get("refs", [])):
+        put(f"{k}.ref.{i}", r.get("situation"))
+        put(f"{k}.ref.{i}.note", r.get("note"))
+    walk_list(f"{k}.test", g.get("test"))
+    walk_list(f"{k}.fail", g.get("fail"))
 
 # ---------------------------------------------------------------- reagents.json (시약 설명)
 rg = json.loads((P / "reagents.json").read_text(encoding="utf-8"))

@@ -248,6 +248,7 @@ button.small { min-height: 44px; padding: 4px 12px; font-size: 14px; }
 .sensor-card.dim { opacity: 0.6; }
 .badge { font-size: 13px; padding: 1px 8px; border-radius: 999px; background: var(--tint); color: var(--muted); }
 .badge.ok { color: var(--ok); background: color-mix(in srgb, var(--ok) 12%, transparent); font-weight: 600; }
+.badge.warn { color: var(--mark); background: color-mix(in srgb, var(--mark) 12%, transparent); font-weight: 600; }
 .advanced { margin-top: 24px; }
 .advanced summary { cursor: pointer; min-height: 44px; display: flex; align-items: center; color: var(--muted); font-weight: 600; }
 .sheet.quick { max-width: 980px; }
@@ -713,3 +714,31 @@ button.big.alt { background: linear-gradient(160deg, var(--tint), transparent 70
 .st-methods li { display: flex; flex-direction: column; gap: 2px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; font-size: 14px; }
 .st-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
 .st-tips { margin: 10px 0 6px; padding-left: 18px; font-size: 14px; color: var(--muted); display: flex; flex-direction: column; gap: 3px; }
+
+/* ---- 센서 점검 · 오차 (SensorCheckSheet) */
+.sheet-wide { width: min(720px, 100%); max-height: calc(100vh - 32px); overflow: auto; }
+.check-sheet h3 { margin: 18px 0 6px; font-size: 16px; }
+.spec-grid { display: grid; grid-template-columns: max-content 1fr; gap: 4px 12px; margin: 0 0 12px; font-size: 14px; }
+.spec-grid dt { color: var(--muted); }
+.spec-grid dd { margin: 0; }
+.ref-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 4px; }
+.ref-list li label { display: grid; grid-template-columns: auto 1fr auto; gap: 4px 10px; align-items: center; padding: 8px 10px; border: 1px solid var(--line); border-radius: 8px; min-height: 44px; cursor: pointer; }
+.ref-list li.on label { border-color: var(--accent); background: var(--tint); }
+.ref-list .ref-sit { font-size: 14px; }
+.ref-list .ref-val { font-family: ui-monospace, Menlo, monospace; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.ref-list small.note { grid-column: 2 / 4; font-size: 12px; }
+.ref-list .ref-input { display: flex; gap: 6px; align-items: center; }
+.ref-list .ref-input input { width: 90px; min-height: 36px; }
+.verdict { border-radius: 10px; padding: 12px 14px; margin: 12px 0; border: 2px solid var(--ok); background: color-mix(in srgb, var(--ok) 10%, var(--surface)); }
+.verdict.fail { border-color: var(--mark); background: color-mix(in srgb, var(--mark) 10%, var(--surface)); }
+.verdict-head { font-weight: 700; margin-bottom: 6px; }
+.verdict dl { display: grid; grid-template-columns: max-content 1fr; gap: 2px 12px; margin: 0; font-size: 14px; }
+.verdict dt { color: var(--muted); } .verdict dd { margin: 0; font-variant-numeric: tabular-nums; }
+.check-steps { padding-left: 22px; margin: 0; display: flex; flex-direction: column; gap: 6px; font-size: 14px; }
+.check-steps li.done { opacity: 0.6; text-decoration: line-through; }
+.check-steps label { display: flex; gap: 8px; align-items: flex-start; min-height: 32px; cursor: pointer; }
+.check-steps input { margin-top: 3px; }
+.compare-ref { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; padding: 10px 12px; background: var(--tint); border-radius: 8px; margin-top: 10px; font-size: 14px; }
+.compare-ref input { width: 100px; min-height: 36px; }
+.compare-ref .cr-out { font-variant-numeric: tabular-nums; }
+.compare-ref .cr-out.pass { color: var(--ok); font-weight: 700; } .compare-ref .cr-out.fail { color: var(--mark); font-weight: 700; }

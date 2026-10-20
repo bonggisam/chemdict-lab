@@ -17,7 +17,7 @@ export const catIcon = (c: string) => CAT_ICON[c] ?? '🔬';
 /** 아이콘 + 글자 (아이콘은 화면 읽기에서 건너뜀) */
 export const ICON = {
   usb: '🔌', ble: '📡', sim: '🧪', board: '🧩', next: '➡️',
-  start: '▶', stop: '■', marker: '📌', guide: '🧭', setup: '⚙️', cal: '🎯',
+  start: '▶', stop: '■', marker: '📌', guide: '🧭', setup: '⚙️', cal: '🎯', test: '🔎',
   predict: '✏️', table: '📋', share: '🔗', save: '💾', open: '📂', recent: '🕘',
   supply: '🧾', experiment: '🔬', analysis: '🔍', trigger: '⏱️', calc: '🧮', info: '🏷️',
   print: '🖨️', copy: '📄', lang: '🌐', fw: '⬇️', check: '✅', warn: '⚠️',
