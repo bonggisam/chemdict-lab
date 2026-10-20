@@ -70,6 +70,17 @@
   },
   "textbooks": [
     {
+      "publisher": "YBM",
+      "course": "과학 2",
+      "level": "중학교",
+      "note": "20쪽 온도에 따른 기체의 용해도 관찰하기",
+      "sure": "confirmed",
+      "page": "20",
+      "activity": "온도에 따른 기체의 용해도 관찰하기",
+      "unit": "Ⅰ. 물질의 특성/1. 물질의 특성",
+      "uses": false
+    },
+    {
       "publisher": "미래엔",
       "course": "과학 2",
       "level": "중학교",
@@ -77,6 +88,17 @@
       "sure": "confirmed",
       "page": "22",
       "activity": "온도와 압력에 따른 기체의 용해도 알아보기",
+      "unit": "Ⅰ. 물질의 특성/1. 물질의 특성",
+      "uses": false
+    },
+    {
+      "publisher": "지학사",
+      "course": "과학 2",
+      "level": "중학교",
+      "note": "20쪽 온도와 압력에 따른 기체의 용해도 비교하기",
+      "sure": "confirmed",
+      "page": "20",
+      "activity": "온도와 압력에 따른 기체의 용해도 비교하기",
       "unit": "Ⅰ. 물질의 특성/1. 물질의 특성",
       "uses": false
     },

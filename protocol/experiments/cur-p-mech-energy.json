@@ -56,5 +56,17 @@
     "attach": [],
     "cautions": []
   },
-  "textbooks": []
+  "textbooks": [
+    {
+      "publisher": "YBM",
+      "course": "과학 3",
+      "level": "중학교",
+      "note": "156쪽 중력에 의해 떨어지는 물체의 역학적 에너지 보존 실험하기",
+      "sure": "confirmed",
+      "page": "156",
+      "activity": "중력에 의해 떨어지는 물체의 역학적 에너지 보존 실험하기",
+      "unit": "Ⅳ. 운동과 에너지 / 3. 역학적 에너지 - 역학적 에너지 보존",
+      "uses": true
+    }
+  ]
 }

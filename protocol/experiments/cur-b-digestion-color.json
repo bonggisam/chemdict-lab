@@ -75,6 +75,17 @@
   },
   "textbooks": [
     {
+      "publisher": "YBM",
+      "course": "과학 2",
+      "level": "중학교",
+      "note": "207쪽 침의 소화 작용 탐구하기",
+      "sure": "confirmed",
+      "page": "207",
+      "activity": "침의 소화 작용 탐구하기",
+      "unit": "Ⅵ. 동물과 에너지/1. 소화와 순환",
+      "uses": false
+    },
+    {
       "publisher": "동아출판",
       "course": "생명과학",
       "level": "고2·3 선택",
@@ -94,6 +105,17 @@
       "page": "34",
       "activity": "소화제와 소화효소를 이용한 영양소 분해 실험하기",
       "unit": "Ⅰ. 생명 시스템의 구성",
+      "uses": false
+    },
+    {
+      "publisher": "지학사",
+      "course": "과학 2",
+      "level": "중학교",
+      "note": "196쪽 침의 소화 작용 탐구하기",
+      "sure": "confirmed",
+      "page": "196",
+      "activity": "침의 소화 작용 탐구하기",
+      "unit": "Ⅵ. 동물과 에너지/1. 소화와 순환",
       "uses": false
     },
     {

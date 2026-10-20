@@ -72,5 +72,28 @@
       "노트북이 절전 모드에 들지 않게 하거나 USB 전원과 블루투스 태블릿을 씁니다."
     ]
   },
-  "textbooks": []
+  "textbooks": [
+    {
+      "publisher": "YBM",
+      "course": "과학 3",
+      "level": "중학교",
+      "note": "66쪽 기온, 상대습도, 이슬점의 관계 알아보기",
+      "sure": "confirmed",
+      "page": "66",
+      "activity": "기온, 상대습도, 이슬점의 관계 알아보기",
+      "unit": "Ⅱ. 날씨와 기후변화 / 2. 구름과 강수 - 상대습도",
+      "uses": false
+    },
+    {
+      "publisher": "YBM",
+      "course": "과학 3",
+      "level": "중학교",
+      "note": "75쪽 기압의 작용 알아보기",
+      "sure": "similar",
+      "page": "75",
+      "activity": "기압의 작용 알아보기",
+      "unit": "Ⅱ. 날씨와 기후변화 / 3. 기압과 날씨 - 기압과 바람",
+      "uses": false
+    }
+  ]
 }

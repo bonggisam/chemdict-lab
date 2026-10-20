@@ -61,6 +61,17 @@
   },
   "textbooks": [
     {
+      "publisher": "YBM",
+      "course": "과학 1",
+      "level": "중학교",
+      "note": "148쪽 마찰력의 크기 비교하기",
+      "sure": "confirmed",
+      "page": "148",
+      "activity": "마찰력의 크기 비교하기",
+      "unit": "Ⅴ. 힘의 작용 / 1. 여러 가지 힘의 작용 - 여러 가지 힘",
+      "uses": false
+    },
+    {
       "publisher": "미래엔",
       "course": "과학 1",
       "level": "중학교",
@@ -70,6 +81,17 @@
       "activity": "마찰력 알아보기",
       "unit": "Ⅴ. 힘의 작용 / 1. 여러 가지 힘 - 마찰력",
       "uses": true
+    },
+    {
+      "publisher": "지학사",
+      "course": "과학 1",
+      "level": "중학교",
+      "note": "156쪽 두 힘 더하기",
+      "sure": "similar",
+      "page": "156",
+      "activity": "두 힘 더하기",
+      "unit": "Ⅴ. 힘의 작용 / 1. 여러 가지 힘 - 힘의 표시와 평형",
+      "uses": false
     },
     {
       "publisher": "천재교과서(정대홍)",

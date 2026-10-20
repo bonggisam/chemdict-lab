@@ -61,7 +61,30 @@
     ],
     "cautions": []
   },
-  "textbooks": [],
+  "textbooks": [
+    {
+      "publisher": "YBM",
+      "course": "과학 3",
+      "level": "중학교",
+      "note": "55쪽 물체의 복사 평형을 모형으로 이해하기",
+      "sure": "similar",
+      "page": "55",
+      "activity": "물체의 복사 평형을 모형으로 이해하기",
+      "unit": "Ⅱ. 날씨와 기후변화 / 1. 기권과 기후변화 - 복사 평형",
+      "uses": true
+    },
+    {
+      "publisher": "지학사",
+      "course": "통합과학2",
+      "level": "고1 공통",
+      "note": "86쪽 지구온난화에 따른 지구 열수지 변동 탐구하기",
+      "sure": "confirmed",
+      "page": "86",
+      "activity": "지구온난화에 따른 지구 열수지 변동 탐구하기",
+      "unit": "Ⅱ. 환경과 에너지 / 1. 생태계와 환경",
+      "uses": false
+    }
+  ],
   "breadboard": {
     "need": "recommended",
     "why": "온도 센서 2개 이상을 같은 줄에 나란히 꽂습니다 (센서 1개면 필요 없음).",

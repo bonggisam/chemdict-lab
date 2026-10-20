@@ -62,6 +62,17 @@
   },
   "textbooks": [
     {
+      "publisher": "YBM",
+      "course": "과학 1",
+      "level": "중학교",
+      "note": "186쪽 기체의 온도와 부피 관계를 실험으로 알아보기",
+      "sure": "confirmed",
+      "page": "186",
+      "activity": "기체의 온도와 부피 관계를 실험으로 알아보기",
+      "unit": "Ⅵ. 기체의 성질 / 2. 기체의 온도와 부피 - 기체의 온도와 부피 관계",
+      "uses": false
+    },
+    {
       "publisher": "미래엔",
       "course": "과학 1",
       "level": "중학교",
@@ -70,6 +81,17 @@
       "page": "210",
       "activity": "기체의 온도와 부피 관계 알아보기",
       "unit": "Ⅵ. 기체의 성질 / 2. 기체의 온도와 부피 관계",
+      "uses": false
+    },
+    {
+      "publisher": "지학사",
+      "course": "과학 1",
+      "level": "중학교",
+      "note": "210쪽 기체의 온도와 부피 관계 알아보기",
+      "sure": "confirmed",
+      "page": "210",
+      "activity": "기체의 온도와 부피 관계 알아보기",
+      "unit": "Ⅵ. 기체의 성질 / 2. 기체의 온도와 부피 - 기체의 온도와 부피 관계",
       "uses": false
     },
     {

@@ -62,6 +62,17 @@
   },
   "textbooks": [
     {
+      "publisher": "YBM",
+      "course": "과학 1",
+      "level": "중학교",
+      "note": "176쪽 기체의 압력과 부피 관계를 실험으로 알아보기",
+      "sure": "confirmed",
+      "page": "176",
+      "activity": "기체의 압력과 부피 관계를 실험으로 알아보기",
+      "unit": "Ⅵ. 기체의 성질 / 1. 기체의 압력과 부피 - 기체의 압력과 부피 관계",
+      "uses": true
+    },
+    {
       "publisher": "미래엔",
       "course": "과학 1",
       "level": "중학교",
@@ -70,6 +81,17 @@
       "page": "200",
       "activity": "기체의 압력과 부피 관계 알아보기",
       "unit": "Ⅵ. 기체의 성질 / 1. 기체의 압력과 부피 관계",
+      "uses": true
+    },
+    {
+      "publisher": "지학사",
+      "course": "과학 1",
+      "level": "중학교",
+      "note": "200쪽 기체의 압력과 부피 관계 알아보기",
+      "sure": "confirmed",
+      "page": "200",
+      "activity": "기체의 압력과 부피 관계 알아보기",
+      "unit": "Ⅵ. 기체의 성질 / 1. 기체의 압력과 부피 - 기체의 압력과 부피 관계",
       "uses": true
     },
     {

@@ -68,5 +68,17 @@
     "attach": [],
     "cautions": []
   },
-  "textbooks": []
+  "textbooks": [
+    {
+      "publisher": "지학사",
+      "course": "과학탐구실험2",
+      "level": "고1 공통",
+      "note": "47쪽 마이크로컨트롤러를 활용하여 탐구하기",
+      "sure": "confirmed",
+      "page": "47",
+      "activity": "마이크로컨트롤러를 활용하여 탐구하기",
+      "unit": "Ⅱ. 미래 사회와 첨단 과학 탐구",
+      "uses": true
+    }
+  ]
 }

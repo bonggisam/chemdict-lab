@@ -66,6 +66,17 @@
   },
   "textbooks": [
     {
+      "publisher": "YBM",
+      "course": "과학 1",
+      "level": "중학교",
+      "note": "80쪽 물체에서 열의 전도 비교하기",
+      "sure": "confirmed",
+      "page": "80",
+      "activity": "물체에서 열의 전도 비교하기",
+      "unit": "Ⅲ. 열 / 1. 열의 이동 - 열의 이동 방식",
+      "uses": true
+    },
+    {
       "publisher": "미래엔",
       "course": "과학 1",
       "level": "중학교",
@@ -74,6 +85,17 @@
       "page": "89",
       "activity": "열화상 카메라를 이용하여 물체에서 열의 전도 비교하기",
       "unit": "Ⅲ. 열 / 1. 열 - 열의 이동",
+      "uses": true
+    },
+    {
+      "publisher": "지학사",
+      "course": "과학 1",
+      "level": "중학교",
+      "note": "92쪽 물체에서 열의 전도 비교하기",
+      "sure": "confirmed",
+      "page": "92",
+      "activity": "물체에서 열의 전도 비교하기",
+      "unit": "Ⅲ. 열 / 1. 온도와 열의 이동 - 열의 이동 방식",
       "uses": true
     },
     {

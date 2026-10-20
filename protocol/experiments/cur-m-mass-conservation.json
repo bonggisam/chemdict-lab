@@ -60,5 +60,17 @@
     "attach": [],
     "cautions": []
   },
-  "textbooks": []
+  "textbooks": [
+    {
+      "publisher": "YBM",
+      "course": "과학 3",
+      "level": "중학교",
+      "note": "24쪽 화학 반응 전후의 질량 변화 관찰하기",
+      "sure": "confirmed",
+      "page": "24",
+      "activity": "화학 반응 전후의 질량 변화 관찰하기",
+      "unit": "Ⅰ. 화학 반응의 규칙성 / 2. 화학 반응의 규칙 - 질량 보존 법칙",
+      "uses": false
+    }
+  ]
 }

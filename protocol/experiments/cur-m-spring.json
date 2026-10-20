@@ -60,6 +60,17 @@
   },
   "textbooks": [
     {
+      "publisher": "YBM",
+      "course": "과학 1",
+      "level": "중학교",
+      "note": "146쪽 용수철의 탄성력 측정하기",
+      "sure": "confirmed",
+      "page": "146",
+      "activity": "용수철의 탄성력 측정하기",
+      "unit": "Ⅴ. 힘의 작용 / 1. 여러 가지 힘의 작용 - 여러 가지 힘",
+      "uses": true
+    },
+    {
       "publisher": "동아출판",
       "course": "물리학",
       "level": "고2·3 선택",
@@ -80,6 +91,17 @@
       "activity": "용수철의 탄성력 측정하기",
       "unit": "Ⅴ. 힘의 작용 / 1. 여러 가지 힘 - 탄성력",
       "uses": true
+    },
+    {
+      "publisher": "지학사",
+      "course": "과학 1",
+      "level": "중학교",
+      "note": "164쪽 용수철의 탄성력 측정하기",
+      "sure": "confirmed",
+      "page": "164",
+      "activity": "용수철의 탄성력 측정하기",
+      "unit": "Ⅴ. 힘의 작용 / 1. 여러 가지 힘 - 탄성력",
+      "uses": false
     },
     {
       "publisher": "천재교과서(임성숙)",

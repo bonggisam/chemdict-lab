@@ -55,7 +55,19 @@
     "attach": [],
     "cautions": []
   },
-  "textbooks": [],
+  "textbooks": [
+    {
+      "publisher": "YBM",
+      "course": "과학 3",
+      "level": "중학교",
+      "note": "104쪽 디지털 탐구 도구를 이용하여 해수의 연직 수온 분포 실험하기",
+      "sure": "confirmed",
+      "page": "104",
+      "activity": "디지털 탐구 도구를 이용하여 해수의 연직 수온 분포 실험하기",
+      "unit": "Ⅲ. 수권과 해수의 순환 / 2. 해수의 특성 - 해수의 수온",
+      "uses": true
+    }
+  ],
   "event": {
     "label": "깊이",
     "unit": "cm",
