@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Ico } from './Ico';
 import { catIcon } from '../lib/icons';
-import { categories, partSupported, parts, type Board, type Part } from '../lib/guide';
+import { categories, partSupported, parts, v33Warning, type Board, type Part } from '../lib/guide';
 import { typeInfo } from '../lib/sensors';
 import { t } from '../lib/i18n';
 import { catName } from '../lib/l10n';
@@ -45,6 +45,8 @@ export function SensorPicker({ board, connectedTypes, onPick }: Props) {
                 {on && <span className="badge ok">{t('✓ 연결됨')}</span>}
                 {!ok && <span className="badge">{t('이 보드 미지원')}</span>}
                 {ok && p.support === 'verified' && <span className="badge">{t('실제 확인')}</span>}
+                {ok && v33Warning(board, p) && <span className="badge warn">{v33Warning(board, p) === 'divider' ? t('5 V 전용 · 분압 필요') : t('전원 5 V 핀')}</span>}
+                {ok && (p.currentMa ?? 0) >= 100 && <span className="badge">{t('{n} mA', { n: p.currentMa ?? 0 })}</span>}
               </span>
             </button>
           );

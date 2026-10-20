@@ -10,6 +10,7 @@ import { shareUrl, takeShareFromUrl } from './lib/share';
 import type { CustomCalc } from './lib/formula';
 import { SensorSetup } from './components/SensorSetup';
 import { CalibrationSheet } from './components/CalibrationSheet';
+import { SensorCheckSheet } from './components/SensorCheckSheet';
 import { Guide } from './components/Guide';
 import { SensorPicker } from './components/SensorPicker';
 import { ExperimentBrowser } from './components/ExperimentBrowser';
@@ -47,6 +48,7 @@ export default function App() {
   const [toast, setToast] = useState<{ kind: 'ok' | 'err'; text: string } | null>(null);
   const [setupOpen, setSetupOpen] = useState(false);
   const [cal, setCal] = useState<{ id?: string } | null>(null);
+  const [check, setCheck] = useState<{ id?: string } | null>(null);   // 센서 점검(오차·테스트) 화면
   const [lastCal, setLastCal] = useState<CalMsg | null>(null);
   const [calRows, setCalRows] = useState<Row[]>([]);
   const [quick, setQuick] = useState<{ part: Part; status: QuickStatus } | null>(null);
@@ -239,7 +241,7 @@ export default function App() {
 
   // Esc로 열린 창 닫기
   const escRef = useRef<() => void>(() => {});
-  escRef.current = () => { if (quick) setQuick(null); else if (cal) closeCal(); else if (setupOpen) setSetupOpen(false); };
+  escRef.current = () => { if (quick) setQuick(null); else if (check) closeCheck(); else if (cal) closeCal(); else if (setupOpen) setSetupOpen(false); };
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') escRef.current(); };
     window.addEventListener('keydown', onKey);
@@ -440,9 +442,23 @@ export default function App() {
   };
   const closeCal = () => {
     setCal(null);
-    if (calibratingRef.current) { calibratingRef.current = false; send('STOP'); }
+    if (calibratingRef.current && !check) { calibratingRef.current = false; send('STOP'); }
+  };
+  // ---- 센서 점검 화면: 보정과 같은 미리보기 측정을 씀
+  const openCheck = (id?: string) => {
+    setCheck({ id });
+    if (!recordingRef.current && !calibratingRef.current) {
+      calibratingRef.current = true;
+      setCalRows([]);
+      send('START 500');
+    }
+  };
+  const closeCheck = () => {
+    setCheck(null);
+    if (calibratingRef.current && !cal) { calibratingRef.current = false; send('STOP'); }
   };
   const calSource: Row[] = recordingRef.current ? (runs.find((r) => r.id === activeId)?.rows ?? []) : calRows;
+  const recentValues10 = (id: string) => calSource.slice(-12).map((r) => r.v[id]).filter((v): v is number => typeof v === 'number');
   const liveValue = (id: string) => {
     for (let i = calSource.length - 1; i >= Math.max(0, calSource.length - 5); i--) if (typeof calSource[i].v[id] === 'number') return calSource[i].v[id];
     return undefined;
@@ -532,6 +548,7 @@ export default function App() {
             <h2><Ico e={ICON.experiment} />{t('실험으로 찾기 (교육과정)')}</h2>
             <button className="ghost" onClick={() => setSupplyOpen(true)}><Ico e={ICON.supply} />{t('준비물 목록')}</button>
             <button className="ghost" disabled={!sensors.some((s) => s.spec && s.spec.cal.kind !== 'none')} onClick={() => openCal()}><Ico e={ICON.cal} />{t('센서 보정')}</button>
+            <button className="ghost" disabled={!hello || !sensors.length} onClick={() => openCheck()}><Ico e={ICON.test} />{t('센서 점검')}</button>
           </div>
           <ExperimentBrowser experiments={experiments} connectedTypes={sensors.filter((x) => x.src !== 'demo' || transportRef.current?.kind === 'sim').map((x) => x.type)} onPick={pickExperiment} />
 
@@ -580,6 +597,7 @@ export default function App() {
           onBack={() => setScreen('pick')}
           onOpenSetup={() => setSetupOpen(true)}
           onOpenCal={openCal}
+          onOpenCheck={openCheck}
           onOpenGuide={() => openGuide(exp.id)}
           say={say}
           onEventX={(x) => { if (transportRef.current?.kind === 'sim') send(`SIMX ${x}`); }}
@@ -616,6 +634,17 @@ export default function App() {
 
       {shareOpen && exp && <ShareSheet url={shareLink} title={exp.title} say={say} onClose={() => setShareOpen(false)} />}
       {supplyOpen && <SupplySheet board={board} experiments={experiments} initialExp={exp ?? undefined} say={say} onClose={() => setSupplyOpen(false)} />}
+
+      {check && (
+        <SensorCheckSheet
+          sensors={sensors}
+          initialId={check.id}
+          recent={recentValues10}
+          running={running || calibratingRef.current}
+          onOpenCal={(id) => openCal(id)}
+          onClose={closeCheck}
+        />
+      )}
 
       {cal && (
         <CalibrationSheet

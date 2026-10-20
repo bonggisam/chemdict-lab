@@ -9,13 +9,14 @@ COMMON = [
     "모듈의 VCC·GND를 바꿔 꽂지 않습니다. 모듈이 뜨거워지면 바로 USB를 뽑습니다.",
     "물·용액은 보드에서 멀리 두고, 보드는 쟁반이나 받침 위에 놓습니다.",
     "실험이 끝나면 USB를 뽑고 센서를 정리합니다. 젖은 센서는 헹군 뒤 말려서 보관합니다.",
+    "가스(MQ)·미세먼지·CO₂(MH-Z19)처럼 전류가 큰 센서(100~180 mA)는 USB 전원(500 mA)으로는 2개까지만 함께 씁니다. 더 쓰거나 값이 흔들리고 보드가 다시 켜지면 DC 잭·VIN에 7~12 V 어댑터를 꽂습니다.",
 ]
 
 # ---------------------------------------------------------------- 보드
 # sensorSet: full(모든 센서) · lite(UNO R3·Nano: LPS22·SCD4x·TCS34725·MAX6675·HC-SR04 제외)
 #            · mini(Leonardo: lite에서 BME280·HX711도 제외) · none(펌웨어 없음)
-def pins5(sda='SDA (A4)', scl='SCL (A5)', onewire='D2', pwr='5V', urx='D0 (RX)', utx='D1 (TX)', pulse='D3'):
-    return {"PWR": pwr, "PWR3": "3.3V", "GND": "GND", "SDA": sda, "SCL": scl, "A": "A0",
+def pins5(sda='SDA (A4)', scl='SCL (A5)', onewire='D2', pwr='5V', urx='D0 (RX)', utx='D1 (TX)', pulse='D3', pwr5='5V'):
+    return {"PWR": pwr, "PWR5": pwr5, "PWR3": "3.3V", "GND": "GND", "SDA": sda, "SCL": scl, "A": "A0",
             "ONEWIRE": onewire, "DHT": "D4", "HX_DT": "D5", "HX_SCK": "D6",
             "TRIG": "D7", "ECHO": "D8", "TC_CS": "D10", "TC_SO": "D12", "TC_SCK": "D13",
             "U_RX": urx, "U_TX": utx, "PULSE": pulse, "RTD_CS": "D9", "SPI_SDI": "D11"}
@@ -29,7 +30,8 @@ BOARDS = [
     dict(id="uno-r4-wifi", name="UNO R4 WiFi", match=["UNO R4 WiFi"], firmware="verified", sensorSet="full",
          firmwareNote="기준 보드. 실제 보드에서 확인했습니다. USB와 블루투스 모두 됩니다.",
          usb="USB-C", ble=True, logic="5 V", adc="14비트 (0~5 V)", qwiic="있음 (3.3 V)", pins=pins5(),
-         notes=["I2C 센서는 Qwiic 단자와 SDA·SCL 핀 어디에 꽂아도 인식합니다."]),
+         notes=["I2C 센서는 Qwiic 단자와 SDA·SCL 핀 어디에 꽂아도 인식합니다.",
+                "USB 전원일 때 5V 핀은 약 4.7 V입니다. LM35·TMP36·pH 모듈처럼 절대 전압을 내는 센서는 값이 5 %쯤 낮게 나올 수 있으니 [센서 점검]으로 확인하고 1점 보정을 하거나 DC 잭 전원(7~12 V)을 씁니다."]),
     dict(id="uno-r4-minima", name="UNO R4 Minima", match=["UNO R4 Minima"], firmware="compiled", sensorSet="full",
          firmwareNote="모든 센서 지원 (컴파일 확인, 실제 보드 확인 전). USB로만 연결됩니다.",
          usb="USB-C", ble=False, logic="5 V", adc="14비트 (0~5 V)", qwiic="없음", pins=pins5(), notes=[]),
@@ -37,11 +39,13 @@ BOARDS = [
          firmwareNote="모든 센서 지원 (컴파일 확인, 실제 보드 확인 전). USB로만 연결됩니다.",
          usb="USB-C", ble=False, logic="5 V", adc="14비트 (0~5 V)", qwiic="있음 (3.3 V)",
          pins=pins5(sda="A4 (SDA)", scl="A5 (SCL)"),
-         notes=["브레드보드에 꽂아 쓰면 선을 연결하기 쉽습니다. 핀 이름은 보드 옆면에 인쇄되어 있습니다."]),
+         notes=["브레드보드에 꽂아 쓰면 선을 연결하기 쉽습니다. 핀 이름은 보드 옆면에 인쇄되어 있습니다.",
+                "3V3 핀은 모듈 합계 약 150 mA까지입니다. CO₂·미세먼지처럼 전류가 큰 모듈은 'VIN 3–5 V' 표시가 있으면 5V 핀에 꽂습니다."]),
     dict(id="mega-2560", name="Mega 2560 (호환 포함)", match=["Mega 2560"], firmware="compiled", sensorSet="full",
          firmwareNote="모든 센서 지원 (컴파일 확인, 실제 보드 확인 전). USB로만 연결됩니다.",
          usb="USB-B (맥북은 변환 필요)", ble=False, logic="5 V", adc="10비트 (0~5 V)", qwiic="없음",
-         pins=pins5(sda="D20 (SDA)", scl="D21 (SCL)", urx="D19 (RX1)", utx="D18 (TX1)"), notes=["I2C 핀이 A4·A5가 아니라 D20·D21입니다.", CH340, "UART 센서(미세먼지·MH-Z19)는 D19(RX1)·D18(TX1)에 연결합니다."]),
+         pins=pins5(sda="D20 (SDA)", scl="D21 (SCL)", urx="D19 (RX1)", utx="D18 (TX1)"), notes=["I2C 핀이 A4·A5가 아니라 D20·D21입니다.", CH340, "UART 센서(미세먼지·MH-Z19)는 D19(RX1)·D18(TX1)에 연결합니다.",
+                "열전대(MAX6675)와 PT100(MAX31865)은 D10·D11·D12·D13에 꽂습니다 (보드 실크의 SPI D50~D53·ICSP가 아님)."]),
     dict(id="uno-r3", name="UNO R3 (호환 포함)", match=["UNO R3"], firmware="compiled", sensorSet="lite",
          firmwareNote="메모리가 작아 가벼운 버전입니다 (기압 LPS22, CO₂, 색, 열전대, 초음파와 추가 I2C·UART 센서 제외). 아날로그 센서는 모두 됩니다. 컴파일 확인, 실제 보드 확인 전.",
          usb="USB-B (맥북은 변환 필요)", ble=False, logic="5 V", adc="10비트 (0~5 V)", qwiic="없음",
@@ -63,26 +67,29 @@ BOARDS = [
     dict(id="nano-esp32", name="Nano ESP32", match=["Nano ESP32"], firmware="none", sensorSet="none",
          firmwareNote="ChemDict 펌웨어 준비 중입니다. 연결 방법만 참고하세요.",
          usb="USB-C", ble=True, logic="3.3 V", adc="12비트 (0~3.3 V)", qwiic="없음",
-         pins=pins5(sda="A4 (SDA)", scl="A5 (SCL)", pwr="3.3V"), notes=[V33_NOTE]),
+         pins=pins5(sda="A4 (SDA)", scl="A5 (SCL)", pwr="3.3V", pwr5="VBUS (USB 전원일 때 5 V)"),
+         notes=[V33_NOTE, "5 V 전용 센서의 전원은 VBUS 핀(USB 전원일 때만 5 V)에서 받고, 신호는 분압으로 3.3 V 이하로 낮춥니다.",
+                "I2C는 A4·A5, UART 센서는 D0·D1(Serial0)입니다. 펌웨어 지원 전이라 UART·펄스·열전대 핀은 확인 전입니다."]),
     dict(id="nano-33-iot", name="Nano 33 IoT", match=["Nano 33 IoT"], firmware="none", sensorSet="none",
          firmwareNote="ChemDict 펌웨어 준비 중입니다. 연결 방법만 참고하세요.",
          usb="Micro-USB", ble=True, logic="3.3 V", adc="12비트 (0~3.3 V)", qwiic="없음",
-         pins=pins5(sda="A4 (SDA)", scl="A5 (SCL)", pwr="3.3V"), notes=[V33_NOTE]),
+         pins=pins5(sda="A4 (SDA)", scl="A5 (SCL)", pwr="3.3V", pwr5="VUSB (뒷면 VUSB 점퍼 납땜 필요)"), notes=[V33_NOTE]),
     dict(id="nano-33-ble-sense", name="Nano 33 BLE Sense Rev2", match=["Nano 33 BLE"], firmware="none", sensorSet="none",
          firmwareNote="ChemDict 펌웨어 준비 중입니다. 연결 방법만 참고하세요.",
          usb="Micro-USB", ble=True, logic="3.3 V", adc="12비트 (0~3.3 V)", qwiic="없음",
-         pins=pins5(sda="A4 (SDA)", scl="A5 (SCL)", pwr="3.3V"),
+         pins=pins5(sda="A4 (SDA)", scl="A5 (SCL)", pwr="3.3V", pwr5="VUSB (뒷면 VUSB 점퍼 납땜 필요)"),
          notes=[V33_NOTE, "보드 안에 온습도·기압·색·소리·움직임 센서가 들어 있습니다 (Arduino Science Journal 앱에서 사용 가능)."]),
     dict(id="giga-r1", name="GIGA R1 WiFi", match=["GIGA"], firmware="none", sensorSet="none",
          firmwareNote="ChemDict 펌웨어 준비 중입니다. 연결 방법만 참고하세요.",
          usb="USB-C", ble=True, logic="3.3 V", adc="보드 문서 확인", qwiic="없음",
-         pins=pins5(sda="D20 (SDA)", scl="D21 (SCL)", pwr="3.3V"), notes=[V33_NOTE]),
+         pins=pins5(sda="D20 (SDA)", scl="D21 (SCL)", pwr="3.3V"), notes=[V33_NOTE, "5V 핀이 있어 5 V 전용 센서의 전원으로 쓸 수 있지만, 신호는 3.3 V 이하로 낮춰야 합니다."]),
     dict(id="uno-q", name="UNO Q", match=["UNO Q"], firmware="verified", sensorSet="full", bleOnly=True,
          firmwareNote="모든 센서 지원. 실제 보드에서 확인했습니다. 블루투스로만 측정합니다 (USB-C는 전원과 프로그램 올리기용). 처음 한 번 Arduino IDE로 측정 프로그램을 올립니다.",
          usb="USB-C (전원·프로그램 올리기)", ble=True, logic="3.3 V", adc="12비트 (0~3.3 V)", qwiic="있음 (3.3 V)",
-         pins=pins5(sda="SDA (AREF 옆)", scl="SCL (AREF 옆)", pwr="3.3V"),
+         pins=pins5(sda="SDA (AREF 옆)", scl="SCL (AREF 옆)", pwr="3.3V", pwr5="5V (전원 헤더)", urx="D0 (RX, 확인 전)", utx="D1 (TX, 확인 전)"),
          notes=["I2C 센서는 Qwiic 단자나 AREF 옆 SDA·SCL 핀에 꽂습니다. UNO Q는 A4·A5가 I2C가 아닙니다.",
-                "아날로그 입력은 0~3.3 V입니다. 아날로그 센서 전원은 [3.3V] 핀에 연결합니다. 5 V를 넣으면 보드가 망가질 수 있습니다.",
+                "아날로그 입력은 0~3.3 V입니다. 3.3 V로 동작하는 센서는 전원을 [3.3V] 핀에, '5 V 전용' 표시가 있는 센서는 전원 헤더의 [5V] 핀에 꽂되 신호가 3.3 V를 넘지 않게 합니다 (A0~A5·D3에 5 V를 넣으면 보드가 망가짐).",
+                "UART 센서(미세먼지·MH-Z19)는 UNO Q에서 아직 실제 확인 전입니다 (D0·D1은 3.3 V).",
                 V33_NOTE,
                 "보드를 켜고 1분쯤 기다리면 블루투스 이름 ChemDict-01이 보입니다 (보드 안의 리눅스가 먼저 켜져야 함).",
                 "처음 한 번: Arduino IDE → 보드 관리자에서 'Arduino UNO Q Boards', 라이브러리 관리자에서 ArduinoBLE 2.1.0 이상·Arduino_RouterBridge·OneWire·DallasTemperature 설치 → chemdict_lab.ino를 열고 보드 'Arduino UNO Q'로 업로드.",
@@ -97,6 +104,11 @@ CONNECTORS = {
         dict(term="신호 (AO·OUT·S)", pin="A", color="green")],
         steps=["A0 대신 A1~A3에 꽂아도 됩니다. '꽂을 포트'에서 같은 포트를 누르면 앱이 자동으로 설정합니다."],
         cautions=["아날로그 입력은 보드 전압(5 V 또는 3.3 V)을 넘으면 안 됩니다."]),
+    "analog-5v": dict(name="아날로그 3선 (5 V 전용)", wires=[
+        dict(term="VCC (+5 V)", pin="PWR5", color="red"), dict(term="GND (−)", pin="GND", color="black"),
+        dict(term="신호 (AO·OUT·S)", pin="A", color="green")],
+        steps=["A0 대신 A1~A3에 꽂아도 됩니다. '꽂을 포트'에서 같은 포트를 누르면 앱이 자동으로 설정합니다."],
+        cautions=["전원 5 V 전용 모듈입니다. 3.3 V 보드(UNO Q·Nano ESP32 등)에서는 VCC를 보드의 5V(VBUS) 핀에 꽂고, 신호가 3.3 V를 넘는 모듈은 신호선에 2:1 분압(10 kΩ+10 kΩ)을 넣은 뒤 [센서 보정]에서 배율을 2배로 맞춥니다."]),
     "analog-3v3": dict(name="아날로그 3선 (3.3 V 전원)", wires=[
         dict(term="VCC (3.3 V)", pin="PWR3", color="red"), dict(term="GND", pin="GND", color="black"),
         dict(term="OUT (신호)", pin="A", color="yellow")],
@@ -137,13 +149,16 @@ CONNECTORS = {
         steps=["Qwiic 단자가 있으면 케이블을 '딸깍' 소리가 날 때까지 꽂습니다. 모듈 쪽은 어느 단자든 됩니다.",
                "Qwiic 단자가 없는 보드는 Qwiic–점퍼 케이블로 위 표대로 핀에 연결합니다.",
                "모듈을 여러 개 쓰면 모듈끼리 Qwiic 케이블로 이어서 연결할 수 있습니다."],
-        cautions=["Qwiic은 3.3 V입니다. 5 V 보드의 SDA·SCL 핀에 직접 연결할 때는 레벨 변환기를 권장합니다."]),
+        cautions=["Qwiic은 3.3 V입니다. UNO R3·Nano·Mega·Leonardo의 SDA·SCL 핀은 내부 풀업이 5 V라 Modulino 등 3.3 V 전용 모듈을 직결하면 5 V가 걸립니다. 반드시 I2C 레벨 변환기(또는 Qwiic 실드)를 씁니다. 'VIN 3–5 V' 표시가 있는 모듈만 직결해도 됩니다.",
+                  "3.3V 핀은 모듈 합계 약 150 mA까지입니다. CO₂(SCD4x)·미세먼지처럼 전류가 큰 모듈은 'VIN 3–5 V' 표시가 있으면 5V 핀에, 없으면 하나만 씁니다."]),
     "i2c": dict(name="I2C 4선 (SDA·SCL)", wires=[
         dict(term="VCC (VIN)", pin="PWR3", color="red"), dict(term="GND", pin="GND", color="black"),
         dict(term="SDA", pin="SDA", color="blue"), dict(term="SCL", pin="SCL", color="yellow")],
         steps=["모듈에 Qwiic·STEMMA QT 단자가 있으면 Qwiic 케이블로 연결해도 됩니다.",
                "같은 I2C 선에 여러 모듈을 함께 연결할 수 있습니다 (주소가 다르면)."],
-        cautions=["VCC는 3.3V에 연결하는 것이 안전합니다. 모듈에 'VIN 3–5 V' 표시가 있으면 5V도 됩니다."]),
+        cautions=["VCC는 3.3V에 연결하는 것이 안전합니다. 모듈에 'VIN 3–5 V' 표시가 있으면 5V도 됩니다.",
+                  "3.3V 핀은 모듈 합계 약 150 mA까지입니다. 전류가 큰 모듈(CO₂·미세먼지)은 'VIN 3–5 V' 표시가 있으면 5V 핀에 꽂습니다.",
+                  "주소가 같은 센서 둘을 한 버스에 꽂으면 하나만 인식됩니다. UNO R4 WiFi·Nano R4·UNO Q는 Qwiic 단자와 SDA·SCL 핀이 다른 버스라 하나씩 나누면 둘 다 됩니다."]),
     "hx711": dict(name="HX711 4선 + 로드셀", wires=[
         dict(term="GND", pin="GND", color="black"), dict(term="VCC", pin="PWR", color="red"),
         dict(term="DT (DOUT)", pin="HX_DT", color="yellow"), dict(term="SCK (CLK)", pin="HX_SCK", color="green")],
@@ -157,36 +172,39 @@ CONNECTORS = {
         steps=["K형 열전대의 (+)·(−) 선을 모듈의 + / − 나사 단자에 연결합니다 (보통 빨강 = −, 노랑·파랑 = +, 반대면 온도가 내려감)."],
         cautions=[]),
     "pulse": dict(name="펄스 3선 (D3)", wires=[
-        dict(term="VCC (+)", pin="PWR", color="red"), dict(term="GND (−)", pin="GND", color="black"),
+        dict(term="VCC (+5 V)", pin="PWR5", color="red"), dict(term="GND (−)", pin="GND", color="black"),
         dict(term="신호 (OUT·SIG)", pin="PULSE", color="yellow")],
         steps=["신호선은 항상 D3에 꽂습니다. 펌웨어가 초당 펄스 수를 세어 단위로 바꿉니다.",
                "같은 D3에는 펄스 센서를 하나만 연결합니다."],
-        cautions=["UNO R4·Nano R4·Mega에서만 됩니다 (UNO R3·Nano는 메모리가 부족).",
-                  "12 V 전원을 쓰는 센서는 신호가 5 V를 넘지 않는지 설명서를 확인합니다."]),
+        cautions=["UNO R4·Nano R4·Mega·UNO Q에서만 됩니다 (UNO R3·Nano는 메모리가 부족).",
+                  "12 V 전원을 쓰는 센서는 신호가 5 V를 넘지 않는지 설명서를 확인합니다.",
+                  "3.3 V 보드(UNO Q 등)의 D3에는 5 V를 넣으면 안 됩니다. 펄스 센서는 대개 전원 전압 크기의 펄스를 내므로 신호선에 1 kΩ+2 kΩ 분압을 넣거나 3.3 V로 동작하는 센서만 씁니다."]),
     "spi-rtd": dict(name="MAX31865 6선 (SPI)", wires=[
         dict(term="VIN", pin="PWR", color="red"), dict(term="GND", pin="GND", color="black"),
         dict(term="CLK", pin="TC_SCK", color="green"), dict(term="SDO", pin="TC_SO", color="yellow"),
         dict(term="SDI", pin="SPI_SDI", color="blue"), dict(term="CS", pin="RTD_CS", color="orange")],
         steps=["PT100 탐침의 선을 모듈의 RTD 단자에 연결합니다 (2선이면 양 끝 단자에).",
                "MAX6675·MAX31855 열전대와 CLK·SDO를 함께 써도 됩니다 (CS만 다름)."],
-        cautions=["모듈의 기준 저항이 430 Ω(PT100용)인지 확인합니다. 4300 Ω은 PT1000용이라 값이 10배 틀립니다."]),
+        cautions=["모듈의 기준 저항이 430 Ω(PT100용)인지 확인합니다. 4300 Ω은 PT1000용이라 값이 10배 틀립니다.",
+                  "모듈에 'VIN 3–5 V' 표시가 없으면(레귤레이터 없음) VIN을 5V가 아니라 3.3V 핀에 꽂습니다 (MAX31865 칩은 3.0~3.6 V)."]),
     "uart": dict(name="UART 4선 (TX·RX 엇갈려)", wires=[
-        dict(term="VCC (5V)", pin="PWR", color="red"), dict(term="GND", pin="GND", color="black"),
+        dict(term="VCC (5 V)", pin="PWR5", color="red"), dict(term="GND", pin="GND", color="black"),
         dict(term="TX (센서가 보냄)", pin="U_RX", color="green"), dict(term="RX (센서가 받음)", pin="U_TX", color="yellow")],
         steps=["센서의 TX는 보드의 RX에, 센서의 RX는 보드의 TX에 엇갈려 연결합니다.",
                "UART 센서는 한 번에 하나만 연결합니다 (미세먼지 또는 MH-Z19 중 하나)."],
         cautions=["UNO R3·Nano·Leonardo는 이 핀을 USB 통신에 쓰므로 UART 센서를 지원하지 않습니다.",
-                  "센서를 꽂은 뒤 보드를 다시 연결하거나 '센서 다시 찾기'를 누릅니다 (켜질 때 종류를 알아냄)."]),
+                  "센서를 꽂은 뒤 보드를 다시 연결하거나 '센서 다시 찾기'를 누릅니다 (켜질 때 종류를 알아냄).",
+                  "UART 센서는 한 번에 하나만 됩니다 (Serial1이 하나). 전원은 5 V, 전류 100~150 mA라 USB 전원으로는 다른 큰 센서와 함께 쓰지 않습니다."]),
     "digital-out": dict(name="디지털 출력(DO) 3선", wires=[
         dict(term="VCC (+)", pin="PWR", color="red"), dict(term="GND (−)", pin="GND", color="black"),
         dict(term="DO (디지털 출력)", pin="A", color="green")],
         steps=["DO 핀을 A0~A3 중 하나에 꽂고, '꽂을 포트'에서 같은 포트를 누릅니다.",
                "값 1은 감지됨, 0은 감지 안 됨입니다 (모듈에 따라 반대일 수 있음). 감도는 모듈의 가변저항으로 맞춥니다."],
         cautions=["켜짐·꺼짐만 기록합니다. 아주 짧은 순간(0.1초 이하)은 놓칠 수 있습니다."]),
-    "ultrasonic": dict(name="초음파 4선", wires=[
-        dict(term="VCC", pin="PWR", color="red"), dict(term="TRIG", pin="TRIG", color="yellow"),
+    "ultrasonic": dict(name="초음파 4선 (5 V 전용)", wires=[
+        dict(term="VCC (5 V)", pin="PWR5", color="red"), dict(term="TRIG", pin="TRIG", color="yellow"),
         dict(term="ECHO", pin="ECHO", color="green"), dict(term="GND", pin="GND", color="black")],
-        steps=[], cautions=["3.3 V 보드에서는 ECHO 신호(5 V)를 저항 분압으로 낮춰 연결합니다."],
+        steps=[], cautions=["전원은 5 V 전용입니다 (3.3 V로는 동작하지 않음). 3.3 V 보드에서는 VCC를 5V(VBUS) 핀에 꽂고 ECHO 신호(5 V)는 1 kΩ+2 kΩ 분압으로 낮춰 연결합니다."],
         breadboard=dict(need="recommended", why="센서 핀이 보드에 바로 닿지 않으면 브레드보드에 꽂고 점퍼선으로 연결합니다.", circuit=None)),
 }
 
@@ -280,12 +298,14 @@ PARTS = [
            ["pH 전극 + 변환 모듈 1세트", "pH 4·7 완충 용액", "증류수 세척병"],
            ["전극 끝 유리막은 깨지기 쉽습니다. 바닥에 부딪히지 않게 합니다.",
             "실험 전 '보정'에서 pH 7 → pH 4 순서로 2점 보정을 합니다.",
-            "보관할 때는 보호 캡에 보관액(KCl)을 넣어 끼웁니다. 증류수에 오래 담가 두지 않습니다."]),
+            "보관할 때는 보호 캡에 보관액(KCl)을 넣어 끼웁니다. 증류수에 오래 담가 두지 않습니다.",
+            "PH-4502C는 5 V 전용입니다 (3.3 V 보드에서는 Gravity pH V2(3.3~5.5 V, 출력 0~3 V)를 권장)."]),
     analog("ec", "전도도(EC) 센서", "물·용액", "EC",
-           ["전도도 전극 + 변환 모듈 1세트", "1413 µS/cm 표준 용액"],
-           ["반드시 '보정'에서 증류수(0) → 표준 용액 순서로 2점 보정합니다.", "측정 사이에 증류수로 헹굽니다."]),
+           ["전도도 전극 + 변환 모듈 1세트", "1413 µS/cm 표준 용액 (가능하면 12.88 mS/cm도)"],
+           ["'보정'에서 1413 µS/cm 표준 용액으로 1점(가능하면 12.88 mS/cm까지 2점) 보정합니다. 증류수는 영점이 아니라 헹굼용입니다.", "측정 사이에 증류수로 헹굽니다."]),
     analog("tds", "TDS 센서 (총용존고형물)", "물·용액", "TDS",
-           ["TDS 탐침 + 변환 모듈 1세트"], ["ppm 근삿값입니다. 정확히 하려면 증류수와 표준 용액으로 2점 보정합니다."]),
+           ["TDS 탐침 + 변환 모듈 1세트"], ["ppm 근삿값입니다. 정확히 하려면 표준 용액(342·1000 ppm)으로 보정합니다.",
+            "온도 보정이 없어 25 °C 기준 근삿값입니다 (DS18B20을 같이 꽂으면 비교에 좋음)."]),
     analog("turbidity", "탁도 센서", "물·용액", "TURB",
            ["탁도 센서 모듈 1개", "점퍼선 3개"],
            ["값이 클수록 맑습니다 (투명도 %). 깨끗한 물을 100 %로 보정해 비교합니다.", "센서 윗부분(회로)은 물에 넣지 않습니다."]),
@@ -353,7 +373,8 @@ MORE_PARTS = [
     part("scd30", "이산화탄소 센서 SCD30", "기체", "i2c", ["CO2", "TA", "RH"],
          ["SCD30 모듈 (Qwiic·Grove)", "점퍼선 4개"], ["400~10000 ppm. 2초마다 새 값이 나옵니다."], minSet=F, addr="0x61"),
     part("mhz19", "이산화탄소 센서 MH-Z19C (NDIR, UART)", "기체", "uart", ["CO2"],
-         ["MH-Z19C(또는 B)", "점퍼선 4개"], ["400~5000 ppm. 켠 뒤 3분 예열합니다.", "보드를 켤 때 연결되어 있어야 인식합니다."], minSet=F),
+         ["MH-Z19C(또는 B)", "점퍼선 4개"], ["400~5000 ppm. 켠 뒤 1분 예열, 값이 안정되는 데 3분.", "보드를 켤 때 연결되어 있어야 인식합니다.",
+          "전원 5 V(150 mA 이상). UART는 3.3 V지만 5 V 보드에 그대로 연결해도 됩니다 (분압 불필요)."], minSet=F),
     part("sgp30", "공기질 센서 SGP30 (TVOC·eCO₂)", "기체", "i2c", ["ECO2", "TVOC"],
          ["SGP30 모듈", "점퍼선 4개"], ["eCO₂는 휘발성 물질로 추정한 값이라 실제 CO₂가 아닙니다. 처음 15초는 400 ppm으로 나옵니다."], minSet=F, addr="0x58"),
     part("ens160", "공기질 센서 ENS160 (TVOC·eCO₂)", "기체", "i2c", ["ECO2", "TVOC"],
@@ -362,8 +383,9 @@ MORE_PARTS = [
          ["SEN0322 산소 센서", "점퍼선 4개 (Gravity 케이블)"], ["0~25 %. 연소·호흡의 산소 소모, 과산화수소 분해의 산소 발생을 잽니다.",
           "처음 쓰면 맑은 공기에서 20.9 %가 나오는지 확인합니다."], minSet=F, addr="0x73"),
     part("pms7003", "미세먼지 센서 PMS7003 / PMS A003", "기체", "uart", ["PM1", "PM25", "PM10"],
-         ["PMS7003 + 변환 보드(1.27 mm → 2.54 mm)", "점퍼선 4개"], ["PM1.0·PM2.5·PM10(µg/m³)을 1초마다 보냅니다.",
-          "보드를 켤 때 연결되어 있어야 인식합니다."], minSet=F),
+         ["PMS7003 + 변환 보드(1.27 mm → 2.54 mm)", "점퍼선 3~4개"], ["PM1.0·PM2.5·PM10(µg/m³)을 1초마다 보냅니다.",
+          "보드를 켤 때 연결되어 있어야 인식합니다.",
+          "센서의 RX는 비워 둬도 됩니다 (보드가 명령을 보내지 않음). RX·TX가 3.3 V라 5 V 보드에서 꼭 연결하려면 보드 TX→센서 RX에 1 kΩ+2 kΩ 분압. 전원 5 V, 100 mA."], minSet=F),
     # 빛
     part("bh1750", "조도 센서 BH1750 (GY-302, lx)", "빛·색", "i2c", ["LUX"],
          ["BH1750 모듈", "점퍼선 4개"], ["1~65535 lx. 광합성 빛 세기, 거리-빛 세기 실험에 좋습니다."], minSet=F, addr="0x23"),
@@ -412,7 +434,7 @@ MORE_PARTS = [
     analog("acs712", "전류 센서 ACS712 (5 A)", "전기·소리", "I5A", ["ACS712 5A 모듈", "점퍼선 3개"],
            ["0.1 A보다 작은 전류는 정확하지 않습니다 (작은 전류는 INA219).", "20 A·30 A 모듈은 '포트 직접 설정'에서 I20A·I30A를 고릅니다."]),
     analog("voltage-25", "전압 센서 모듈 (0~25 V 분압)", "전기·소리", "V25", ["전압 감지 모듈", "점퍼선 3개"],
-           ["5 V보다 높은 전압(최대 25 V)을 잽니다. 모듈의 VCC·GND 단자에 측정할 전압을 연결합니다."]),
+           ["5 V보다 높은 전압(최대 25 V, 3.3 V 보드에서는 16.5 V까지)을 잽니다. 모듈의 VCC·GND 단자에 측정할 전압을 연결합니다."]),
     analog("sound-level", "소리 크기 측정기 (dBA, SEN0232)", "전기·소리", "DBA", ["SEN0232 모듈", "점퍼선 3개"],
            ["30~130 dBA의 실제 소리 크기입니다."]),
     analog("mic-amp", "마이크 앰프 MAX4466 / MAX9814", "전기·소리", "SND", ["MAX4466·MAX9814 모듈", "점퍼선 3개"],
@@ -665,7 +687,7 @@ BREADBOARD = dict(
              steps=["보드 GND → − 줄. 전지(−)도 − 줄에 꽂아 보드와 GND를 같게 합니다.", "전지(+) → 4열.", "측정 저항 R을 4열과 9열에 꽂습니다.", "100 Ω 저항을 9열과 14열에 꽂습니다.", "14열 → − 줄.", "4열 → A0, 9열 → A1."],
              wires=[wire("pin:GND", "T-:3", "black"), wire("bat:+", "c4", "red"), wire("bat:-", "T-:18", "black"), wire("a14", "T-:14", "black"), wire("pin:A0", "a4", "green"), wire("pin:A1", "a9", "orange")],
              parts=[comp("resistor", "측정 R", ["b4", "b9"]), comp("resistor", "100 Ω", ["c9", "c14"])],
-             caution="전지는 5 V 이하(1.5 V × 3개까지)만 씁니다. A0·A1에는 0~5 V만 들어가야 합니다."),
+             caution="전지는 5 V 보드 3개(4.5 V), 3.3 V 보드(UNO Q 등) 2개(3 V)까지만 씁니다. A0·A1에는 보드 전압을 넘는 전압이 들어가면 안 됩니다."),
         dict(id="led", name="LED 켜는 전압 재기 (가변저항 + LED + 100 Ω)",
              what="가변저항으로 전압을 조금씩 올리며 LED 전압(A0 − A1)과 전류(A1 ÷ 100 Ω)를 잽니다.",
              steps=["보드 5V → + 줄, GND → − 줄.", "가변저항 세 다리를 4·6·8열에 꽂고, 4열 → + 줄, 8열 → − 줄.", "LED 긴 다리를 6열(가운데 다리 줄), 짧은 다리를 10열에 꽂습니다.", "100 Ω 저항을 10열과 15열에, 15열 → − 줄.", "6열 → A0, 10열 → A1."],
@@ -679,6 +701,93 @@ BREADBOARD = dict(
              caution="전해 축전기는 방향이 바뀌면 부풀거나 터질 수 있습니다. 띠가 있는 다리를 − 줄 쪽에 꽂습니다."),
     ],
 )
+
+# ---------------------------------------------------------------- 공식 자료 점검 반영 (2026-10, Arduino 데이터시트·제조사 문서)
+# 5 V 전용 전원 모듈: analog → analog-5v 로 바꾸고 needs5V 표시. outOver33: 출력이 3.3 V를 넘어 3.3 V 보드에서는 분압 필요.
+NEEDS_5V = {"lm35", "mpx5700", "mpx5010dp", "acs712", "acs723", "ph", "turbidity", "pir", "gp2y0a21", "gp2y0a41",
+            "water-flow", "water-pressure", "anemometer-analog", "geiger", "mg811", "mics-5524", "co2-analog"}
+NEEDS_5V |= {p["id"] for p in PARTS if p["id"].startswith("mq-")}
+OUT_OVER_33 = {"mpx5700", "mpx5010dp", "acs712", "acs723", "ph", "turbidity", "water-pressure", "anemometer-analog", "mg811"} | {p["id"] for p in PARTS if p["id"].startswith("mq-")}
+CURRENT_MA = {"mhz19": 150, "mhz16": 150, "pms7003": 100, "pms5003st": 100, "mg811": 200, "scd30": 75, "scd4x": 60}
+CURRENT_MA.update({p["id"]: 160 for p in PARTS if p["id"].startswith("mq-")})
+MQ_CAUTION = "히터 전원 5.0 V 전용(약 150 mA, 3.3 V로는 예열이 안 됨). 3.3 V 보드에서는 5V 핀에서 전원을 주고 AO 신호는 2:1 분압. USB 전원으로는 MQ·미세먼지·CO₂ 큰 센서를 2개까지만."
+WATER_IF = "같은 비커에 전도도(EC·TDS) 전극과 pH·ORP·용존 산소 전극을 함께 넣으면 EC 전극의 교류 신호 때문에 값이 흔들립니다. 번갈아 재거나 EC 쪽에 아날로그 신호 아이솔레이터(DFRobot DFR0504, 5 V)를 끼웁니다."
+EXTRA_CAUTIONS = {
+    "lm35": ["전원 4 V 이상 필요 — 3.3 V 보드에서는 5V 핀에 꽂거나 TMP36(2.7~5.5 V)을 씁니다."],
+    "mpx5700": ["5 V 보드 전용 (출력 0.2~4.7 V). 3.3 V 보드에서는 5V 핀 전원 + 출력에 2:1 분압(변환 배율 2배)."],
+    "mpx5010dp": ["5 V 보드 전용 (출력 0.2~4.7 V). 3.3 V 보드에서는 5V 핀 전원 + 출력에 2:1 분압(변환 배율 2배)."],
+    "acs712": ["전원 4.5~5.5 V, 0 A에서 2.5 V 출력 — 5 V 보드 전용 (3.3 V 보드 미지원)."],
+    "acs723": ["5 V 보드 전용 (3.3 V 보드 미지원)."],
+    "ads1115": ["VDD를 5V 핀에 연결(2~5.5 V 가능)해야 ±4 V까지 잴 수 있습니다. 3.3V 전원이면 각 단자 전압이 3.3 V를 넘지 않게 합니다 (입력은 VDD+0.3 V까지)."],
+    "gp2y0a21": ["전원 5 V 전용 (출력은 3.1 V 이하라 3.3 V 보드 ADC는 괜찮음). 값이 튀면 VCC–GND 사이에 10 µF 커패시터를 답니다."],
+    "gp2y0a41": ["전원 5 V 전용 (출력은 3.1 V 이하라 3.3 V 보드 ADC는 괜찮음). 값이 튀면 VCC–GND 사이에 10 µF 커패시터를 답니다."],
+    "anemometer-analog": ["신호가 0~5 V라 3.3 V 보드에서는 2:1 분압(10 kΩ+10 kΩ)을 넣고 변환 배율을 2배로 합니다."],
+    "water-flow": ["전원 5 V 전용 (3.3 V 불가). 출력 펄스가 전원 전압 크기이므로 3.3 V 보드에서는 노랑 신호선에 1 kΩ+2 kΩ 분압."],
+    "ec": [WATER_IF], "tds": [WATER_IF], "ph": [WATER_IF], "orp": [WATER_IF], "dissolved-oxygen": [WATER_IF],
+    "ds18b20": ["센서가 여러 개이거나 선이 길면(3 m 이상) VCC를 반드시 연결합니다 (2선 기생 전원 불가). 85 °C나 −127 °C에 고정되면 풀업·VCC·DATA를 확인합니다."],
+}
+def _apply_audit():
+    byid = {p["id"]: p for p in PARTS}
+    for pid in NEEDS_5V:
+        p = byid.get(pid)
+        if not p: continue
+        p["needs5V"] = True
+        if p["connector"] == "analog": p["connector"] = "analog-5v"
+        if pid in OUT_OVER_33: p["outOver33"] = True
+    for pid, ma in CURRENT_MA.items():
+        if pid in byid: byid[pid]["currentMa"] = ma
+    for p in PARTS:
+        if p["id"].startswith("mq-") and MQ_CAUTION not in p["cautions"]: p["cautions"].append(MQ_CAUTION)
+        for c in EXTRA_CAUTIONS.get(p["id"], []):
+            if c not in p["cautions"]: p["cautions"].append(c)
+    # ads1115: VDD는 5V 핀 (i2c 연결의 VCC→PWR3 대신)
+    if "ads1115" in byid:
+        CONNECTORS["i2c-5v"] = dict(CONNECTORS["i2c"], name="I2C 4선 (VCC는 5V)",
+            wires=[dict(w, pin="PWR", term="VDD (5 V)") if w["pin"] == "PWR3" else w for w in CONNECTORS["i2c"]["wires"]],
+            cautions=["VDD를 5V 핀에 연결해야 ±4 V까지 잴 수 있습니다. SDA·SCL은 보드 전압과 같습니다."])
+        byid["ads1115"]["connector"] = "i2c-5v"
+    # I2C 주소 충돌: 같은 주소를 쓰는 부품끼리 자동 caution
+    import re as _re
+    addrs = {}
+    for p in PARTS:
+        for a in _re.findall(r"0x[0-9A-Fa-f]{2}", p.get("addr", "") or ""):
+            addrs.setdefault(a.lower(), []).append(p)
+    for a, ps in addrs.items():
+        if len(ps) < 2: continue
+        for p in ps:
+            others = "·".join(q["name"].split(" (")[0].strip() for q in ps if q is not p)
+            c = f"주소 {a}가 같은 {others}와 한 버스에 함께 꽂지 않습니다 (하나만 인식됨). UNO R4 WiFi·Nano R4·UNO Q는 Qwiic 단자와 SDA·SCL 핀에 하나씩 나누면 됩니다."
+            if not any(f"주소 {a}가 같은" in x for x in p["cautions"]): p["cautions"].append(c)
+    # 보드가 지원하지 않는 연결 방식의 핀 역할은 '—' (lite: 열전대·PT100·초음파 없음, mini: HX711도 없음)
+    LITE_OFF = ["TC_CS", "TC_SO", "TC_SCK", "RTD_CS", "SPI_SDI", "TRIG", "ECHO"]
+    MINI_OFF = LITE_OFF + ["HX_DT", "HX_SCK"]
+    for b in BOARDS:
+        off = MINI_OFF if b["sensorSet"] == "mini" else LITE_OFF if b["sensorSet"] == "lite" else []
+        for k in off: b["pins"][k] = "—"
+        if b["sensorSet"] == "none" and b["logic"].startswith("3.3"):
+            for k in ["U_RX", "U_TX", "PULSE", "TC_CS", "TC_SO", "TC_SCK", "RTD_CS", "SPI_SDI"]: b["pins"][k] = "— (펌웨어 준비 중)"
+_apply_audit()
+
+TROUBLES += [
+    dict(id="i2c-missing", title="I2C(Qwiic) 센서를 못 찾아요",
+         steps=["Qwiic 케이블이 '딸깍' 소리가 날 때까지 들어갔는지 봅니다 (방향은 없음).",
+                "주소가 같은 센서 둘(예: 색 TCS34725와 거리 VL53L0X 둘 다 0x29)을 한 버스에 꽂으면 하나만 보입니다. UNO R4 WiFi·Nano R4·UNO Q는 Qwiic 단자와 SDA·SCL 핀에 하나씩 나눕니다.",
+                "UNO R3·Nano·Mega·Leonardo의 SDA·SCL에 3.3 V 전용 모듈(Modulino 등)을 레벨 변환 없이 꽂으면 인식이 안 되거나 망가집니다.",
+                "모듈 VCC가 3.3V(또는 'VIN 3–5 V' 모듈만 5V)에 꽂혔는지, SDA·SCL이 서로 바뀌지 않았는지 봅니다.",
+                "A4·A5가 I2C인 보드(UNO R3·Nano·Nano R4)에서는 그 핀에 아날로그 센서를 같이 꽂을 수 없습니다."]),
+    dict(id="temp-stuck", title="온도가 85 °C나 −127 °C에서 안 움직여요 (DS18B20)",
+         steps=["−127 °C는 '센서 없음'입니다. DATA·VCC·GND 선과 4.7 kΩ 풀업 저항(DATA–VCC)을 확인합니다.",
+                "85 °C는 전원이 들어온 직후의 초깃값입니다. 그대로면 전원·풀업이 약한 것 — 선이 길거나 센서가 여러 개면 VCC를 반드시 연결합니다 (2선 기생 전원 불가).",
+                "USB를 뽑았다 다시 꽂고 [센서 다시 찾기]를 누릅니다."]),
+    dict(id="dht-empty", title="온습도(DHT) 값이 비어 있어요",
+         steps=["처음 2~3초는 값이 없습니다. DHT22는 2초, DHT11은 1초보다 자주 읽을 수 없습니다 (앱은 맞춰져 있음).",
+                "핀 4개짜리 센서(모듈 아님)는 DATA–VCC 사이 10 kΩ 풀업이 필수입니다. 3핀 모듈은 S·+·− 인쇄를 확인합니다.",
+                "선은 짧게(1 m 이내). 길면 값이 비거나 튑니다."]),
+    dict(id="power-budget", title="센서를 여러 개 꽂으니 보드가 다시 켜지거나 값이 흔들려요",
+         steps=["USB 전원은 500 mA가 한계입니다. MQ 가스(약 150 mA)·미세먼지(100 mA)·MH-Z19(150 mA)는 2개까지만 함께 씁니다.",
+                "DC 잭이나 VIN에 7~12 V 어댑터를 꽂으면 해결됩니다.",
+                "Nano R4의 3V3 핀은 150 mA까지입니다. I2C 모듈을 많이 이으면 'VIN 3–5 V' 모듈은 5V 핀으로 옮깁니다."]),
+]
 
 ORDER = ["온도", "온습도", "기압·압력", "기체", "빛·색", "물·용액", "무게·거리·힘", "움직임·자기", "전기·소리", "생체"]
 

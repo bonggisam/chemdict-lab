@@ -1,12 +1,12 @@
 import { useEffect, useRef, useState } from 'react';
 import { t } from '../lib/i18n';
 import type { Pt } from '../lib/analysis';
-import { PAD, drawChart, fmt, renderChartImage, type DrawOpts, type Overlays, type Scale, type Series } from '../lib/chartDraw';
+import { PAD, drawChart, fmt, renderChartImage, type ChartView, type DrawOpts, type Overlays, type Scale, type Series } from '../lib/chartDraw';
 import { tangentAt } from '../lib/fit';
 import { saveFile } from '../lib/runs';
 
 export { fmt };
-export type { Overlays, Series };
+export type { Overlays, Series, ChartView };
 
 export type ChartTool = 'select' | 'tangent' | 'read';
 
@@ -18,6 +18,9 @@ interface Props {
   series: Series[];
   xLabel: string;
   xUnit?: string;
+  yLabel?: string;         // 세로축 이름 (단위는 unit)
+  view?: ChartView;        // 격자·시간 표기 설정
+  startedAt?: string;      // 시각 표시용
   xLog?: boolean;
   timeAxis?: boolean;
   yMin?: number;
@@ -40,7 +43,7 @@ const { L, R, T, B } = PAD;
 
 /** 센서 하나 = 그래프 하나. 여러 측정은 같은 축에 겹쳐 그림 */
 export function Chart(props: Props) {
-  const { title, unit, value, stable, series, xLabel, xUnit = '', xLog, timeAxis, yMin, yMax, xRange, markers = [], selection, onSelect,
+  const { title, unit, value, stable, series, xLabel, xUnit = '', yLabel, view, startedAt, xLog, timeAxis, yMin, yMax, xRange, markers = [], selection, onSelect,
     overlays, prediction = [], drawing, onDrawEnd, tool = 'select', tangentPts, height = 260, exportName } = props;
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const wrapRef = useRef<HTMLDivElement>(null);
@@ -60,7 +63,7 @@ export function Chart(props: Props) {
     : overlays;
 
   const opts = (): DrawOpts => ({
-    series, xLabel, unit, xLog, timeAxis, yMin, yMax, xRange, markers, selection, overlays: ov, prediction,
+    series, xLabel, yLabel: yLabel ?? title, view, startedAt, unit, xLog, timeAxis, yMin, yMax, xRange, markers, selection, overlays: ov, prediction,
     drawingPts: dragRef.current?.kind === 'draw' ? dragRef.current.pts : undefined,
     hover: drawing ? null : hover, hoverLabel: tool !== 'tangent',
   });
@@ -87,7 +90,7 @@ export function Chart(props: Props) {
     mq.addEventListener('change', schedule);
     return () => { cancelAnimationFrame(raf); ro.disconnect(); mq.removeEventListener('change', schedule); };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [series, selection, overlays, prediction, markers, hover, pin, tick, height, yMin, yMax, xLog, xRange, drawing, tool, tangentPts]);
+  }, [series, selection, overlays, prediction, markers, hover, pin, tick, height, yMin, yMax, xLog, xRange, drawing, tool, tangentPts, view, startedAt]);
 
   // ---- 포인터 (구간 선택, 예측 그리기, 접선·값 읽기)
   const toLocal = (e: React.PointerEvent) => {

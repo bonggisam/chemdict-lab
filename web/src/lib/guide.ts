@@ -49,6 +49,14 @@ export interface Part {
   cautions: string[];
   analogType?: string;   // 아날로그 센서: 포트에 지정할 종류
   addr?: string;
+  needs5V?: boolean;     // 전원 5 V 전용 (3.3 V 보드에서는 5V/VBUS 핀 + 신호 확인)
+  outOver33?: boolean;   // 출력이 3.3 V를 넘음 (3.3 V 보드에서는 분압 필요)
+  currentMa?: number;    // 대략 소비 전류 (USB 전원 예산용)
+}
+/** 3.3 V 보드에서 이 부품을 쓸 때의 경고 (없으면 null) */
+export function v33Warning(board: Board, part: Part): 'divider' | 'power' | null {
+  if (!board.logic.startsWith('3.3') || !part.needs5V) return null;
+  return part.outOver33 ? 'divider' : 'power';
 }
 
 export const commonRules: string[] = guide.common;

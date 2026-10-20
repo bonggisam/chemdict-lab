@@ -10,6 +10,7 @@ import { ExperimentBrowser } from './ExperimentBrowser';
 import { t, tk } from '../lib/i18n';
 import { areaName, courseName, levelName } from '../lib/l10n';
 import { R } from './Rich';
+import { ReagentNotes } from './ReagentNotes';
 
 const SET_LABEL = { full: tk('모든 센서'), lite: tk('가벼운 버전'), mini: tk('가장 가벼운 버전'), none: '' } as const;
 
@@ -159,7 +160,7 @@ export function Guide({ experiments, board, initialExpId, initialPartId, initial
       {by === 'exp' && setup && (
         <section className="guide-block">
           <h2>{t('실험 장치에 붙이기')}</h2>
-          {setup.materials.length > 0 && <><h3>{t('준비물')}</h3><ul>{setup.materials.map((m) => <li key={m}><R t={m} /></li>)}</ul></>}
+          {setup.materials.length > 0 && <><h3>{t('준비물')}</h3><ul>{setup.materials.map((m) => <li key={m}><R t={m} /></li>)}</ul><ReagentNotes materials={setup.materials} /></>}
           <ol>{setup.attach.map((s) => <li key={s}><R t={s} /></li>)}</ol>
           {setup.cautions.length > 0 && (
             <div className="caution">
