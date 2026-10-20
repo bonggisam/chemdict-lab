@@ -84,6 +84,17 @@
       "uses": true
     },
     {
+      "publisher": "지학사",
+      "course": "통합과학2",
+      "level": "고1 공통",
+      "note": "58쪽 가열장치 없이 음식을 조리하는 방법 설계하고 실험하기",
+      "sure": "confirmed",
+      "page": "58",
+      "activity": "가열장치 없이 음식을 조리하는 방법 설계하고 실험하기",
+      "unit": "Ⅰ. 변화와 다양성 / 2. 화학 반응의 다양성",
+      "uses": false
+    },
+    {
       "publisher": "천재교과서",
       "course": "통합과학2",
       "level": "고1 공통",

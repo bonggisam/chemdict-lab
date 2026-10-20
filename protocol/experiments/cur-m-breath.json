@@ -60,5 +60,17 @@
       "빨대는 각자 씁니다."
     ]
   },
-  "textbooks": []
+  "textbooks": [
+    {
+      "publisher": "지학사",
+      "course": "과학 2",
+      "level": "중학교",
+      "note": "210쪽 호흡할 때 기체 변화 알아보기",
+      "sure": "confirmed",
+      "page": "210",
+      "activity": "호흡할 때 기체 변화 알아보기",
+      "unit": "Ⅵ. 동물과 에너지/2. 호흡과 배설",
+      "uses": true
+    }
+  ]
 }

@@ -60,6 +60,17 @@
   },
   "textbooks": [
     {
+      "publisher": "YBM",
+      "course": "과학 1",
+      "level": "중학교",
+      "note": "150쪽 물속에서 부력 측정하기",
+      "sure": "confirmed",
+      "page": "150",
+      "activity": "물속에서 부력 측정하기",
+      "unit": "Ⅴ. 힘의 작용 / 1. 여러 가지 힘의 작용 - 여러 가지 힘",
+      "uses": false
+    },
+    {
       "publisher": "미래엔",
       "course": "과학 1",
       "level": "중학교",
@@ -69,6 +80,17 @@
       "activity": "물속에서 부력 측정하기",
       "unit": "Ⅴ. 힘의 작용 / 1. 여러 가지 힘 - 부력",
       "uses": true
+    },
+    {
+      "publisher": "지학사",
+      "course": "과학 1",
+      "level": "중학교",
+      "note": "170쪽 물속에서 부력 측정하기",
+      "sure": "confirmed",
+      "page": "170",
+      "activity": "물속에서 부력 측정하기",
+      "unit": "Ⅴ. 힘의 작용 / 1. 여러 가지 힘 - 부력",
+      "uses": false
     },
     {
       "publisher": "천재교과서(임성숙)",

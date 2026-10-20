@@ -63,5 +63,17 @@
       "센서 앞 2 cm 안은 잴 수 없습니다."
     ]
   },
-  "textbooks": []
+  "textbooks": [
+    {
+      "publisher": "YBM",
+      "course": "과학 3",
+      "level": "중학교",
+      "note": "132쪽 블록 코딩을 활용하여 등속 운동의 특징 알아보기",
+      "sure": "confirmed",
+      "page": "132",
+      "activity": "블록 코딩을 활용하여 등속 운동의 특징 알아보기",
+      "unit": "Ⅳ. 운동과 에너지 / 1. 물체의 운동 - 등속 운동",
+      "uses": true
+    }
+  ]
 }

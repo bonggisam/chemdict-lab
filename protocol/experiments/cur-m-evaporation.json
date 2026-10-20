@@ -63,7 +63,19 @@
       "에탄올은 불에서 멀리 둡니다."
     ]
   },
-  "textbooks": [],
+  "textbooks": [
+    {
+      "publisher": "YBM",
+      "course": "과학 1",
+      "level": "중학교",
+      "note": "121쪽 상태 변화와 열에너지 출입 관찰하기",
+      "sure": "confirmed",
+      "page": "121",
+      "activity": "상태 변화와 열에너지 출입 관찰하기",
+      "unit": "Ⅳ. 물질의 상태 변화 / 3. 상태 변화와 열에너지 - 상태 변화와 열에너지 출입",
+      "uses": true
+    }
+  ],
   "breadboard": {
     "need": "recommended",
     "why": "온도 센서 2개 이상을 같은 줄에 나란히 꽂습니다 (센서 1개면 필요 없음).",

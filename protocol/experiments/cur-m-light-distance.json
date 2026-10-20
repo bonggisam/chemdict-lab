@@ -61,6 +61,17 @@
   },
   "textbooks": [
     {
+      "publisher": "YBM",
+      "course": "과학 2",
+      "level": "중학교",
+      "note": "282쪽 광원으로부터의 거리에 따른 빛의 밝기 실험하기",
+      "sure": "confirmed",
+      "page": "282",
+      "activity": "광원으로부터의 거리에 따른 빛의 밝기 실험하기",
+      "unit": "Ⅷ. 별과 우주/1. 별",
+      "uses": true
+    },
+    {
       "publisher": "동아출판",
       "course": "지구과학",
       "level": "고2·3 선택",
@@ -80,6 +91,28 @@
       "page": "284",
       "activity": "광원으로부터의 거리에 따른 빛의 밝기 실험하기",
       "unit": "Ⅷ. 별과 우주/1. 별의 특성",
+      "uses": true
+    },
+    {
+      "publisher": "지학사",
+      "course": "과학 2",
+      "level": "중학교",
+      "note": "272쪽 광원으로부터의 거리에 따른 빛의 세기 측정하기",
+      "sure": "confirmed",
+      "page": "272",
+      "activity": "광원으로부터의 거리에 따른 빛의 세기 측정하기",
+      "unit": "Ⅷ. 별과 우주/1. 별",
+      "uses": true
+    },
+    {
+      "publisher": "지학사",
+      "course": "과학 2",
+      "level": "중학교",
+      "note": "273쪽 서로 다른 밝기의 광원이 같은 빛의 세기로 측정되는 거리 구하기",
+      "sure": "confirmed",
+      "page": "273",
+      "activity": "서로 다른 밝기의 광원이 같은 빛의 세기로 측정되는 거리 구하기",
+      "unit": "Ⅷ. 별과 우주/1. 별",
       "uses": true
     },
     {

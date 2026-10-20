@@ -77,6 +77,28 @@
   },
   "textbooks": [
     {
+      "publisher": "YBM",
+      "course": "과학 2",
+      "level": "중학교",
+      "note": "112쪽 조명에 따른 물체의 색 관찰하기",
+      "sure": "confirmed",
+      "page": "112",
+      "activity": "조명에 따른 물체의 색 관찰하기",
+      "unit": "Ⅲ. 빛과 파동/1. 빛",
+      "uses": false
+    },
+    {
+      "publisher": "YBM",
+      "course": "과학 2",
+      "level": "중학교",
+      "note": "114쪽 영상 장치를 활용한 빛의 합성 관찰하기",
+      "sure": "confirmed",
+      "page": "114",
+      "activity": "영상 장치를 활용한 빛의 합성 관찰하기",
+      "unit": "Ⅲ. 빛과 파동/1. 빛",
+      "uses": false
+    },
+    {
       "publisher": "미래엔",
       "course": "과학 2",
       "level": "중학교",
@@ -84,6 +106,28 @@
       "sure": "confirmed",
       "page": "113",
       "activity": "빛의 합성 관찰하기",
+      "unit": "Ⅲ. 빛과 파동/1. 빛",
+      "uses": false
+    },
+    {
+      "publisher": "지학사",
+      "course": "과학 2",
+      "level": "중학교",
+      "note": "113쪽 빛의 색에 따른 물체의 색 관찰하기",
+      "sure": "confirmed",
+      "page": "113",
+      "activity": "빛의 색에 따른 물체의 색 관찰하기",
+      "unit": "Ⅲ. 빛과 파동/1. 빛",
+      "uses": false
+    },
+    {
+      "publisher": "지학사",
+      "course": "과학 2",
+      "level": "중학교",
+      "note": "114쪽 영상 장치에서 빛의 합성 관찰하기",
+      "sure": "confirmed",
+      "page": "114",
+      "activity": "영상 장치에서 빛의 합성 관찰하기",
       "unit": "Ⅲ. 빛과 파동/1. 빛",
       "uses": false
     },

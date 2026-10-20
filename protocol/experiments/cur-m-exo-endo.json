@@ -62,5 +62,28 @@
       "반응한 물질은 맨손으로 만지지 않습니다."
     ]
   },
-  "textbooks": []
+  "textbooks": [
+    {
+      "publisher": "YBM",
+      "course": "과학 3",
+      "level": "중학교",
+      "note": "37쪽 화학 반응에서 열에너지의 출입 확인하기",
+      "sure": "confirmed",
+      "page": "37",
+      "activity": "화학 반응에서 열에너지의 출입 확인하기",
+      "unit": "Ⅰ. 화학 반응의 규칙성 / 3. 화학 반응에서의 열에너지 출입",
+      "uses": true
+    },
+    {
+      "publisher": "YBM",
+      "course": "과학 3",
+      "level": "중학교",
+      "note": "39쪽 화학 반응을 이용한 간단한 흡열 반응 실험하기",
+      "sure": "confirmed",
+      "page": "39",
+      "activity": "화학 반응을 이용한 간단한 흡열 반응 실험하기",
+      "unit": "Ⅰ. 화학 반응의 규칙성 / 3. 화학 반응에서의 열에너지 출입",
+      "uses": true
+    }
+  ]
 }

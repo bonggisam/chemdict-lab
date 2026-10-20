@@ -60,6 +60,17 @@
   },
   "textbooks": [
     {
+      "publisher": "YBM",
+      "course": "과학 2",
+      "level": "중학교",
+      "note": "14쪽 물질의 질량과 부피를 측정하여 물질 구별하기",
+      "sure": "confirmed",
+      "page": "14",
+      "activity": "물질의 질량과 부피를 측정하여 물질 구별하기",
+      "unit": "Ⅰ. 물질의 특성/1. 물질의 특성",
+      "uses": false
+    },
+    {
       "publisher": "미래엔",
       "course": "과학 2",
       "level": "중학교",
@@ -67,6 +78,17 @@
       "sure": "confirmed",
       "page": "16",
       "activity": "질량과 부피를 측정하여 철과 알루미늄 구별하기",
+      "unit": "Ⅰ. 물질의 특성/1. 물질의 특성",
+      "uses": false
+    },
+    {
+      "publisher": "지학사",
+      "course": "과학 2",
+      "level": "중학교",
+      "note": "15쪽 여러 가지 물질의 밀도 비교하기",
+      "sure": "confirmed",
+      "page": "15",
+      "activity": "여러 가지 물질의 밀도 비교하기",
       "unit": "Ⅰ. 물질의 특성/1. 물질의 특성",
       "uses": false
     },

@@ -72,6 +72,39 @@
   },
   "textbooks": [
     {
+      "publisher": "YBM",
+      "course": "과학 2",
+      "level": "중학교",
+      "note": "178쪽 광합성에 필요한 물질과 광합성산물 확인하기",
+      "sure": "confirmed",
+      "page": "178",
+      "activity": "광합성에 필요한 물질과 광합성산물 확인하기",
+      "unit": "Ⅴ. 식물과 에너지/1. 식물의 광합성",
+      "uses": true
+    },
+    {
+      "publisher": "YBM",
+      "course": "과학 2",
+      "level": "중학교",
+      "note": "182쪽 환경요인과 광합성의 관계를 탐구하는 실험 설계하기",
+      "sure": "confirmed",
+      "page": "182",
+      "activity": "환경요인과 광합성의 관계를 탐구하는 실험 설계하기",
+      "unit": "Ⅴ. 식물과 에너지/1. 식물의 광합성",
+      "uses": true
+    },
+    {
+      "publisher": "YBM",
+      "course": "과학 2",
+      "level": "중학교",
+      "note": "188쪽 식물의 호흡과 광합성에서 기체 출입 비교하기",
+      "sure": "confirmed",
+      "page": "188",
+      "activity": "식물의 호흡과 광합성에서 기체 출입 비교하기",
+      "unit": "Ⅴ. 식물과 에너지/2. 식물의 에너지 사용과 저장",
+      "uses": true
+    },
+    {
       "publisher": "미래엔",
       "course": "과학 2",
       "level": "중학교",
@@ -92,6 +125,28 @@
       "activity": "환경요인과 광합성의 관계 탐구하기",
       "unit": "Ⅴ. 식물과 에너지/1. 광합성",
       "uses": true
+    },
+    {
+      "publisher": "지학사",
+      "course": "과학 2",
+      "level": "중학교",
+      "note": "168쪽 광합성에 필요한 물질 확인하는 실험하기",
+      "sure": "confirmed",
+      "page": "168",
+      "activity": "광합성에 필요한 물질 확인하는 실험하기",
+      "unit": "Ⅴ. 식물과 에너지/1. 광합성",
+      "uses": true
+    },
+    {
+      "publisher": "지학사",
+      "course": "과학 2",
+      "level": "중학교",
+      "note": "174쪽 광합성과 환경 요인의 관계를 탐구하는 실험 설계하기",
+      "sure": "confirmed",
+      "page": "174",
+      "activity": "광합성과 환경 요인의 관계를 탐구하는 실험 설계하기",
+      "unit": "Ⅴ. 식물과 에너지/1. 광합성",
+      "uses": false
     },
     {
       "publisher": "천재교과서(임성숙)",

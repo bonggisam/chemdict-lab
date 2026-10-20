@@ -65,6 +65,39 @@
   },
   "textbooks": [
     {
+      "publisher": "YBM",
+      "course": "과학 2",
+      "level": "중학교",
+      "note": "24쪽 물질의 끓는 온도 측정하기",
+      "sure": "confirmed",
+      "page": "24",
+      "activity": "물질의 끓는 온도 측정하기",
+      "unit": "Ⅰ. 물질의 특성/1. 물질의 특성",
+      "uses": true
+    },
+    {
+      "publisher": "지학사",
+      "course": "과학 2",
+      "level": "중학교",
+      "note": "22쪽 물질의 양과 종류에 따른 녹는점 비교하기",
+      "sure": "similar",
+      "page": "22",
+      "activity": "물질의 양과 종류에 따른 녹는점 비교하기",
+      "unit": "Ⅰ. 물질의 특성/1. 물질의 특성",
+      "uses": true
+    },
+    {
+      "publisher": "지학사",
+      "course": "과학 2",
+      "level": "중학교",
+      "note": "24쪽 물질의 양과 종류에 따른 끓는점 비교하기",
+      "sure": "confirmed",
+      "page": "24",
+      "activity": "물질의 양과 종류에 따른 끓는점 비교하기",
+      "unit": "Ⅰ. 물질의 특성/1. 물질의 특성",
+      "uses": true
+    },
+    {
       "publisher": "천재교과서(임성숙)",
       "course": "과학 2",
       "level": "중학교",

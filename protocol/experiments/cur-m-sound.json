@@ -63,6 +63,17 @@
   },
   "textbooks": [
     {
+      "publisher": "YBM",
+      "course": "과학 2",
+      "level": "중학교",
+      "note": "124쪽 디지털 탐구 도구를 이용하여 소리의 진폭, 진동수, 파형 탐구하기",
+      "sure": "similar",
+      "page": "124",
+      "activity": "디지털 탐구 도구를 이용하여 소리의 진폭, 진동수, 파형 탐구하기",
+      "unit": "Ⅲ. 빛과 파동/2. 파동",
+      "uses": true
+    },
+    {
       "publisher": "미래엔",
       "course": "과학 2",
       "level": "중학교",
@@ -70,6 +81,28 @@
       "sure": "similar",
       "page": "122",
       "activity": "디지털 탐구 도구로 소리의 진폭, 진동수, 파형 탐구하기",
+      "unit": "Ⅲ. 빛과 파동/2. 파동",
+      "uses": true
+    },
+    {
+      "publisher": "지학사",
+      "course": "과학 2",
+      "level": "중학교",
+      "note": "125쪽 디지털 탐구 도구를 이용하여 소리의 진폭, 진동수, 파형 탐구하기",
+      "sure": "similar",
+      "page": "125",
+      "activity": "디지털 탐구 도구를 이용하여 소리의 진폭, 진동수, 파형 탐구하기",
+      "unit": "Ⅲ. 빛과 파동/2. 파동",
+      "uses": true
+    },
+    {
+      "publisher": "지학사",
+      "course": "과학 2",
+      "level": "중학교",
+      "note": "127쪽 파형 관찰하여 소리 맞히기",
+      "sure": "similar",
+      "page": "127",
+      "activity": "파형 관찰하여 소리 맞히기",
       "unit": "Ⅲ. 빛과 파동/2. 파동",
       "uses": true
     },

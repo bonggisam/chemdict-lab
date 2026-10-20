@@ -997,7 +997,7 @@ META = {
 # protocol/curriculum/textbook_activities.json: 미래엔·동아출판·천재교과서 교과서와 지도서 PDF에서 찾은
 # '센서로 할 수 있는' 탐구 활동 목록 (출판사·과목·쪽·활동 이름·센서·실험 id). 실험(id)마다 textbooks로 붙입니다.
 # 이 출판사들의 예전 참조(공개 자료 조사)는 책에서 직접 확인한 목록으로 바꿉니다.
-BOOK_PUBS = ("미래엔", "동아출판", "천재교과서")
+BOOK_PUBS = ("미래엔", "동아출판", "천재교과서", "지학사", "YBM")
 CATALOG = ROOT / "protocol" / "curriculum" / "textbook_activities.json"
 
 

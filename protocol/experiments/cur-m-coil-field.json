@@ -71,6 +71,17 @@
   },
   "textbooks": [
     {
+      "publisher": "YBM",
+      "course": "과학 2",
+      "level": "중학교",
+      "note": "264쪽 전류가 흐르는 코일 주위의 자기장 관찰하기",
+      "sure": "confirmed",
+      "page": "264",
+      "activity": "전류가 흐르는 코일 주위의 자기장 관찰하기",
+      "unit": "Ⅶ. 전기와 자기/2. 자기",
+      "uses": false
+    },
+    {
       "publisher": "동아출판",
       "course": "물리학",
       "level": "고2·3 선택",
@@ -112,6 +123,17 @@
       "page": "23",
       "activity": "전류가 흐르는 도선이 자기장 속에서 받는 힘 측정하기",
       "unit": "Ⅰ. 전자기적 상호작용",
+      "uses": false
+    },
+    {
+      "publisher": "지학사",
+      "course": "과학 2",
+      "level": "중학교",
+      "note": "254쪽 전류가 흐르는 코일 주위의 자기장 관찰하기",
+      "sure": "confirmed",
+      "page": "254",
+      "activity": "전류가 흐르는 코일 주위의 자기장 관찰하기",
+      "unit": "Ⅶ. 전기와 자기/2. 자기",
       "uses": false
     },
     {
