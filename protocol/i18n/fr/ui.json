@@ -14,7 +14,6 @@
  "단계": "Étape",
  "보드 연결": "Connexion de la carte",
  "실험": "Expérience",
- "연결 방법·문제 해결": "Connexion et dépannage",
  "모둠 {n}": "Groupe {n}",
  "연결 끊기": "Déconnecter",
  "무엇을 잴까요?": "Que voulez-vous mesurer ?",
@@ -495,5 +494,12 @@
  "절대온도": "Température absolue",
  "[H⁺] 농도": "Concentration [H⁺]",
  "처음 값과의 차": "Écart à la première valeur",
- "압력×부피": "Pression × volume"
+ "압력×부피": "Pression × volume",
+ "센서로 바로 측정": "Mesurer avec un capteur",
+ "측정 시작 · 정지": "Démarrer · Arrêter",
+ "측정 목록": "Mesures",
+ "관찰 기록 · 저장": "Notes · Enregistrer",
+ "보드 고르기 · 연결": "Choisir · Connecter",
+ "센서 고르기 · 측정": "Choisir le capteur · Mesurer",
+ "연결 그림 · 브레드보드": "Câblage · Breadboard"
 }

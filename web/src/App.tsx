@@ -17,9 +17,11 @@ import { QuickSheet, type QuickStatus } from './components/QuickSheet';
 import { boardByName, boards, loadBoardId, partById, quickExperiment, saveBoardId, type Part } from './lib/guide';
 import { BoardStep, type FwState } from './components/BoardStep';
 import { loadInfo, saveInfo, type ExpInfo } from './lib/info';
-import { LANGS, initialLang, loadLang, t, tk, type Lang } from './lib/i18n';
+import { LANGS, initialLang, loadLang, t, type Lang } from './lib/i18n';
 import { relocalize } from './lib/l10n';
 import { PwaBar } from './components/PwaBar';
+import { SideNav } from './components/SideNav';
+import { R } from './components/Rich';
 import { BUNDLED_FW, FlashError, TARGETS, boardFromUsb, flashBoard, older } from './lib/flash';
 import { experiments } from './lib/experiments';
 import { parseLine, type BoardMsg, type Experiment, type HelloMsg, type SensorInfo } from './lib/protocol';
@@ -452,47 +454,36 @@ export default function App() {
   };
 
   return (
-    <div className="app">
-      <header className="top">
-        <div className="brand">
-          <img className="logo" src={`${import.meta.env.BASE_URL}logo-128.png`} alt="" width={32} height={32} />
-          <span>ChemDict Lab</span>
-        </div>
-        <nav className="top-nav stepper" aria-label={t('단계')}>
-          {([
-            ['connect', '1', tk('보드 연결')],
-            ['pick', '2', tk('실험')],
-            ['guide', '3', tk('연결 방법·문제 해결')],
-          ] as const).map(([sc, n, label]) => {
-            const on = sc === 'pick' ? screen === 'pick' || screen === 'measure' : screen === sc;
-            const done = sc === 'connect' && !!hello && !on;
-            return (
-              <button key={sc} className={`${on ? 'on' : ''} ${done ? 'done' : ''}`} aria-current={on ? 'step' : undefined}
-                onClick={() => {
-                  if (on) return;
-                  if (sc === 'guide') openGuide(screen === 'measure' ? exp?.id : undefined);
-                  else if (sc === 'pick') setScreen(exp && screen !== 'pick' ? 'measure' : 'pick');
-                  else setScreen('connect');
-                }}>
-                <span className="n">{done ? '✓' : n}</span><span className="t">{t(label)}</span>
-              </button>
-            );
-          })}
-        </nav>
-        {connLabel && (
-          <div className="conn">
-            <span className="dot" aria-hidden="true" />
-            <span>{connLabel}{hello?.station ? ` · ${t('모둠 {n}', { n: hello.station })}` : ''}</span>
-            <button className="ghost" onClick={disconnect}>{t('연결 끊기')}</button>
-          </div>
-        )}
-        <label className="lang-pick">
-          <span aria-hidden="true">🌐</span>
-          <select aria-label="Language" value={lang} onChange={(e) => changeLang(e.target.value as Lang)}>
-            {LANGS.map((l) => <option key={l.code} value={l.code}>{l.name}</option>)}
-          </select>
-        </label>
-      </header>
+    <div className="app layout">
+      <SideNav
+        screen={screen}
+        expTitle={exp?.title}
+        connected={!!hello}
+        boardName={board.name}
+        running={running}
+        onGo={(sc) => {
+          if (running) { say('err', t('측정 중입니다. 먼저 [정지]를 누르세요.')); return; }
+          if (sc === 'guide') openGuide(screen === 'measure' ? exp?.id : undefined);
+          else if (sc === 'measure') setScreen(exp ? 'measure' : 'pick');
+          else setScreen(sc);
+        }}
+        footer={<>
+          {connLabel ? (
+            <div className="conn">
+              <span className="dot" aria-hidden="true" />
+              <span className="conn-t">{connLabel}{hello?.station ? ` · ${t('모둠 {n}', { n: hello.station })}` : ''}</span>
+              <button className="ghost" onClick={disconnect}>{t('연결 끊기')}</button>
+            </div>
+          ) : <p className="note conn-off">○ {t('보드가 연결되지 않았습니다.')}</p>}
+          <label className="lang-pick">
+            <span aria-hidden="true">🌐</span>
+            <select aria-label="Language" value={lang} onChange={(e) => changeLang(e.target.value as Lang)}>
+              {LANGS.map((l) => <option key={l.code} value={l.code}>{l.name}</option>)}
+            </select>
+          </label>
+        </>}
+      />
+      <div id="content" className="content">
       <Fragment key={lang}>
       <PwaBar running={running} />
 
@@ -526,7 +517,7 @@ export default function App() {
             )}
           </div>
           {!connLabel && <p className="note warn">{t('보드가 연결되지 않았습니다.')} <button className="link" onClick={() => setScreen('connect')}>{t('1단계: 보드 연결로 가기')}</button></p>}
-          <p className="lede">{t('센서를 누르면 연결 그림이 나옵니다. 그대로 꽂고 [측정 시작]을 누르면 바로 기록됩니다.')}</p>
+          <p className="lede"><R t={t('센서를 누르면 연결 그림이 나옵니다. 그대로 꽂고 [측정 시작]을 누르면 바로 기록됩니다.')} /></p>
           <p className="note board-line">
             {t('보드:')} <b>{board.name}</b>{detectedBoard ? ` (${t('자동 인식')})` : ''}
             {sensors.filter((s) => !/^(A\d|D3)$/.test(s.src) && s.src !== 'demo').length > 0 &&
@@ -535,7 +526,7 @@ export default function App() {
 
           <RecentSessions onOpen={openSession} say={say} />
 
-          <SensorPicker board={board} connectedTypes={sensors.filter((s) => s.src !== 'demo').map((s) => s.type)} onPick={(p) => setQuick({ part: p, status: 'idle' })} />
+          <div data-nav={t('센서로 바로 측정')}><SensorPicker board={board} connectedTypes={sensors.filter((s) => s.src !== 'demo').map((s) => s.type)} onPick={(p) => setQuick({ part: p, status: 'idle' })} /></div>
 
           <div className="row-head sub">
             <h2><Ico e={ICON.experiment} />{t('실험으로 찾기 (교육과정)')}</h2>
@@ -545,7 +536,7 @@ export default function App() {
           <ExperimentBrowser experiments={experiments} connectedTypes={sensors.filter((x) => x.src !== 'demo' || transportRef.current?.kind === 'sim').map((x) => x.type)} onPick={pickExperiment} />
 
           {hello && (
-            <details className="advanced">
+            <details className="advanced" data-nav={t('포트 직접 설정 (고급)')}>
               <summary>{t('포트 직접 설정 (고급)')}</summary>
               <SensorSetup sensors={sensors} disabled={false} onSetPort={setPort} onRescan={rescan} pulse={board.sensorSet === 'full'} />
             </details>
@@ -647,6 +638,7 @@ export default function App() {
         </footer>
       )}
       </Fragment>
+      </div>
       {toast && <div className={`toast ${toast.kind}`} role="status">{toast.text}</div>}
     </div>
   );

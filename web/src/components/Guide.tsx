@@ -9,6 +9,7 @@ import { SensorPicker } from './SensorPicker';
 import { ExperimentBrowser } from './ExperimentBrowser';
 import { t, tk } from '../lib/i18n';
 import { areaName, courseName, levelName } from '../lib/l10n';
+import { R } from './Rich';
 
 const SET_LABEL = { full: tk('모든 센서'), lite: tk('가벼운 버전'), mini: tk('가장 가벼운 버전'), none: '' } as const;
 
@@ -61,7 +62,7 @@ export function Guide({ experiments, board, initialExpId, initialPartId, initial
           {troubles.map((tr) => (
             <details key={tr.id} className="trouble">
               <summary>{tr.title}</summary>
-              <ol>{tr.steps.map((s) => <li key={s}>{s}</li>)}</ol>
+              <ol>{tr.steps.map((s) => <li key={s}><R t={s} /></li>)}</ol>
             </details>
           ))}
         </section>
@@ -86,13 +87,13 @@ export function Guide({ experiments, board, initialExpId, initialPartId, initial
           <p className={`note ${board.firmware === 'verified' ? '' : 'warn'}`}>
             {board.firmwareNote}{board.sensorSet !== 'none' && board.sensorSet !== 'full' ? ` (${t(SET_LABEL[board.sensorSet])})` : ''}
           </p>
-          {board.notes.length > 0 && <ul className="board-notes">{board.notes.map((n) => <li key={n}>{n}</li>)}</ul>}
+          {board.notes.length > 0 && <ul className="board-notes">{board.notes.map((n) => <li key={n}><R t={n} /></li>)}</ul>}
         </details>
       </section>
 
       <section className="guide-block">
         <h2>{t('연결 전 공통 규칙')}</h2>
-        <ul className="rules">{commonRules.map((r) => <li key={r}>{r}</li>)}</ul>
+        <ul className="rules">{commonRules.map((r) => <li key={r}><R t={r} /></li>)}</ul>
       </section>
 
       <section className="guide-block">
@@ -158,12 +159,12 @@ export function Guide({ experiments, board, initialExpId, initialPartId, initial
       {by === 'exp' && setup && (
         <section className="guide-block">
           <h2>{t('실험 장치에 붙이기')}</h2>
-          {setup.materials.length > 0 && <><h3>{t('준비물')}</h3><ul>{setup.materials.map((m) => <li key={m}>{m}</li>)}</ul></>}
-          <ol>{setup.attach.map((s) => <li key={s}>{s}</li>)}</ol>
+          {setup.materials.length > 0 && <><h3>{t('준비물')}</h3><ul>{setup.materials.map((m) => <li key={m}><R t={m} /></li>)}</ul></>}
+          <ol>{setup.attach.map((s) => <li key={s}><R t={s} /></li>)}</ol>
           {setup.cautions.length > 0 && (
             <div className="caution">
               <h3>{t('실험할 때 주의')}</h3>
-              <ul>{setup.cautions.map((x) => <li key={x}>{x}</li>)}</ul>
+              <ul>{setup.cautions.map((x) => <li key={x}><R t={x} /></li>)}</ul>
             </div>
           )}
         </section>

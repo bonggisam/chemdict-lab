@@ -6,6 +6,7 @@ import { troubles } from '../lib/guide';
 import { BUNDLED_FW, IDE_ONLY, TARGETS } from '../lib/flash';
 import { hasBluetooth, hasSerial } from '../lib/transports';
 import { BoardPicker } from './BoardPicker';
+import { R } from './Rich';
 
 export type FwState =
   | { status: 'checking' }
@@ -123,8 +124,8 @@ export function BoardStep({ board, detectedId, onPickBoard, connected, busy, fw,
         <section className="guide-block fw-panel" role="alert">
           <h2>{t('설치하지 못했습니다')}</h2>
           <p className="warn-text">{fw.message}</p>
-          {failTips && <ol>{failTips.steps.map((s) => <li key={s}>{s}</li>)}</ol>}
-          <p className="note">{t('USB를 뽑았다 꽂은 뒤 [USB로 연결]부터 다시 하세요.')}</p>
+          {failTips && <ol>{failTips.steps.map((s) => <li key={s}><R t={s} /></li>)}</ol>}
+          <p className="note"><R t={t('USB를 뽑았다 꽂은 뒤 [USB로 연결]부터 다시 하세요.')} /></p>
         </section>
       )}
 

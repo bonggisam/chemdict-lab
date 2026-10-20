@@ -541,3 +541,91 @@ button.big.alt { background: linear-gradient(160deg, var(--tint), transparent 70
 .sheet { border-radius: 20px; }
 .toast { border-radius: 12px; box-shadow: var(--shadow); }
 .site-foot { opacity: .85; }
+
+/* ===== v0.8 왼쪽 목차(나무 구조) + 오른쪽 본문 ===== */
+:root { --side-w: 280px; --pin: #1d5fb0; }
+@media (prefers-color-scheme: dark) { :root { --pin: #8cbcff; } }
+.app.layout { display: grid; grid-template-columns: var(--side-w) minmax(0, 1fr); padding: 0; min-height: 100vh; }
+.content { min-width: 0; padding: 0 max(28px, env(safe-area-inset-right)) env(safe-area-inset-bottom) 32px; }
+.content main { margin: 0; max-width: 1080px; }
+.content main.wide { padding-top: 26px; }
+.content .site-foot { margin: 32px 0 24px; max-width: 1080px; text-align: left; padding: 0; }
+.content .connect-recent, .content .shared-bar { max-width: 1080px; margin-left: 0; }
+
+.side {
+  position: sticky; top: 0; height: 100vh; overflow-y: auto; display: flex; flex-direction: column; gap: 6px;
+  padding: max(16px, env(safe-area-inset-top)) 14px 16px max(14px, env(safe-area-inset-left));
+  background: radial-gradient(140% 60% at 0% 0%, var(--brand-deep-2) 0%, var(--brand-deep) 70%); color: #e8f3ee;
+}
+.side-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 0 4px 10px; border-bottom: 1px solid rgba(255, 255, 255, 0.08); }
+.side-toggle { display: none; }
+.side-tree ol, .side-tree ul { list-style: none; margin: 0; padding: 0; }
+.side-tree > ol { display: flex; flex-direction: column; gap: 4px; padding-top: 8px; }
+.tree-head { width: 100%; display: flex; align-items: center; gap: 10px; text-align: left; background: transparent; border: 0; color: #a9bfb5; padding: 8px 8px; border-radius: 12px; }
+.tree-head:not(:disabled):hover { background: rgba(255, 255, 255, 0.05); color: #fff; }
+.tree-head .n { width: 30px; height: 30px; flex: none; border-radius: 50%; display: grid; place-items: center; font-weight: 800; font-size: 14px; border: 2px solid rgba(0, 212, 154, 0.55); color: #d6efe5; }
+.tree-head .tt { display: flex; flex-direction: column; min-width: 0; line-height: 1.25; }
+.tree-head .tt b { font-size: 15px; color: inherit; }
+.tree-head .tt small { font-size: 13px; color: #7f978d; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tree-step.on > .tree-head { color: #fff; background: rgba(0, 212, 154, 0.1); }
+.tree-step.on > .tree-head .n { background: radial-gradient(circle at 35% 30%, #ffc3a2 0%, var(--atom) 45%, #e8571b 100%); border-color: transparent; color: #2a0f02; box-shadow: 0 0 0 4px rgba(255, 122, 61, 0.2); }
+.tree-step.done > .tree-head .n { background: var(--mint); border-color: var(--mint); color: var(--brand-deep); }
+.tree-step.done > .tree-head .tt small { color: var(--mint); }
+
+/* 가지: 세로줄 + 꺾은 선 */
+.side-tree .tree-kids { margin: 2px 0 6px 22px; padding-left: 0; }
+.side-tree .tree-kids > li { position: relative; padding-left: 18px; background: linear-gradient(rgba(0, 212, 154, 0.32), rgba(0, 212, 154, 0.32)) 0 0 / 2px 100% no-repeat; }
+.side-tree .tree-kids > li:last-child { background-size: 2px 22px; }
+.side-tree .tree-kids > li::before { content: ""; position: absolute; left: 0; top: 21px; width: 12px; border-top: 2px solid rgba(0, 212, 154, 0.32); }
+.side-tree .tree-kids button { width: 100%; text-align: left; background: transparent; border: 0; border-radius: 9px; color: #b9cdc4; font-weight: 500; font-size: 14px; padding: 6px 10px; min-height: 44px; line-height: 1.3; }
+.side-tree .tree-kids button:hover { color: #fff; background: rgba(255, 255, 255, 0.05); }
+.side-tree .tree-kids button.on { color: #fff; font-weight: 700; background: rgba(0, 212, 154, 0.14); box-shadow: inset 3px 0 0 var(--mint); }
+.side-tree .tree-kids li.lv3 button { font-size: 13px; padding-left: 18px; }
+.side-tree .branch-head { color: #fff !important; font-weight: 700 !important; }
+.side-tree .branch-head.on { background: rgba(255, 122, 61, 0.14) !important; box-shadow: inset 3px 0 0 var(--atom) !important; }
+.side-tree .tree-branch > .tree-kids { margin-left: 14px; }
+
+.side-foot { margin-top: auto; display: flex; flex-direction: column; gap: 10px; padding: 12px 4px 0; border-top: 1px solid rgba(255, 255, 255, 0.08); }
+.side-foot .conn { flex-wrap: wrap; color: #b9cdc4; }
+.side-foot .conn-t { flex: 1 1 120px; min-width: 0; overflow-wrap: anywhere; }
+.side-foot .conn button { background: rgba(255, 255, 255, 0.06); border-color: rgba(255, 255, 255, 0.16); color: #e8f3ee; }
+.side-foot .conn-off { color: #8aa298; margin: 0; }
+.side-foot .lang-pick select { width: 100%; }
+.side-foot .lang-pick { color: #b9cdc4; }
+
+/* 좁은 화면: 목차는 위쪽 띠에 접어 둠 */
+@media (max-width: 900px) {
+  .app.layout { grid-template-columns: 1fr; }
+  .side { height: auto; max-height: 100vh; z-index: 15; padding-bottom: 8px; }
+  .side-top { border-bottom: 0; padding-bottom: 0; }
+  .side-toggle { display: inline-flex; align-items: center; gap: 6px; max-width: 60%; color: #e8f3ee; background: rgba(255, 255, 255, 0.06); border-color: rgba(255, 255, 255, 0.16); }
+  .side-now { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .side:not(.open) .side-tree, .side:not(.open) .side-foot { display: none; }
+  .content { padding: 0 16px env(safe-area-inset-bottom); }
+}
+
+/* ===== 핵심어 색 (components/Rich.tsx) ===== */
+.k-btn { color: var(--accent); font-weight: 700; background: var(--tint); border-radius: 5px; padding: 0 3px; white-space: nowrap; }
+.k-pin { color: var(--pin); font-weight: 700; font-family: ui-monospace, Menlo, monospace; font-size: 0.95em; }
+.k-warn { color: var(--mark); font-weight: 700; }
+.k-num { font-weight: 700; color: var(--ink); }
+.caution .k-warn, .caution.strong .k-warn { text-decoration: underline; text-underline-offset: 3px; }
+
+/* ===== 본문 목록도 나무 구조로 ===== */
+.content :is(.guide-block, .steps, .trouble, .caution, .bb-note, .part-wiring, .quick-help) :is(ul, ol):not(.cards, .bb-exps, .recent-list, .marker-list, .tree-kids, .cal-steps, [role]) {
+  list-style: none; padding-left: 4px; margin: 8px 0 4px; counter-reset: tr;
+}
+.content :is(.guide-block, .steps, .trouble, .caution, .bb-note, .part-wiring, .quick-help) :is(ul, ol):not(.cards, .bb-exps, .recent-list, .marker-list, .tree-kids, .cal-steps, [role]) > li {
+  position: relative; padding: 5px 0 5px 24px; line-height: 1.55;
+  background: linear-gradient(var(--line), var(--line)) 4px 0 / 2px 100% no-repeat;
+}
+.content :is(.guide-block, .steps, .trouble, .caution, .bb-note, .part-wiring, .quick-help) :is(ul, ol):not(.cards, .bb-exps, .recent-list, .marker-list, .tree-kids, .cal-steps, [role]) > li:last-child { background-size: 2px 1.3em; }
+.content :is(.guide-block, .steps, .trouble, .caution, .bb-note, .part-wiring, .quick-help) :is(ul, ol):not(.cards, .bb-exps, .recent-list, .marker-list, .tree-kids, .cal-steps, [role]) > li::before {
+  content: ""; position: absolute; left: 4px; top: 1.3em; width: 12px; border-top: 2px solid var(--line);
+}
+.content :is(.guide-block, .steps, .trouble, .part-wiring, .bb-note, .quick-help) ol:not(.cal-steps, [role]) > li { counter-increment: tr; padding-left: 44px; }
+.content :is(.guide-block, .steps, .trouble, .part-wiring, .bb-note, .quick-help) ol:not(.cal-steps, [role]) > li::after {
+  content: counter(tr); position: absolute; left: 17px; top: calc(1.3em - 11px); width: 22px; height: 22px; border-radius: 50%;
+  display: grid; place-items: center; font-size: 13px; font-weight: 800; background: var(--brand-deep); color: var(--mint);
+}
+.content .caution :is(ul) > li::before { border-top-color: color-mix(in srgb, var(--mark) 45%, var(--line)); }

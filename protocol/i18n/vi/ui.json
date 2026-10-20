@@ -14,7 +14,6 @@
  "단계": "Bước",
  "보드 연결": "Kết nối bo mạch",
  "실험": "Thí nghiệm",
- "연결 방법·문제 해결": "Kết nối · Khắc phục sự cố",
  "모둠 {n}": "Nhóm {n}",
  "연결 끊기": "Ngắt kết nối",
  "무엇을 잴까요?": "Bạn muốn đo gì?",
@@ -495,5 +494,12 @@
  "절대온도": "Nhiệt độ tuyệt đối",
  "[H⁺] 농도": "Nồng độ [H⁺]",
  "처음 값과의 차": "Chênh lệch với giá trị đầu",
- "압력×부피": "Áp suất × thể tích"
+ "압력×부피": "Áp suất × thể tích",
+ "센서로 바로 측정": "Đo ngay bằng cảm biến",
+ "측정 시작 · 정지": "Bắt đầu · Dừng",
+ "측정 목록": "Danh sách lần đo",
+ "관찰 기록 · 저장": "Ghi chú · Lưu",
+ "보드 고르기 · 연결": "Chọn · Kết nối bo mạch",
+ "센서 고르기 · 측정": "Chọn cảm biến · Đo",
+ "연결 그림 · 브레드보드": "Sơ đồ nối · Breadboard"
 }

@@ -14,7 +14,6 @@
  "단계": "Langkah",
  "보드 연결": "Hubungkan papan",
  "실험": "Percobaan",
- "연결 방법·문제 해결": "Cara menyambung & pemecahan masalah",
  "모둠 {n}": "Kelompok {n}",
  "연결 끊기": "Putuskan",
  "무엇을 잴까요?": "Apa yang akan diukur?",
@@ -495,5 +494,12 @@
  "절대온도": "Suhu mutlak",
  "[H⁺] 농도": "Konsentrasi [H⁺]",
  "처음 값과의 차": "Selisih dengan nilai awal",
- "압력×부피": "Tekanan × volume"
+ "압력×부피": "Tekanan × volume",
+ "센서로 바로 측정": "Ukur langsung dengan sensor",
+ "측정 시작 · 정지": "Mulai · Berhenti",
+ "측정 목록": "Daftar pengukuran",
+ "관찰 기록 · 저장": "Catatan · Simpan",
+ "보드 고르기 · 연결": "Pilih · Hubungkan papan",
+ "센서 고르기 · 측정": "Pilih sensor · Ukur",
+ "연결 그림 · 브레드보드": "Diagram kabel · Breadboard"
 }

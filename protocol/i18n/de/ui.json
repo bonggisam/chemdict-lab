@@ -14,7 +14,6 @@
  "단계": "Schritt",
  "보드 연결": "Board verbinden",
  "실험": "Experiment",
- "연결 방법·문제 해결": "Anschluss · Fehlerbehebung",
  "모둠 {n}": "Gruppe {n}",
  "연결 끊기": "Trennen",
  "무엇을 잴까요?": "Was soll gemessen werden?",
@@ -495,5 +494,12 @@
  "절대온도": "Absolute Temperatur",
  "[H⁺] 농도": "[H⁺]-Konzentration",
  "처음 값과의 차": "Differenz zum Anfangswert",
- "압력×부피": "Druck × Volumen"
+ "압력×부피": "Druck × Volumen",
+ "센서로 바로 측정": "Direkt mit Sensor messen",
+ "측정 시작 · 정지": "Start · Stopp",
+ "측정 목록": "Messreihen",
+ "관찰 기록 · 저장": "Notizen · Speichern",
+ "보드 고르기 · 연결": "Wählen · Verbinden",
+ "센서 고르기 · 측정": "Sensor wählen · Messen",
+ "연결 그림 · 브레드보드": "Schaltplan · Steckbrett"
 }

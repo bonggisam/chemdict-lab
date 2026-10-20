@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { breadboard, type BBCircuit } from '../lib/guide';
 import { t } from '../lib/i18n';
 import { courseName } from '../lib/l10n';
+import { R } from './Rich';
 
 /** 브레드보드 그림: 구조 설명용(highlight) 또는 회로(circuit) */
 
@@ -177,13 +178,13 @@ export function BreadboardGuide({ initial, experiments }: { initial?: string; ex
   const c = breadboard.circuits.find((x) => x.id === cid) ?? breadboard.circuits[0];
   return (
     <div className="bb-guide">
-      <p>{breadboard.intro}</p>
+      <p><R t={breadboard.intro} /></p>
       <h3>{t('브레드보드의 구조')}</h3>
       <BreadboardDiagram highlight title={t('브레드보드 구조: 이어진 칸')} />
-      <ul>{breadboard.structure.map((s) => <li key={s}>{s}</li>)}</ul>
+      <ul>{breadboard.structure.map((s) => <li key={s}><R t={s} /></li>)}</ul>
       <div className="caution">
         <h3>{t('꽂을 때 규칙')}</h3>
-        <ul>{breadboard.rules.map((s) => <li key={s}>{s}</li>)}</ul>
+        <ul>{breadboard.rules.map((s) => <li key={s}><R t={s} /></li>)}</ul>
       </div>
       <h3>{t('자주 쓰는 저항')}</h3>
       <table className="wire-table bb-res">
@@ -198,12 +199,12 @@ export function BreadboardGuide({ initial, experiments }: { initial?: string; ex
         ))}
       </div>
       <h4>{c.name}</h4>
-      <p className="note">{c.what}</p>
+      <p className="note"><R t={c.what} /></p>
       <div className="guide-cols bb-cols">
-        <ol className="wire-steps">{c.steps.map((s) => <li key={s}>{s}</li>)}</ol>
+        <ol className="wire-steps">{c.steps.map((s) => <li key={s}><R t={s} /></li>)}</ol>
         <BreadboardDiagram circuit={c} title={t('{name} 브레드보드 연결 그림', { name: c.name })} />
       </div>
-      {c.caution && <p className="caution strong">{c.caution}</p>}
+      {c.caution && <p className="caution strong"><R t={c.caution} /></p>}
 
       {experiments && experiments.length > 0 && (
         <>

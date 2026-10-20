@@ -19,6 +19,7 @@ import { InfoSheet } from './InfoSheet';
 import { t, tk } from '../lib/i18n';
 import { infoRows, infoSummary, type ExpInfo } from '../lib/info';
 import { FORMULA_EXAMPLES, FormulaError, compile, evalColumn, type CustomCalc } from '../lib/formula';
+import { R } from './Rich';
 
 export interface Trigger { id: string; dir: 'up' | 'down'; value: number }
 
@@ -407,7 +408,7 @@ export function Measure(p: Props) {
 
   return (
     <main className="wide measure">
-      <div className="row-head">
+      <div className="row-head" data-nav={t('측정 시작 · 정지')}>
         <div>
           <button className="ghost back" disabled={running} onClick={p.onBack}>← {t('실험 목록')}</button>
           <h1>{exp.title}</h1>
@@ -452,7 +453,7 @@ export function Measure(p: Props) {
       </div>
 
       {/* 측정 목록 */}
-      <div className="runs">
+      <div className="runs" data-nav={t('측정 목록')}>
         {runs.map((r) => (
           <div key={r.id} className={`run ${r.id === active?.id ? 'active' : ''}`}>
             <input type="checkbox" aria-label={t('{name} 그래프에 표시', { name: r.name })} checked={r.visible} onChange={(e) => patchRun(r.id, { visible: e.target.checked })} />
@@ -473,9 +474,9 @@ export function Measure(p: Props) {
         <button className="ghost add-run" disabled={running} onClick={addRun}>+ {t('새 측정')}</button>
       </div>
 
-      <details className="steps">
+      <details className="steps" data-nav={t('실험 순서 보기')} data-nav-level="3">
         <summary><Ico e="🧑‍🔬" />{t('실험 순서 보기')}</summary>
-        <ol>{exp.steps.map((s, i) => <li key={i}>{s}</li>)}</ol>
+        <ol>{exp.steps.map((s, i) => <li key={i}><R t={s} /></li>)}</ol>
       </details>
       {bb && <BreadboardNote need={bb.need} why={bb.why} circuit={bb.circuit} />}
 
@@ -526,7 +527,7 @@ export function Measure(p: Props) {
         </div>
       )}
 
-      <div className="charts">
+      <div className="charts" data-nav={t('그래프')}>
         {charts.map((c, i) => (
           <Chart
             key={c.sensor.id}
@@ -591,7 +592,7 @@ export function Measure(p: Props) {
       </div>
 
       {/* 도구 막대 */}
-      <div className="toolbar">
+      <div className="toolbar" data-nav={t('관찰 기록 · 저장')}>
         {mode === 'time' && exp.markers.enabled && (
           <div className="marker">
             <input id="marker-note" aria-label={exp.markers.label} value={markerNote} placeholder={exp.markers.prompt} onChange={(e) => setMarkerNote(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter') addMarker(); }} />

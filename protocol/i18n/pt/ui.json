@@ -14,7 +14,6 @@
  "단계": "Etapa",
  "보드 연결": "Conectar placa",
  "실험": "Experimento",
- "연결 방법·문제 해결": "Conexão e solução de problemas",
  "모둠 {n}": "Grupo {n}",
  "연결 끊기": "Desconectar",
  "무엇을 잴까요?": "O que vamos medir?",
@@ -495,5 +494,12 @@
  "절대온도": "Temperatura absoluta",
  "[H⁺] 농도": "Concentração de [H⁺]",
  "처음 값과의 차": "Diferença do primeiro valor",
- "압력×부피": "Pressão × volume"
+ "압력×부피": "Pressão × volume",
+ "센서로 바로 측정": "Medir com um sensor",
+ "측정 시작 · 정지": "Iniciar · Parar",
+ "측정 목록": "Medições",
+ "관찰 기록 · 저장": "Notas · Salvar",
+ "보드 고르기 · 연결": "Escolher · Conectar",
+ "센서 고르기 · 측정": "Escolher sensor · Medir",
+ "연결 그림 · 브레드보드": "Ligações · Protoboard"
 }

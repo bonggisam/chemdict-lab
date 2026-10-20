@@ -2,6 +2,7 @@ import { breadboard, partSupported, wiring, type Board, type Part } from '../lib
 import { BreadboardDiagram } from './Breadboard';
 import { t } from '../lib/i18n';
 import { WiringDiagram } from './WiringDiagram';
+import { R } from './Rich';
 
 interface Props {
   board: Board;
@@ -47,11 +48,11 @@ export function PartWiring({ board, part, port, compact }: Props) {
               )}
             </tbody>
           </table>
-          {connector.steps.length > 0 && <ul className="wire-steps">{connector.steps.map((s) => <li key={s}>{s}</li>)}</ul>}
+          {connector.steps.length > 0 && <ul className="wire-steps">{connector.steps.map((s) => <li key={s}><R t={s} /></li>)}</ul>}
           {!compact && (
             <>
               <h3>{t('준비물')}</h3>
-              <ul>{part.items.map((x) => <li key={x}>{x}</li>)}</ul>
+              <ul>{part.items.map((x) => <li key={x}><R t={x} /></li>)}</ul>
             </>
           )}
         </div>
@@ -61,12 +62,12 @@ export function PartWiring({ board, part, port, compact }: Props) {
       {cautions.length > 0 && (compact ? (
         <details className="caution">
           <summary>{t('주의할 점 {n}가지', { n: cautions.length })}</summary>
-          <ul>{cautions.map((x) => <li key={x}>{x}</li>)}</ul>
+          <ul>{cautions.map((x) => <li key={x}><R t={x} /></li>)}</ul>
         </details>
       ) : (
         <div className="caution">
           <h3>{t('주의할 점')}</h3>
-          <ul>{cautions.map((x) => <li key={x}>{x}</li>)}</ul>
+          <ul>{cautions.map((x) => <li key={x}><R t={x} /></li>)}</ul>
         </div>
       ))}
     </div>
@@ -81,7 +82,7 @@ export function BreadboardNote({ need, why, circuit }: { need: string; why: stri
       <summary><b>{need === 'required' ? t('브레드보드 필요') : t('브레드보드 있으면 편함')}</b> — {why}</summary>
       {c ? (
         <div className="guide-cols bb-cols">
-          <ol className="wire-steps">{c.steps.map((s) => <li key={s}>{s}</li>)}</ol>
+          <ol className="wire-steps">{c.steps.map((s) => <li key={s}><R t={s} /></li>)}</ol>
           <BreadboardDiagram circuit={c} title={t('{name} 브레드보드 연결 그림', { name: c.name })} />
         </div>
       ) : <p className="note">{t('센서를 브레드보드에 꽂고, 같은 세로 줄에서 점퍼선으로 보드 핀에 연결합니다.')}</p>}

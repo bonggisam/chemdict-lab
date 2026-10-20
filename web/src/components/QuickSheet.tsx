@@ -3,6 +3,7 @@ import { partSupported, type Board, type Part } from '../lib/guide';
 import type { ResolvedSensor } from '../lib/sensors';
 import { PartWiring } from './PartWiring';
 import { t } from '../lib/i18n';
+import { R } from './Rich';
 
 export type QuickStatus = 'idle' | 'finding' | 'notfound';
 
@@ -54,9 +55,9 @@ export function QuickSheet({ board, boardDetected, part, sensors, connected, sta
           <div className="caution strong" role="alert">
             <h3>{t('센서를 찾지 못했습니다')}</h3>
             <ol>
-              <li>{t('USB를 뽑고 선이 위 표대로 꽂혔는지 다시 봅니다. VCC와 GND가 바뀌지 않았는지 확인합니다.')}</li>
-              <li>{t('점퍼선이 헐겁지 않은지 눌러 봅니다. 브레드보드는 같은 줄에 꽂혀야 이어집니다.')}</li>
-              <li>{t('USB를 다시 꽂고 아래 버튼을 한 번 더 누릅니다.')}</li>
+              <li><R t={t('USB를 뽑고 선이 위 표대로 꽂혔는지 다시 봅니다. VCC와 GND가 바뀌지 않았는지 확인합니다.')} /></li>
+              <li><R t={t('점퍼선이 헐겁지 않은지 눌러 봅니다. 브레드보드는 같은 줄에 꽂혀야 이어집니다.')} /></li>
+              <li><R t={t('USB를 다시 꽂고 아래 버튼을 한 번 더 누릅니다.')} /></li>
             </ol>
             <button className="link" onClick={onHelp}>{t('문제 해결 더 보기')}</button>
           </div>
