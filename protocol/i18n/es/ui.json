@@ -501,5 +501,6 @@
  "관찰 기록 · 저장": "Notas · Guardar",
  "보드 고르기 · 연결": "Elegir · Conectar",
  "센서 고르기 · 측정": "Elegir sensor · Medir",
- "연결 그림 · 브레드보드": "Cableado · Protoboard"
+ "연결 그림 · 브레드보드": "Cableado · Protoboard",
+ "이 보드는 블루투스로만 측정합니다": "Esta placa solo mide por Bluetooth"
 }

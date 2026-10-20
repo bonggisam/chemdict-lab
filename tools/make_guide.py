@@ -77,10 +77,16 @@ BOARDS = [
          firmwareNote="ChemDict 펌웨어 준비 중입니다. 연결 방법만 참고하세요.",
          usb="USB-C", ble=True, logic="3.3 V", adc="보드 문서 확인", qwiic="없음",
          pins=pins5(sda="D20 (SDA)", scl="D21 (SCL)", pwr="3.3V"), notes=[V33_NOTE]),
-    dict(id="uno-q", name="UNO Q", match=["UNO Q"], firmware="none", sensorSet="none",
-         firmwareNote="App Lab 방식 보드라 ChemDict 펌웨어를 아직 지원하지 않습니다. 연결 방법만 참고하세요.",
-         usb="USB-C", ble=True, logic="3.3 V (보드 문서 확인)", adc="보드 문서 확인", qwiic="있음 (Modulino 호환)",
-         pins=pins5(pwr="3.3V"), notes=[V33_NOTE]),
+    dict(id="uno-q", name="UNO Q", match=["UNO Q"], firmware="compiled", sensorSet="full", bleOnly=True,
+         firmwareNote="모든 센서 지원. 블루투스로만 측정합니다 (USB-C는 전원과 프로그램 올리기용). 처음 한 번 Arduino IDE로 측정 프로그램을 올립니다.",
+         usb="USB-C (전원·프로그램 올리기)", ble=True, logic="3.3 V", adc="12비트 (0~3.3 V)", qwiic="있음 (3.3 V)",
+         pins=pins5(sda="SDA (AREF 옆)", scl="SCL (AREF 옆)", pwr="3.3V"),
+         notes=["I2C 센서는 Qwiic 단자나 AREF 옆 SDA·SCL 핀에 꽂습니다. UNO Q는 A4·A5가 I2C가 아닙니다.",
+                "아날로그 입력은 0~3.3 V입니다. 아날로그 센서 전원은 [3.3V] 핀에 연결합니다. 5 V를 넣으면 보드가 망가질 수 있습니다.",
+                V33_NOTE,
+                "보드를 켜고 1분쯤 기다리면 블루투스 이름 ChemDict-01이 보입니다 (보드 안의 리눅스가 먼저 켜져야 함).",
+                "처음 한 번: Arduino IDE → 보드 관리자에서 'Arduino UNO Q Boards', 라이브러리 관리자에서 ArduinoBLE 2.1.0 이상·Arduino_RouterBridge·OneWire·DallasTemperature 설치 → chemdict_lab.ino를 열고 보드 'Arduino UNO Q'로 업로드.",
+                "보정값과 모둠 번호는 보드 플래시에 저장되어 껐다 켜도 남습니다."]),
 ]
 
 # ---------------------------------------------------------------- 연결 방식
@@ -680,7 +686,7 @@ out = dict(version=2, common=COMMON, categories=ORDER, boards=BOARDS, connectors
            planned=["열화상 카메라 AMG8833·MLX90640", "먼지 센서 GP2Y1014AU·PPD42NS (펄스 폭 방식)",
                     "색 센서 TCS3200 (주파수 출력)", "RS485 토양 센서 (수분·EC·pH·질소·인·칼륨)",
                     "오존 SEN0321·멀티가스 MiCS-4514·심박 허브 MAX32664", "HTU31D·SHT1x·ICP-10111·MS5540C·HPMA115",
-                    "Nano ESP32·Nano 33·GIGA·UNO Q 펌웨어"])
+                    "Nano ESP32·Nano 33·GIGA 펌웨어"])
 path = pathlib.Path(__file__).resolve().parent.parent / "protocol" / "guide.json"
 path.write_text(json.dumps(out, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 print("boards", len(BOARDS), "parts", len(PARTS), "->", path)

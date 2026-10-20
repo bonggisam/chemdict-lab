@@ -13,6 +13,7 @@
 | 보드 | 보드 매니저 | 센서 범위 | 프로그램 / 메모리 | 연결 |
 |---|---|---|---|---|
 | UNO R4 WiFi (기준, 실제 확인) | Arduino UNO R4 Boards | 전체 | 60% / 44% | USB·블루투스 |
+| UNO Q (2026-10-20 업로드 확인) | Arduino Q Boards 1.0.0 | 전체 | 34% / 47% | 블루투스만 |
 | UNO R4 Minima | Arduino UNO R4 Boards | 전체 | 0.3.0 기준 34% / 20% (0.5.0 미확인) | USB |
 | Nano R4 | Arduino UNO R4 Boards | 전체 | 0.3.0 기준 34% / 24% (0.5.0 미확인) | USB |
 | Mega 2560 | Arduino AVR Boards | 전체 | 29% / 46% | USB |
@@ -34,6 +35,16 @@ VL53L1X·VL53L4CD·VL6180X는 라이브러리 없이 ST 기본 설정으로 직�
 
 `.ino`는 IDE가 이름 순서로 이어 붙이므로 (`sensors_more2.ino`가 `sensors_more.ino` 뒤에 와야 함) 사용자 정의 타입을 함수 매개변수에 쓰지 않습니다(자동 원형 선언 오류). `B1`·`B2` 같은 이름은 AVR 2진수 매크로와 겹치니 쓰지 않습니다.
 보드 종류와 센서 범위는 펌웨어가 자동으로 정합니다. 센서 연결 방법은 앱의 **연결 안내** 탭을 보세요.
+
+### UNO Q
+
+아두이노 칩(STM32U585)에는 무선이 없습니다. ArduinoBLE 2.1.0부터 UNO Q에서는 `Arduino_RouterBridge`로 보드 안 리눅스 쪽의 `hci0`을 빌려 쓰므로, 같은 `chemdict_lab.ino`가 그대로 블루투스 측정 보드가 됩니다 (리눅스 쪽 프로그램 설치 필요 없음).
+
+1. 보드 관리자: `Arduino Q Boards` / 라이브러리: `ArduinoBLE` 2.1.0 이상, `Arduino_RouterBridge` 0.4.4 이상(의존 라이브러리 모두 설치), `OneWire`, `DallasTemperature`
+2. UNO Q를 맥에 USB-C로 꽂고 보드 `Arduino UNO Q`(포트 `/dev/cu.usbmodem…`) 선택 → 업로드
+3. 보드를 켜고 리눅스가 다 켜질 때까지 약 1분 뒤 `ChemDict-01`이 보입니다.
+
+다른 점: USB-C는 리눅스 쪽이라 USB 시리얼 측정이 없고(`Serial`은 Bridge 모니터라 끔), 아날로그 입력은 0~3.3 V(`ANALOG_VREF`), I2C는 Qwiic(`Wire1`)과 AREF 옆 SDA·SCL(`Wire`)입니다 (A4·A5는 I2C 아님). EEPROM 라이브러리가 없어 플래시 `storage_partition` 앞 256바이트에 설정을 저장합니다.
 
 ## 바로 시험하기 (센서 없이)
 

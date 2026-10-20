@@ -16,7 +16,7 @@ export function BoardPicker({ board, detectedId, onPick }: Props) {
   const btn = (b: Board) => (
     <button key={b.id} role="radio" aria-checked={b.id === board.id} className={b.id === board.id ? 'on' : ''} disabled={b.firmware === 'none'} onClick={() => onPick(b.id)}>
       <b>{b.name}</b>
-      <span className={`fw ${b.firmware}`}>{b.id === detectedId ? t('✓ 연결됨') : `${b.ble ? t('USB·블루투스') : 'USB'} · ${t(FW_LABEL[b.firmware])}`}</span>
+      <span className={`fw ${b.firmware}`}>{b.id === detectedId ? t('✓ 연결됨') : `${b.bleOnly ? t('블루투스') : b.ble ? t('USB·블루투스') : 'USB'} · ${t(FW_LABEL[b.firmware])}`}</span>
     </button>
   );
   return (

@@ -501,5 +501,6 @@
  "관찰 기록 · 저장": "Notes · Save",
  "보드 고르기 · 연결": "Choose · Connect",
  "센서 고르기 · 측정": "Choose sensor · Measure",
- "연결 그림 · 브레드보드": "Wiring · Breadboard"
+ "연결 그림 · 브레드보드": "Wiring · Breadboard",
+ "이 보드는 블루투스로만 측정합니다": "This board measures over Bluetooth only"
 }

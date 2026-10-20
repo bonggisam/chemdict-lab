@@ -1,6 +1,7 @@
 /*
   ChemDict Lab firmware v0.5.0
   기준 보드: Arduino UNO R4 WiFi (USB + 블루투스, 실제 보드 확인)
+  UNO Q: 블루투스만 (아두이노 칩이 리눅스 쪽 블루투스를 Bridge로 씀, ArduinoBLE 2.1.0 이상)
   그 밖의 보드: UNO R4 Minima, Nano R4, UNO R3, Nano, Leonardo, Mega 2560 (USB만)
 
   - USB 시리얼(115200)과 BLE(Nordic UART 방식)로 같은 JSON 한 줄 메시지를 보냅니다.
@@ -29,7 +30,16 @@
 
 // ---------- 보드별 차이 ----------
 // Nano R4는 ARDUINO_UNOR4_MINIMA도 함께 정의하므로 먼저 검사
-#if defined(ARDUINO_UNOR4_WIFI)
+#if defined(ARDUINO_UNO_Q)
+  // 아두이노 칩(STM32U585)에는 무선이 없음: ArduinoBLE가 Bridge(arduino-router)로 리눅스 쪽 hci0을 씀
+  // USB-C는 리눅스 쪽이라 USB 시리얼 측정은 안 됨 (Serial = Bridge 모니터, 글자마다 RPC라서 끔)
+  #define HAS_BLE 1
+  #define HAS_QWIIC 1          // Qwiic 단자 = Wire1 (3.3 V)
+  #define BOARD_NAME "UNO Q"
+  #define ADC_BITS 12
+  #define HAS_USB_SERIAL 0
+  #define ANALOG_VREF 3.3      // 아날로그 입력 0~3.3 V
+#elif defined(ARDUINO_UNOR4_WIFI)
   #define HAS_BLE 1
   #define HAS_QWIIC 1          // Qwiic 단자 = Wire1 (3.3 V)
   #define BOARD_NAME "UNO R4 WiFi"
@@ -65,7 +75,18 @@
   #define BOARD_NAME "Leonardo"
   #define ADC_BITS 10
 #else
-  #error "지원 보드: UNO R4 WiFi, UNO R4 Minima, Nano R4, UNO R3, Nano, Leonardo, Mega 2560"
+  #error "지원 보드: UNO R4 WiFi, UNO Q, UNO R4 Minima, Nano R4, UNO R3, Nano, Leonardo, Mega 2560"
+#endif
+#ifndef HAS_USB_SERIAL
+  #define HAS_USB_SERIAL 1
+#endif
+#ifndef ANALOG_VREF
+  #define ANALOG_VREF 5.0
+#endif
+#if HAS_USB_SERIAL
+  #define USB_PRINT(x) Serial.print(x)
+#else
+  #define USB_PRINT(x) ((void)0)
 #endif
 
 // 메모리가 작은 보드(UNO R3·Nano·Leonardo, 32 KB)는 자주 쓰는 센서만 넣은 가벼운 버전
@@ -87,7 +108,41 @@
 #include <ArduinoBLE.h>
 #endif
 #include <Wire.h>
+#if defined(ARDUINO_UNO_Q)
+// UNO Q에는 EEPROM 라이브러리가 없음: 아두이노 칩 플래시의 storage_partition 앞 256바이트를 EEPROM처럼 씀
+#include <zephyr/storage/flash_map.h>
+struct FlashEeprom {
+  static const uint16_t SIZE = 256;     // 16바이트(쿼드 워드) 배수
+  static const uint32_t PAGE = 8192;    // STM32U5 지우기 단위
+  uint8_t buf[SIZE];
+  bool loaded = false;
+  void load() {
+    if (loaded) return;
+    loaded = true;
+    memset(buf, 0xFF, SIZE);
+    const struct flash_area* fa;
+    if (flash_area_open(FIXED_PARTITION_ID(storage_partition), &fa) == 0) {
+      flash_area_read(fa, 0, buf, SIZE);
+      flash_area_close(fa);
+    }
+  }
+  void commit() {
+    const struct flash_area* fa;
+    if (flash_area_open(FIXED_PARTITION_ID(storage_partition), &fa) != 0) return;
+    if (flash_area_erase(fa, 0, PAGE) == 0) flash_area_write(fa, 0, buf, SIZE);
+    flash_area_close(fa);
+  }
+  template <class T> T& get(int a, T& v) { load(); if (a + sizeof(T) <= SIZE) memcpy(&v, buf + a, sizeof(T)); return v; }
+  template <class T> const T& put(int a, const T& v) {
+    load();
+    if (a + sizeof(T) <= SIZE && memcmp(buf + a, &v, sizeof(T)) != 0) { memcpy(buf + a, &v, sizeof(T)); commit(); }
+    return v;
+  }
+};
+FlashEeprom EEPROM;
+#else
 #include <EEPROM.h>
+#endif
 #include <OneWire.h>
 #include <DallasTemperature.h>
 
@@ -106,7 +161,7 @@ const uint8_t TC_CS = 10, TC_SO = 12, TC_SCK = 13;
 const uint8_t RTD_CS = 9, SPI_SDI = 11;   // MAX31865
 const uint8_t PULSE_PIN = 3;              // 펄스 입력 (인터럽트)
 
-const float VREF = 5.0;
+const float VREF = ANALOG_VREF;
 const float ADC_MAX = (1L << ADC_BITS) - 1;
 const unsigned long MIN_INTERVAL_MS = 100;
 const uint8_t BLE_CHUNK = 20;
@@ -296,17 +351,17 @@ struct LineOut {
     buf[n++] = (uint8_t)c;
     if (n == BLE_CHUNK) flush();
   }
-  void print(const char* s) { Serial.print(s); while (*s) push(*s++); }
+  void print(const char* s) { USB_PRINT(s); while (*s) push(*s++); }
   void print(const __FlashStringHelper* f) {  // F("...") 문자열은 플래시에서 바로 읽음
     PGM_P p = reinterpret_cast<PGM_P>(f);
     char c;
-    while ((c = pgm_read_byte(p++))) { Serial.print(c); push(c); }
+    while ((c = pgm_read_byte(p++))) { USB_PRINT(c); push(c); }
   }
   void print(const String& s) { print(s.c_str()); }
   void num(float v, uint8_t dec) { print(String(v, (unsigned char)dec)); }
   void num(long v) { print(String(v)); }
-  void str(const char* s) { Serial.print('"'); push('"'); print(s); Serial.print('"'); push('"'); }
-  void end() { Serial.print('\n'); push('\n'); flush(); }
+  void str(const char* s) { USB_PRINT('"'); push('"'); print(s); USB_PRINT('"'); push('"'); }
+  void end() { USB_PRINT('\n'); push('\n'); flush(); }
 };
 LineOut out;
 
@@ -1387,6 +1442,7 @@ void handleCommand(String line) {
 }
 
 void readSerial() {
+#if HAS_USB_SERIAL
   while (Serial.available()) {
     char c = (char)Serial.read();
     if (c == '\n' || c == '\r') {
@@ -1396,6 +1452,7 @@ void readSerial() {
       serialBuf += c;
     }
   }
+#endif
 }
 
 #if HAS_BLE
@@ -1418,9 +1475,11 @@ void onBleDisconnect(BLEDevice) { bleBuf = ""; BLE.advertise(); }
 
 // =====================================================================
 void setup() {
+#if HAS_USB_SERIAL
   Serial.begin(115200);
   unsigned long t0 = millis();
   while (!Serial && millis() - t0 < 1500) {}
+#endif
 
 #if ADC_BITS > 10
   analogReadResolution(ADC_BITS);

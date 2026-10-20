@@ -501,5 +501,6 @@
  "관찰 기록 · 저장": "Catatan · Simpan",
  "보드 고르기 · 연결": "Pilih · Hubungkan papan",
  "센서 고르기 · 측정": "Pilih sensor · Ukur",
- "연결 그림 · 브레드보드": "Diagram kabel · Breadboard"
+ "연결 그림 · 브레드보드": "Diagram kabel · Breadboard",
+ "이 보드는 블루투스로만 측정합니다": "Papan ini hanya mengukur lewat Bluetooth"
 }

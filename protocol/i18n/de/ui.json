@@ -501,5 +501,6 @@
  "관찰 기록 · 저장": "Notizen · Speichern",
  "보드 고르기 · 연결": "Wählen · Verbinden",
  "센서 고르기 · 측정": "Sensor wählen · Messen",
- "연결 그림 · 브레드보드": "Schaltplan · Steckbrett"
+ "연결 그림 · 브레드보드": "Schaltplan · Steckbrett",
+ "이 보드는 블루투스로만 측정합니다": "Dieses Board misst nur über Bluetooth"
 }

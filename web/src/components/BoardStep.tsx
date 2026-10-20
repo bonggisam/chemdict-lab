@@ -53,9 +53,9 @@ export function BoardStep({ board, detectedId, onPickBoard, connected, busy, fw,
       <section className="guide-block">
         <h2><Ico e={ICON.usb} />{t('연결하기')}</h2>
         <div className="connect-grid">
-          <button className="big" disabled={!hasSerial() || busy || connected} onClick={() => onConnect('serial')}>
+          <button className="big" disabled={!hasSerial() || busy || connected || board.bleOnly} onClick={() => onConnect('serial')}>
             <span className="big-ico" aria-hidden="true">{ICON.usb}</span><b>{t('USB로 연결')}</b>
-            <span>{hasSerial() ? t('맥·윈도우·크롬북 (크롬·엣지)') : t('이 브라우저에서는 사용할 수 없음')}</span>
+            <span>{board.bleOnly ? t('이 보드는 블루투스로만 측정합니다') : hasSerial() ? t('맥·윈도우·크롬북 (크롬·엣지)') : t('이 브라우저에서는 사용할 수 없음')}</span>
           </button>
           <button className="big" disabled={!hasBluetooth() || busy || connected || !board.ble} onClick={() => onConnect('ble')}>
             <span className="big-ico" aria-hidden="true">{ICON.ble}</span><b>{t('블루투스로 연결')}</b>

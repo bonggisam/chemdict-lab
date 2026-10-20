@@ -501,5 +501,6 @@
  "관찰 기록 · 저장": "Notes · Enregistrer",
  "보드 고르기 · 연결": "Choisir · Connecter",
  "센서 고르기 · 측정": "Choisir le capteur · Mesurer",
- "연결 그림 · 브레드보드": "Câblage · Breadboard"
+ "연결 그림 · 브레드보드": "Câblage · Breadboard",
+ "이 보드는 블루투스로만 측정합니다": "Cette carte mesure uniquement par Bluetooth"
 }

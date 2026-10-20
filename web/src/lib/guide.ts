@@ -18,6 +18,7 @@ export interface Board {
   firmwareNote: string;
   usb: string;
   ble: boolean;
+  bleOnly?: boolean;                            // 블루투스로만 측정 (UNO Q: USB-C는 리눅스 쪽)
   logic: string;
   adc: string;
   qwiic: string;
