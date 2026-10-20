@@ -108,10 +108,7 @@ for f in sorted((P / "experiments").glob("*.json")):
     walk_list(f"{k}.materials", st.get("materials"))
     walk_list(f"{k}.attach", st.get("attach"))
     walk_list(f"{k}.cautions", st.get("cautions"))
-    for i, t in enumerate(e.get("textbooks") or []):
-        put(f"{k}.tb.{i}.publisher", t["publisher"])
-        put(f"{k}.tb.{i}.course", t["course"])
-        put(f"{k}.tb.{i}.note", t["note"])
+    # 교과서 참조(출판사·쪽·활동 이름)는 한국 교과서를 가리키므로 번역하지 않음
     if e.get("breadboard"):
         put(f"{k}.bb", e["breadboard"]["why"])
 

@@ -847,17 +847,55 @@ META = {
 }
 
 
+# ============================================================================ 교과서·지도서 활동 연결
+# protocol/curriculum/textbook_activities.json: 미래엔·동아출판·천재교과서 교과서와 지도서 PDF에서 찾은
+# '센서로 할 수 있는' 탐구 활동 목록 (출판사·과목·쪽·활동 이름·센서·실험 id). 실험(id)마다 textbooks로 붙입니다.
+# 이 출판사들의 예전 참조(공개 자료 조사)는 책에서 직접 확인한 목록으로 바꿉니다.
+BOOK_PUBS = ("미래엔", "동아출판", "천재교과서")
+CATALOG = ROOT / "protocol" / "curriculum" / "textbook_activities.json"
+
+
+def attach_textbooks(items):
+    if not CATALOG.exists():
+        return 0
+    acts = json.loads(CATALOG.read_text(encoding="utf-8"))["activities"]
+    by = {}
+    for a in acts:
+        if a.get("exp"):
+            by.setdefault(a["exp"], []).append(a)
+    n = 0
+    for e in items:
+        refs = [t for t in e.get("textbooks", []) if not t["publisher"].startswith(BOOK_PUBS)]
+        seen = set()
+        for a in sorted(by.get(e["id"], []), key=lambda a: (a["publisher"], a["course"], a["page"])):
+            k = (a["publisher"], a["course"], a["page"])
+            if k in seen:
+                continue
+            seen.add(k)
+            page = a["page"]
+            refs.append({"publisher": a["publisher"], "course": a["course"],
+                         "note": f"{page}{'쪽' if page[:1].isdigit() else ''} {a['activity']}".strip(),
+                         "sure": "confirmed" if a.get("match", "same") == "same" else "similar",
+                         "page": page, "activity": a["activity"], "unit": a.get("unit") or "",
+                         "uses": a.get("sensorUse") == "uses-sensor"})
+            n += 1
+        e["textbooks"] = refs
+    return n
+
+
 def main():
     for f in OUT.glob("cur-*.json"):
         f.unlink()
+    nref = attach_textbooks(EXPS)
     for e in EXPS:
         (OUT / f"{e['id']}.json").write_text(json.dumps(e, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     for fid, meta in META.items():
         p = OUT / f"{fid}.json"
         d = json.loads(p.read_text(encoding="utf-8"))
         d.update(meta)
+        nref += attach_textbooks([d])
         p.write_text(json.dumps(d, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    print("experiments", len(EXPS), "meta", len(META))
+    print("experiments", len(EXPS), "meta", len(META), "textbook refs", nref)
 
 
 if __name__ == "__main__":

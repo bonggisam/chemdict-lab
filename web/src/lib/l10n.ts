@@ -78,9 +78,6 @@ export function relocalize() {
     if (e.setup && o.setup) {
       o.setup = { ...o.setup, materials: list(`${k}.materials`, e.setup.materials), attach: list(`${k}.attach`, e.setup.attach), cautions: list(`${k}.cautions`, e.setup.cautions) };
     }
-    if (e.textbooks && o.textbooks) {
-      o.textbooks = e.textbooks.map((tb, i) => ({ ...tb, publisher: c(`${k}.tb.${i}.publisher`, tb.publisher), course: c(`${k}.tb.${i}.course`, tb.course), note: c(`${k}.tb.${i}.note`, tb.note) }));
-    }
     if (e.breadboard && o.breadboard) o.breadboard = { ...o.breadboard, why: c(`${k}.bb`, e.breadboard.why) };
   });
 }

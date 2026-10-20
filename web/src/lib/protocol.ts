@@ -73,6 +73,18 @@ export interface EventSpec {
 
 export type AnalysisTool = 'stats' | 'fit' | 'equivalence' | 'plateau';
 
+/** 교과서·지도서에 실린 같은 활동 (출판사·쪽·활동 이름) */
+export interface TextbookRef {
+  publisher: string;           // 미래엔, 동아출판, 천재교과서(임성숙) …
+  course: string;
+  note: string;                // 예전 형식: '96쪽 …' (activity가 없을 때 표시)
+  sure: 'confirmed' | 'mentioned' | 'similar';
+  page?: string;               // 교과서 쪽
+  activity?: string;           // 활동 이름
+  unit?: string;               // 단원
+  uses?: boolean;              // 교과서가 이미 센서·디지털 도구를 씀
+}
+
 export interface Experiment {
   id: string;
   order: number;
@@ -94,7 +106,7 @@ export interface Experiment {
   course?: string;             // 과학 1·2·3, 통합과학1, 과학탐구실험1, 물리학, 화학 …
   area?: string;               // 영역·단원
   summary?: string;            // 한 줄 소개
-  textbooks?: { publisher: string; course: string; note: string; sure: 'confirmed' | 'mentioned' | 'similar' }[];
+  textbooks?: TextbookRef[];   // 한국 교과서 참조 (번역하지 않음)
   standardTexts?: string[];    // 성취기준 문장 (standards와 같은 순서)
   breadboard?: { need: 'required' | 'recommended'; why: string; circuit: string | null };
 }
