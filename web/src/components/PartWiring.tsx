@@ -2,6 +2,7 @@ import { breadboard, partSupported, wiring, type Board, type Part } from '../lib
 import { BreadboardDiagram } from './Breadboard';
 import { t } from '../lib/i18n';
 import { WiringDiagram } from './WiringDiagram';
+import { PhotoCheck } from './PhotoCheck';
 import { R } from './Rich';
 
 interface Props {
@@ -58,6 +59,7 @@ export function PartWiring({ board, part, port, compact }: Props) {
         </div>
         <WiringDiagram board={b} part={part} />
       </div>
+      <PhotoCheck board={board} part={part} port={port} />
       {connector.breadboard && !cable && <BreadboardNote need={connector.breadboard.need} why={connector.breadboard.why} circuit={connector.breadboard.circuit} />}
       {cautions.length > 0 && (compact ? (
         <details className="caution">

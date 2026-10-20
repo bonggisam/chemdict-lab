@@ -1,7 +1,8 @@
 import { useMemo, useState } from 'react';
 import { Ico } from './Ico';
 import { ICON } from '../lib/icons';
-import { Chart, fmt, type ChartTool, type Overlays, type Series } from './Chart';
+import { Chart, fmt, type ChartTool, type ChartView, type Overlays, type Series } from './Chart';
+import { loadView, saveView } from '../lib/chartDraw';
 import { IntervalPicker, intervalText } from './IntervalPicker';
 import { ExportSheet, type ExportKind } from './ExportSheet';
 import type { Experiment } from '../lib/protocol';
@@ -20,6 +21,8 @@ import { t, tk } from '../lib/i18n';
 import { infoRows, infoSummary, type ExpInfo } from '../lib/info';
 import { FORMULA_EXAMPLES, FormulaError, compile, evalColumn, type CustomCalc } from '../lib/formula';
 import { R } from './Rich';
+import { ReagentNotes } from './ReagentNotes';
+import { SensorTips } from './SensorTips';
 
 export interface Trigger { id: string; dir: 'up' | 'down'; value: number }
 
@@ -73,6 +76,8 @@ export function Measure(p: Props) {
   const [style, setStyle] = useState<Style>('auto');
   const [xAxis, setXAxisState] = useState('');              // '' = 시간(또는 입력값), 아니면 센서 id
   const [smoothWin, setSmoothWin] = useState(1);
+  const [view, setViewState] = useState<ChartView>(loadView);
+  const setView = (v: Partial<ChartView>) => setViewState((cur) => { const n = { ...cur, ...v }; saveView(n); return n; });
   // ---- 해석 상태
   const [anaSensor, setAnaSensor] = useState<string>('');
   const [fitSel, setFitSel] = useState<ModelId | 'off'>('off');
@@ -349,7 +354,7 @@ export function Measure(p: Props) {
         xCol: xSensor ? colOf(xSensor.id) : 0,
         opts: {
           series: seriesFor(c).filter((s) => dataRuns.some((r) => r.id === s.id)),
-          xLabel, unit: c.unit, xLog: logX, timeAxis: mode === 'time' && !xSensor, yMin: c.min, yMax: c.max, xRange: zoom,
+          xLabel, yLabel: c.label, view, startedAt: active?.startedAt, unit: c.unit, xLog: logX, timeAxis: mode === 'time' && !xSensor, yMin: c.min, yMax: c.max, xRange: zoom,
           markers: mode === 'time' && !xSensor ? active?.markers.map((m) => m.t) : [], overlays: overlaysFor(c.sensor.id),
         },
         trend: c.sensor.id === anaId && activeAna?.fit && !logX && !selection ? TREND[activeAna.fit.model] : undefined,
@@ -479,6 +484,7 @@ export function Measure(p: Props) {
         <ol>{exp.steps.map((s, i) => <li key={i}><R t={s} /></li>)}</ol>
       </details>
       {bb && <BreadboardNote need={bb.need} why={bb.why} circuit={bb.circuit} />}
+      {exp.setup && exp.setup.materials.length > 0 && <ReagentNotes materials={exp.setup.materials} />}
 
       {charts.length === 0 && (
         <p className="note warn">{t('이 실험에 필요한 센서({list})가 연결되어 있지 않습니다.', { list: exp.sensors.join(', ') })} <button className="link" onClick={p.onOpenGuide}>{t('연결 안내')}</button> · <button className="link" onClick={p.onOpenSetup}>{t('센서 연결 설정')}</button></p>
@@ -524,6 +530,19 @@ export function Measure(p: Props) {
               <option value={1}>{t('끔')}</option><option value={3}>{t('약하게 (3점)')}</option><option value={5}>{t('보통 (5점)')}</option><option value={9}>{t('강하게 (9점)')}</option>
             </select>
           </label>
+          <label className="mini">{t('격자')}
+            <select value={view.grid} onChange={(e) => setView({ grid: e.target.value as ChartView['grid'] })}>
+              <option value="both">{t('가로·세로')}</option><option value="y">{t('가로만')}</option><option value="fine">{t('촘촘하게')}</option><option value="none">{t('없음')}</option>
+            </select>
+          </label>
+          {mode === 'time' && !xSensor && (
+            <label className="mini">{t('시간 표기')}
+              <select value={view.timeFmt} onChange={(e) => setView({ timeFmt: e.target.value as ChartView['timeFmt'] })}>
+                <option value="s">{t('초 (s)')}</option><option value="min">{t('분 (min)')}</option><option value="mmss">{t('분:초')}</option><option value="clock">{t('시각')}</option>
+              </select>
+            </label>
+          )}
+          <label className="mini"><input type="checkbox" checked={view.yLabel} onChange={(e) => setView({ yLabel: e.target.checked })} /> {t('축 이름·단위')}</label>
         </div>
       )}
 
@@ -538,6 +557,8 @@ export function Measure(p: Props) {
             series={seriesFor(c)}
             xLabel={xLabel}
             xUnit={xUnit}
+            view={view}
+            startedAt={active?.startedAt}
             xLog={logX}
             timeAxis={mode === 'time' && !xSensor}
             yMin={c.min}
@@ -562,6 +583,8 @@ export function Measure(p: Props) {
             series={visibleRuns.map((r) => ({ id: r.id, name: r.name, color: `--s${r.colorIndex + 1}`, pts: derivPts(r), points: false }))}
             xLabel={xLabel}
             xUnit={xUnit}
+            view={view}
+            startedAt={active?.startedAt}
             xLog={logX}
             timeAxis={mode === 'time' && !xSensor}
             xRange={zoom}
@@ -579,6 +602,8 @@ export function Measure(p: Props) {
             series={visibleRuns.map((r) => ({ id: r.id, name: r.name, color: `--s${r.colorIndex + 1}`, pts: calcPts(r), points: effStyle !== 'line', line: effStyle !== 'points' }))}
             xLabel={xLabel}
             xUnit={xUnit}
+            view={view}
+            startedAt={active?.startedAt}
             xLog={logX}
             timeAxis={mode === 'time'}
             xRange={zoom}
@@ -682,6 +707,16 @@ export function Measure(p: Props) {
             </table>
           </div>
           <Interpret fit={fitSel !== 'off'} area={showArea} deriv={showDeriv} tool={tool} showEq={showEq} showPlateau={showPlateau} mode={mode} logX={logX} unit={anaChart.unit} xUnit={xUnit} />
+          <SensorTips type={anaChart.sensor.type} onApply={(a) => {
+            if (a.fit) setFitSel(a.fit);
+            if (a.tool) setTool(a.tool);
+            if (a.area) setShowArea(true);
+            if (a.deriv) setShowDeriv(true);
+            if (a.plateau) setShowPlateau(true);
+            if (a.eq) setShowEq(true);
+            if (a.calc) setCalc(a.calc);
+            p.say('ok', t('해석 도구를 켰습니다. 그래프 아래에서 결과를 보세요.'));
+          }} />
         </section>
       )}
 

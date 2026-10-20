@@ -1,7 +1,7 @@
 """
 번역할 한국어 문장 모으기 → protocol/i18n/source/content.json  (키 → 한국어)
 
-- 실행: python3 tools/i18n_extract.py   (guide.json·experiments·sensors.json을 고친 뒤 다시 실행)
+- 실행: python3 tools/i18n_extract.py   (guide.json·experiments·sensors.json·analysis_methods.json·reagents.json을 고친 뒤 다시 실행)
 - 각 언어 번역은 protocol/i18n/<lang>/content.json 에 같은 키로 둡니다 (빠진 키는 한국어로 보임).
 - 확인: python3 tools/i18n_check.py
 """
@@ -111,6 +111,34 @@ for f in sorted((P / "experiments").glob("*.json")):
     # 교과서 참조(출판사·쪽·활동 이름)는 한국 교과서를 가리키므로 번역하지 않음
     if e.get("breadboard"):
         put(f"{k}.bb", e["breadboard"]["why"])
+
+# ---------------------------------------------------------------- analysis_methods.json (센서별 해석 안내)
+a = json.loads((P / "analysis_methods.json").read_text(encoding="utf-8"))
+for code, g in a.get("bySensor", {}).items():
+    k = f"ana.{code}"
+    put(f"{k}.name", g.get("name"))
+    put(f"{k}.graph", g.get("graph"))
+    for i, m in enumerate(g.get("methods", [])):
+        put(f"{k}.m.{i}.tool", m.get("tool"))
+        put(f"{k}.m.{i}.why", m.get("why"))
+        put(f"{k}.m.{i}.ex", m.get("example"))
+    walk_list(f"{k}.tip", g.get("tips"))
+
+# ---------------------------------------------------------------- reagents.json (시약 설명)
+rg = json.loads((P / "reagents.json").read_text(encoding="utf-8"))
+for r in rg.get("reagents", []):
+    k = f"reagent.{r['id']}"
+    for fld in ("name", "useIn", "storage", "disposal", "studentLimit", "ghs"):
+        put(f"{k}.{fld}", r.get(fld))
+    for fld in ("hazard", "ppe", "handling"):
+        walk_list(f"{k}.{fld}", r.get(fld))
+    pr = r.get("prep") or {}
+    put(f"{k}.prep.target", pr.get("target"))
+    walk_list(f"{k}.prep.steps", pr.get("steps"))
+    walk_list(f"{k}.prep.notes", pr.get("notes"))
+    fa = r.get("firstAid") or {}
+    for fld in ("skin", "eye", "swallow", "inhale"):
+        put(f"{k}.firstAid.{fld}", fa.get(fld))
 
 # ---------------------------------------------------------------- 화면 문구: web/src 의 t('…') · tk('…')
 UI = re.compile(r"""\bt[k]?\(\s*(?:'((?:[^'\\]|\\.)*)'|"((?:[^"\\]|\\.)*)")""")

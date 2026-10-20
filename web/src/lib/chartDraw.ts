@@ -18,9 +18,43 @@ export interface Overlays {
   tangent?: { x: number; y: number; slope: number; label: string } | null;
 }
 
+export type GridMode = 'both' | 'y' | 'none' | 'fine';
+export type TimeFmt = 's' | 'min' | 'mmss' | 'clock';
+/** 그래프 보기 설정 (화면·그림 저장 공용, localStorage에 저장) */
+export interface ChartView {
+  grid: GridMode;      // 격자: 가로+세로 · 가로만 · 없음 · 촘촘하게(보조 눈금)
+  timeFmt: TimeFmt;    // 시간축: 초 · 분 · 분:초 · 시각
+  yLabel: boolean;     // 세로축에 이름(단위) 표시
+}
+export const DEFAULT_VIEW: ChartView = { grid: 'both', timeFmt: 's', yLabel: true };
+const VIEW_KEY = 'chemdict.chartView';
+export function loadView(): ChartView {
+  try { return { ...DEFAULT_VIEW, ...(JSON.parse(localStorage.getItem(VIEW_KEY) ?? '{}') as Partial<ChartView>) }; } catch { return DEFAULT_VIEW; }
+}
+export function saveView(v: ChartView) { try { localStorage.setItem(VIEW_KEY, JSON.stringify(v)); } catch { /* noop */ } }
+
+/** 시간축 눈금 글자: 초를 설정에 맞게 */
+export function fmtTime(sec: number, f: TimeFmt, startedAt?: string): string {
+  if (f === 'min') return fmt(sec / 60);
+  if (f === 'mmss') {
+    const neg = sec < 0, a = Math.abs(sec), m = Math.floor(a / 60), ss = a - m * 60;
+    return `${neg ? '-' : ''}${m}:${ss < 10 ? '0' : ''}${a >= 600 ? Math.round(ss) : fmt(ss)}`;
+  }
+  if (f === 'clock' && startedAt) {
+    const d = new Date(new Date(startedAt).getTime() + sec * 1000);
+    const z = (n: number) => String(n).padStart(2, '0');
+    return `${z(d.getHours())}:${z(d.getMinutes())}:${z(d.getSeconds())}`;
+  }
+  return fmt(sec);
+}
+export function timeUnitLabel(f: TimeFmt) { return f === 'min' ? 'min' : f === 'mmss' ? 'm:s' : f === 'clock' ? '' : 's'; }
+
 export interface DrawOpts {
   series: Series[];
   xLabel: string;
+  yLabel?: string;        // 세로축 이름 (예: 온도) — 단위와 함께 축 위에 씀
+  view?: ChartView;
+  startedAt?: string;     // 시각 표시용 (측정 시작 시각, ISO)
   unit?: string;
   xLog?: boolean;
   timeAxis?: boolean;
@@ -38,7 +72,7 @@ export interface DrawOpts {
 
 export interface Scale { x: (v: number) => number; y: (v: number) => number; ix: (px: number) => number; iy: (px: number) => number; W: number; H: number }
 
-export const PAD = { L: 56, R: 16, T: 14, B: 34 };
+export const PAD = { L: 56, R: 16, T: 26, B: 34 };
 
 /** 저장(그림·PDF·엑셀)은 어두운 화면에서도 밝은 색으로 (styles.css :root 밝은 값과 같게) */
 export const LIGHT: Record<string, string> = {
@@ -60,7 +94,8 @@ export function cssVar(name: string, fallback: string) {
 
 export function drawChart(ctx: CanvasRenderingContext2D, W: number, H: number, o: DrawOpts, forExport = false): Scale {
   const { L, R, T, B } = PAD;
-  const { series, xLabel, unit, xLog, timeAxis, yMin, yMax, xRange, markers = [], selection, overlays, prediction = [], drawingPts, hover, hoverLabel = true } = o;
+  const { series, xLabel, yLabel, unit, xLog, timeAxis, yMin, yMax, xRange, markers = [], selection, overlays, prediction = [], drawingPts, hover, hoverLabel = true, startedAt } = o;
+  const view = o.view ?? DEFAULT_VIEW;
   const cInk = cssVar('--muted', '#5a6876'), cGrid = cssVar('--line', '#d9e0e7'), cText = cssVar('--ink', '#14212e');
   const cMark = cssVar('--mark', '#b45309'), cSel = cssVar('--tint', 'rgba(29,95,168,.08)'), cPred = cssVar('--muted', '#5a6876');
   const font = cssVar('--font', '"Pretendard Variable", Pretendard, system-ui, sans-serif');
@@ -109,21 +144,51 @@ export function drawChart(ctx: CanvasRenderingContext2D, W: number, H: number, o
     ctx.fillRect(Math.max(L, a), T, Math.min(L + pw, b) - Math.max(L, a), ph);
   }
 
-  // 격자
-  ctx.strokeStyle = cGrid; ctx.fillStyle = cInk; ctx.lineWidth = 1;
+  // 격자 (설정: 가로+세로 · 가로만 · 없음 · 촘촘하게)
+  const g = view.grid;
+  const yT = niceTicks(y0, y1, 5), xT = xLog ? [] : niceTicks(x0, x1, 6);
+  const minor = (ticks: number[]) => {
+    if (ticks.length < 2) return [];
+    const st = (ticks[1] - ticks[0]) / 5, out: number[] = [];
+    for (let v = ticks[0] - st * 5; v <= ticks[ticks.length - 1] + st * 5; v += st) out.push(v);
+    return out;
+  };
+  ctx.lineWidth = 1;
+  if (g === 'fine') {
+    ctx.strokeStyle = cGrid; ctx.globalAlpha = 0.45;
+    for (const v of minor(yT)) { if (v < y0 || v > y1) continue; const yy = Math.round(Y(v)) + 0.5; ctx.beginPath(); ctx.moveTo(L, yy); ctx.lineTo(W - R, yy); ctx.stroke(); }
+    for (const v of minor(xT)) { if (v < x0 || v > x1) continue; const xx = Math.round(X(xLog ? 10 ** v : v)) + 0.5; ctx.beginPath(); ctx.moveTo(xx, T); ctx.lineTo(xx, T + ph); ctx.stroke(); }
+    ctx.globalAlpha = 1;
+  }
+  ctx.strokeStyle = cGrid; ctx.fillStyle = cInk;
   ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
-  for (const v of niceTicks(y0, y1, 5)) {
+  for (const v of yT) {
     const yy = Math.round(Y(v)) + 0.5;
-    ctx.beginPath(); ctx.moveTo(L, yy); ctx.lineTo(W - R, yy); ctx.stroke();
+    if (g !== 'none') { ctx.beginPath(); ctx.moveTo(L, yy); ctx.lineTo(W - R, yy); ctx.stroke(); }
+    else { ctx.beginPath(); ctx.moveTo(L - 4, yy); ctx.lineTo(L, yy); ctx.stroke(); }
     ctx.fillText(fmt(v), L - 6, yy);
   }
   ctx.textAlign = 'center'; ctx.textBaseline = 'top';
-  if (xLog) {
-    for (let e = Math.ceil(x0); e <= Math.floor(x1); e++) ctx.fillText(fmt(10 ** e), X(10 ** e), H - B + 8);
-  } else {
-    for (const v of niceTicks(x0, x1, 6)) ctx.fillText(fmt(v), X(v), H - B + 8);
+  const xTickText = (v: number) => (timeAxis ? fmtTime(v, view.timeFmt, startedAt) : fmt(v));
+  const xs = xLog ? Array.from({ length: Math.max(0, Math.floor(x1) - Math.ceil(x0) + 1) }, (_, i) => 10 ** (Math.ceil(x0) + i)) : xT;
+  for (const v of xs) {
+    const xx = Math.round(X(v)) + 0.5;
+    if (g === 'both' || g === 'fine') { ctx.strokeStyle = cGrid; ctx.beginPath(); ctx.moveTo(xx, T); ctx.lineTo(xx, T + ph); ctx.stroke(); }
+    ctx.beginPath(); ctx.moveTo(xx, T + ph); ctx.lineTo(xx, T + ph + 4); ctx.stroke();
+    ctx.fillText(xTickText(v), xx, H - B + 8);
   }
-  ctx.textAlign = 'right'; ctx.fillText(xLabel, W - R, H - 13);
+  // 축 테두리 (격자가 없어도 축은 보이게)
+  ctx.strokeStyle = cInk; ctx.globalAlpha = 0.5;
+  ctx.beginPath(); ctx.moveTo(L + 0.5, T); ctx.lineTo(L + 0.5, T + ph); ctx.lineTo(W - R, T + ph); ctx.stroke();
+  ctx.globalAlpha = 1;
+  // 세로축 이름 (단위) — 왼쪽 위
+  if (view.yLabel && (yLabel || unit)) {
+    ctx.textAlign = 'left'; ctx.textBaseline = 'bottom'; ctx.fillStyle = cInk;
+    ctx.fillText(`${yLabel ?? ''}${unit ? ` (${unit})` : ''}`.trim(), L, T - 6);
+    ctx.textBaseline = 'top';
+  }
+  ctx.textAlign = 'right'; ctx.fillStyle = cInk;
+  ctx.fillText(timeAxis && view.timeFmt !== 's' ? xLabel.replace(/\(s\)$/, `(${timeUnitLabel(view.timeFmt)})`).replace(/\(\)$/, '').trim() : xLabel, W - R, H - 13);
 
   ctx.save();
   ctx.beginPath(); ctx.rect(L, T, pw, ph); ctx.clip();
