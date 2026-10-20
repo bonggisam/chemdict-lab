@@ -131,9 +131,7 @@
  "{title} 그래프": "Gráfica de {title}",
  "그림 저장": "Guardar imagen",
  "모든 센서": "Todos los sensores",
- "학교급": "Nivel escolar",
  "전체": "Todos",
- "과목": "Asignatura",
  "실험·센서·성취기준·출판사 찾기": "Buscar experimento, sensor, estándar o editorial",
  "실험 찾기": "Buscar experimentos",
  "{n}개 실험": "{n} experimentos",
@@ -141,7 +139,6 @@
  "✓ 바로 측정": "✓ Medir ya",
  "센서 연결 필요": "Requiere conectar sensor",
  "브레드보드": "Protoboard",
- "교과서 {list}": "Libro de texto {list}",
  "찾는 실험이 없습니다. 검색어를 바꾸거나 '전체'를 눌러 보세요.": "No se encontró el experimento. Cambie la búsqueda o pulse 'Todos'.",
  "그림 (PNG)": "Imagen (PNG)",
  "그래프와 해석 결과를 한 장의 그림으로. 보고서·발표 자료에 붙이기 좋습니다.": "La gráfica y los resultados del análisis en una sola imagen. Ideal para informes y presentaciones.",
@@ -502,5 +499,12 @@
  "보드 고르기 · 연결": "Elegir · Conectar",
  "센서 고르기 · 측정": "Elegir sensor · Medir",
  "연결 그림 · 브레드보드": "Cableado · Protoboard",
- "이 보드는 블루투스로만 측정합니다": "Esta placa solo mide por Bluetooth"
+ "이 보드는 블루투스로만 측정합니다": "Esta placa solo mide por Bluetooth",
+ "기타": "Otros",
+ "과정·과목": "Curso y asignatura",
+ "출판사": "Editorial",
+ "모든 출판사": "Todas las editoriales",
+ "교과서에 실린 실험만": "Solo experimentos del libro de texto",
+ "센서 사용": "Con sensor",
+ "외 {n}곳": "y {n} más"
 }

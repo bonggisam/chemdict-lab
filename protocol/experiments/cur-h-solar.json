@@ -70,7 +70,41 @@
       "태양전지 출력이 5 V를 넘지 않는지 먼저 확인합니다."
     ]
   },
-  "textbooks": [],
+  "textbooks": [
+    {
+      "publisher": "천재교과서",
+      "course": "물리학",
+      "level": "고2·3 선택",
+      "note": "161쪽 태양 에너지로 스마트폰을 충전하자!",
+      "sure": "confirmed",
+      "page": "161",
+      "activity": "태양 에너지로 스마트폰을 충전하자!",
+      "unit": "Ⅲ. 빛과 물질",
+      "uses": false
+    },
+    {
+      "publisher": "천재교과서",
+      "course": "융합과학 탐구",
+      "level": "고2·3 선택",
+      "note": "50쪽 디지털 탐구 도구로 가정의 전력량 계산하기",
+      "sure": "similar",
+      "page": "50",
+      "activity": "디지털 탐구 도구로 가정의 전력량 계산하기",
+      "unit": "I. 융합과학 탐구의 이해 > 04 과학 연구와 디지털 탐구 도구",
+      "uses": true
+    },
+    {
+      "publisher": "천재교과서",
+      "course": "전자기와 양자",
+      "level": "고2·3 선택",
+      "note": "85쪽 태양 전지에서 발생한 전류 측정하기",
+      "sure": "confirmed",
+      "page": "85",
+      "activity": "태양 전지에서 발생한 전류 측정하기",
+      "unit": "Ⅱ. 빛과 정보 통신",
+      "uses": false
+    }
+  ],
   "event": {
     "label": "빛과의 각도",
     "unit": "°",

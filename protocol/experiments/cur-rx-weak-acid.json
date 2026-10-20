@@ -69,7 +69,63 @@
       "산·염기는 보안경과 장갑을 끼고 다루며, 피부에 묻으면 바로 물로 씻습니다."
     ]
   },
-  "textbooks": [],
+  "textbooks": [
+    {
+      "publisher": "동아출판",
+      "course": "화학 반응의 세계",
+      "level": "고2·3 선택",
+      "note": "14쪽 pH 시험지를 이용하여 산 수용액의 pH 측정하기",
+      "sure": "confirmed",
+      "page": "14",
+      "activity": "pH 시험지를 이용하여 산 수용액의 pH 측정하기",
+      "unit": "Ⅰ. 산 염기 평형",
+      "uses": false
+    },
+    {
+      "publisher": "동아출판",
+      "course": "화학 반응의 세계",
+      "level": "고2·3 선택",
+      "note": "18쪽 농도가 같은 여러 가지 산과 염기 수용액의 pH 측정하기",
+      "sure": "confirmed",
+      "page": "18",
+      "activity": "농도가 같은 여러 가지 산과 염기 수용액의 pH 측정하기",
+      "unit": "Ⅰ. 산 염기 평형",
+      "uses": true
+    },
+    {
+      "publisher": "미래엔",
+      "course": "화학 반응의 세계",
+      "level": "고2·3 선택",
+      "note": "14쪽 0.1 M 산과 염기 수용액의 pH를 측정하고 이론값과 비교하기",
+      "sure": "confirmed",
+      "page": "14",
+      "activity": "0.1 M 산과 염기 수용액의 pH를 측정하고 이론값과 비교하기",
+      "unit": "Ⅰ. 산 염기 평형",
+      "uses": true
+    },
+    {
+      "publisher": "천재교과서",
+      "course": "화학 반응의 세계",
+      "level": "고2·3 선택",
+      "note": "16쪽 염산과 아세트산의 성질 비교하기",
+      "sure": "confirmed",
+      "page": "16",
+      "activity": "염산과 아세트산의 성질 비교하기",
+      "unit": "Ⅰ. 산 염기 평형",
+      "uses": true
+    },
+    {
+      "publisher": "천재교과서",
+      "course": "화학 반응의 세계",
+      "level": "고2·3 선택",
+      "note": "22쪽 농도가 같은 산 수용액과 염기 수용액의 pH 비교하기",
+      "sure": "confirmed",
+      "page": "22",
+      "activity": "농도가 같은 산 수용액과 염기 수용액의 pH 비교하기",
+      "unit": "Ⅰ. 산 염기 평형",
+      "uses": true
+    }
+  ],
   "event": {
     "label": "농도",
     "unit": "M",

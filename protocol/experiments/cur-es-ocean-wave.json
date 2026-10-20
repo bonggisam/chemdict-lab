@@ -1,0 +1,96 @@
+{
+  "id": "cur-es-ocean-wave",
+  "order": 242,
+  "title": "바람이 만드는 물결 (해파)",
+  "subject": "지구시스템과학",
+  "level": "고2·3 선택",
+  "course": "지구시스템과학",
+  "area": "해수의 운동",
+  "summary": "선풍기 바람 세기에 따라 수면 높이 변화(물결)를 거리 센서로 잽니다.",
+  "standards": [
+    "12지시02-02"
+  ],
+  "standardTexts": [
+    "해파의 발생 과정을 이해하고, 천해파와 심해파의 차이점을 비교⋅설명할 수 있다."
+  ],
+  "sensors": [
+    "DIST"
+  ],
+  "mode": "time",
+  "intervalMs": 50,
+  "x": {
+    "label": "시간",
+    "unit": "s"
+  },
+  "y": [
+    {
+      "sensor": "DIST",
+      "label": "수면까지 거리",
+      "unit": "cm"
+    }
+  ],
+  "markers": {
+    "enabled": true,
+    "label": "관찰 기록",
+    "prompt": "한 일 (예: 시약 넣음)"
+  },
+  "analysis": [
+    "stats",
+    "fit"
+  ],
+  "steps": [
+    "긴 수조 끝 위에 거리 센서를 아래로 향하게 고정합니다.",
+    "선풍기 바람 세기를 1·2·3단으로 바꾸며 새 측정을 합니다.",
+    "물결 높이(최대–최소)와 주기를 비교합니다.",
+    "수심을 바꾸면 물결 모양이 어떻게 변하는지도 봅니다."
+  ],
+  "setup": {
+    "parts": [
+      "hcsr04"
+    ],
+    "choose": false,
+    "materials": [
+      "거리 센서(레이저 VL53L0X 권장)",
+      "긴 수조",
+      "선풍기",
+      "풍속계(선택)"
+    ],
+    "attach": [],
+    "cautions": []
+  },
+  "textbooks": [
+    {
+      "publisher": "동아출판",
+      "course": "지구시스템과학",
+      "level": "고2·3 선택",
+      "note": "59쪽 해파의 발생 및 전파 실험하기",
+      "sure": "confirmed",
+      "page": "59",
+      "activity": "해파의 발생 및 전파 실험하기",
+      "unit": "Ⅱ. 해수의 운동 > 02. 해파",
+      "uses": false
+    },
+    {
+      "publisher": "미래엔",
+      "course": "지구시스템과학",
+      "level": "고2·3 선택",
+      "note": "63쪽 해파 발생 및 전파 실험하기",
+      "sure": "confirmed",
+      "page": "63",
+      "activity": "해파 발생 및 전파 실험하기",
+      "unit": "II. 해수의 운동과 순환 > 03. 해파",
+      "uses": false
+    },
+    {
+      "publisher": "천재교과서",
+      "course": "지구시스템과학",
+      "level": "고2·3 선택",
+      "note": "63쪽 해파의 발생 및 전파 모의 실험",
+      "sure": "confirmed",
+      "page": "63",
+      "activity": "해파의 발생 및 전파 모의 실험",
+      "unit": "II. 해수의 운동 > 02 해파와 해일",
+      "uses": false
+    }
+  ]
+}

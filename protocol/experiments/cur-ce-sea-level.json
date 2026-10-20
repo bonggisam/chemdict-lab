@@ -57,7 +57,19 @@
     "attach": [],
     "cautions": []
   },
-  "textbooks": [],
+  "textbooks": [
+    {
+      "publisher": "천재교과서",
+      "course": "기후변화와 환경생태",
+      "level": "고2·3 선택",
+      "note": "68쪽 해수면이 상승하는 원인 탐구하기",
+      "sure": "confirmed",
+      "page": "68",
+      "activity": "해수면이 상승하는 원인 탐구하기",
+      "unit": "II. 기후 위기와 환경생태 변화",
+      "uses": false
+    }
+  ],
   "event": {
     "label": "관의 수위",
     "unit": "mm",

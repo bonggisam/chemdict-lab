@@ -1,0 +1,95 @@
+{
+  "id": "cur-em-magnetic-brake",
+  "order": 239,
+  "title": "금속판이 자석 진자를 멈춘다 (자기 브레이크)",
+  "subject": "전자기와 양자",
+  "level": "고2·3 선택",
+  "course": "전자기와 양자",
+  "area": "전자기적 상호작용",
+  "summary": "자석 진자의 흔들림이 금속판 위에서 얼마나 빨리 줄어드는지 비교합니다.",
+  "standards": [
+    "12전자01-05"
+  ],
+  "standardTexts": [
+    "자기선속의 변화로 전자기 유도를 이해하고, 변압기, 인덕터 등 전자기 유도의 활용 기술을 설명할 수 있다."
+  ],
+  "sensors": [
+    "ANG"
+  ],
+  "mode": "time",
+  "intervalMs": 50,
+  "x": {
+    "label": "시간",
+    "unit": "s"
+  },
+  "y": [
+    {
+      "sensor": "ANG",
+      "label": "각도",
+      "unit": "°"
+    }
+  ],
+  "markers": {
+    "enabled": true,
+    "label": "관찰 기록",
+    "prompt": "한 일 (예: 시약 넣음)"
+  },
+  "analysis": [
+    "stats",
+    "fit"
+  ],
+  "steps": [
+    "자석 진자 축에 각도 센서를 붙입니다.",
+    "아래에 아무것도 없을 때, 알루미늄판, 구리판, 홈 낸 판을 두고 각각 새 측정을 합니다.",
+    "흔들림이 줄어드는 빠르기를 ‘함수 찾기 → 지수’로 비교합니다."
+  ],
+  "setup": {
+    "parts": [
+      "bno055",
+      "as5600"
+    ],
+    "choose": true,
+    "materials": [
+      "각도 센서(BNO055 또는 AS5600)",
+      "자석 진자",
+      "알루미늄·구리판"
+    ],
+    "attach": [],
+    "cautions": []
+  },
+  "textbooks": [
+    {
+      "publisher": "동아출판",
+      "course": "전자기와 양자",
+      "level": "고2·3 선택",
+      "note": "38쪽 도체판과 자석을 이용하여 자기 브레이크 탐색하기",
+      "sure": "confirmed",
+      "page": "38",
+      "activity": "도체판과 자석을 이용하여 자기 브레이크 탐색하기",
+      "unit": "Ⅰ. 전자기적 상호작용",
+      "uses": false
+    },
+    {
+      "publisher": "미래엔",
+      "course": "전자기와 양자",
+      "level": "고2·3 선택",
+      "note": "28쪽 도체판과 자석을 이용하여 자기 브레이크 탐색하기",
+      "sure": "confirmed",
+      "page": "28",
+      "activity": "도체판과 자석을 이용하여 자기 브레이크 탐색하기",
+      "unit": "Ⅰ. 전자기적 상호작용",
+      "uses": false
+    },
+    {
+      "publisher": "천재교과서",
+      "course": "전자기와 양자",
+      "level": "고2·3 선택",
+      "note": "39쪽 금속판과 자석을 이용하여 자기 브레이크 탐색하기",
+      "sure": "confirmed",
+      "page": "39",
+      "activity": "금속판과 자석을 이용하여 자기 브레이크 탐색하기",
+      "unit": "Ⅰ. 전자기적 상호작용",
+      "uses": false
+    }
+  ]
+}

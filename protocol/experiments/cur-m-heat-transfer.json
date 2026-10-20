@@ -67,15 +67,36 @@
   "textbooks": [
     {
       "publisher": "미래엔",
-      "course": "과학1",
-      "note": "89쪽 열화상 카메라로 열의 전도 비교 (센서 대신 열화상)",
-      "sure": "similar"
+      "course": "과학 1",
+      "level": "중학교",
+      "note": "89쪽 열화상 카메라를 이용하여 물체에서 열의 전도 비교하기",
+      "sure": "confirmed",
+      "page": "89",
+      "activity": "열화상 카메라를 이용하여 물체에서 열의 전도 비교하기",
+      "unit": "Ⅲ. 열 / 1. 열 - 열의 이동",
+      "uses": true
     },
     {
-      "publisher": "천재교과서",
-      "course": "과학1",
-      "note": "열의 전도 비교 (열화상 카메라, 교사 블로그)",
-      "sure": "similar"
+      "publisher": "천재교과서(임성숙)",
+      "course": "과학 1",
+      "level": "중학교",
+      "note": "80쪽 열화상 카메라로 열의 이동 관찰하기",
+      "sure": "confirmed",
+      "page": "80",
+      "activity": "열화상 카메라로 열의 이동 관찰하기",
+      "unit": "Ⅲ. 열 / 1. 온도와 열 - 다양한 방식으로 이동하는 열",
+      "uses": true
+    },
+    {
+      "publisher": "천재교과서(정대홍)",
+      "course": "과학 1",
+      "level": "중학교",
+      "note": "89쪽 열화상 카메라를 이용하여 물체에서 열의 전도 비교하기",
+      "sure": "confirmed",
+      "page": "89",
+      "activity": "열화상 카메라를 이용하여 물체에서 열의 전도 비교하기",
+      "unit": "Ⅲ. 열 / 1. 온도와 열",
+      "uses": true
     }
   ],
   "breadboard": {

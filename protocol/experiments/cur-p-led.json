@@ -57,7 +57,19 @@
     "attach": [],
     "cautions": []
   },
-  "textbooks": [],
+  "textbooks": [
+    {
+      "publisher": "천재교과서",
+      "course": "물리학",
+      "level": "고2·3 선택",
+      "note": "183쪽 발광 다이오드의 특성 관찰하기",
+      "sure": "confirmed",
+      "page": "183",
+      "activity": "발광 다이오드의 특성 관찰하기",
+      "unit": "Ⅲ. 빛과 물질",
+      "uses": false
+    }
+  ],
   "event": {
     "label": "가변저항 단계",
     "unit": "단계",

@@ -59,7 +59,74 @@
     "attach": [],
     "cautions": []
   },
-  "textbooks": [],
+  "textbooks": [
+    {
+      "publisher": "동아출판",
+      "course": "전자기와 양자",
+      "level": "고2·3 선택",
+      "note": "73쪽 편광판을 이용하여 빛 관찰하기",
+      "sure": "confirmed",
+      "page": "73",
+      "activity": "편광판을 이용하여 빛 관찰하기",
+      "unit": "Ⅱ. 빛과 정보 통신",
+      "uses": false
+    },
+    {
+      "publisher": "동아출판",
+      "course": "전자기와 양자",
+      "level": "고2·3 선택",
+      "note": "75쪽 센서와 편광판을 이용하여 다양한 디스플레이에서 나오는 빛의 편광…",
+      "sure": "confirmed",
+      "page": "75",
+      "activity": "센서와 편광판을 이용하여 다양한 디스플레이에서 나오는 빛의 편광…",
+      "unit": "Ⅱ. 빛과 정보 통신",
+      "uses": true
+    },
+    {
+      "publisher": "미래엔",
+      "course": "전자기와 양자",
+      "level": "고2·3 선택",
+      "note": "74쪽 센서와 편광판을 이용하여 다양한 디스플레이에서 나오는 빛의 편광…",
+      "sure": "confirmed",
+      "page": "74",
+      "activity": "센서와 편광판을 이용하여 다양한 디스플레이에서 나오는 빛의 편광…",
+      "unit": "Ⅱ. 빛과 정보 통신",
+      "uses": true
+    },
+    {
+      "publisher": "미래엔",
+      "course": "전자기와 양자",
+      "level": "고2·3 선택",
+      "note": "90쪽 마이크로프로세서를 활용한 빛의 간섭무늬 측정 장치 설계하기",
+      "sure": "similar",
+      "page": "90",
+      "activity": "마이크로프로세서를 활용한 빛의 간섭무늬 측정 장치 설계하기",
+      "unit": "Ⅱ. 빛과 정보 통신",
+      "uses": true
+    },
+    {
+      "publisher": "천재교과서",
+      "course": "전자기와 양자",
+      "level": "고2·3 선택",
+      "note": "72쪽 편광판을 투과하는 빛 관찰하기",
+      "sure": "confirmed",
+      "page": "72",
+      "activity": "편광판을 투과하는 빛 관찰하기",
+      "unit": "Ⅱ. 빛과 정보 통신",
+      "uses": false
+    },
+    {
+      "publisher": "천재교과서",
+      "course": "전자기와 양자",
+      "level": "고2·3 선택",
+      "note": "74쪽 다양한 디스플레이에서 나오는 빛의 편광 상태 조사하기",
+      "sure": "confirmed",
+      "page": "74",
+      "activity": "다양한 디스플레이에서 나오는 빛의 편광 상태 조사하기",
+      "unit": "Ⅱ. 빛과 정보 통신",
+      "uses": true
+    }
+  ],
   "event": {
     "label": "편광판 각도",
     "unit": "°",

@@ -65,7 +65,30 @@
     "attach": [],
     "cautions": []
   },
-  "textbooks": [],
+  "textbooks": [
+    {
+      "publisher": "동아출판",
+      "course": "화학 반응의 세계",
+      "level": "고2·3 선택",
+      "note": "70쪽 염 수용액과 전원 장치를 이용하여 금속 제품 표면에 도금하기",
+      "sure": "confirmed",
+      "page": "70",
+      "activity": "염 수용액과 전원 장치를 이용하여 금속 제품 표면에 도금하기",
+      "unit": "Ⅱ. 산화·환원 반응",
+      "uses": false
+    },
+    {
+      "publisher": "천재교과서",
+      "course": "화학 반응의 세계",
+      "level": "고2·3 선택",
+      "note": "74쪽 금속 제품 표면에 도금하기",
+      "sure": "confirmed",
+      "page": "74",
+      "activity": "금속 제품 표면에 도금하기",
+      "unit": "Ⅱ. 산화·환원 반응",
+      "uses": false
+    }
+  ],
   "event": {
     "label": "전기 분해 시간",
     "unit": "분",

@@ -63,5 +63,39 @@
       "크로뮴 폐액은 따로 모읍니다."
     ]
   },
-  "textbooks": []
+  "textbooks": [
+    {
+      "publisher": "동아출판",
+      "course": "화학",
+      "level": "고2·3 선택",
+      "note": "122쪽 농도 변화에 따른 화학 평형 이동 실험하기",
+      "sure": "confirmed",
+      "page": "122",
+      "activity": "농도 변화에 따른 화학 평형 이동 실험하기",
+      "unit": "Ⅲ. 화학 평형",
+      "uses": false
+    },
+    {
+      "publisher": "미래엔",
+      "course": "화학",
+      "level": "고2·3 선택",
+      "note": "114쪽 농도 변화에 따른 화학 평형 이동 실험하기",
+      "sure": "confirmed",
+      "page": "114",
+      "activity": "농도 변화에 따른 화학 평형 이동 실험하기",
+      "unit": "Ⅲ. 화학 평형",
+      "uses": false
+    },
+    {
+      "publisher": "천재교과서",
+      "course": "화학",
+      "level": "고2·3 선택",
+      "note": "126쪽 농도 변화에 따른 평형 이동 관찰하기",
+      "sure": "confirmed",
+      "page": "126",
+      "activity": "농도 변화에 따른 평형 이동 관찰하기",
+      "unit": "Ⅲ. 화학 평형",
+      "uses": false
+    }
+  ]
 }

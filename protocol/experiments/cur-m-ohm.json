@@ -60,7 +60,41 @@
       "보드에는 0~5 V만 넣습니다. 전지는 1.5 V × 3개까지만."
     ]
   },
-  "textbooks": [],
+  "textbooks": [
+    {
+      "publisher": "미래엔",
+      "course": "과학 2",
+      "level": "중학교",
+      "note": "250쪽 전류, 전압, 저항 사이의 관계 탐구하기",
+      "sure": "confirmed",
+      "page": "250",
+      "activity": "전류, 전압, 저항 사이의 관계 탐구하기",
+      "unit": "Ⅶ. 전기와 자기/1. 전기",
+      "uses": true
+    },
+    {
+      "publisher": "천재교과서(임성숙)",
+      "course": "과학 2",
+      "level": "중학교",
+      "note": "244쪽 전압과 전류 사이의 관계 알아보기",
+      "sure": "confirmed",
+      "page": "244",
+      "activity": "전압과 전류 사이의 관계 알아보기",
+      "unit": "Ⅶ. 전기와 자기/1. 전기",
+      "uses": false
+    },
+    {
+      "publisher": "천재교과서(정대홍)",
+      "course": "과학 2",
+      "level": "중학교",
+      "note": "251쪽 저항, 전류, 전압 사이의 관계 탐구하기",
+      "sure": "confirmed",
+      "page": "251",
+      "activity": "저항, 전류, 전압 사이의 관계 탐구하기",
+      "unit": "Ⅶ. 전기와 자기/1. 전기",
+      "uses": true
+    }
+  ],
   "event": {
     "label": "전지 개수",
     "unit": "개",

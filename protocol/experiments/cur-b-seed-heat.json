@@ -64,5 +64,39 @@
     "attach": [],
     "cautions": []
   },
-  "textbooks": []
+  "textbooks": [
+    {
+      "publisher": "동아출판",
+      "course": "세포와 물질대사",
+      "level": "고2·3 선택",
+      "note": "54쪽 발아 중인 콩의 물질대사와 에너지대사 탐구하기",
+      "sure": "confirmed",
+      "page": "54",
+      "activity": "발아 중인 콩의 물질대사와 에너지대사 탐구하기",
+      "unit": "Ⅱ. 물질대사와 에너지",
+      "uses": true
+    },
+    {
+      "publisher": "미래엔",
+      "course": "세포와 물질대사",
+      "level": "고2·3 선택",
+      "note": "62쪽 발아 중인 콩의 물질대사와 에너지대사 탐구하기",
+      "sure": "confirmed",
+      "page": "62",
+      "activity": "발아 중인 콩의 물질대사와 에너지대사 탐구하기",
+      "unit": "Ⅱ. 물질대사와 에너지",
+      "uses": true
+    },
+    {
+      "publisher": "천재교과서",
+      "course": "세포와 물질대사",
+      "level": "고2·3 선택",
+      "note": "59쪽 발아 중인 콩의 물질대사와 에너지대사 탐구하기",
+      "sure": "confirmed",
+      "page": "59",
+      "activity": "발아 중인 콩의 물질대사와 에너지대사 탐구하기",
+      "unit": "Ⅱ. 물질대사와 에너지",
+      "uses": true
+    }
+  ]
 }

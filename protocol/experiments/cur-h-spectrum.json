@@ -1,0 +1,153 @@
+{
+  "id": "cur-h-spectrum",
+  "order": 226,
+  "title": "빛을 색깔별로 나누어 재기 (분광 센서)",
+  "subject": "통합과학1",
+  "level": "고1 공통",
+  "course": "통합과학1",
+  "area": "물질과 규칙성",
+  "summary": "광원마다 8가지 파장대의 세기를 비교해 스펙트럼의 차이를 봅니다.",
+  "standards": [
+    "10통과1-02-01"
+  ],
+  "standardTexts": [
+    "천체에서 방출되는 빛의 스펙트럼을 분석하여 우주 초기에 형성된 원소와 천체의 구성 물질을 추론할 수 있다."
+  ],
+  "sensors": [
+    "S415",
+    "S445",
+    "S480",
+    "S515",
+    "S555",
+    "S590",
+    "S630",
+    "S680"
+  ],
+  "mode": "event",
+  "intervalMs": 500,
+  "x": {
+    "label": "광원 번호",
+    "unit": "번"
+  },
+  "y": [
+    {
+      "sensor": "S415",
+      "label": "415 nm",
+      "unit": "",
+      "min": 0
+    },
+    {
+      "sensor": "S445",
+      "label": "445 nm",
+      "unit": "",
+      "min": 0
+    },
+    {
+      "sensor": "S480",
+      "label": "480 nm",
+      "unit": "",
+      "min": 0
+    },
+    {
+      "sensor": "S515",
+      "label": "515 nm",
+      "unit": "",
+      "min": 0
+    },
+    {
+      "sensor": "S555",
+      "label": "555 nm",
+      "unit": "",
+      "min": 0
+    },
+    {
+      "sensor": "S590",
+      "label": "590 nm",
+      "unit": "",
+      "min": 0
+    },
+    {
+      "sensor": "S630",
+      "label": "630 nm",
+      "unit": "",
+      "min": 0
+    },
+    {
+      "sensor": "S680",
+      "label": "680 nm",
+      "unit": "",
+      "min": 0
+    }
+  ],
+  "markers": {
+    "enabled": false,
+    "label": "관찰 기록",
+    "prompt": "한 일 (예: 시약 넣음)"
+  },
+  "analysis": [
+    "stats"
+  ],
+  "steps": [
+    "분광 센서(AS7341)를 어두운 상자 안에 둡니다.",
+    "백열등·형광등·LED·네온(방전관) 순서로 비추며 ‘값 기록’을 누릅니다.",
+    "파장대별 막대를 비교해 연속 스펙트럼과 선 스펙트럼의 차이를 찾습니다.",
+    "분광기로 본 색 띠와 비교합니다."
+  ],
+  "setup": {
+    "parts": [
+      "as7341"
+    ],
+    "choose": false,
+    "materials": [
+      "분광 센서(AS7341)",
+      "여러 광원",
+      "어두운 상자"
+    ],
+    "attach": [],
+    "cautions": [
+      "방전관은 고전압이므로 교사가 다룹니다."
+    ]
+  },
+  "textbooks": [
+    {
+      "publisher": "동아출판",
+      "course": "통합과학1",
+      "level": "고1 공통",
+      "note": "41쪽 다양한 물질이 방출하는 스펙트럼 관찰·비교하기",
+      "sure": "similar",
+      "page": "41",
+      "activity": "다양한 물질이 방출하는 스펙트럼 관찰·비교하기",
+      "unit": "Ⅱ. 물질과 규칙성 / 1. 원소의 형성",
+      "uses": false
+    },
+    {
+      "publisher": "미래엔",
+      "course": "통합과학1",
+      "level": "고1 공통",
+      "note": "50쪽 분광기를 활용하여 다양한 물질이 방출하는 스펙트럼 관찰·비교하기",
+      "sure": "similar",
+      "page": "50",
+      "activity": "분광기를 활용하여 다양한 물질이 방출하는 스펙트럼 관찰·비교하기",
+      "unit": "Ⅱ. 물질과 규칙성 / 1. 원소의 생성과 규칙성",
+      "uses": false
+    },
+    {
+      "publisher": "천재교과서",
+      "course": "통합과학1",
+      "level": "고1 공통",
+      "note": "41쪽 분광기로 다양한 물질이 방출하는 스펙트럼 관찰하기",
+      "sure": "similar",
+      "page": "41",
+      "activity": "분광기로 다양한 물질이 방출하는 스펙트럼 관찰하기",
+      "unit": "Ⅱ. 물질과 규칙성 / 1. 우주와 원소의 생성",
+      "uses": false
+    }
+  ],
+  "event": {
+    "label": "광원 번호",
+    "unit": "번",
+    "start": 1,
+    "step": 1,
+    "scale": "linear"
+  }
+}

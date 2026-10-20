@@ -68,5 +68,50 @@
       "Mg는 아주 조금만 씁니다 (압력이 110 kPa를 넘지 않게)."
     ]
   },
-  "textbooks": []
+  "textbooks": [
+    {
+      "publisher": "동아출판",
+      "course": "물질과 에너지",
+      "level": "고2·3 선택",
+      "note": "14쪽 이상 기체 방정식을 활용하여 기체의 종류 확인하기",
+      "sure": "similar",
+      "page": "14",
+      "activity": "이상 기체 방정식을 활용하여 기체의 종류 확인하기",
+      "unit": "Ⅰ. 물질의 세 가지 상태",
+      "uses": false
+    },
+    {
+      "publisher": "미래엔",
+      "course": "물질과 에너지",
+      "level": "고2·3 선택",
+      "note": "16쪽 기체의 종류를 확인할 수 있는 실험을 설계하고 수행하기",
+      "sure": "similar",
+      "page": "16",
+      "activity": "기체의 종류를 확인할 수 있는 실험을 설계하고 수행하기",
+      "unit": "Ⅰ. 물질의 세 가지 상태",
+      "uses": false
+    },
+    {
+      "publisher": "미래엔",
+      "course": "화학",
+      "level": "고2·3 선택",
+      "note": "38쪽 화학 반응의 양적 관계를 확인하는 실험을 계획하고 수행하기",
+      "sure": "confirmed",
+      "page": "38",
+      "activity": "화학 반응의 양적 관계를 확인하는 실험을 계획하고 수행하기",
+      "unit": "Ⅰ. 화학의 언어",
+      "uses": false
+    },
+    {
+      "publisher": "천재교과서",
+      "course": "물질과 에너지",
+      "level": "고2·3 선택",
+      "note": "20쪽 이상 기체 방정식을 활용하여 기체의 종류 알아내기",
+      "sure": "similar",
+      "page": "20",
+      "activity": "이상 기체 방정식을 활용하여 기체의 종류 알아내기",
+      "unit": "Ⅰ. 물질의 세 가지 상태",
+      "uses": false
+    }
+  ]
 }

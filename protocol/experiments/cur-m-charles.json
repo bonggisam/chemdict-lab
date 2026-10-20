@@ -60,7 +60,41 @@
       "뜨거운 물·가열 기구에 데지 않게 장갑을 끼고, 센서 선이 열원에 닿지 않게 합니다."
     ]
   },
-  "textbooks": [],
+  "textbooks": [
+    {
+      "publisher": "미래엔",
+      "course": "과학 1",
+      "level": "중학교",
+      "note": "210쪽 기체의 온도와 부피 관계 알아보기",
+      "sure": "confirmed",
+      "page": "210",
+      "activity": "기체의 온도와 부피 관계 알아보기",
+      "unit": "Ⅵ. 기체의 성질 / 2. 기체의 온도와 부피 관계",
+      "uses": false
+    },
+    {
+      "publisher": "천재교과서(임성숙)",
+      "course": "과학 1",
+      "level": "중학교",
+      "note": "208쪽 기체의 온도와 부피 관계",
+      "sure": "confirmed",
+      "page": "208",
+      "activity": "기체의 온도와 부피 관계",
+      "unit": "Ⅵ. 기체의 성질 / 2. 기체의 온도와 부피 - 온도에 따른 기체의 부피 변화",
+      "uses": false
+    },
+    {
+      "publisher": "천재교과서(정대홍)",
+      "course": "과학 1",
+      "level": "중학교",
+      "note": "208쪽 기체의 온도와 부피 관계 알아보기",
+      "sure": "confirmed",
+      "page": "208",
+      "activity": "기체의 온도와 부피 관계 알아보기",
+      "unit": "Ⅵ. 기체의 성질 / 2. 기체의 온도와 부피",
+      "uses": true
+    }
+  ],
   "event": {
     "label": "기체 부피",
     "unit": "mL",

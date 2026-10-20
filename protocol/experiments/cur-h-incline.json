@@ -60,10 +60,114 @@
   },
   "textbooks": [
     {
+      "publisher": "동아출판",
+      "course": "과학탐구실험1",
+      "level": "고1 공통",
+      "note": "12쪽 갈릴레이의 실험 체험하기(2)",
+      "sure": "confirmed",
+      "page": "12",
+      "activity": "갈릴레이의 실험 체험하기(2)",
+      "unit": "Ⅰ. 과학의 본성과 역사 속의 과학 탐구",
+      "uses": false
+    },
+    {
+      "publisher": "동아출판",
+      "course": "물리학",
+      "level": "고2·3 선택",
+      "note": "25쪽 동영상을 활용하여 역학 수레의 등가속도 운동 분석하기",
+      "sure": "confirmed",
+      "page": "25",
+      "activity": "동영상을 활용하여 역학 수레의 등가속도 운동 분석하기",
+      "unit": "Ⅰ. 힘과 에너지",
+      "uses": true
+    },
+    {
       "publisher": "미래엔",
-      "course": "통합과학1",
-      "note": "125쪽 자유 낙하 하는 물체의 가속도 분석하기",
-      "sure": "similar"
+      "course": "과학탐구실험1",
+      "level": "고1 공통",
+      "note": "16쪽 물체의 낙하 운동에 대한 갈릴레이의 실험 체험하기",
+      "sure": "confirmed",
+      "page": "16",
+      "activity": "물체의 낙하 운동에 대한 갈릴레이의 실험 체험하기",
+      "unit": "Ⅰ. 과학의 본성과 역사 속의 과학 탐구",
+      "uses": true
+    },
+    {
+      "publisher": "미래엔",
+      "course": "과학탐구실험1",
+      "level": "고1 공통",
+      "note": "19쪽 경사면에서 물체가 운동할 때 속력 비교하기",
+      "sure": "confirmed",
+      "page": "19",
+      "activity": "경사면에서 물체가 운동할 때 속력 비교하기",
+      "unit": "Ⅰ. 과학의 본성과 역사 속의 과학 탐구",
+      "uses": true
+    },
+    {
+      "publisher": "미래엔",
+      "course": "물리학",
+      "level": "고2·3 선택",
+      "note": "24쪽 동영상을 활용하여 물체의 등가속도 운동 분석하기",
+      "sure": "confirmed",
+      "page": "24",
+      "activity": "동영상을 활용하여 물체의 등가속도 운동 분석하기",
+      "unit": "Ⅰ. 힘과 에너지",
+      "uses": true
+    },
+    {
+      "publisher": "미래엔",
+      "course": "역학과 에너지",
+      "level": "고2·3 선택",
+      "note": "46쪽 가속도 측정 장치 만들기",
+      "sure": "confirmed",
+      "page": "46",
+      "activity": "가속도 측정 장치 만들기",
+      "unit": "Ⅰ. 시공간과 운동",
+      "uses": true
+    },
+    {
+      "publisher": "천재교과서",
+      "course": "과학탐구실험1",
+      "level": "고1 공통",
+      "note": "16쪽 갈릴레이의 생각 따라잡기(경사면에서 가속되는 물체의 운동)",
+      "sure": "confirmed",
+      "page": "16",
+      "activity": "갈릴레이의 생각 따라잡기(경사면에서 가속되는 물체의 운동)",
+      "unit": "Ⅰ. 과학의 본성과 역사 속의 과학 탐구",
+      "uses": false
+    },
+    {
+      "publisher": "천재교과서",
+      "course": "과학탐구실험1",
+      "level": "고1 공통",
+      "note": "18쪽 경사면의 기울기를 다르게 하여 물체의 낙하 운동 관찰하기",
+      "sure": "confirmed",
+      "page": "18",
+      "activity": "경사면의 기울기를 다르게 하여 물체의 낙하 운동 관찰하기",
+      "unit": "Ⅰ. 과학의 본성과 역사 속의 과학 탐구",
+      "uses": true
+    },
+    {
+      "publisher": "천재교과서",
+      "course": "물리학",
+      "level": "고2·3 선택",
+      "note": "31쪽 동영상을 활용하여 물체의 등가속도 운동 분석하기",
+      "sure": "confirmed",
+      "page": "31",
+      "activity": "동영상을 활용하여 물체의 등가속도 운동 분석하기",
+      "unit": "Ⅰ. 힘과 에너지",
+      "uses": true
+    },
+    {
+      "publisher": "천재교과서",
+      "course": "물리학",
+      "level": "고2·3 선택",
+      "note": "52쪽 물체에 작용하는 힘이 한 일과 운동 에너지 관계 실험",
+      "sure": "similar",
+      "page": "52",
+      "activity": "물체에 작용하는 힘이 한 일과 운동 에너지 관계 실험",
+      "unit": "Ⅰ. 힘과 에너지",
+      "uses": true
     }
   ]
 }

@@ -55,7 +55,19 @@
     "attach": [],
     "cautions": []
   },
-  "textbooks": [],
+  "textbooks": [
+    {
+      "publisher": "미래엔",
+      "course": "물질과 에너지",
+      "level": "고2·3 선택",
+      "note": "35쪽 화학 결합의 종류에 따라 고체 결정 분류하기",
+      "sure": "confirmed",
+      "page": "35",
+      "activity": "화학 결합의 종류에 따라 고체 결정 분류하기",
+      "unit": "Ⅰ. 물질의 세 가지 상태",
+      "uses": false
+    }
+  ],
   "event": {
     "label": "시료 번호",
     "unit": "번",

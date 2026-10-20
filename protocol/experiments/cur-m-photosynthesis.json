@@ -70,5 +70,72 @@
       "전등 열로 통이 데워지지 않게 LED를 씁니다."
     ]
   },
-  "textbooks": []
+  "textbooks": [
+    {
+      "publisher": "미래엔",
+      "course": "과학 2",
+      "level": "중학교",
+      "note": "174쪽 광합성에 필요한 물질과 광합성산물 확인하기",
+      "sure": "confirmed",
+      "page": "174",
+      "activity": "광합성에 필요한 물질과 광합성산물 확인하기",
+      "unit": "Ⅴ. 식물과 에너지/1. 광합성",
+      "uses": true
+    },
+    {
+      "publisher": "미래엔",
+      "course": "과학 2",
+      "level": "중학교",
+      "note": "176쪽 환경요인과 광합성의 관계 탐구하기",
+      "sure": "confirmed",
+      "page": "176",
+      "activity": "환경요인과 광합성의 관계 탐구하기",
+      "unit": "Ⅴ. 식물과 에너지/1. 광합성",
+      "uses": true
+    },
+    {
+      "publisher": "천재교과서(임성숙)",
+      "course": "과학 2",
+      "level": "중학교",
+      "note": "172쪽 광합성에 필요한 물질과 생산된 물질 알아보기",
+      "sure": "confirmed",
+      "page": "172",
+      "activity": "광합성에 필요한 물질과 생산된 물질 알아보기",
+      "unit": "Ⅴ. 식물과 에너지/1. 광합성과 호흡",
+      "uses": true
+    },
+    {
+      "publisher": "천재교과서(임성숙)",
+      "course": "과학 2",
+      "level": "중학교",
+      "note": "174쪽 광합성에 영향을 미치는 환경요인",
+      "sure": "confirmed",
+      "page": "174",
+      "activity": "광합성에 영향을 미치는 환경요인",
+      "unit": "Ⅴ. 식물과 에너지/1. 광합성과 호흡",
+      "uses": false
+    },
+    {
+      "publisher": "천재교과서(정대홍)",
+      "course": "과학 2",
+      "level": "중학교",
+      "note": "181쪽 광합성에 필요한 물질과 산물 확인하기",
+      "sure": "confirmed",
+      "page": "181",
+      "activity": "광합성에 필요한 물질과 산물 확인하기",
+      "unit": "Ⅴ. 식물과 에너지/1. 광합성",
+      "uses": true
+    },
+    {
+      "publisher": "천재교과서(정대홍)",
+      "course": "과학 2",
+      "level": "중학교",
+      "note": "183쪽 환경요인과 광합성의 관계를 알아보는 실험 설계하기",
+      "sure": "confirmed",
+      "page": "183",
+      "activity": "환경요인과 광합성의 관계를 알아보는 실험 설계하기",
+      "unit": "Ⅴ. 식물과 에너지/1. 광합성",
+      "uses": true
+    }
+  ]
 }

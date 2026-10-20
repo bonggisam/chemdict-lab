@@ -1,0 +1,83 @@
+{
+  "id": "cur-p-action-reaction",
+  "order": 234,
+  "title": "서로 당기는 두 힘 (작용 반작용)",
+  "subject": "물리학",
+  "level": "고2·3 선택",
+  "course": "물리학",
+  "area": "힘과 에너지",
+  "summary": "로드셀과 용수철저울을 맞당겨 두 힘이 늘 같은지 봅니다.",
+  "standards": [
+    "12물리01-03"
+  ],
+  "standardTexts": [
+    "작용과 반작용 관계와 운동량 보존 법칙을 알고, 스포츠, 교통수단, 발사체 등에 적용할 수 있다."
+  ],
+  "sensors": [
+    "M"
+  ],
+  "mode": "time",
+  "intervalMs": 100,
+  "x": {
+    "label": "시간",
+    "unit": "s"
+  },
+  "y": [
+    {
+      "sensor": "M",
+      "label": "질량",
+      "unit": "g"
+    }
+  ],
+  "markers": {
+    "enabled": true,
+    "label": "관찰 기록",
+    "prompt": "한 일 (예: 시약 넣음)"
+  },
+  "analysis": [
+    "stats",
+    "fit"
+  ],
+  "steps": [
+    "로드셀 고리와 용수철저울을 실로 잇습니다.",
+    "세게·약하게·갑자기 당기며 측정합니다.",
+    "용수철저울 눈금과 그래프 값을 비교하고 차이를 토의합니다."
+  ],
+  "setup": {
+    "parts": [
+      "hx711"
+    ],
+    "choose": false,
+    "materials": [
+      "로드셀+HX711",
+      "용수철저울",
+      "실"
+    ],
+    "attach": [],
+    "cautions": []
+  },
+  "textbooks": [
+    {
+      "publisher": "동아출판",
+      "course": "물리학",
+      "level": "고2·3 선택",
+      "note": "30쪽 물체 사이에 상호작용하는 힘 측정하기",
+      "sure": "confirmed",
+      "page": "30",
+      "activity": "물체 사이에 상호작용하는 힘 측정하기",
+      "unit": "Ⅰ. 힘과 에너지",
+      "uses": true
+    },
+    {
+      "publisher": "미래엔",
+      "course": "물리학",
+      "level": "고2·3 선택",
+      "note": "32쪽 상호작용 하는 물체가 서로에게 가하는 힘 알아보기",
+      "sure": "confirmed",
+      "page": "32",
+      "activity": "상호작용 하는 물체가 서로에게 가하는 힘 알아보기",
+      "unit": "Ⅰ. 힘과 에너지",
+      "uses": true
+    }
+  ]
+}

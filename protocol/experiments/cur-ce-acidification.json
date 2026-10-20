@@ -57,7 +57,19 @@
     "attach": [],
     "cautions": []
   },
-  "textbooks": [],
+  "textbooks": [
+    {
+      "publisher": "천재교과서",
+      "course": "기후변화와 환경생태",
+      "level": "고2·3 선택",
+      "note": "146쪽 해양 산성화가 산호초에 미치는 영향 모의 실험하기",
+      "sure": "confirmed",
+      "page": "146",
+      "activity": "해양 산성화가 산호초에 미치는 영향 모의 실험하기",
+      "unit": "III. 기후 위기에 대응하는 우리의 노력",
+      "uses": false
+    }
+  ],
   "event": {
     "label": "담근 날",
     "unit": "일",

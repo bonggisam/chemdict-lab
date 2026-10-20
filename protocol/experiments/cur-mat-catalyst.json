@@ -67,5 +67,39 @@
       "압력이 너무 오르면 마개를 엽니다."
     ]
   },
-  "textbooks": []
+  "textbooks": [
+    {
+      "publisher": "동아출판",
+      "course": "물질과 에너지",
+      "level": "고2·3 선택",
+      "note": "123쪽 촉매와 반응 속도의 관계 탐구하기",
+      "sure": "confirmed",
+      "page": "123",
+      "activity": "촉매와 반응 속도의 관계 탐구하기",
+      "unit": "Ⅳ. 반응 속도",
+      "uses": false
+    },
+    {
+      "publisher": "미래엔",
+      "course": "물질과 에너지",
+      "level": "고2·3 선택",
+      "note": "116쪽 반응 속도에 영향을 주는 물질 알아보기",
+      "sure": "confirmed",
+      "page": "116",
+      "activity": "반응 속도에 영향을 주는 물질 알아보기",
+      "unit": "Ⅳ. 반응 속도",
+      "uses": false
+    },
+    {
+      "publisher": "천재교과서",
+      "course": "물질과 에너지",
+      "level": "고2·3 선택",
+      "note": "120쪽 과산화 수소의 분해 반응 속도에 영향을 주는 물질 알아보기",
+      "sure": "confirmed",
+      "page": "120",
+      "activity": "과산화 수소의 분해 반응 속도에 영향을 주는 물질 알아보기",
+      "unit": "Ⅳ. 반응 속도",
+      "uses": false
+    }
+  ]
 }

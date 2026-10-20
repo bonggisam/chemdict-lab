@@ -66,5 +66,39 @@
     "attach": [],
     "cautions": []
   },
-  "textbooks": []
+  "textbooks": [
+    {
+      "publisher": "동아출판",
+      "course": "세포와 물질대사",
+      "level": "고2·3 선택",
+      "note": "63쪽 효소의 활성에 영향을 미치는 요인을 알아보는 탐구 설계하기",
+      "sure": "confirmed",
+      "page": "63",
+      "activity": "효소의 활성에 영향을 미치는 요인을 알아보는 탐구 설계하기",
+      "unit": "Ⅱ. 물질대사와 에너지",
+      "uses": false
+    },
+    {
+      "publisher": "미래엔",
+      "course": "세포와 물질대사",
+      "level": "고2·3 선택",
+      "note": "72쪽 효소의 활성에 영향을 미치는 요인 알아보기",
+      "sure": "similar",
+      "page": "72",
+      "activity": "효소의 활성에 영향을 미치는 요인 알아보기",
+      "unit": "Ⅱ. 물질대사와 에너지",
+      "uses": false
+    },
+    {
+      "publisher": "천재교과서",
+      "course": "세포와 물질대사",
+      "level": "고2·3 선택",
+      "note": "69쪽 효소의 활성에 영향을 미치는 요인 알아보기",
+      "sure": "confirmed",
+      "page": "69",
+      "activity": "효소의 활성에 영향을 미치는 요인 알아보기",
+      "unit": "Ⅱ. 물질대사와 에너지",
+      "uses": false
+    }
+  ]
 }

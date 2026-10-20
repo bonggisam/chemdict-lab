@@ -69,5 +69,17 @@
     "attach": [],
     "cautions": []
   },
-  "textbooks": []
+  "textbooks": [
+    {
+      "publisher": "천재교과서",
+      "course": "통합과학2",
+      "level": "고1 공통",
+      "note": "76쪽 우리 주변 생태계 조사하기",
+      "sure": "similar",
+      "page": "76",
+      "activity": "우리 주변 생태계 조사하기",
+      "unit": "Ⅱ. 환경과 에너지 / 생태계와 환경",
+      "uses": true
+    }
+  ]
 }

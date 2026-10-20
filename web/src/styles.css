@@ -629,3 +629,32 @@ button.big.alt { background: linear-gradient(160deg, var(--tint), transparent 70
   display: grid; place-items: center; font-size: 13px; font-weight: 800; background: var(--brand-deep); color: var(--mint);
 }
 .content .caution :is(ul) > li::before { border-top-color: color-mix(in srgb, var(--mark) 45%, var(--line)); }
+
+/* ===== 실험으로 찾기 (v0.9): 왼쪽 과정→과목 나무, 오른쪽 단원별 ===== */
+.exp-browser.two-pane { display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 18px; align-items: start; }
+.exp-tree { position: sticky; top: 12px; display: flex; flex-direction: column; gap: 2px; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 8px; box-shadow: var(--shadow); }
+.exp-tree button { width: 100%; display: flex; justify-content: space-between; align-items: center; gap: 8px; border: 0; background: transparent; text-align: left; padding: 8px 10px; border-radius: 9px; font-weight: 600; color: var(--ink); }
+.exp-tree button small { color: var(--muted); font-weight: 600; font-variant-numeric: tabular-nums; }
+.exp-tree button.on { background: var(--tint); color: var(--accent); box-shadow: inset 3px 0 0 var(--accent); }
+.exp-tree button:not(.on):hover { background: color-mix(in srgb, var(--tint) 60%, transparent); }
+.exp-tree .lv { font-weight: 800; }
+.exp-tree ul { list-style: none; margin: 0 0 4px 12px; padding: 0; }
+.exp-tree ul li { position: relative; padding-left: 14px; background: linear-gradient(var(--line), var(--line)) 0 0 / 2px 100% no-repeat; }
+.exp-tree ul li:last-child { background-size: 2px 22px; }
+.exp-tree ul li::before { content: ""; position: absolute; left: 0; top: 22px; width: 10px; border-top: 2px solid var(--line); }
+.exp-tree ul button { font-weight: 500; font-size: 15px; }
+.exp-main { min-width: 0; }
+.exp-main .exp-filter { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 6px; }
+.exp-group { margin-top: 18px; }
+.exp-group h3 { font-size: 17px; margin: 0 0 8px; padding-bottom: 6px; border-bottom: 2px solid var(--line); display: flex; gap: 8px; align-items: baseline; }
+.exp-group h3 small { color: var(--muted); font-weight: 600; font-size: 13px; }
+.tb-refs { list-style: none; margin: 6px 0 0; padding: 6px 0 0; border-top: 1px dashed var(--line); width: 100%; font-size: 13px; color: var(--muted); display: flex; flex-direction: column; gap: 2px; }
+.tb-refs b { color: var(--accent); font-weight: 700; margin-right: 2px; }
+.tb-refs li.similar { opacity: .75; }
+.tb-refs .tb-sensor { color: var(--mark); font-weight: 600; }
+.tb-refs .more { font-style: normal; }
+@media (max-width: 760px) {
+  .exp-browser.two-pane { grid-template-columns: 1fr; }
+  .exp-tree { position: static; flex-direction: row; flex-wrap: wrap; }
+  .exp-tree > button, .exp-tree-lv { flex: 1 1 45%; }
+}

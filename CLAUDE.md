@@ -3,6 +3,7 @@
 - 사용자: 고등학교 화학 교사. 설명과 UI 문구는 한국어, 짧고 명확하게.
 - 보드↔앱 통신 규칙은 `protocol/PROTOCOL.md`가 기준이다. 펌웨어·웹앱·애플 앱 중 하나를 바꾸면 나머지와 문서를 함께 맞춘다. 애플 앱은 비공개 저장소 `bonggisam/chemdict-lab-apple`(이 저장소를 `core/` 서브모듈로 씀)에 있다.
 - 연결 안내(보드·센서·배선)는 `tools/make_guide.py`를 고치고 실행해 `protocol/guide.json`을 만든다 (json 직접 수정 금지).
+- 교과서 활동 목록은 `protocol/curriculum/textbook_activities.json`(미래엔·동아출판·천재교과서 2022 개정 교과서·지도서에서 센서로 가능한 탐구만, 출판사·쪽·활동·센서·연결된 실험 id). `make_experiments.py`가 실험마다 textbooks로 붙인다. 교과서 참조는 번역하지 않는다. 성취기준 원문은 `tools/standards_2022.json`.
 - 실험 템플릿은 `protocol/experiments/*.json` 하나만 고친다. 교육과정 실험(cur-*)과 찾기 정보는 `tools/make_experiments.py`를 고치고 실행해 만든다 (웹앱은 import.meta.glob, 애플 앱은 폴더 참조로 같은 파일을 읽음).
 - 기준 보드: Arduino UNO R4 WiFi. 아날로그 5 V, Qwiic는 Wire1(3.3 V).
 - BLE: Nordic UART 방식 UUID, 20바이트 조각 + '\n' 줄 단위. 한글이 조각 경계에서 잘리므로 받는 쪽은 바이트 단위로 모은 뒤 디코딩한다.

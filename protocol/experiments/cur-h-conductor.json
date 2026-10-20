@@ -1,0 +1,96 @@
+{
+  "id": "cur-h-conductor",
+  "order": 227,
+  "title": "도체와 부도체, 전류로 구분하기",
+  "subject": "통합과학1",
+  "level": "고1 공통",
+  "course": "통합과학1",
+  "area": "물질과 규칙성",
+  "summary": "같은 전압에서 여러 물체에 흐르는 전류를 재어 전기적 성질을 비교합니다.",
+  "standards": [
+    "10통과1-02-06"
+  ],
+  "standardTexts": [
+    "지구를 구성하는 물질을 전기적 성질에 따라 구분할 수 있고, 물질의 전기적 성질을 응용하여 일상생활과 첨단기술에서 다양한 소재로 활용됨을 인식한다."
+  ],
+  "sensors": [
+    "IDC",
+    "VDC"
+  ],
+  "mode": "event",
+  "intervalMs": 500,
+  "x": {
+    "label": "물체 번호",
+    "unit": "번"
+  },
+  "y": [
+    {
+      "sensor": "IDC",
+      "label": "전류",
+      "unit": "mA"
+    },
+    {
+      "sensor": "VDC",
+      "label": "전압",
+      "unit": "V"
+    }
+  ],
+  "markers": {
+    "enabled": false,
+    "label": "관찰 기록",
+    "prompt": "한 일 (예: 시약 넣음)"
+  },
+  "analysis": [
+    "stats"
+  ],
+  "steps": [
+    "건전지–전류 센서–집게 전선으로 회로를 만듭니다.",
+    "구리선·흑연·유리·고무·규소 순서로 집게에 물리고 ‘값 기록’을 누릅니다.",
+    "전류가 큰 순서로 도체·반도체·부도체를 나눕니다."
+  ],
+  "setup": {
+    "parts": [
+      "ina219"
+    ],
+    "choose": false,
+    "materials": [
+      "전류 센서(INA219)",
+      "건전지",
+      "집게 전선",
+      "여러 물체"
+    ],
+    "attach": [],
+    "cautions": []
+  },
+  "textbooks": [
+    {
+      "publisher": "미래엔",
+      "course": "통합과학1",
+      "level": "고1 공통",
+      "note": "88쪽 여러 가지 물체의 전기적 성질 비교하기",
+      "sure": "confirmed",
+      "page": "88",
+      "activity": "여러 가지 물체의 전기적 성질 비교하기",
+      "unit": "Ⅱ. 물질과 규칙성 / 2. 자연의 구성 물질",
+      "uses": false
+    },
+    {
+      "publisher": "천재교과서",
+      "course": "통합과학1",
+      "level": "고1 공통",
+      "note": "86쪽 도체와 부도체 구분하기",
+      "sure": "confirmed",
+      "page": "86",
+      "activity": "도체와 부도체 구분하기",
+      "unit": "Ⅱ. 물질과 규칙성 / 물질의 전기적 성질과 첨단 기술의 활용",
+      "uses": false
+    }
+  ],
+  "event": {
+    "label": "물체 번호",
+    "unit": "번",
+    "start": 1,
+    "step": 1,
+    "scale": "linear"
+  }
+}

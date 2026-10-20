@@ -1,0 +1,142 @@
+{
+  "id": "cur-mat-iodine-clock",
+  "order": 240,
+  "title": "아이오딘 시계 반응 (농도·온도와 반응 속도)",
+  "subject": "물질과 에너지",
+  "level": "고2·3 선택",
+  "course": "물질과 에너지",
+  "area": "반응 속도",
+  "summary": "용액이 갑자기 파래지는 시간을 빛 센서로 재어 농도·온도와의 관계를 구합니다.",
+  "standards": [
+    "12물에04-04"
+  ],
+  "standardTexts": [
+    "농도, 온도, 촉매에 따라 반응 속도가 달라짐을 이해하고, 일상생활에서 각각의 예를 찾아 화학의 유용성을 인식할 수 있다."
+  ],
+  "sensors": [
+    "L",
+    "T"
+  ],
+  "mode": "time",
+  "intervalMs": 200,
+  "x": {
+    "label": "시간",
+    "unit": "s"
+  },
+  "y": [
+    {
+      "sensor": "L",
+      "label": "투과 빛",
+      "unit": "%",
+      "min": 0,
+      "max": 100
+    },
+    {
+      "sensor": "T",
+      "label": "온도",
+      "unit": "°C"
+    }
+  ],
+  "markers": {
+    "enabled": true,
+    "label": "관찰 기록",
+    "prompt": "한 일 (예: 시약 넣음)"
+  },
+  "analysis": [
+    "stats",
+    "fit"
+  ],
+  "steps": [
+    "비커 뒤에 LED, 앞에 빛 센서를 두고 온도 센서를 넣습니다.",
+    "두 용액을 섞는 순간 측정을 시작하고 빛이 뚝 떨어지는 시간을 읽습니다.",
+    "농도를 바꿔 새 측정을 하고, 다음에는 물중탕 온도를 바꿉니다.",
+    "1/시간을 반응 속도로 놓고 농도·온도와 비교합니다 (티오황산–염산 탁도 반응도 같은 방법)."
+  ],
+  "setup": {
+    "parts": [
+      "ldr",
+      "ds18b20"
+    ],
+    "choose": false,
+    "materials": [
+      "빛 센서",
+      "온도 센서",
+      "아이오딘산칼륨",
+      "아황산수소나트륨+녹말",
+      "LED",
+      "비커"
+    ],
+    "attach": [],
+    "cautions": [
+      "산·염기는 보안경과 장갑을 끼고 다루며, 피부에 묻으면 바로 물로 씻습니다."
+    ]
+  },
+  "textbooks": [
+    {
+      "publisher": "동아출판",
+      "course": "물질과 에너지",
+      "level": "고2·3 선택",
+      "note": "118쪽 농도와 반응 속도의 관계 탐구하기",
+      "sure": "confirmed",
+      "page": "118",
+      "activity": "농도와 반응 속도의 관계 탐구하기",
+      "unit": "Ⅳ. 반응 속도",
+      "uses": false
+    },
+    {
+      "publisher": "동아출판",
+      "course": "물질과 에너지",
+      "level": "고2·3 선택",
+      "note": "121쪽 온도와 반응 속도의 관계 탐구하기",
+      "sure": "similar",
+      "page": "121",
+      "activity": "온도와 반응 속도의 관계 탐구하기",
+      "unit": "Ⅳ. 반응 속도",
+      "uses": false
+    },
+    {
+      "publisher": "미래엔",
+      "course": "물질과 에너지",
+      "level": "고2·3 선택",
+      "note": "108쪽 농도에 따른 반응 속도 측정하기",
+      "sure": "confirmed",
+      "page": "108",
+      "activity": "농도에 따른 반응 속도 측정하기",
+      "unit": "Ⅳ. 반응 속도",
+      "uses": false
+    },
+    {
+      "publisher": "미래엔",
+      "course": "물질과 에너지",
+      "level": "고2·3 선택",
+      "note": "112쪽 온도에 따른 반응 속도 측정하기",
+      "sure": "similar",
+      "page": "112",
+      "activity": "온도에 따른 반응 속도 측정하기",
+      "unit": "Ⅳ. 반응 속도",
+      "uses": false
+    },
+    {
+      "publisher": "천재교과서",
+      "course": "물질과 에너지",
+      "level": "고2·3 선택",
+      "note": "116쪽 농도와 반응 속도의 관계 알아보기",
+      "sure": "confirmed",
+      "page": "116",
+      "activity": "농도와 반응 속도의 관계 알아보기",
+      "unit": "Ⅳ. 반응 속도",
+      "uses": false
+    },
+    {
+      "publisher": "천재교과서",
+      "course": "물질과 에너지",
+      "level": "고2·3 선택",
+      "note": "118쪽 온도와 반응 속도의 관계 알아보기",
+      "sure": "similar",
+      "page": "118",
+      "activity": "온도와 반응 속도의 관계 알아보기",
+      "unit": "Ⅳ. 반응 속도",
+      "uses": false
+    }
+  ]
+}

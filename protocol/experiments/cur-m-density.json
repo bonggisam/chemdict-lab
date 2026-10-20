@@ -1,0 +1,103 @@
+{
+  "id": "cur-m-density",
+  "order": 220,
+  "title": "철과 알루미늄 구별하기 (밀도)",
+  "subject": "과학 2",
+  "level": "중학교",
+  "course": "과학 2",
+  "area": "물질의 특성",
+  "summary": "부피를 넣으며 질량을 기록해 질량–부피 직선의 기울기(밀도)를 구합니다.",
+  "standards": [
+    "9과08-01"
+  ],
+  "standardTexts": [
+    "물질의 특성의 의미를 알고, 실험을 통해 밀도, 용해도, 녹는점, 끓는점 등을 설명할 수 있다."
+  ],
+  "sensors": [
+    "M"
+  ],
+  "mode": "event",
+  "intervalMs": 500,
+  "x": {
+    "label": "부피",
+    "unit": "cm³"
+  },
+  "y": [
+    {
+      "sensor": "M",
+      "label": "질량",
+      "unit": "g"
+    }
+  ],
+  "markers": {
+    "enabled": false,
+    "label": "관찰 기록",
+    "prompt": "한 일 (예: 시약 넣음)"
+  },
+  "analysis": [
+    "stats",
+    "fit"
+  ],
+  "steps": [
+    "로드셀 영점을 맞춥니다.",
+    "같은 금속 조각을 하나씩 올리며 눈금실린더로 잰 전체 부피를 넣고 ‘값 기록’을 누릅니다.",
+    "다른 금속은 새 측정으로 기록합니다.",
+    "‘함수 찾기 → 비례’ 기울기가 밀도입니다 (철 약 7.9, 알루미늄 약 2.7 g/cm³)."
+  ],
+  "setup": {
+    "parts": [
+      "hx711"
+    ],
+    "choose": false,
+    "materials": [
+      "로드셀+HX711",
+      "철·알루미늄 조각",
+      "눈금실린더",
+      "물"
+    ],
+    "attach": [],
+    "cautions": []
+  },
+  "textbooks": [
+    {
+      "publisher": "미래엔",
+      "course": "과학 2",
+      "level": "중학교",
+      "note": "16쪽 질량과 부피를 측정하여 철과 알루미늄 구별하기",
+      "sure": "confirmed",
+      "page": "16",
+      "activity": "질량과 부피를 측정하여 철과 알루미늄 구별하기",
+      "unit": "Ⅰ. 물질의 특성/1. 물질의 특성",
+      "uses": false
+    },
+    {
+      "publisher": "천재교과서(임성숙)",
+      "course": "과학 2",
+      "level": "중학교",
+      "note": "15쪽 철과 알루미늄의 밀도 구하기",
+      "sure": "confirmed",
+      "page": "15",
+      "activity": "철과 알루미늄의 밀도 구하기",
+      "unit": "Ⅰ. 물질의 특성/1. 물질의 특성",
+      "uses": false
+    },
+    {
+      "publisher": "천재교과서(정대홍)",
+      "course": "과학 2",
+      "level": "중학교",
+      "note": "12쪽 양이 달라져도 변하지 않는 값 찾기(질량과 부피 측정)",
+      "sure": "confirmed",
+      "page": "12",
+      "activity": "양이 달라져도 변하지 않는 값 찾기(질량과 부피 측정)",
+      "unit": "Ⅰ. 물질의 특성/1. 물질의 특성",
+      "uses": false
+    }
+  ],
+  "event": {
+    "label": "부피",
+    "unit": "cm³",
+    "start": 0,
+    "step": 1,
+    "scale": "linear"
+  }
+}

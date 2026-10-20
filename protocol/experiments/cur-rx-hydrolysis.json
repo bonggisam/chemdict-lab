@@ -56,7 +56,41 @@
     "attach": [],
     "cautions": []
   },
-  "textbooks": [],
+  "textbooks": [
+    {
+      "publisher": "동아출판",
+      "course": "화학 반응의 세계",
+      "level": "고2·3 선택",
+      "note": "29쪽 염 수용액의 액성 예측하기",
+      "sure": "confirmed",
+      "page": "29",
+      "activity": "염 수용액의 액성 예측하기",
+      "unit": "Ⅰ. 산 염기 평형",
+      "uses": true
+    },
+    {
+      "publisher": "미래엔",
+      "course": "화학 반응의 세계",
+      "level": "고2·3 선택",
+      "note": "23쪽 염 수용액의 액성을 예측하고 확인하기",
+      "sure": "confirmed",
+      "page": "23",
+      "activity": "염 수용액의 액성을 예측하고 확인하기",
+      "unit": "Ⅰ. 산 염기 평형",
+      "uses": false
+    },
+    {
+      "publisher": "천재교과서",
+      "course": "화학 반응의 세계",
+      "level": "고2·3 선택",
+      "note": "32쪽 여러 가지 염 수용액의 액성을 예측하고 실험값과 비교하기",
+      "sure": "confirmed",
+      "page": "32",
+      "activity": "여러 가지 염 수용액의 액성을 예측하고 실험값과 비교하기",
+      "unit": "Ⅰ. 산 염기 평형",
+      "uses": true
+    }
+  ],
   "event": {
     "label": "시료 번호",
     "unit": "번",

@@ -59,7 +59,30 @@
       "산·염기는 보안경과 장갑을 끼고 다루며, 피부에 묻으면 바로 물로 씻습니다."
     ]
   },
-  "textbooks": [],
+  "textbooks": [
+    {
+      "publisher": "동아출판",
+      "course": "화학",
+      "level": "고2·3 선택",
+      "note": "159쪽 일상생활 속 용액의 pH 측정하기",
+      "sure": "confirmed",
+      "page": "159",
+      "activity": "일상생활 속 용액의 pH 측정하기",
+      "unit": "Ⅳ. 역동적인 화학 반응",
+      "uses": true
+    },
+    {
+      "publisher": "천재교과서",
+      "course": "화학",
+      "level": "고2·3 선택",
+      "note": "169쪽 염산과 제산제의 반응에서 pH 변화 관찰하기",
+      "sure": "similar",
+      "page": "169",
+      "activity": "염산과 제산제의 반응에서 pH 변화 관찰하기",
+      "unit": "Ⅳ. 역동적인 화학 반응",
+      "uses": true
+    }
+  ],
   "event": {
     "label": "시료 번호",
     "unit": "번",

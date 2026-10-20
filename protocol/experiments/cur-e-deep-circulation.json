@@ -1,0 +1,112 @@
+{
+  "id": "cur-e-deep-circulation",
+  "order": 241,
+  "title": "차갑고 짠 물은 가라앉는다 (심층 순환)",
+  "subject": "지구과학",
+  "level": "고2·3 선택",
+  "course": "지구과학",
+  "area": "대기와 해양의 상호작용",
+  "summary": "수조 바닥과 위쪽의 수온·전도도를 기록해 차갑고 짠 물이 가라앉는 것을 확인합니다.",
+  "standards": [
+    "12지구01-02"
+  ],
+  "standardTexts": [
+    "심층 순환의 발생 원리와 분포를 알고, 표층 순환 및 기후변화의 관련성을 추론할 수 있다."
+  ],
+  "sensors": [
+    "T",
+    "EC"
+  ],
+  "mode": "time",
+  "intervalMs": 2000,
+  "x": {
+    "label": "시간",
+    "unit": "s"
+  },
+  "y": [
+    {
+      "sensor": "T",
+      "label": "온도",
+      "unit": "°C"
+    },
+    {
+      "sensor": "EC",
+      "label": "전도도",
+      "unit": "µS/cm"
+    }
+  ],
+  "markers": {
+    "enabled": true,
+    "label": "관찰 기록",
+    "prompt": "한 일 (예: 시약 넣음)"
+  },
+  "analysis": [
+    "stats",
+    "fit"
+  ],
+  "steps": [
+    "수조 위쪽과 바닥에 온도 센서를, 바닥에 전도도 센서를 둡니다.",
+    "한쪽 끝에 얼음 소금물을 천천히 붓습니다.",
+    "바닥의 온도가 내려가고 전도도가 오르는 시점을 기록합니다.",
+    "따뜻한 민물을 부은 경우와 비교합니다."
+  ],
+  "setup": {
+    "parts": [
+      "ds18b20",
+      "ec"
+    ],
+    "choose": false,
+    "materials": [
+      "온도 센서 2개",
+      "전도도 센서",
+      "수조",
+      "얼음",
+      "소금",
+      "식용 색소"
+    ],
+    "attach": [
+      "온도 센서 2개를 같은 D2 선에 나란히 꽂으면 '온도 1', '온도 2' 그래프가 따로 나옵니다."
+    ],
+    "cautions": []
+  },
+  "textbooks": [
+    {
+      "publisher": "동아출판",
+      "course": "지구과학",
+      "level": "고2·3 선택",
+      "note": "23쪽 심층 순환의 발생 원리 알아보기",
+      "sure": "confirmed",
+      "page": "23",
+      "activity": "심층 순환의 발생 원리 알아보기",
+      "unit": "Ⅰ. 대기와 해양의 상호작용 > 02. 해수의 순환",
+      "uses": false
+    },
+    {
+      "publisher": "미래엔",
+      "course": "지구과학",
+      "level": "고2·3 선택",
+      "note": "20쪽 심층 순환의 발생 원리 알아보기",
+      "sure": "confirmed",
+      "page": "20",
+      "activity": "심층 순환의 발생 원리 알아보기",
+      "unit": "I. 대기와 해양의 상호작용 > 2. 해수의 순환",
+      "uses": false
+    },
+    {
+      "publisher": "천재교과서",
+      "course": "지구과학",
+      "level": "고2·3 선택",
+      "note": "27쪽 심층 순환의 형성 원리 알아보기",
+      "sure": "confirmed",
+      "page": "27",
+      "activity": "심층 순환의 형성 원리 알아보기",
+      "unit": "I. 대기와 해양의 상호작용 > 02 해양의 순환과 기후 변화",
+      "uses": false
+    }
+  ],
+  "breadboard": {
+    "need": "recommended",
+    "why": "온도 센서 2개 이상을 같은 줄에 나란히 꽂습니다 (센서 1개면 필요 없음).",
+    "circuit": "pullup"
+  }
+}

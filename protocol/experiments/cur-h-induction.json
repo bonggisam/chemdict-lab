@@ -1,0 +1,190 @@
+{
+  "id": "cur-h-induction",
+  "order": 229,
+  "title": "자석과 코일로 전기 만들기 (전자기 유도)",
+  "subject": "통합과학2",
+  "level": "고1 공통",
+  "course": "통합과학2",
+  "area": "환경과 에너지",
+  "summary": "자석을 넣고 빼는 빠르기·감은 수에 따라 유도 전압이 어떻게 변하는지 봅니다.",
+  "standards": [
+    "10통과2-02-05",
+    "12물리02-06"
+  ],
+  "standardTexts": [
+    "발전기에서 운동 에너지가 전기 에너지로 전환되는 과정을 이해하고, 열원으로서 화석 연료, 핵에너지를 이용하는 발전소가 인간 생활에 미치는 영향을 조사⋅발표 할 수 있다.",
+    "전자기 유도 현상이 센서, 무선통신, 무선충전 등 에너지 전달 기술에 적용되어 현대 문명에 미친 영향을 인식할 수 있다."
+  ],
+  "sensors": [
+    "V"
+  ],
+  "mode": "time",
+  "intervalMs": 50,
+  "x": {
+    "label": "시간",
+    "unit": "s"
+  },
+  "y": [
+    {
+      "sensor": "V",
+      "label": "유도 전압",
+      "unit": "V"
+    }
+  ],
+  "markers": {
+    "enabled": true,
+    "label": "관찰 기록",
+    "prompt": "한 일 (예: 시약 넣음)"
+  },
+  "analysis": [
+    "stats",
+    "fit"
+  ],
+  "steps": [
+    "코일 양 끝을 전압 입력(A0)과 GND에 연결합니다 (음의 전압은 1.65 V 기준 회로로 올림).",
+    "자석을 빠르게·느리게 넣고 빼며 측정합니다.",
+    "감은 수가 다른 코일로 새 측정을 합니다.",
+    "봉우리 높이를 비교해 패러데이 법칙을 정리합니다."
+  ],
+  "setup": {
+    "parts": [
+      "voltage"
+    ],
+    "choose": false,
+    "materials": [
+      "코일 (감은 수 2가지)",
+      "네오디뮴 자석",
+      "저항 2개(기준 전압 분압)"
+    ],
+    "attach": [],
+    "cautions": []
+  },
+  "textbooks": [
+    {
+      "publisher": "동아출판",
+      "course": "물리학",
+      "level": "고2·3 선택",
+      "note": "110쪽 전자기 유도 현상을 이용한 무선 충전기 만들기",
+      "sure": "similar",
+      "page": "110",
+      "activity": "전자기 유도 현상을 이용한 무선 충전기 만들기",
+      "unit": "Ⅱ. 전기와 자기",
+      "uses": false
+    },
+    {
+      "publisher": "동아출판",
+      "course": "전자기와 양자",
+      "level": "고2·3 선택",
+      "note": "35쪽 무선 발광 다이오드 만들기",
+      "sure": "similar",
+      "page": "35",
+      "activity": "무선 발광 다이오드 만들기",
+      "unit": "Ⅰ. 전자기적 상호작용",
+      "uses": false
+    },
+    {
+      "publisher": "동아출판",
+      "course": "통합과학2",
+      "level": "고1 공통",
+      "note": "104쪽 운동 에너지가 전기 에너지로 전환되는 과정 탐구하기",
+      "sure": "confirmed",
+      "page": "104",
+      "activity": "운동 에너지가 전기 에너지로 전환되는 과정 탐구하기",
+      "unit": "Ⅱ. 환경과 에너지 / 3. 발전과 신재생 에너지",
+      "uses": false
+    },
+    {
+      "publisher": "동아출판",
+      "course": "통합과학2",
+      "level": "고1 공통",
+      "note": "106쪽 간이 발전기 만들기",
+      "sure": "confirmed",
+      "page": "106",
+      "activity": "간이 발전기 만들기",
+      "unit": "Ⅱ. 환경과 에너지 / 3. 발전과 신재생 에너지",
+      "uses": false
+    },
+    {
+      "publisher": "미래엔",
+      "course": "물리학",
+      "level": "고2·3 선택",
+      "note": "120쪽 전자기 유도 작용을 이용한 무선 충전 원리를 이해하고 구현하기",
+      "sure": "similar",
+      "page": "120",
+      "activity": "전자기 유도 작용을 이용한 무선 충전 원리를 이해하고 구현하기",
+      "unit": "Ⅱ. 전기와 자기",
+      "uses": false
+    },
+    {
+      "publisher": "미래엔",
+      "course": "통합과학2",
+      "level": "고1 공통",
+      "note": "102쪽 자석과 코일의 상대 운동에 의해 운동 에너지가 전기 에너지로 전환되는 과정 탐구하기",
+      "sure": "confirmed",
+      "page": "102",
+      "activity": "자석과 코일의 상대 운동에 의해 운동 에너지가 전기 에너지로 전환되는 과정 탐구하기",
+      "unit": "Ⅱ. 환경과 에너지 / 2. 에너지",
+      "uses": false
+    },
+    {
+      "publisher": "미래엔",
+      "course": "통합과학2",
+      "level": "고1 공통",
+      "note": "106쪽 간이 발전기 만들기",
+      "sure": "confirmed",
+      "page": "106",
+      "activity": "간이 발전기 만들기",
+      "unit": "Ⅱ. 환경과 에너지 / 2. 에너지",
+      "uses": false
+    },
+    {
+      "publisher": "천재교과서",
+      "course": "물리학",
+      "level": "고2·3 선택",
+      "note": "122쪽 전자기 유도 작용을 이용한 무선 충전 원리를 이해하고 구현하기",
+      "sure": "similar",
+      "page": "122",
+      "activity": "전자기 유도 작용을 이용한 무선 충전 원리를 이해하고 구현하기",
+      "unit": "Ⅱ. 전기와 자기",
+      "uses": false
+    },
+    {
+      "publisher": "천재교과서",
+      "course": "전자기와 양자",
+      "level": "고2·3 선택",
+      "note": "34쪽 유도 전류 만들기",
+      "sure": "similar",
+      "page": "34",
+      "activity": "유도 전류 만들기",
+      "unit": "Ⅰ. 전자기적 상호작용",
+      "uses": false
+    },
+    {
+      "publisher": "천재교과서",
+      "course": "통합과학2",
+      "level": "고1 공통",
+      "note": "104쪽 전기 에너지 만들어 보기",
+      "sure": "confirmed",
+      "page": "104",
+      "activity": "전기 에너지 만들어 보기",
+      "unit": "Ⅱ. 환경과 에너지 / 전기 에너지의 생산과 발전기의 에너지 전환",
+      "uses": false
+    },
+    {
+      "publisher": "천재교과서",
+      "course": "통합과학2",
+      "level": "고1 공통",
+      "note": "106쪽 운동 에너지가 전기 에너지로 전환되는 과정 탐구하기",
+      "sure": "confirmed",
+      "page": "106",
+      "activity": "운동 에너지가 전기 에너지로 전환되는 과정 탐구하기",
+      "unit": "Ⅱ. 환경과 에너지 / 전기 에너지의 생산과 발전기의 에너지 전환",
+      "uses": false
+    }
+  ],
+  "breadboard": {
+    "need": "required",
+    "why": "코일 전압이 음(−)으로도 바뀌므로 저항 2개로 1.65 V 기준을 만듭니다.",
+    "circuit": null
+  }
+}

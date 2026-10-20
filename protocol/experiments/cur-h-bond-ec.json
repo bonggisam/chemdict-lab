@@ -56,7 +56,41 @@
     "attach": [],
     "cautions": []
   },
-  "textbooks": [],
+  "textbooks": [
+    {
+      "publisher": "동아출판",
+      "course": "통합과학1",
+      "level": "고1 공통",
+      "note": "68쪽 이온 결합 화합물과 공유 결합 화합물의 전기 전도성 비교하기",
+      "sure": "confirmed",
+      "page": "68",
+      "activity": "이온 결합 화합물과 공유 결합 화합물의 전기 전도성 비교하기",
+      "unit": "Ⅱ. 물질과 규칙성 / 2. 자연을 구성하는 원소",
+      "uses": false
+    },
+    {
+      "publisher": "미래엔",
+      "course": "통합과학1",
+      "level": "고1 공통",
+      "note": "72쪽 이온 결합 물질과 공유 결합 물질의 성질 비교하기",
+      "sure": "confirmed",
+      "page": "72",
+      "activity": "이온 결합 물질과 공유 결합 물질의 성질 비교하기",
+      "unit": "Ⅱ. 물질과 규칙성 / 1. 원소의 생성과 규칙성",
+      "uses": false
+    },
+    {
+      "publisher": "천재교과서",
+      "course": "통합과학1",
+      "level": "고1 공통",
+      "note": "70쪽 이온 결합 물질과 공유 결합 물질의 성질 비교하기",
+      "sure": "confirmed",
+      "page": "70",
+      "activity": "이온 결합 물질과 공유 결합 물질의 성질 비교하기",
+      "unit": "Ⅱ. 물질과 규칙성 / 화학 결합에 따른 물질의 성질",
+      "uses": false
+    }
+  ],
   "event": {
     "label": "시료 번호",
     "unit": "번",

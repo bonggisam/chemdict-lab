@@ -60,14 +60,35 @@
     {
       "publisher": "미래엔",
       "course": "과학탐구실험2",
-      "note": "48·67쪽 마이크로컨트롤러로 물리적 현상 수집·분석 (적외선 거리 센서)",
-      "sure": "confirmed"
+      "level": "고1 공통",
+      "note": "48쪽 마이크로컨트롤러를 활용하여 물리적 현상 수집, 분석하기",
+      "sure": "confirmed",
+      "page": "48",
+      "activity": "마이크로컨트롤러를 활용하여 물리적 현상 수집, 분석하기",
+      "unit": "Ⅱ. 미래 사회와 첨단 과학 탐구",
+      "uses": true
     },
     {
       "publisher": "미래엔",
-      "course": "과학탐구실험2",
-      "note": "70~73쪽 초음파 센서를 활용한 자동 선풍기",
-      "sure": "confirmed"
+      "course": "역학과 에너지",
+      "level": "고2·3 선택",
+      "note": "122쪽 초음파 센서로 속력 측정 장치 만들기",
+      "sure": "confirmed",
+      "page": "122",
+      "activity": "초음파 센서로 속력 측정 장치 만들기",
+      "unit": "Ⅲ. 탄성파와 소리",
+      "uses": true
+    },
+    {
+      "publisher": "천재교과서",
+      "course": "물리학",
+      "level": "고2·3 선택",
+      "note": "47쪽 나만의 풍선 차를 만들자!",
+      "sure": "similar",
+      "page": "47",
+      "activity": "나만의 풍선 차를 만들자!",
+      "unit": "Ⅰ. 힘과 에너지",
+      "uses": true
     }
   ]
 }

@@ -71,7 +71,41 @@
       "산·염기는 보안경과 장갑을 끼고 다루며, 피부에 묻으면 바로 물로 씻습니다."
     ]
   },
-  "textbooks": [],
+  "textbooks": [
+    {
+      "publisher": "미래엔",
+      "course": "과학탐구실험1",
+      "level": "고1 공통",
+      "note": "55쪽 과학 마술에 활용할 수 있는 화학 반응(지시약의 색 변화)",
+      "sure": "confirmed",
+      "page": "55",
+      "activity": "과학 마술에 활용할 수 있는 화학 반응(지시약의 색 변화)",
+      "unit": "Ⅱ. 과학 탐구의 과정과 절차",
+      "uses": false
+    },
+    {
+      "publisher": "천재교과서",
+      "course": "과학탐구실험1",
+      "level": "고1 공통",
+      "note": "59쪽 지시약의 색 변화 알아보기",
+      "sure": "similar",
+      "page": "59",
+      "activity": "지시약의 색 변화 알아보기",
+      "unit": "Ⅱ. 과학 탐구의 과정과 절차",
+      "uses": false
+    },
+    {
+      "publisher": "천재교과서",
+      "course": "통합과학2",
+      "level": "고1 공통",
+      "note": "48쪽 산과 염기의 성질",
+      "sure": "similar",
+      "page": "48",
+      "activity": "산과 염기의 성질",
+      "unit": "Ⅰ. 변화와 다양성 / 산과 염기의 종류와 성질",
+      "uses": false
+    }
+  ],
   "event": {
     "label": "넣은 NaOH 부피",
     "unit": "mL",
