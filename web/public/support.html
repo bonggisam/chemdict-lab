@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ChemDict Lab 지원</title>
+<style>
+  :root { --bg:#eef4f1; --card:#fff; --ink:#0f1a17; --muted:#4a5a54; --accent:#007a5e; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#0b1411; --card:#13211c; --ink:#e8f1ed; --muted:#9fb3ab; --accent:#2ee6b0; } }
+  body { margin:0; background:var(--bg); color:var(--ink); font:16px/1.65 -apple-system, "Apple SD Gothic Neo", "Noto Sans KR", system-ui, sans-serif; }
+  main { max-width:760px; margin:0 auto; padding:32px 16px 64px; }
+  section { background:var(--card); border-radius:14px; padding:20px 22px; margin:16px 0; }
+  h1 { font-size:26px; } h2 { font-size:18px; margin:0 0 8px; color:var(--accent); }
+  .note { color:var(--muted); font-size:14px; } a { color:var(--accent); }
+</style>
+</head>
+<body>
+<main>
+  <h1>ChemDict Lab 지원</h1>
+  <p>아두이노 센서로 과학 실험 데이터를 얻고 해석하는 무료 앱입니다 (아이패드·맥·웹).</p>
+
+  <section>
+    <h2>준비물</h2>
+    <ul>
+      <li>아이패드: 블루투스 보드 <b>UNO R4 WiFi</b> 또는 <b>UNO Q</b></li>
+      <li>맥: 위 블루투스 보드 + USB 보드(UNO R3·Nano·Mega·Leonardo·UNO R4, 호환 보드 포함)</li>
+      <li>보드에 ChemDict 측정 프로그램을 한 번 올립니다 → <a href="./">웹앱</a>의 [측정 프로그램 설치] (UNO R3·Nano·Mega·Leonardo) 또는 Arduino IDE (UNO R4 WiFi·UNO Q)</li>
+      <li>보드가 없으면 앱의 [보드 없이 체험]으로 모든 기능을 써 볼 수 있습니다.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>자주 묻는 것</h2>
+    <ul>
+      <li><b>보드가 안 보여요</b> — 블루투스 권한을 허용했는지, 다른 기기가 이미 연결하지 않았는지, UNO Q라면 켠 뒤 1분 기다렸는지 확인합니다.</li>
+      <li><b>센서를 못 찾아요</b> — 앱의 연결 그림대로 다시 꽂고 [센서 다시 찾기]를 누릅니다. 연결 사진 점검 목록을 이용하세요.</li>
+      <li><b>값이 이상해요</b> — 측정 화면의 [센서 점검]에서 얼음물·완충액 같은 기준과 비교해 오차를 확인하고 [보정]합니다.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>문의</h2>
+    <p><a href="https://github.com/bonggisam/chemdict-lab/issues">GitHub 문의 게시판</a> · 학교 수업 활용 문의도 환영합니다.</p>
+    <p><a href="privacy.html">개인정보 처리방침</a></p>
+    <p class="note">Arduino는 Arduino SA의 상표이며, ChemDict Lab은 Arduino 공식 제품이 아닙니다.</p>
+  </section>
+</main>
+</body>
+</html>
