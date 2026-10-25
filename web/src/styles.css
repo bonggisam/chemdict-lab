@@ -742,3 +742,7 @@ button.big.alt { background: linear-gradient(160deg, var(--tint), transparent 70
 .compare-ref input { width: 100px; min-height: 36px; }
 .compare-ref .cr-out { font-variant-numeric: tabular-nums; }
 .compare-ref .cr-out.pass { color: var(--ok); font-weight: 700; } .compare-ref .cr-out.fail { color: var(--mark); font-weight: 700; }
+
+/* 앱 정보 링크 (왼쪽 목차 아래) */
+.about-link { display: flex; align-items: center; min-height: 44px; padding: 0 4px; font-size: 14px; color: inherit; opacity: 0.8; text-decoration: none; }
+.about-link:hover { opacity: 1; text-decoration: underline; }

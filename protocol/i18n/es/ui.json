@@ -617,5 +617,7 @@
  "모든 테스트를 통과했습니다. 측정을 시작하세요.": "Todas las pruebas superadas. Empiece a medir.",
  "고장 신호와 원인": "Señales de fallo y causas",
  "5 V 전용 · 분압 필요": "Solo 5 V · requiere divisor",
- "전원 5 V 핀": "Alimentación por pin 5 V"
+ "전원 5 V 핀": "Alimentación por pin 5 V",
+ "앱 정보 · 사용법 · 만든 사람": "Acerca de · Cómo usar · Créditos",
+ "개인정보 처리방침": "Política de privacidad"
 }

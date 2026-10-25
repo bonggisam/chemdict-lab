@@ -497,6 +497,7 @@ export default function App() {
               {LANGS.map((l) => <option key={l.code} value={l.code}>{l.name}</option>)}
             </select>
           </label>
+          <a className="about-link" href="about.html" target="_blank" rel="noopener">ℹ️ {t('앱 정보 · 사용법 · 만든 사람')}</a>
         </>}
       />
       <div id="content" className="content">
@@ -664,6 +665,7 @@ export default function App() {
         <footer className="site-foot note">
           <p>{t('© 2026 ChemDict 화학사전 · 학교·개인 비상업 사용 무료 · 무단 판매·재배포 금지')}</p>
           <p>{t('Arduino는 Arduino SA의 상표이며, 이 앱은 Arduino 공식 제품이 아닙니다.')}</p>
+          <p><a href="about.html">{t('앱 정보 · 사용법 · 만든 사람')}</a> · <a href="https://www.youtube.com/@chemdic">YouTube @chemdic</a> · <a href="privacy.html">{t('개인정보 처리방침')}</a></p>
         </footer>
       )}
       </Fragment>

@@ -617,5 +617,7 @@
  "{board}는 3.3 V 보드입니다. 이 센서는 5 V 전용이라 전원은 [5V] 핀에서 받고, 신호가 3.3 V를 넘으므로 신호선에 2:1 분압(10 kΩ+10 kΩ)을 넣은 뒤 [센서 보정]에서 배율을 2배로 맞춥니다. 분압 없이 꽂으면 보드가 망가질 수 있습니다.": "{board} é uma placa de 3.3 V. Este sensor é só de 5 V: a alimentação vem do pino [5V] e, como o sinal passa de 3.3 V, coloque um divisor 2:1 (10 kΩ+10 kΩ) no fio de sinal e ajuste o fator para 2 em [Calibrar sensor]. Ligar sem divisor pode danificar a placa.",
  "{board}는 3.3 V 보드입니다. 이 센서는 전원 5 V 전용이라 VCC를 [5V] 핀에 꽂습니다 (신호는 3.3 V 이하).": "{board} é uma placa de 3.3 V. Este sensor só funciona com alimentação de 5 V, então ligue VCC ao pino [5V] (o sinal fica abaixo de 3.3 V).",
  "5 V 전용 · 분압 필요": "Só 5 V · precisa de divisor",
- "전원 5 V 핀": "Alimentação no pino 5 V"
+ "전원 5 V 핀": "Alimentação no pino 5 V",
+ "앱 정보 · 사용법 · 만든 사람": "Sobre · Como usar · Créditos",
+ "개인정보 처리방침": "Política de privacidade"
 }

@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ChemDict Lab 소개</title>
+<meta name="description" content="아두이노 센서로 과학 실험 데이터를 얻고 해석하는 무료 앱 — 화학사전(ChemDict)">
+<style>
+  :root { --bg:#eef4f1; --card:#fff; --ink:#0f1a17; --muted:#4a5a54; --accent:#007a5e; --mark:#c2410c; --line:#d6e3dd; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#0b1411; --card:#13211c; --ink:#e8f1ed; --muted:#9fb3ab; --accent:#2ee6b0; --mark:#ff8a52; --line:#24382f; } }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font:16px/1.7 -apple-system, "Apple SD Gothic Neo", "Noto Sans KR", system-ui, sans-serif; }
+  main { max-width:820px; margin:0 auto; padding:32px 16px 64px; }
+  header { display:flex; gap:16px; align-items:center; }
+  header img { width:72px; height:72px; border-radius:18px; }
+  h1 { font-size:30px; margin:0; } .sub { color:var(--muted); margin:2px 0 0; }
+  nav.toc { display:flex; flex-wrap:wrap; gap:8px; margin:20px 0 4px; }
+  nav.toc a { padding:6px 12px; border-radius:999px; background:var(--card); border:1px solid var(--line); text-decoration:none; color:var(--ink); font-size:14px; min-height:36px; display:inline-flex; align-items:center; }
+  section { background:var(--card); border-radius:16px; padding:20px 22px; margin:16px 0; border:1px solid var(--line); }
+  h2 { font-size:19px; margin:0 0 10px; color:var(--accent); }
+  ol, ul { padding-left:22px; margin:0; } li { margin:4px 0; }
+  .btn { display:inline-flex; align-items:center; gap:6px; min-height:44px; padding:0 16px; border-radius:12px; background:var(--accent); color:#fff; text-decoration:none; font-weight:700; margin:4px 8px 4px 0; }
+  @media (prefers-color-scheme: dark) { .btn { color:#0f1a17; } }
+  .k { color:var(--accent); font-weight:700; } .w { color:var(--mark); font-weight:700; }
+  .note { color:var(--muted); font-size:14px; }
+  table { border-collapse:collapse; width:100%; font-size:15px; } td, th { border-bottom:1px solid var(--line); padding:8px 6px; text-align:left; vertical-align:top; }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <img src="logo-128.png" alt="">
+    <div>
+      <h1>ChemDict Lab</h1>
+      <p class="sub">아두이노 센서로 하는 과학 실험 · 무료 · 아이패드 · 맥 · 웹</p>
+    </div>
+  </header>
+
+  <nav class="toc" aria-label="목차">
+    <a href="#what">어떤 앱</a><a href="#how">사용법</a><a href="#why">만든 뜻</a><a href="#who">만든 사람</a>
+    <a href="#video">영상</a><a href="#lang">언어 바꾸기</a><a href="#lang-en">English</a>
+  </nav>
+
+  <section id="what">
+    <h2>🔬 어떤 앱인가요</h2>
+    <ul>
+      <li>아두이노 보드와 값싼 센서(온도·pH·압력·CO₂·빛·질량 등 <b>140여 종</b>)로 과학 실험 데이터를 바로 기록하고 그래프로 해석합니다.</li>
+      <li>2022 개정 교육과정 중·고등학교 교과서 5종의 센서 탐구 활동과 연결된 <b>실험 148개</b>가 들어 있습니다. 실험을 고르면 센서·연결 그림·실험 순서·시약 안내·해석 도구가 함께 나옵니다.</li>
+      <li>그래프 해석 도구: <span class="k">함수 찾기</span>, <span class="k">접선</span>, <span class="k">넓이</span>, <span class="k">평탄 구간</span>, <span class="k">당량점</span>, <span class="k">계산 열</span>, 센서별 해석 안내, <span class="k">센서 점검</span>(기준값과의 오차).</li>
+      <li>아이패드·맥 앱과 웹앱이 같은 측정 파일(.chemdict)을 주고받습니다.</li>
+    </ul>
+    <p>
+      <a class="btn" href="./">🌐 웹앱 열기</a>
+      <a class="btn" href="support.html">🛟 준비물 · 자주 묻는 것</a>
+    </p>
+  </section>
+
+  <section id="how">
+    <h2>👆 이렇게 씁니다</h2>
+    <ol>
+      <li><b>보드 준비</b> — 보드에 ChemDict 측정 프로그램을 한 번 올립니다. 웹앱의 <span class="k">[측정 프로그램 설치]</span>(UNO R3·Nano·Mega·Leonardo) 또는 Arduino IDE(UNO R4 WiFi·UNO Q). 보드가 없으면 <span class="k">[보드 없이 체험]</span>.</li>
+      <li><b>연결</b> — 아이패드는 블루투스(UNO R4 WiFi·UNO Q), 맥은 블루투스와 USB, 웹앱은 크롬·엣지에서 USB와 블루투스.</li>
+      <li><b>센서 카드 → 측정</b> — 센서 카드나 교과서 실험을 고르고 연결 그림대로 꽂으면 바로 측정이 시작됩니다.</li>
+      <li><b>해석</b> — 해석 도구와 센서별 안내로 그래프를 읽고, <span class="k">[센서 점검]</span>에서 얼음물·완충액 같은 기준과 오차를 확인합니다.</li>
+      <li><b>저장 · 공유</b> — CSV·PDF·측정 파일로 저장하고 반 전체 결과를 비교합니다.</li>
+    </ol>
+    <table>
+      <tr><th>기기</th><th>연결</th><th>보드</th></tr>
+      <tr><td>아이패드 앱</td><td>블루투스</td><td>UNO R4 WiFi · UNO Q</td></tr>
+      <tr><td>맥 앱</td><td>블루투스 · USB</td><td>위 보드 + UNO R3 · Nano · Mega · Leonardo · UNO R4 (호환 보드 포함)</td></tr>
+      <tr><td>웹앱 (크롬·엣지)</td><td>USB · 블루투스</td><td>모든 지원 보드 (크롬북·윈도우·맥, 안드로이드는 블루투스)</td></tr>
+    </table>
+  </section>
+
+  <section id="why">
+    <h2>💡 만든 뜻</h2>
+    <ul>
+      <li>아두이노 IDE와 코딩이 어려워 센서 실험을 포기하던 학생·교사가 <b>클릭만으로</b> 데이터를 얻게 하려고 만들었습니다.</li>
+      <li>값을 읽는 데서 끝나지 않고, 그래프를 해석하고 <b>오차를 따져 보는 탐구</b>가 되도록 해석·점검 도구를 넣었습니다.</li>
+      <li>비싼 MBL 장비 없이도 모든 학교가 같은 실험을 할 수 있도록 <b>무료</b>로 공개합니다.</li>
+    </ul>
+  </section>
+
+  <section id="who">
+    <h2>👤 만든 사람 · 배포</h2>
+    <ul>
+      <li><b>화학사전(ChemDict)</b> — 20년 차 고등학교 화학 교사. "과학이 쉽다"를 주제로 생활 속 과학 오해를 실험으로 풀어 주는 영상을 만듭니다.</li>
+      <li>앱과 웹앱은 화학사전(ChemDict)이 직접 개발해 <b>무료로 배포</b>합니다.</li>
+      <li>웹앱과 실험·센서 데이터는 <a href="https://github.com/bonggisam/chemdict-lab">GitHub</a>에 비상업 라이선스(PolyForm Noncommercial 1.0.0)로 공개되어 있습니다. 학교·개인의 비상업 사용은 자유롭고, <span class="w">무단 판매·재배포는 허용하지 않습니다</span>.</li>
+    </ul>
+  </section>
+
+  <section id="video">
+    <h2>🎬 영상 · 자료</h2>
+    <p>
+      <a class="btn" href="https://www.youtube.com/@chemdic">▶️ 유튜브 화학사전 @chemdic</a>
+      <a class="btn" href="https://www.instagram.com/chemdic_official/">📷 인스타그램 chemdic_official</a>
+    </p>
+    <p class="note">사용법 영상은 유튜브 화학사전 채널의 재생목록 「교사를 위한 아두이노 | 클릭으로 시작하는 센서 실험」에 차례로 올라옵니다.</p>
+    <p><a href="https://github.com/bonggisam/chemdict-lab">💻 소스 · 데이터 (GitHub)</a> · <a href="support.html">🛟 지원 · 문의</a> · <a href="privacy.html">🔒 개인정보 처리방침 (수집하는 정보 없음)</a></p>
+  </section>
+
+  <section id="lang">
+    <h2>🌐 언어 바꾸기 (10개 언어)</h2>
+    <p>한국어 · English · 日本語 · 中文 · Español · Français · Deutsch · Português · Tiếng Việt · Bahasa Indonesia</p>
+    <ul>
+      <li><b>웹앱</b>: 화면 위쪽(또는 왼쪽 목차 아래)의 <span class="k">🌐 언어</span> 메뉴에서 고르면 바로 바뀝니다.</li>
+      <li><b>아이패드·맥 앱</b>: 처음 실행 안내 첫 장, 또는 왼쪽 목차 아래 <span class="k">[앱 정보 · 언어 · 만든 사람]</span>에서 고른 뒤 앱을 완전히 닫았다가 다시 엽니다.</li>
+      <li>기기 설정으로 바꾸기: 아이패드는 <b>설정 → 앱 → ChemDict Lab → 언어</b>, 맥은 <b>시스템 설정 → 일반 → 언어 및 지역 → 응용 프로그램</b>에서 ChemDict Lab을 추가합니다.</li>
+    </ul>
+  </section>
+
+  <section id="lang-en" lang="en">
+    <h2>About (English)</h2>
+    <p>ChemDict Lab is a free app for school science experiments with Arduino boards and low-cost sensors (140+ types). Pick a sensor card or one of 148 curriculum experiments, wire it as shown, and start measuring; then interpret the graph with curve fit, tangent, area, plateau and equivalence-point tools, and check sensor error against reference situations. It was made by <b>ChemDict (화학사전)</b>, a high-school chemistry teacher with 20 years of experience, so that students and teachers can get sensor data with clicks instead of code. Videos: <a href="https://www.youtube.com/@chemdic">YouTube @chemdic</a>. Change the language in the web app's 🌐 menu, or in the iPad/Mac app under <i>About · Language</i> (then reopen the app).</p>
+  </section>
+
+  <p class="note">Arduino는 Arduino SA의 상표이며, ChemDict Lab은 Arduino 공식 제품이 아닙니다. © 2026 ChemDict 화학사전</p>
+</main>
+</body>
+</html>
