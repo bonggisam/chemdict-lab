@@ -122,6 +122,7 @@ export function Guide({ experiments, board, initialExpId, initialPartId, initial
                 {exp.textbooks?.length ? (
                   <ul className="pubs">{exp.textbooks.map((tb, i) => <li key={i}><b>{tb.publisher}</b> {tb.course} — {tb.note}{tb.sure !== 'confirmed' ? ` (${tb.sure === 'mentioned' ? t('자료 언급') : t('비슷한 활동')})` : ''}</li>)}</ul>
                 ) : null}
+                {exp.textbooks?.length || exp.standards.length ? <p className="note">{t('교과서 쪽수·활동 이름은 수업 준비를 돕는 참고 정보입니다. 각 출판사와 관계없는 독립 앱입니다. 성취기준: 2022 개정 교육과정(교육부 고시).')}</p> : null}
               </div>
             )}
             {setup?.choose && (

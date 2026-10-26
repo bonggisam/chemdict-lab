@@ -3,7 +3,7 @@
 - 사용자: 고등학교 화학 교사. 설명과 UI 문구는 한국어, 짧고 명확하게.
 - 보드↔앱 통신 규칙은 `protocol/PROTOCOL.md`가 기준이다. 펌웨어·웹앱·애플 앱 중 하나를 바꾸면 나머지와 문서를 함께 맞춘다. 애플 앱은 비공개 저장소 `bonggisam/chemdict-lab-apple`(이 저장소를 `core/` 서브모듈로 씀)에 있다.
 - 연결 안내(보드·센서·배선)는 `tools/make_guide.py`를 고치고 실행해 `protocol/guide.json`을 만든다 (json 직접 수정 금지).
-- 교과서 활동 목록은 `protocol/curriculum/textbook_activities.json`(미래엔·동아출판·천재교과서 2022 개정 교과서·지도서에서 센서로 가능한 탐구만, 출판사·쪽·활동·센서·연결된 실험 id). `make_experiments.py`가 실험마다 textbooks로 붙인다. 교과서 참조는 번역하지 않는다. 성취기준 원문은 `tools/standards_2022.json`.
+- 교과서 활동 목록은 `protocol/curriculum/textbook_activities.json`(미래엔·동아출판·천재교과서·지학사·YBM 2022 개정 교과서·지도서에서 센서로 가능한 탐구만, 출판사·쪽·짧은 활동 이름·센서·연결된 실험 id). 교과서 본문·발문·그림·표·데이터는 넣지 않는다 (NOTICE.md). `make_experiments.py`가 실험마다 textbooks로 붙인다. 교과서 참조는 번역하지 않는다. 성취기준 원문은 `tools/standards_2022.json`.
 - 실험 템플릿은 `protocol/experiments/*.json` 하나만 고친다. 교육과정 실험(cur-*)과 찾기 정보는 `tools/make_experiments.py`를 고치고 실행해 만든다 (웹앱은 import.meta.glob, 애플 앱은 폴더 참조로 같은 파일을 읽음).
 - 참고 자료: 센서별 그래프 해석 안내는 `protocol/analysis_methods.json`(bySensor의 키 = 센서 type, `tool`은 앱 도구 이름으로 시작해야 [적용]이 됨), 시약 설명·조제법은 `protocol/reagents.json`(`matches`가 실험 준비물 문구의 부분 문자열), 센서 점검(사양·기준 상황·테스트)은 `tools/make_sensor_checks.py`를 고치고 실행해 `protocol/sensor_checks.json`을 만든다. i18n_extract가 `ana.*`·`reagent.*`·`check.*` 키로 뽑는다.
 - 연결 안내의 전원 규칙: 5 V 전용 부품은 `make_guide.py`의 `NEEDS_5V`(출력이 3.3 V를 넘으면 `OUT_OVER_33`, 전류가 크면 `CURRENT_MA`)에 넣으면 연결 방식·경고·배지가 자동으로 붙는다. 배열 중간에 문장을 끼우면 i18n 키 번호가 밀리므로 새 문장은 끝에 붙이고, 바꾼 문장은 각 언어 content.json에서 그 키를 지워 다시 번역한다.

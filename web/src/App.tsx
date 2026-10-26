@@ -539,8 +539,10 @@ export default function App() {
   /** 기기 센서로 바꿔 연결 (다른 보드는 끊음) */
   const useDevice = async () => {
     if (isDevice()) return;
+    const board = transportRef.current && transportRef.current.kind !== 'sim';
     if (transportRef.current) await disconnect();
     await connect('device');
+    if (board) say('ok', t('보드 연결을 끊고 이 기기 센서로 잽니다. 보드는 ‘1 보드 연결’에서 다시 연결할 수 있습니다.'));
   };
   const startDevice = async (k: DeviceKit) => {
     setDevKit(null);
@@ -649,12 +651,12 @@ export default function App() {
           onConnect={(k) => connect(k)}
           onInstall={install}
           onNext={() => { setFw(null); setScreen(exp ? 'measure' : 'pick'); }}
+          deviceSlot={<div className="connect-device"><DeviceSection compact onOpen={setDevKit} /></div>}
         />
       )}
       {screen === 'connect' && sharedTitle && (
         <p className="shared-bar" role="status">🔗 {t('공유받은 실험: ‘{title}’ — 보드를 연결하면 바로 측정 화면이 열립니다.', { title: sharedTitle })}</p>
       )}
-      {screen === 'connect' && <div className="wide connect-device"><DeviceSection compact onOpen={setDevKit} /></div>}
       {screen === 'connect' && <div className="wide connect-recent"><RecentSessions compact onOpen={openSession} say={say} /></div>}
 
       {screen === 'pick' && (
@@ -682,7 +684,7 @@ export default function App() {
 
           <RecentSessions onOpen={openSession} say={say} />
 
-          <DeviceSection onOpen={setDevKit} activeId={isDevice() ? exp?.id : undefined} />
+          <DeviceSection onOpen={setDevKit} activeId={isDevice() ? exp?.id : undefined} collapsed={!!connLabel && !isDevice()} />
 
           <div data-nav={t('센서로 바로 측정')}><SensorPicker board={board} connectedTypes={sensors.filter((s) => s.src !== 'demo').map((s) => s.type)} onPick={(p) => setQuick({ part: p, status: 'idle' })} /></div>
 

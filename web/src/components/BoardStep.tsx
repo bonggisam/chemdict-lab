@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import type { Board } from '../lib/guide';
 import { Ico } from './Ico';
 import { ICON } from '../lib/icons';
@@ -28,13 +29,15 @@ interface Props {
   onConnect: (kind: 'serial' | 'ble' | 'sim' | 'device') => void;
   onInstall: (boardId: string) => void;
   onNext: () => void;
+  /** 큰 버튼 바로 아래에 보일 '이 기기 센서' 칸 */
+  deviceSlot?: ReactNode;
 }
 
 const STAGE = { reset: tk('보드를 설치 모드로 바꾸는 중'), write: tk('측정 프로그램을 쓰는 중'), verify: tk('제대로 써졌는지 확인하는 중'), done: tk('마무리하는 중') } as const;
 const REPO = 'https://github.com/bonggisam/chemdict-lab/tree/main/firmware';
 
 /** 1단계: 보드 고르기 → 연결 → (필요하면) 측정 프로그램 설치 */
-export function BoardStep({ board, detectedId, onPickBoard, connected, busy, fw, onConnect, onInstall, onNext }: Props) {
+export function BoardStep({ board, detectedId, onPickBoard, connected, busy, fw, onConnect, onInstall, onNext, deviceSlot }: Props) {
   // 설치할 보드: USB 번호로 알아낸 보드 → 아니면 사용자가 고른 보드
   const usbBoard = fw?.status === 'missing' ? fw.usbBoard : undefined;
   const targetId = usbBoard && usbBoard !== 'clone' ? usbBoard : board.id;
@@ -61,6 +64,8 @@ export function BoardStep({ board, detectedId, onPickBoard, connected, busy, fw,
         </button>
       </div>
 
+      {deviceSlot}
+
       <section className="guide-block" id="board-connect">
         <h2><Ico e={ICON.board} />{t('보드 고르기')}</h2>
         <p className="note">{t('가지고 있는 보드를 누르세요. USB로 연결하면 자동으로 맞춰집니다.')}</p>
@@ -77,10 +82,6 @@ export function BoardStep({ board, detectedId, onPickBoard, connected, busy, fw,
           <button className="big" disabled={!hasBluetooth() || busy || connected || !board.ble} onClick={() => onConnect('ble')}>
             <span className="big-ico" aria-hidden="true">{ICON.ble}</span><b>{t('블루투스로 연결')}</b>
             <span>{!board.ble ? t('이 보드는 USB만 됩니다') : hasBluetooth() ? 'ChemDict-01 ~ 08' : t('이 브라우저에서는 사용할 수 없음')}</span>
-          </button>
-          <button className="big alt" disabled={busy || connected} onClick={() => onConnect('sim')}>
-            <span className="big-ico" aria-hidden="true">{ICON.sim}</span><b>{t('보드 없이 체험')}</b>
-            <span>{t('시뮬레이터 데이터')}</span>
           </button>
         </div>
         {!hasSerial() && !hasBluetooth() && (

@@ -6,23 +6,36 @@ import { availableKits, kitUsesCamera, kitUsesMic, ABSORB, type DeviceKit, type 
 import { R } from './Rich';
 
 /** 2.0: 보드 없이 이 기기의 센서로 측정하는 카드 */
-export function DeviceSection({ onOpen, activeId, compact }: { onOpen: (k: DeviceKit) => void; activeId?: string; compact?: boolean }) {
+export function DeviceSection({ onOpen, activeId, compact, collapsed }: { onOpen: (k: DeviceKit) => void; activeId?: string; compact?: boolean; collapsed?: boolean }) {
   const kits = availableKits();
   if (!kits.length) return null;
+  const cards = (
+    <div className="sensor-cards">
+      {kits.map((k) => (
+        <button key={k.id} className={`sensor-card ${activeId === `quick-${k.id}` ? 'is-on' : ''}`} onClick={() => onOpen(k)}>
+          <span className="sc-ico" aria-hidden="true">{catIcon(k.category)}</span>
+          <b>{k.name}</b>
+          <span className="measures">{k.provides.map((ty) => typeInfo(ty)?.name ?? ty).join(' · ')}</span>
+          {activeId === `quick-${k.id}` && <span className="badges"><span className="badge ok">{t('✓ 측정 중인 카드')}</span></span>}
+        </button>
+      ))}
+    </div>
+  );
+  // 보드가 연결된 동안: 한 줄로 접어 두고 필요할 때만 펼침 (화면을 덜 어지럽게)
+  if (collapsed) {
+    return (
+      <details className="device-section" data-nav={t('이 기기 센서')}>
+        <summary>📱 {t('이 기기 센서로 측정')} <span className="note">({kits.length})</span></summary>
+        <p className="note"><R t={t('보드가 없어도 됩니다. 카드를 누르고 [측정 시작]을 누르면 이 기기의 센서로 바로 기록합니다.')} /></p>
+        {cards}
+      </details>
+    );
+  }
   return (
     <section className={`device-section ${compact ? 'compact' : ''}`} data-nav={t('이 기기 센서')}>
       <h2>📱 {t('이 기기 센서로 측정')}</h2>
       <p className="note"><R t={t('보드가 없어도 됩니다. 카드를 누르고 [측정 시작]을 누르면 이 기기의 센서로 바로 기록합니다.')} /></p>
-      <div className="sensor-cards">
-        {kits.map((k) => (
-          <button key={k.id} className={`sensor-card ${activeId === `quick-${k.id}` ? 'is-on' : ''}`} onClick={() => onOpen(k)}>
-            <span className="sc-ico" aria-hidden="true">{catIcon(k.category)}</span>
-            <b>{k.name}</b>
-            <span className="measures">{k.provides.map((ty) => typeInfo(ty)?.name ?? ty).join(' · ')}</span>
-            {activeId === `quick-${k.id}` && <span className="badges"><span className="badge ok">{t('✓ 측정 중인 카드')}</span></span>}
-          </button>
-        ))}
-      </div>
+      {cards}
     </section>
   );
 }

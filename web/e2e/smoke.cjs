@@ -19,6 +19,9 @@ const URL = process.env.URL || 'http://localhost:4173/';
     await p.locator('.home-tiles .t-sim').click();
     await p.waitForTimeout(600);
     check(await p.locator('.sensor-cards').count() > 0, `${name}: 보드 없이 체험 → 센서 카드`);
+    // 보드(체험)가 연결된 동안 이 기기 센서 칸은 접혀 있음 → 펼침
+    const fold = p.locator('details.device-section > summary');
+    if (await fold.count()) { await fold.first().click(); await p.waitForTimeout(200); }
     const absorb = p.locator('.device-section .sensor-card', { hasText: '흡광도' });
     if (await absorb.count()) {
       await absorb.first().click();

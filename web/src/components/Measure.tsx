@@ -440,6 +440,8 @@ export function Measure(p: Props) {
   const trigSensor = charts.find((c) => c.sensor.id === (trigId || charts[0]?.sensor.id));
   const derivPts = (run: Run) => (anaChart ? derivative(smooth(pointsFor(run, anaId), Math.max(3, smoothWin))) : []);
   const otherSensors = mode === 'time' ? allCharts : [];
+  // 이 기기 센서로 재는 중: 연결할 선이 없으므로 '연결 안내'를 숨김
+  const onDevice = sensors.length > 0 && sensors.every((s) => s.src === 'device');
 
   return (
     <main className="wide measure">
@@ -452,7 +454,7 @@ export function Measure(p: Props) {
         <div className="controls">
           {mode === 'time' && <IntervalPicker value={p.intervalMs} disabled={running} onChange={p.setIntervalMs} />}
           {mode === 'time' && (
-            <select aria-label={t('끝내기')} title={t('정한 시간이 되면 측정을 멈추고 알림을 보냅니다')} value={p.autoStopMin} disabled={running} onChange={(e) => p.setAutoStopMin(Number(e.target.value))}>
+            <select className="autostop" aria-label={t('끝내기')} title={t('정한 시간이 되면 측정을 멈추고 알림을 보냅니다')} value={p.autoStopMin} disabled={running} onChange={(e) => p.setAutoStopMin(Number(e.target.value))}>
               <option value={0}>{t('시간 정하지 않음')}</option>
               {[1, 5, 10, 30, 60, 120].map((m) => <option key={m} value={m}>{t('{n}분 뒤 끝내기', { n: m })}</option>)}
             </select>
@@ -676,11 +678,12 @@ export function Measure(p: Props) {
           </div>
         )}
         <div className="actions">
-          {on('measure') && charts.length > 0 && <>
-            <button className={`ghost ${sonify ? 'on' : ''}`} aria-pressed={sonify} disabled={micBusy} title={micBusy ? t('마이크로 재는 중에는 쓸 수 없습니다') : t('값이 커지면 높은 소리, 작아지면 낮은 소리가 납니다')} onClick={() => { primeAudio(); setSonify((v) => !v); }}>🔊 {t('값을 소리로 듣기')}</button>
-            <button className="ghost" disabled={micBusy || running || rowCount < 2} onClick={() => playSeries((active?.rows ?? []).map((r) => r.v[firstId!]).filter((v): v is number => typeof v === 'number'))}>▶ {t('그래프 소리로 재생')}</button>
+          {/* 소리로 듣기: 마이크로 재는 중에는 숨김, 재생은 멈춘 뒤 기록이 있을 때만 */}
+          {on('measure') && charts.length > 0 && !micBusy && <>
+            <button className={`ghost ${sonify ? 'on' : ''}`} aria-pressed={sonify} title={t('값이 커지면 높은 소리, 작아지면 낮은 소리가 납니다')} onClick={() => { primeAudio(); setSonify((v) => !v); }}>🔊 {t('값을 소리로 듣기')}</button>
+            {!running && rowCount >= 2 && <button className="ghost" onClick={() => playSeries((active?.rows ?? []).map((r) => r.v[firstId!]).filter((v): v is number => typeof v === 'number'))}>▶ {t('그래프 소리로 재생')}</button>}
           </>}
-          <button className="ghost" onClick={p.onOpenGuide}><Ico e={ICON.guide} />{t('연결 안내')}</button>
+          {!onDevice && <button className="ghost" onClick={p.onOpenGuide}><Ico e={ICON.guide} />{t('연결 안내')}</button>}
           {explore && <button className="ghost" disabled={running} onClick={p.onOpenSetup}><Ico e={ICON.setup} />{t('센서 설정')}</button>}
           <button className="ghost" disabled={!sensors.some((s) => s.spec && s.spec.cal.kind !== 'none')} onClick={() => p.onOpenCal(charts[0]?.sensor.id)}><Ico e={ICON.cal} />{t('보정')}</button>
           <button className="ghost" onClick={() => p.onOpenCheck(charts[0]?.sensor.id)}><Ico e={ICON.test} />{t('점검')}</button>
