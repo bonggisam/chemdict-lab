@@ -678,5 +678,11 @@
  "{n}초 전": "{n} dtk lalu",
  "실제 간격": "Interval sebenarnya",
  "끊김 · 다시 연결": "Putus · sambung ulang",
- "이렇게 해 보세요": "Coba lakukan ini"
+ "이렇게 해 보세요": "Coba lakukan ini",
+ "데이터 없음": "Tidak ada data",
+ "점 {n}개, 처음 {a}, 마지막 {b}, 최솟값 {lo}, 최댓값 {hi}": "{n} titik, awal {a}, akhir {b}, min {lo}, maks {hi}",
+ "마이크로 재는 중에는 쓸 수 없습니다": "Tidak tersedia saat mengukur dengan mikrofon",
+ "값이 커지면 높은 소리, 작아지면 낮은 소리가 납니다": "Nilai tinggi berbunyi nada tinggi, nilai rendah nada rendah",
+ "값을 소리로 듣기": "Dengarkan nilai sebagai suara",
+ "그래프 소리로 재생": "Putar grafik sebagai suara"
 }

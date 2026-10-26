@@ -8,6 +8,7 @@ import { hasBluetooth, hasSerial } from '../lib/transports';
 import { BoardPicker } from './BoardPicker';
 import { R } from './Rich';
 import { availableKits } from '../lib/device';
+import { scrollBehavior } from '../lib/sonify';
 
 export type FwState =
   | { status: 'checking' }
@@ -48,11 +49,11 @@ export function BoardStep({ board, detectedId, onPickBoard, connected, busy, fw,
       {/* 2.0 첫 화면: 큰 버튼 3개 (이 기기 · 보드 · 체험) */}
       <div className="home-tiles" data-nav={t('어떻게 잴까요?')}>
         {availableKits().length > 0 && (
-          <button className="t-dev" onClick={() => document.querySelector('.connect-device')?.scrollIntoView({ behavior: 'smooth' })}>
+          <button className="t-dev" onClick={() => document.querySelector('.connect-device')?.scrollIntoView({ behavior: scrollBehavior() })}>
             <span className="ico" aria-hidden="true">📱</span><b>{t('이 기기로 바로 재기')}</b><span className="note">{t('선 없이 기기 센서로 (소리·빛·움직임)')}</span>
           </button>
         )}
-        <button onClick={() => document.getElementById('board-connect')?.scrollIntoView({ behavior: 'smooth' })}>
+        <button onClick={() => document.getElementById('board-connect')?.scrollIntoView({ behavior: scrollBehavior() })}>
           <span className="ico" aria-hidden="true">📡</span><b>{t('센서 보드 연결')}</b><span className="note">{t('USB · 블루투스 아두이노 보드')}</span>
         </button>
         <button className="t-sim" disabled={busy || connected} onClick={() => onConnect('sim')}>

@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Ico } from './Ico';
 import { ICON } from '../lib/icons';
 import { Chart, fmt, type ChartTool, type ChartView, type Overlays, type Series } from './Chart';
@@ -26,6 +26,8 @@ import { SensorTips } from './SensorTips';
 import { checkFor, checkKey } from '../lib/sensorChecks';
 import { useExplore } from '../lib/prefs';
 import { BigScreen } from './BigScreen';
+import { liveTone, playSeries, silence } from '../lib/sonify';
+import { SOUND } from '../lib/device';
 
 export interface Trigger { id: string; dir: 'up' | 'down'; value: number }
 
@@ -110,6 +112,8 @@ export function Measure(p: Props) {
   const on = (...ts: (typeof tab)[]) => ts.includes(tab);
   const [explore] = useExplore();
   const [big, setBig] = useState(false);
+  const [sonify, setSonify] = useState(false);   // 값을 소리로 듣기
+  const micBusy = exp.sensors.some((s) => SOUND.includes(s)) && sensors.some((s) => s.src === 'device');
 
   const setXAxis = (id: string) => { setXAxisState(id); setZoom(null); setSelection(null); };
 
@@ -219,6 +223,19 @@ export function Measure(p: Props) {
     if (!running || !active) return null;
     return isStable(recentValues(active, s.id, 3), s.spec?.stableBand ?? 0.05);
   };
+
+  // ---- 값을 소리로 듣기 (실시간)
+  const firstId = charts[0]?.sensor.id;
+  const rowCount = active?.rows.length ?? 0;
+  useEffect(() => {
+    if (!sonify || !firstId || !active) return;
+    const vals = active.rows.slice(-300).map((r) => r.v[firstId]).filter((v): v is number => typeof v === 'number');
+    const v = vals[vals.length - 1];
+    if (v === undefined) return;
+    liveTone(v, charts[0].min ?? Math.min(...vals), charts[0].max ?? Math.max(...vals));
+  }, [sonify, rowCount]); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => { if (!sonify) silence(); }, [sonify]);
+  useEffect(() => () => silence(), []);
 
   // ---- 이벤트 기록 (최근 1초 평균)
   const recordEvent = () => {
@@ -649,6 +666,10 @@ export function Measure(p: Props) {
           </div>
         )}
         <div className="actions">
+          {on('measure') && charts.length > 0 && <>
+            <button className={`ghost ${sonify ? 'on' : ''}`} aria-pressed={sonify} disabled={micBusy} title={micBusy ? t('마이크로 재는 중에는 쓸 수 없습니다') : t('값이 커지면 높은 소리, 작아지면 낮은 소리가 납니다')} onClick={() => setSonify((v) => !v)}>🔊 {t('값을 소리로 듣기')}</button>
+            <button className="ghost" disabled={micBusy || running || rowCount < 2} onClick={() => playSeries((active?.rows ?? []).map((r) => r.v[firstId!]).filter((v): v is number => typeof v === 'number'))}>▶ {t('그래프 소리로 재생')}</button>
+          </>}
           <button className="ghost" onClick={p.onOpenGuide}><Ico e={ICON.guide} />{t('연결 안내')}</button>
           {explore && <button className="ghost" disabled={running} onClick={p.onOpenSetup}><Ico e={ICON.setup} />{t('센서 설정')}</button>}
           <button className="ghost" disabled={!sensors.some((s) => s.spec && s.spec.cal.kind !== 'none')} onClick={() => p.onOpenCal(charts[0]?.sensor.id)}><Ico e={ICON.cal} />{t('보정')}</button>

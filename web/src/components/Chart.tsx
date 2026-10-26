@@ -174,6 +174,7 @@ export function Chart(props: Props) {
           ref={canvasRef}
           role="img"
           aria-label={t('{title} 그래프', { title })}
+          aria-description={summarize(series, unit)}
           onPointerDown={onDown}
           onPointerMove={onMove}
           onPointerUp={onUp}
@@ -187,4 +188,12 @@ export function Chart(props: Props) {
       </div>
     </figure>
   );
+}
+
+/** 화면 읽기 프로그램용 그래프 요약: 점 개수 · 처음 · 마지막 · 최솟값 · 최댓값 */
+function summarize(series: Series[], unit = ''): string {
+  const ys = (series[0]?.pts ?? []).map((p) => p[1]).filter((v) => Number.isFinite(v));
+  if (!ys.length) return t('데이터 없음');
+  const f = (v: number) => `${fmt(v)} ${unit}`.trim();
+  return t('점 {n}개, 처음 {a}, 마지막 {b}, 최솟값 {lo}, 최댓값 {hi}', { n: ys.length, a: f(ys[0]), b: f(ys[ys.length - 1]), lo: f(Math.min(...ys)), hi: f(Math.max(...ys)) });
 }

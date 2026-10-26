@@ -678,5 +678,11 @@
  "{n}초 전": "vor {n} s",
  "실제 간격": "Tatsächlicher Abstand",
  "끊김 · 다시 연결": "Abbrüche · Neuverbindungen",
- "이렇게 해 보세요": "Versuche Folgendes"
+ "이렇게 해 보세요": "Versuche Folgendes",
+ "데이터 없음": "Keine Daten",
+ "점 {n}개, 처음 {a}, 마지막 {b}, 최솟값 {lo}, 최댓값 {hi}": "{n} Punkte, erster {a}, letzter {b}, Min. {lo}, Max. {hi}",
+ "마이크로 재는 중에는 쓸 수 없습니다": "Nicht verfügbar, während mit dem Mikrofon gemessen wird",
+ "값이 커지면 높은 소리, 작아지면 낮은 소리가 납니다": "Hohe Werte klingen hoch, niedrige Werte tief",
+ "값을 소리로 듣기": "Werte anhören",
+ "그래프 소리로 재생": "Diagramm als Ton abspielen"
 }

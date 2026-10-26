@@ -678,5 +678,11 @@
  "{n}초 전": "{n} giây trước",
  "실제 간격": "Khoảng thời gian thực",
  "끊김 · 다시 연결": "Mất kết nối · Kết nối lại",
- "이렇게 해 보세요": "Hãy thử cách này"
+ "이렇게 해 보세요": "Hãy thử cách này",
+ "데이터 없음": "Không có dữ liệu",
+ "점 {n}개, 처음 {a}, 마지막 {b}, 최솟값 {lo}, 최댓값 {hi}": "{n} điểm, đầu {a}, cuối {b}, nhỏ nhất {lo}, lớn nhất {hi}",
+ "마이크로 재는 중에는 쓸 수 없습니다": "Không dùng được khi đang đo bằng micro",
+ "값이 커지면 높은 소리, 작아지면 낮은 소리가 납니다": "Giá trị lớn phát âm cao, giá trị nhỏ phát âm thấp",
+ "값을 소리로 듣기": "Nghe giá trị bằng âm thanh",
+ "그래프 소리로 재생": "Phát đồ thị bằng âm thanh"
 }

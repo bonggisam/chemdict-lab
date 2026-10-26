@@ -678,5 +678,11 @@
  "{n}초 전": "há {n} s",
  "실제 간격": "Intervalo real",
  "끊김 · 다시 연결": "Quedas · reconexões",
- "이렇게 해 보세요": "Tente isto"
+ "이렇게 해 보세요": "Tente isto",
+ "데이터 없음": "Sem dados",
+ "점 {n}개, 처음 {a}, 마지막 {b}, 최솟값 {lo}, 최댓값 {hi}": "{n} pontos, primeiro {a}, último {b}, mín. {lo}, máx. {hi}",
+ "마이크로 재는 중에는 쓸 수 없습니다": "Indisponível durante a medição com o microfone",
+ "값이 커지면 높은 소리, 작아지면 낮은 소리가 납니다": "Valores altos soam agudos e valores baixos, graves",
+ "값을 소리로 듣기": "Ouvir os valores",
+ "그래프 소리로 재생": "Tocar o gráfico como som"
 }

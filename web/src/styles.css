@@ -794,3 +794,17 @@ button.big.alt { background: linear-gradient(160deg, var(--tint), transparent 70
 .mode-switch button.on { background: var(--brand-deep); color: #fff; }
 @media (max-width: 480px) { .tabs3 button { font-size: 14px; padding: 6px 4px; } }
 .diag { width: 100%; border-collapse: collapse; margin: 8px 0 12px; } .diag th, .diag td { text-align: left; padding: 8px 6px; border-bottom: 1px solid var(--line); } .diag th { font-weight: 600; } .diag td.mono { font-variant-numeric: tabular-nums; color: var(--muted); }
+
+/* 2.0 접근성: 동작 줄이기 · 대비 높이기 */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+}
+@media (prefers-contrast: more) {
+  :root { --line: var(--field); --muted: #2b3a33; }
+  .sensor-card, .guide-block, .chart, .card, .tabs3, .status-strip { border-width: 2px; border-color: var(--field); }
+}
+@media (prefers-contrast: more) and (prefers-color-scheme: dark) {
+  :root { --muted: #c9d8d1; }
+}
+button.on { background: var(--brand-deep); color: #fff; }
+:focus-visible { outline: 3px solid var(--atom); outline-offset: 2px; }
