@@ -21,6 +21,7 @@ import { loadInfo, saveInfo, type ExpInfo } from './lib/info';
 import { LANGS, initialLang, loadLang, t, type Lang } from './lib/i18n';
 import { relocalize } from './lib/l10n';
 import { PwaBar } from './components/PwaBar';
+import { useExplore } from './lib/prefs';
 import { SideNav } from './components/SideNav';
 import { R } from './components/Rich';
 import { BUNDLED_FW, FlashError, TARGETS, boardFromUsb, flashBoard, older } from './lib/flash';
@@ -42,6 +43,7 @@ export default function App() {
   const deviceRef = useRef<DeviceTransport | null>(null);
   const dev = () => (deviceRef.current ??= new DeviceTransport());
   const [devKit, setDevKit] = useState<DeviceKit | null>(null);
+  const [explore, setExplore] = useExplore();   // 2.0: 쉬운 화면 / 탐구 화면
   const isDevice = () => transportRef.current?.kind === 'device';
   const [screen, setScreen] = useState<Screen>('connect');
   const [busy, setBusy] = useState(false);
@@ -568,6 +570,10 @@ export default function App() {
         <main className="wide">
           <div className="row-head">
             <h1><span className="step-no">2</span>{t('무엇을 잴까요?')}</h1>
+            <div className="mode-switch" role="radiogroup" aria-label={t('화면')}>
+              <button role="radio" aria-checked={!explore} className={!explore ? 'on' : ''} onClick={() => setExplore(false)}>{t('쉬운 화면')}</button>
+              <button role="radio" aria-checked={explore} className={explore ? 'on' : ''} onClick={() => setExplore(true)} title={t('탐구 화면은 조건 시작·예측 그리기·그래프 보기 같은 도구를 더 보여 줍니다')}>{t('탐구 화면')}</button>
+            </div>
             {hello && hello.fw !== 'sim' && hello.fw !== 'device' && (
               <label className="switch">
                 <input type="checkbox" checked={hello.demo} onChange={(e) => send(`DEMO ${e.target.checked ? 'ON' : 'OFF'}`)} />
@@ -597,7 +603,7 @@ export default function App() {
           </div>
           <ExperimentBrowser experiments={experiments} connectedTypes={[...sensors.filter((x) => x.src !== 'demo' || transportRef.current?.kind === 'sim').map((x) => x.type), ...deviceTypes()]} onPick={pickAny} />
 
-          {hello && (
+          {hello && explore && (
             <details className="advanced" data-nav={t('포트 직접 설정 (고급)')}>
               <summary>{t('포트 직접 설정 (고급)')}</summary>
               <SensorSetup sensors={sensors} disabled={false} onSetPort={setPort} onRescan={rescan} pulse={board.sensorSet === 'full'} />

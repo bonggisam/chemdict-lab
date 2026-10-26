@@ -24,6 +24,8 @@ import { R } from './Rich';
 import { ReagentNotes } from './ReagentNotes';
 import { SensorTips } from './SensorTips';
 import { checkFor, checkKey } from '../lib/sensorChecks';
+import { useExplore } from '../lib/prefs';
+import { BigScreen } from './BigScreen';
 
 export interface Trigger { id: string; dir: 'up' | 'down'; value: number }
 
@@ -103,6 +105,11 @@ export function Measure(p: Props) {
   const [markerNote, setMarkerNote] = useState('');
   const [armedDelete, setArmedDelete] = useState<string | null>(null);
   const [renaming, setRenaming] = useState<string | null>(null);
+  // ---- 2.0: 측정 화면 3칸 · 쉬운/탐구 화면 · 큰 화면
+  const [tab, setTab] = useState<'measure' | 'analysis' | 'record'>('measure');
+  const on = (...ts: (typeof tab)[]) => ts.includes(tab);
+  const [explore] = useExplore();
+  const [big, setBig] = useState(false);
 
   const setXAxis = (id: string) => { setXAxisState(id); setZoom(null); setSelection(null); };
 
@@ -429,7 +436,22 @@ export function Measure(p: Props) {
         </div>
       </div>
       {!p.connected && <p className="note warn">{t('저장된 측정을 보는 중입니다. 새로 측정하려면 보드를 연결하세요.')}</p>}
-      {mode === 'time' && charts.length > 0 && (
+
+      <div className="status-strip" role="status">
+        <span className={`dot ${running ? 'rec' : p.connected ? 'on' : ''}`} aria-hidden="true" />
+        <b>{running ? t('측정 중') : (active?.rows.length || active?.events.length) ? t('멈춤') : t('대기')}</b>
+        <span className="note">{active ? (active.mode === 'event' ? t('{n}점', { n: active.events.length }) : t('{n}개', { n: active.rows.length })) : ''}{mode === 'time' ? ` · ${intervalText(p.intervalMs)}` : ''}</span>
+        <span className="grow" />
+        <button className="ghost" disabled={charts.length === 0} onClick={() => setBig(true)}>⛶ {t('큰 화면')}</button>
+      </div>
+
+      <div className="tabs3" role="tablist" aria-label={t('측정 화면 칸')}>
+        {([['measure', tk('📈 측정')], ['analysis', tk('🔍 분석')], ['record', tk('📝 기록·저장')]] as const).map(([k, l]) => (
+          <button key={k} role="tab" aria-selected={tab === k} className={tab === k ? 'on' : ''} onClick={() => setTab(k)}>{t(l)}</button>
+        ))}
+      </div>
+
+      {on('measure') && explore && mode === 'time' && charts.length > 0 && (
         <details className="trigger" open={trigOn}>
           <summary><Ico e={ICON.trigger} />{t('조건 시작')}{trigOn ? ` · ${t('켜짐')}` : ''}</summary>
           <div className="trigger-row">
@@ -447,20 +469,20 @@ export function Measure(p: Props) {
           <p className="note">{t('예: 반응 용액 온도가 25 °C 이상이 되면 기록 시작. 시간은 조건이 맞은 순간부터 0초로 셉니다.')}</p>
         </details>
       )}
-      {p.waiting && (
+      {on('measure') && p.waiting && (
         <p className="note waiting" role="status">⏳ {t('조건을 기다리는 중 · 지금 {v}', { v: p.waiting.value !== undefined ? `${fmt(p.waiting.value)} ${trigSensor?.unit ?? ''}` : '—' })}</p>
       )}
-      {mode === 'time' && p.intervalMs >= 2000 && !running && (
+      {on('measure') && mode === 'time' && p.intervalMs >= 2000 && !running && (
         <p className="note">{t('간격이 길면 그래프 점이 드문드문 찍힙니다. 온습도(DHT)는 2초, 이산화탄소(SCD4x)는 5초보다 짧으면 같은 값이 반복됩니다.')}</p>
       )}
 
-      <div className="info-bar">
+      {on('record') && <div className="info-bar">
         <span><Ico e={ICON.info} /><b>{t('실험 정보')}</b> {infoSummary(p.info) || <span className="note">{t('모둠·이름·날짜 (선택) — 저장할 때 함께 남습니다')}</span>}</span>
         <button className="ghost" onClick={() => setInfoOpen(true)}>{infoSummary(p.info) ? t('수정') : t('입력')}</button>
-      </div>
+      </div>}
 
       {/* 측정 목록 */}
-      <div className="runs" data-nav={t('측정 목록')}>
+      {on('measure', 'record') && <div className="runs" data-nav={t('측정 목록')}>
         {runs.map((r) => (
           <div key={r.id} className={`run ${r.id === active?.id ? 'active' : ''}`}>
             <input type="checkbox" aria-label={t('{name} 그래프에 표시', { name: r.name })} checked={r.visible} onChange={(e) => patchRun(r.id, { visible: e.target.checked })} />
@@ -479,21 +501,21 @@ export function Measure(p: Props) {
           </div>
         ))}
         <button className="ghost add-run" disabled={running} onClick={addRun}>+ {t('새 측정')}</button>
-      </div>
+      </div>}
 
-      <details className="steps" data-nav={t('실험 순서 보기')} data-nav-level="3">
+      {on('measure', 'record') && <details className="steps" data-nav={t('실험 순서 보기')} data-nav-level="3">
         <summary><Ico e="🧑‍🔬" />{t('실험 순서 보기')}</summary>
         <ol>{exp.steps.map((s, i) => <li key={i}><R t={s} /></li>)}</ol>
-      </details>
-      {bb && <BreadboardNote need={bb.need} why={bb.why} circuit={bb.circuit} />}
-      {exp.setup && exp.setup.materials.length > 0 && <ReagentNotes materials={exp.setup.materials} />}
+      </details>}
+      {on('record') && bb && <BreadboardNote need={bb.need} why={bb.why} circuit={bb.circuit} />}
+      {on('record') && exp.setup && exp.setup.materials.length > 0 && <ReagentNotes materials={exp.setup.materials} />}
 
       {charts.length === 0 && (
         <p className="note warn">{t('이 실험에 필요한 센서({list})가 연결되어 있지 않습니다.', { list: exp.sensors.join(', ') })} <button className="link" onClick={p.onOpenGuide}>{t('연결 안내')}</button> · <button className="link" onClick={p.onOpenSetup}>{t('센서 연결 설정')}</button></p>
       )}
 
       {/* 값 입력 모드: 기록 막대 */}
-      {mode === 'event' && ev && (
+      {on('measure') && mode === 'event' && ev && (
         <div className="event-bar">
           <label htmlFor="event-x">{ev.label}</label>
           <input id="event-x" inputMode="decimal" value={eventX} onChange={(e) => setEventX(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter') recordEvent(); }} />
@@ -504,7 +526,7 @@ export function Measure(p: Props) {
       )}
 
       {/* 그래프 도구 */}
-      {charts.length > 0 && (
+      {charts.length > 0 && (on('analysis') || (explore && on('measure'))) && (
         <div className="graph-tools" role="toolbar" aria-label={t('그래프 도구')}>
           <div className="seg" role="radiogroup" aria-label={t('그래프에서 할 일')}>
             {([['select', tk('구간 선택')], ['read', tk('값 읽기')], ['tangent', tk('접선')]] as const).map(([k, l]) => (
@@ -548,7 +570,7 @@ export function Measure(p: Props) {
         </div>
       )}
 
-      <div className="charts" data-nav={t('그래프')}>
+      {on('measure', 'analysis') && <div className="charts" data-nav={t('그래프')}>
         {charts.map((c, i) => (
           <Chart
             key={c.sensor.id}
@@ -616,11 +638,11 @@ export function Measure(p: Props) {
             exportName={`${baseName}_calc`}
           />
         )}
-      </div>
+      </div>}
 
       {/* 도구 막대 */}
-      <div className="toolbar" data-nav={t('관찰 기록 · 저장')}>
-        {mode === 'time' && exp.markers.enabled && (
+      {on('measure', 'record') && <div className="toolbar" data-nav={t('관찰 기록 · 저장')}>
+        {on('measure') && mode === 'time' && exp.markers.enabled && (
           <div className="marker">
             <input id="marker-note" aria-label={exp.markers.label} value={markerNote} placeholder={exp.markers.prompt} onChange={(e) => setMarkerNote(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter') addMarker(); }} />
             <button onClick={addMarker} disabled={!running}><Ico e={ICON.marker} />{exp.markers.label}</button>
@@ -628,10 +650,10 @@ export function Measure(p: Props) {
         )}
         <div className="actions">
           <button className="ghost" onClick={p.onOpenGuide}><Ico e={ICON.guide} />{t('연결 안내')}</button>
-          <button className="ghost" disabled={running} onClick={p.onOpenSetup}><Ico e={ICON.setup} />{t('센서 설정')}</button>
+          {explore && <button className="ghost" disabled={running} onClick={p.onOpenSetup}><Ico e={ICON.setup} />{t('센서 설정')}</button>}
           <button className="ghost" disabled={!sensors.some((s) => s.spec && s.spec.cal.kind !== 'none')} onClick={() => p.onOpenCal(charts[0]?.sensor.id)}><Ico e={ICON.cal} />{t('보정')}</button>
           <button className="ghost" onClick={() => p.onOpenCheck(charts[0]?.sensor.id)}><Ico e={ICON.test} />{t('점검')}</button>
-          {charts.length > 0 && !xSensor && (
+          {explore && charts.length > 0 && !xSensor && (
             drawing
               ? <button className="ghost" onClick={() => setDrawing(false)}>{t('그리기 취소')}</button>
               : active?.prediction.length || runs.some((r) => r.prediction.length)
@@ -642,10 +664,11 @@ export function Measure(p: Props) {
           <button className="ghost" onClick={p.onShare}><Ico e={ICON.share} />{t('QR 공유')}</button>
           <button className="primary" disabled={!dataRuns.length} onClick={() => setExportOpen(true)}><Ico e={ICON.save} />{t('저장하기')}</button>
         </div>
-      </div>
+      </div>}
 
       {/* 해석 */}
-      {anaChart && analysis && (
+      {on('analysis') && !(anaChart && analysis) && <p className="note">{t('측정한 점이 2개 이상이면 분석할 수 있습니다. [측정 시작]을 누르세요.')}</p>}
+      {on('analysis') && anaChart && analysis && (
         <section className="analysis">
           <div className="ana-head">
             <h2><Ico e={ICON.analysis} />{t('데이터 해석')}</h2>
@@ -733,7 +756,7 @@ export function Measure(p: Props) {
         </section>
       )}
 
-      {showTable && active && (
+      {(showTable || on('analysis')) && active && (
         <section className="data-table">
           <div className="ana-head">
             <h2>{t('{name} 표', { name: active.name })}</h2>
@@ -775,6 +798,18 @@ export function Measure(p: Props) {
       )}
 
       {infoOpen && <InfoSheet info={p.info} onSave={p.setInfo} onClose={() => setInfoOpen(false)} />}
+      {big && (
+        <BigScreen
+          title={exp.title}
+          running={running}
+          connected={p.connected}
+          tiles={charts.map((c) => ({ id: c.sensor.id, label: c.label, unit: c.unit, value: fmtValue(latest(c.sensor.id), c.sensor.decimals),
+            pts: (active?.rows ?? []).slice(-120).map((r) => r.v[c.sensor.id]).filter((v): v is number => typeof v === 'number') }))}
+          onStart={startClick}
+          onStop={p.onStop}
+          onClose={() => setBig(false)}
+        />
+      )}
       {exportOpen && <ExportSheet runCount={dataRuns.length} onExport={doExport} onClose={() => setExportOpen(false)} />}
     </main>
   );

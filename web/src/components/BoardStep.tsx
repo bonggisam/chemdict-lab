@@ -7,6 +7,7 @@ import { BUNDLED_FW, IDE_ONLY, TARGETS } from '../lib/flash';
 import { hasBluetooth, hasSerial } from '../lib/transports';
 import { BoardPicker } from './BoardPicker';
 import { R } from './Rich';
+import { availableKits } from '../lib/device';
 
 export type FwState =
   | { status: 'checking' }
@@ -42,9 +43,24 @@ export function BoardStep({ board, detectedId, onPickBoard, connected, busy, fw,
 
   return (
     <main className="wide step-page">
-      <h1><span className="step-no">1</span>{t('보드 연결')}</h1>
+      <h1><span className="step-no">1</span>{t('어떻게 잴까요?')}</h1>
+      <p className="lede">{t('하나를 고르세요. 언제든 바꿀 수 있습니다.')}</p>
+      {/* 2.0 첫 화면: 큰 버튼 3개 (이 기기 · 보드 · 체험) */}
+      <div className="home-tiles" data-nav={t('어떻게 잴까요?')}>
+        {availableKits().length > 0 && (
+          <button className="t-dev" onClick={() => document.querySelector('.connect-device')?.scrollIntoView({ behavior: 'smooth' })}>
+            <span className="ico" aria-hidden="true">📱</span><b>{t('이 기기로 바로 재기')}</b><span className="note">{t('선 없이 기기 센서로 (소리·빛·움직임)')}</span>
+          </button>
+        )}
+        <button onClick={() => document.getElementById('board-connect')?.scrollIntoView({ behavior: 'smooth' })}>
+          <span className="ico" aria-hidden="true">📡</span><b>{t('센서 보드 연결')}</b><span className="note">{t('USB · 블루투스 아두이노 보드')}</span>
+        </button>
+        <button className="t-sim" disabled={busy || connected} onClick={() => onConnect('sim')}>
+          <span className="ico" aria-hidden="true">🧪</span><b>{t('보드 없이 체험')}</b><span className="note">{t('가상 센서로 모든 기능을 써 봅니다')}</span>
+        </button>
+      </div>
 
-      <section className="guide-block">
+      <section className="guide-block" id="board-connect">
         <h2><Ico e={ICON.board} />{t('보드 고르기')}</h2>
         <p className="note">{t('가지고 있는 보드를 누르세요. USB로 연결하면 자동으로 맞춰집니다.')}</p>
         <BoardPicker board={board} detectedId={detectedId} onPick={onPickBoard} />
