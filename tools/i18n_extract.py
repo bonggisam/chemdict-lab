@@ -86,6 +86,7 @@ for x in s["analog"] + s["digital"]:
     walk_list(f"sensor.{x['type']}.cal.steps", cal.get("steps"))
 
 # ---------------------------------------------------------------- experiments
+put("course.내가 만든 실험", "내가 만든 실험")   # 2.0: 교사가 만든 실험 (웹앱·애플 앱 공통 과목 이름)
 for f in sorted((P / "experiments").glob("*.json")):
     e = json.loads(f.read_text(encoding="utf-8"))
     k = f"exp.{e['id']}"

@@ -9,7 +9,8 @@
 - 연결 안내의 전원 규칙: 5 V 전용 부품은 `make_guide.py`의 `NEEDS_5V`(출력이 3.3 V를 넘으면 `OUT_OVER_33`, 전류가 크면 `CURRENT_MA`)에 넣으면 연결 방식·경고·배지가 자동으로 붙는다. 배열 중간에 문장을 끼우면 i18n 키 번호가 밀리므로 새 문장은 끝에 붙이고, 바꾼 문장은 각 언어 content.json에서 그 키를 지워 다시 번역한다.
 - 기준 보드: Arduino UNO R4 WiFi. 아날로그 5 V, Qwiic는 Wire1(3.3 V).
 - BLE: Nordic UART 방식 UUID, 20바이트 조각 + '\n' 줄 단위. 한글이 조각 경계에서 잘리므로 받는 쪽은 바이트 단위로 모은 뒤 디코딩한다.
-- 웹앱 확인: `cd web && npx tsc -b && npx vite build`
+- 웹앱 확인: `cd web && npx tsc -b && npx vite build && npx vitest run` (화면 흐름 시험: `npx vite preview` 후 `node e2e/smoke.cjs`, Playwright 필요)
+- 2.0 기기 센서: 센서 type은 `sensors.json`의 `src: "device"`, 카드는 `protocol/device_sensors.json`, 웹 `lib/device.ts`(DeviceTransport)·애플 `DeviceBoard.swift`가 같은 줄(hello·d)을 만든다. 기기 센서 실험은 `make_experiments.py`의 '기기 센서 실험'(cur-d-*). 선생님이 만든 실험의 공유 형식은 PROTOCOL.md 10장(웹 `lib/custom.ts` ↔ 애플 `CustomExperiments.swift`, id 계산이 같아야 함).
 - 생성 파일 이름은 영문만 (한글 파일명은 다운로드 오류가 남).
 - 화면 디자인은 `docs/DESIGN.md`가 기준이다 (색·글자·44px 터치·그래프 규칙). 측정 색을 바꾸면 dataviz 검증기를 다시 돌린다. 웹 토큰(styles.css)과 애플 Theme.swift 값을 같이 맞춘다.
 - 펌웨어를 바꾸면 web/public/firmware/*.hex 를 다시 내보내고 BUNDLED_FW 를 맞춘다 (PROTOCOL.md "웹앱에서 측정 프로그램 설치").

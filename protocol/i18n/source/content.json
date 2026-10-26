@@ -1262,6 +1262,7 @@
  "sensor.DAB.name": "흡광도(파랑)",
  "sensor.DAB.note": "카메라 파랑 빛 기준 흡광도. 노란·주황색 용액에 알맞습니다.",
  "sensor.DAB.cal.hint": "물(빈 용액)을 비추고 0 맞추기",
+ "course.내가 만든 실험": "내가 만든 실험",
  "exp.cur-b-digestion-color.title": "침과 소화제가 녹말을 분해할까 (색 센서)",
  "exp.cur-b-digestion-color.subject": "과학 2",
  "exp.cur-b-digestion-color.summary": "녹말–아이오딘 용액의 파란색이 옅어지는 빠르기로 소화 효소 작용을 봅니다.",

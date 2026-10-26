@@ -808,3 +808,16 @@ button.big.alt { background: linear-gradient(160deg, var(--tint), transparent 70
 }
 button.on { background: var(--brand-deep); color: #fff; }
 :focus-visible { outline: 3px solid var(--atom); outline-offset: 2px; }
+/* 2.0 실험 만들기 */
+.field { display: flex; flex-direction: column; gap: 4px; margin: 10px 0; }
+.field > span { font-weight: 600; font-size: 14px; }
+.field input, .field textarea, .field select { min-height: 44px; border: 1px solid var(--field); border-radius: 8px; background: var(--bg); color: var(--ink); padding: 6px 10px; font-size: 15px; }
+.field-row { display: flex; flex-wrap: wrap; gap: 10px; }
+.field-row .field { flex: 1 1 140px; }
+.chip-row { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+.chip-row.scroll { max-height: 160px; overflow: auto; }
+.chip-row button { min-height: 40px; border-radius: 999px; padding: 4px 12px; }
+.chip-row.mine { align-items: center; margin: 6px 0 12px; }
+.mine-chip { display: inline-flex; border: 1px solid var(--line); border-radius: 999px; overflow: hidden; background: var(--surface); }
+.mine-chip button { border: 0; border-radius: 0; min-height: 40px; padding: 4px 10px; }
+.sync-video { width: 100%; max-height: 50vh; background: #000; border-radius: var(--radius); }

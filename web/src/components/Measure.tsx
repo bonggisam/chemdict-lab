@@ -26,6 +26,7 @@ import { SensorTips } from './SensorTips';
 import { checkFor, checkKey } from '../lib/sensorChecks';
 import { useExplore } from '../lib/prefs';
 import { BigScreen } from './BigScreen';
+import { VideoSync } from './VideoSync';
 import { liveTone, playSeries, silence } from '../lib/sonify';
 import { SOUND } from '../lib/device';
 
@@ -41,6 +42,8 @@ interface Props {
   running: boolean;
   intervalMs: number;
   setIntervalMs: (ms: number) => void;
+  autoStopMin: number;
+  setAutoStopMin: (m: number) => void;
   onStart: (trigger?: Trigger) => void;
   connected: boolean;
   waiting: { value?: number } | null;     // 조건 시작을 기다리는 중
@@ -113,6 +116,7 @@ export function Measure(p: Props) {
   const [explore] = useExplore();
   const [big, setBig] = useState(false);
   const [sonify, setSonify] = useState(false);   // 값을 소리로 듣기
+  const [videoOpen, setVideoOpen] = useState(false);   // 영상과 맞춰 보기
   const micBusy = exp.sensors.some((s) => SOUND.includes(s)) && sensors.some((s) => s.src === 'device');
 
   const setXAxis = (id: string) => { setXAxisState(id); setZoom(null); setSelection(null); };
@@ -447,6 +451,12 @@ export function Measure(p: Props) {
         </div>
         <div className="controls">
           {mode === 'time' && <IntervalPicker value={p.intervalMs} disabled={running} onChange={p.setIntervalMs} />}
+          {mode === 'time' && (
+            <select aria-label={t('끝내기')} title={t('정한 시간이 되면 측정을 멈추고 알림을 보냅니다')} value={p.autoStopMin} disabled={running} onChange={(e) => p.setAutoStopMin(Number(e.target.value))}>
+              <option value={0}>{t('시간 정하지 않음')}</option>
+              {[1, 5, 10, 30, 60, 120].map((m) => <option key={m} value={m}>{t('{n}분 뒤 끝내기', { n: m })}</option>)}
+            </select>
+          )}
           {!running
             ? <button className="primary rec" disabled={!p.connected} onClick={startClick}><Ico e={ICON.start} />{trigOn && mode === 'time' ? t('조건 기다리며 시작') : t('측정 시작')}</button>
             : <button className="danger" onClick={p.onStop}><Ico e={ICON.stop} />{t('정지')}</button>}
@@ -682,6 +692,7 @@ export function Measure(p: Props) {
                 : <button className="ghost" onClick={() => setDrawing(true)}><Ico e={ICON.predict} />{t('예측 그리기')}</button>
           )}
           <button className="ghost" onClick={() => setShowTable((v) => !v)}><Ico e={ICON.table} />{showTable ? t('표 닫기') : t('표 보기')}</button>
+          {on('record') && mode === 'time' && <button className="ghost" disabled={!dataRuns.length} onClick={() => setVideoOpen(true)}>🎬 {t('영상과 맞춰 보기')}</button>}
           <button className="ghost" onClick={p.onShare}><Ico e={ICON.share} />{t('QR 공유')}</button>
           <button className="primary" disabled={!dataRuns.length} onClick={() => setExportOpen(true)}><Ico e={ICON.save} />{t('저장하기')}</button>
         </div>
@@ -819,6 +830,12 @@ export function Measure(p: Props) {
       )}
 
       {infoOpen && <InfoSheet info={p.info} onSave={p.setInfo} onClose={() => setInfoOpen(false)} />}
+      {videoOpen && (
+        <VideoSync
+          charts={charts.map((c) => ({ id: c.sensor.id, label: c.label, unit: c.unit, decimals: c.sensor.decimals, series: active ? [{ id: active.id, name: active.name, color: '--s1', pts: pointsFor(active, c.sensor.id), points: false, line: true }] : [] }))}
+          onClose={() => setVideoOpen(false)}
+        />
+      )}
       {big && (
         <BigScreen
           title={exp.title}

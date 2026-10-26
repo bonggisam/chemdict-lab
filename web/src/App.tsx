@@ -23,6 +23,8 @@ import { relocalize } from './lib/l10n';
 import { PwaBar } from './components/PwaBar';
 import { DiagnosticsSheet } from './components/DiagnosticsSheet';
 import { useExplore } from './lib/prefs';
+import { ExperimentMaker } from './components/ExperimentMaker';
+import { customId, loadCustom, saveCustom, toExperiment, valid, type CustomExp } from './lib/custom';
 import { SideNav } from './components/SideNav';
 import { R } from './components/Rich';
 import { BUNDLED_FW, FlashError, TARGETS, boardFromUsb, flashBoard, older } from './lib/flash';
@@ -45,6 +47,12 @@ export default function App() {
   const dev = () => (deviceRef.current ??= new DeviceTransport());
   const [devKit, setDevKit] = useState<DeviceKit | null>(null);
   const [explore, setExplore] = useExplore();   // 2.0: 쉬운 화면 / 탐구 화면
+  // 2.0: 선생님이 만든 실험 (이 기기에 저장, 링크·QR로 나눔)
+  const [mine, setMine] = useState<CustomExp[]>(loadCustom);
+  const [maker, setMaker] = useState<{ x?: CustomExp } | null>(null);
+  const [shareCustom, setShareCustom] = useState<{ url: string; title: string } | null>(null);
+  const keepMine = (x: CustomExp) => setMine((list) => { const n = [...list.filter((y) => customId(y) !== customId(x)), x]; saveCustom(n); return n; });
+  const dropMine = (x: CustomExp) => setMine((list) => { const n = list.filter((y) => customId(y) !== customId(x)); saveCustom(n); return n; });
   const isDevice = () => transportRef.current?.kind === 'device';
   const [screen, setScreen] = useState<Screen>('connect');
   const [busy, setBusy] = useState(false);
@@ -88,6 +96,16 @@ export default function App() {
   const lostAtRef = useRef<number | null>(null);
   const [reconnecting, setReconnecting] = useState(false);
   const [diagOpen, setDiagOpen] = useState(false);
+  // 2.0: 측정 시간 정하기 — 시간이 되면 정지하고 (다른 창을 보고 있으면) 알림
+  const [autoStopMin, setAutoStopMinState] = useState(0);
+  const autoStopTimer = useRef<number | null>(null);
+  const setAutoStopMin = (m: number) => {
+    setAutoStopMinState(m);
+    if (m > 0 && 'Notification' in window && Notification.permission === 'default') Notification.requestPermission().catch(() => {});
+  };
+  const notify = (title: string, body: string) => {
+    try { if ('Notification' in window && Notification.permission === 'granted' && document.hidden) new Notification(title, { body, icon: 'logo-256.png' }); } catch { /* noop */ }
+  };
   const statsRef = useRef({ points: 0, last: 0, drops: 0, reconnects: 0, since: Date.now() });
   // 언어: 처음에는 저장된 언어(없으면 브라우저 언어)로
   const [lang, setLangState] = useState<Lang>('ko');
@@ -201,6 +219,7 @@ export default function App() {
       setScreen((sc) => (sc === 'guide' ? sc : 'connect'));
       setGuideFrom((g) => ({ ...g, screen: 'connect' }));
       say('err', t('연결이 끊어졌습니다. 케이블이나 블루투스를 확인하고 다시 연결하세요.'));
+      if (runningRef.current) notify(t('측정 중 연결이 끊어졌습니다'), t('지금까지 기록은 ‘이어서 하기’에 저장했습니다. 보드 전원과 케이블을 확인하세요.'));
     };
     setBusy(true);
     try {
@@ -291,7 +310,7 @@ export default function App() {
 
   // Esc로 열린 창 닫기
   const escRef = useRef<() => void>(() => {});
-  escRef.current = () => { if (devKit) closeDevKit(); else if (quick) setQuick(null); else if (check) closeCheck(); else if (cal) closeCal(); else if (setupOpen) setSetupOpen(false); };
+  escRef.current = () => { if (maker) setMaker(null); else if (shareCustom) setShareCustom(null); else if (devKit) closeDevKit(); else if (quick) setQuick(null); else if (check) closeCheck(); else if (cal) closeCal(); else if (setupOpen) setSetupOpen(false); };
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') escRef.current(); };
     window.addEventListener('keydown', onKey);
@@ -334,6 +353,7 @@ export default function App() {
   const detectedBoard = boardByName(hello?.board);
   const board = detectedBoard ?? boards.find((b) => b.id === boardId) ?? boards[0];
   const sensors = useMemo(() => (hello?.sensors ?? (exp ? savedSensors : [])).map(resolveSensor), [hello, exp, savedSensors]);
+  const allExperiments = useMemo(() => [...experiments, ...mine.map(toExperiment)], [mine, lang]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // ---- 자동 저장: 측정 데이터가 바뀌면 3초 안에 이 기기에 저장 (최근 5개)
   const saveTimer = useRef<number | null>(null);
@@ -381,7 +401,9 @@ export default function App() {
   useEffect(() => {
     const sp = takeShareFromUrl();
     if (!sp) return;
-    const e = sp.e.startsWith('quick-') ? (() => { const pt = partById(sp.e.slice(6)); return pt ? quickExperiment(pt) : undefined; })() : experiments.find((x) => x.id === sp.e);
+    if (sp.x && valid(sp.x)) keepMine(sp.x);   // 선생님이 만든 실험을 이 기기에도 저장
+    const e = sp.x && valid(sp.x) ? toExperiment(sp.x)
+      : sp.e.startsWith('quick-') ? (() => { const pt = partById(sp.e.slice(6)); return pt ? quickExperiment(pt) : undefined; })() : experiments.find((x) => x.id === sp.e);
     if (!e) { say('err', t('공유받은 실험을 찾지 못했습니다. 앱을 새로고침해 보세요.')); return; }
     if (sp.b && boards.some((b) => b.id === sp.b)) pickBoard(sp.b);
     pickExperiment(e);
@@ -390,7 +412,8 @@ export default function App() {
     setScreen('connect');
     setSharedTitle(e.title);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
-  const shareLink = exp ? shareUrl({ e: exp.id, i: intervalMs, b: board.id, ...(custom?.expr ? { c: custom } : {}) }) : '';
+  const mineOf = (id?: string) => mine.find((x) => customId(x) === id);
+  const shareLink = exp ? shareUrl({ e: exp.id, i: intervalMs, b: board.id, ...(custom?.expr ? { c: custom } : {}), ...(mineOf(exp.id) ? { x: mineOf(exp.id) } : {}) }) : '';
 
   // ---- 센서 설정
   const setPort = (port: string, type: string) => {
@@ -473,17 +496,27 @@ export default function App() {
     shiftRef.current = 0; gapRef.current = null;
     statsRef.current = { points: 0, last: 0, drops: 0, reconnects: 0, since: Date.now() };
     if (transportRef.current) transportRef.current.autoReconnect = true;
+    if (autoStopTimer.current) clearTimeout(autoStopTimer.current);
+    if (autoStopMin > 0) autoStopTimer.current = window.setTimeout(() => {
+      if (!recordingRef.current) return;
+      stopRef.current();
+      say('ok', t('정한 시간이 되어 측정을 멈췄습니다.'));
+      notify(t('측정을 마쳤습니다'), t('정한 시간이 되어 측정을 멈췄습니다. 앱을 열어 그래프를 확인하세요.'));
+    }, autoStopMin * 60000);
     if (transportRef.current?.kind === 'sim') send(exp.mode === 'event' ? `SIMX ${exp.event?.start ?? 0}` : 'SIMX');
     syncWanted();
     send(`START ${exp.mode === 'event' ? exp.intervalMs : intervalMs}`);
   };
+  const stopRef = useRef<() => void>(() => {});
   const stop = () => {
+    if (autoStopTimer.current) { clearTimeout(autoStopTimer.current); autoStopTimer.current = null; }
     recordingRef.current = false;
     if (transportRef.current) transportRef.current.autoReconnect = false;
     triggerRef.current = null;
     setWaiting(null);
     send('STOP');
   };
+  stopRef.current = stop;
 
   // ---- 이 기기 센서: 지금 실험이 쓰는 장치만 켬 (마이크·카메라 권한을 필요할 때만)
   function syncWanted() {
@@ -643,11 +676,25 @@ export default function App() {
 
           <div className="row-head sub">
             <h2><Ico e={ICON.experiment} />{t('실험으로 찾기 (교육과정)')}</h2>
+            <button className="ghost" onClick={() => setMaker({})}>✏️ {t('실험 만들기')}</button>
             <button className="ghost" onClick={() => setSupplyOpen(true)}><Ico e={ICON.supply} />{t('준비물 목록')}</button>
             <button className="ghost" disabled={!sensors.some((s) => s.spec && s.spec.cal.kind !== 'none')} onClick={() => openCal()}><Ico e={ICON.cal} />{t('센서 보정')}</button>
             <button className="ghost" disabled={!hello || !sensors.length} onClick={() => openCheck()}><Ico e={ICON.test} />{t('센서 점검')}</button>
           </div>
-          <ExperimentBrowser experiments={experiments} connectedTypes={[...sensors.filter((x) => x.src !== 'demo' || transportRef.current?.kind === 'sim').map((x) => x.type), ...deviceTypes()]} onPick={pickAny} />
+          {mine.length > 0 && (
+            <div className="chip-row mine" aria-label={t('내가 만든 실험')}>
+              <b>{t('내가 만든 실험')}</b>
+              {mine.map((x) => (
+                <span key={customId(x)} className="mine-chip">
+                  <button onClick={() => pickAny(toExperiment(x))}>{x.t}</button>
+                  <button aria-label={t('{name} 고치기', { name: x.t })} onClick={() => setMaker({ x })}>✏️</button>
+                  <button aria-label={t('{name} 링크·QR', { name: x.t })} onClick={() => setShareCustom({ url: shareUrl({ e: customId(x), i: x.iv, x }), title: x.t })}>🔗</button>
+                  <button aria-label={t('{name} 지우기', { name: x.t })} onClick={() => dropMine(x)}>×</button>
+                </span>
+              ))}
+            </div>
+          )}
+          <ExperimentBrowser experiments={allExperiments} connectedTypes={[...sensors.filter((x) => x.src !== 'demo' || transportRef.current?.kind === 'sim').map((x) => x.type), ...deviceTypes()]} onPick={pickAny} />
 
           {hello && explore && (
             <details className="advanced" data-nav={t('포트 직접 설정 (고급)')}>
@@ -690,6 +737,8 @@ export default function App() {
           running={running}
           intervalMs={intervalMs}
           setIntervalMs={setIntervalMs}
+          autoStopMin={autoStopMin}
+          setAutoStopMin={setAutoStopMin}
           onStart={start}
           onStop={stop}
           connected={!!hello}
@@ -737,8 +786,17 @@ export default function App() {
       )}
 
       {diagOpen && <DiagnosticsSheet connLabel={connLabel} hello={hello} stats={() => statsRef.current} running={running} reconnecting={reconnecting} intervalMs={intervalMs} onClose={() => setDiagOpen(false)} />}
+      {maker && (
+        <ExperimentMaker
+          initial={maker.x}
+          onSave={(x) => { if (maker.x && customId(maker.x) !== customId(x)) dropMine(maker.x); keepMine(x); setMaker(null); say('ok', t('‘{title}’ 실험을 저장했습니다. 실험 목록의 ‘내가 만든 실험’에 있습니다.', { title: x.t })); }}
+          onShare={(x) => { if (maker.x && customId(maker.x) !== customId(x)) dropMine(maker.x); keepMine(x); setMaker(null); setShareCustom({ url: shareUrl({ e: customId(x), i: x.iv, x }), title: x.t }); }}
+          onClose={() => setMaker(null)}
+        />
+      )}
+      {shareCustom && <ShareSheet url={shareCustom.url} title={shareCustom.title} say={say} onClose={() => setShareCustom(null)} />}
       {shareOpen && exp && <ShareSheet url={shareLink} title={exp.title} say={say} onClose={() => setShareOpen(false)} />}
-      {supplyOpen && <SupplySheet board={board} experiments={experiments} initialExp={exp ?? undefined} say={say} onClose={() => setSupplyOpen(false)} />}
+      {supplyOpen && <SupplySheet board={board} experiments={allExperiments} initialExp={exp ?? undefined} say={say} onClose={() => setSupplyOpen(false)} />}
 
       {check && (
         <SensorCheckSheet

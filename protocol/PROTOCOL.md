@@ -198,6 +198,15 @@ I2C는 Qwiic 단자(UNO R4 WiFi·Nano R4의 `Wire1`, `qwiic:`)와 SDA·SCL 핀(`
 
 권한 문구: 애플 `NSMicrophoneUsageDescription`·`NSMotionUsageDescription`·`NSCameraUsageDescription`(tools/make_l10n.py DISPLAY → 언어별 InfoPlist.strings), 맥 샌드박스 `com.apple.security.device.audio-input`·`device.camera`. 소리·영상은 저장하지 않고 숫자만 기록 (개인정보 처리방침 3).
 
+## 10. 2.0 안정성·수업 도구
+
+- **다시 연결**: 블루투스가 측정 중 끊기면 같은 보드에 8초씩 3번 다시 연결. 다시 연결되면 `START <ms>`·`HELLO`를 보내고, 보드 시간이 0부터 다시 시작하므로 앱이 `끊기기 전 마지막 t + 끊긴 시간`으로 이어 붙이고 관찰 기록 "연결 끊김 n초"를 남김. 3번 모두 실패하면 보통 끊김처럼 처리(기록은 '이어서 하기').
+- **자동 저장**: 웹앱은 측정 중 1초마다(localStorage), 애플 앱은 1초마다 `recent/<id>.journal`(첫 줄 = 빈 측정 파일, 다음 줄부터 `{"t":…,"v":{…}}`)에 덧붙이고 30초마다 `.chemdict`로 통째로 저장. 앱을 다시 열 때 남은 일지가 있으면 되살림.
+- **측정 프로그램 버전**: hello `fw`가 웹앱 `BUNDLED_FW`(애플 `LabSession.latestFirmware`)보다 낮으면 업데이트 안내. 둘을 같이 올린다.
+- **선생님이 만든 실험 (공유 주소)**: `#x=<base64url(JSON)>`의 JSON에 `x` 칸 — `{t: 제목, s: [센서 type], iv: 간격 ms, st: [순서], m?: "time"|"event", ev?: {l, u, s, d}}`. `e`는 그 실험 id(`my-` + FNV-1a 32비트를 36진수로; 글자열 = `t ␁ s.join(",") ␁ iv ␁ st.join("\n") ␁ m ␁ ev`(␁ = U+0001), 웹앱 `lib/custom.ts`·애플 `CustomExperiments.swift`가 같은 값). 받은 실험은 그 기기에 저장되고 과목 "내가 만든 실험"으로 보임. 애플 앱은 값 입력 모드가 없어 시간 기록으로 잼.
+- **수업 모드 (애플 앱)**: MultipeerConnectivity, 서비스 `chemdict-cls`, 학생 기기는 `discoveryInfo {"code": 4자리}`로 알리고 선생님 기기는 같은 번호만 초대. 학생 → 선생님: 1초마다 `{title, label, unit, value, points, running}` JSON, 정지하면 `.chemdict` 파일(→ '반 전체 비교'). 인터넷을 쓰지 않음. 웹앱은 서버가 없어 수업 모드 대신 측정 파일·QR로 모음.
+- **측정 시간 정하기·알림**: 1·5·10·30·60·120분 뒤 자동 정지, 앱이 뒤에 있으면 알림(애플 UserNotifications, 웹 Notification API — 정할 때 허락을 물음). 측정 중 연결이 끊겨도 알림.
+
 ## 웹앱에서 측정 프로그램 설치 (v1.4)
 
 - USB로 연결한 뒤 약 4.5초 안에 `hello`가 오지 않으면 "측정 프로그램이 없는 보드"로 봅니다 (2.5초에 `HELLO`를 한 번 더 보냄).
