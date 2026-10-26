@@ -793,3 +793,4 @@ button.big.alt { background: linear-gradient(160deg, var(--tint), transparent 70
 .mode-switch button { border: 0; border-radius: 0; min-height: 40px; padding: 6px 14px; }
 .mode-switch button.on { background: var(--brand-deep); color: #fff; }
 @media (max-width: 480px) { .tabs3 button { font-size: 14px; padding: 6px 4px; } }
+.diag { width: 100%; border-collapse: collapse; margin: 8px 0 12px; } .diag th, .diag td { text-align: left; padding: 8px 6px; border-bottom: 1px solid var(--line); } .diag th { font-weight: 600; } .diag td.mono { font-variant-numeric: tabular-nums; color: var(--muted); }

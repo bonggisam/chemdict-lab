@@ -21,6 +21,7 @@ import { loadInfo, saveInfo, type ExpInfo } from './lib/info';
 import { LANGS, initialLang, loadLang, t, type Lang } from './lib/i18n';
 import { relocalize } from './lib/l10n';
 import { PwaBar } from './components/PwaBar';
+import { DiagnosticsSheet } from './components/DiagnosticsSheet';
 import { useExplore } from './lib/prefs';
 import { SideNav } from './components/SideNav';
 import { R } from './components/Rich';
@@ -52,6 +53,8 @@ export default function App() {
   const [exp, setExp] = useState<Experiment | null>(null);
   const [running, setRunning] = useState(false);
   const [intervalMs, setIntervalMs] = useState(1000);
+  const intervalRef = useRef(1000);
+  intervalRef.current = intervalMs;
   const [runs, setRunsState] = useState<Run[]>([]);
   const [activeId, setActiveIdState] = useState('');
   const [toast, setToast] = useState<{ kind: 'ok' | 'err'; text: string } | null>(null);
@@ -79,6 +82,13 @@ export default function App() {
   const [waiting, setWaiting] = useState<{ value?: number } | null>(null);
   const triggerRef = useRef<Trigger | null>(null);
   const tOffsetRef = useRef(0);
+  // 2.0 안정성: 다시 연결한 뒤 시간 이어 붙이기 · 연결 진단 값
+  const shiftRef = useRef(0);
+  const gapRef = useRef<number | null>(null);
+  const lostAtRef = useRef<number | null>(null);
+  const [reconnecting, setReconnecting] = useState(false);
+  const [diagOpen, setDiagOpen] = useState(false);
+  const statsRef = useRef({ points: 0, last: 0, drops: 0, reconnects: 0, since: Date.now() });
   // 언어: 처음에는 저장된 언어(없으면 브라우저 언어)로
   const [lang, setLangState] = useState<Lang>('ko');
   const changeLang = async (l: Lang) => { await loadLang(l); relocalize(); setLangState(l); };
@@ -122,7 +132,17 @@ export default function App() {
         if (tOffsetRef.current) row = { t: Number((m.t - tOffsetRef.current).toFixed(3)), v: m.v };
         if (recordingRef.current) {
           const id = activeIdRef.current;
-          setRunsState((rs) => rs.map((r) => (r.id === id ? { ...r, rows: [...r.rows, row] } : r)));
+          statsRef.current.points += 1; statsRef.current.last = Date.now();
+          setRunsState((rs) => rs.map((r) => {
+            if (r.id !== id) return r;
+            // 다시 연결한 뒤 첫 점: 보드 시간이 0부터 다시 시작하므로 끊긴 시간만큼 이어 붙임
+            if (gapRef.current !== null) {
+              shiftRef.current = (r.rows[r.rows.length - 1]?.t ?? 0) + gapRef.current - row.t;
+              gapRef.current = null;
+            }
+            const rr = shiftRef.current ? { t: Number((row.t + shiftRef.current).toFixed(3)), v: row.v } : row;
+            return { ...r, rows: [...r.rows, rr] };
+          }));
         } else if (calibratingRef.current) {
           setCalRows((rs) => [...rs.slice(-40), row]);
         }
@@ -146,7 +166,28 @@ export default function App() {
   const connect = async (kind: 'serial' | 'ble' | 'sim' | 'device', reuse?: SerialPort) => {
     const tr: Transport = kind === 'serial' ? new SerialTransport(reuse) : kind === 'ble' ? new BleTransport() : kind === 'device' ? dev() : new SimTransport();
     tr.onLine = (line) => { const m = parseLine(line); if (m) handleMsg(m); };
+    tr.onLost = () => {
+      lostAtRef.current = Date.now();
+      statsRef.current.drops += 1;
+      setReconnecting(true);
+      say('err', t('블루투스 연결이 끊어졌습니다. 다시 연결하는 중… (최대 3번)'));
+    };
+    tr.onReconnected = () => {
+      setReconnecting(false);
+      statsRef.current.reconnects += 1;
+      const gap = lostAtRef.current ? (Date.now() - lostAtRef.current) / 1000 : 0;
+      lostAtRef.current = null;
+      if (recordingRef.current) {
+        const id = activeIdRef.current;
+        setRunsState((rs) => rs.map((r) => (r.id === id ? { ...r, markers: [...r.markers, { t: r.rows[r.rows.length - 1]?.t ?? 0, note: t('연결 끊김 {n}초', { n: gap.toFixed(0) }) }] } : r)));
+        gapRef.current = gap;
+        tr.send(`START ${intervalRef.current}`);
+      }
+      tr.send('HELLO');
+      say('ok', t('다시 연결했습니다. 측정을 이어 갑니다.'));
+    };
     tr.onClose = () => {
+      setReconnecting(false);
       if (transportRef.current !== tr) return;
       transportRef.current = null;
       recordingRef.current = false;
@@ -308,7 +349,7 @@ export default function App() {
       saveTimer.current = null;
       const s = sessionRef.current();
       if (s) saveSession(s);
-    }, 3000);
+    }, running ? 1000 : 3000);   // 측정 중에는 1초마다 저장
   }, [runs, exp, custom]); // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => {
     const flush = () => { const s = sessionRef.current(); if (s) saveSession(s); };
@@ -429,12 +470,16 @@ export default function App() {
     setRuns((rs) => rs.map((r) => (r.id === id && !r.startedAt ? { ...r, startedAt: now } : r)));
     calibratingRef.current = false;
     recordingRef.current = true;
+    shiftRef.current = 0; gapRef.current = null;
+    statsRef.current = { points: 0, last: 0, drops: 0, reconnects: 0, since: Date.now() };
+    if (transportRef.current) transportRef.current.autoReconnect = true;
     if (transportRef.current?.kind === 'sim') send(exp.mode === 'event' ? `SIMX ${exp.event?.start ?? 0}` : 'SIMX');
     syncWanted();
     send(`START ${exp.mode === 'event' ? exp.intervalMs : intervalMs}`);
   };
   const stop = () => {
     recordingRef.current = false;
+    if (transportRef.current) transportRef.current.autoReconnect = false;
     triggerRef.current = null;
     setWaiting(null);
     send('STOP');
@@ -530,7 +575,8 @@ export default function App() {
           {connLabel ? (
             <div className="conn">
               <span className="dot" aria-hidden="true" />
-              <span className="conn-t">{connLabel}{hello?.station ? ` · ${t('모둠 {n}', { n: hello.station })}` : ''}</span>
+              <span className="conn-t">{reconnecting ? t('다시 연결하는 중…') : connLabel}{hello?.station ? ` · ${t('모둠 {n}', { n: hello.station })}` : ''}</span>
+              <button className="ghost" aria-label={t('연결 진단')} title={t('연결 진단')} onClick={() => setDiagOpen(true)}>🩺</button>
               <button className="ghost" onClick={disconnect}>{t('연결 끊기')}</button>
             </div>
           ) : <p className="note conn-off">○ {t('보드가 연결되지 않았습니다.')}</p>}
@@ -690,6 +736,7 @@ export default function App() {
         </div>
       )}
 
+      {diagOpen && <DiagnosticsSheet connLabel={connLabel} hello={hello} stats={() => statsRef.current} running={running} reconnecting={reconnecting} intervalMs={intervalMs} onClose={() => setDiagOpen(false)} />}
       {shareOpen && exp && <ShareSheet url={shareLink} title={exp.title} say={say} onClose={() => setShareOpen(false)} />}
       {supplyOpen && <SupplySheet board={board} experiments={experiments} initialExp={exp ?? undefined} say={say} onClose={() => setSupplyOpen(false)} />}
 

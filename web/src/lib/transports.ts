@@ -11,6 +11,10 @@ export interface Transport {
   disconnect(): Promise<void>;
   onLine: (line: string) => void;
   onClose: () => void;
+  /** 2.0: 측정 중 갑자기 끊기면 다시 연결 (블루투스) */
+  autoReconnect?: boolean;
+  onLost?: () => void;
+  onReconnected?: () => void;
 }
 
 export const NUS_SERVICE = '6e400001-b5a3-f393-e0a9-e50e24dcca9e';
@@ -107,9 +111,14 @@ export class BleTransport implements Transport {
   label = t('블루투스');
   onLine: (line: string) => void = noop;
   onClose: () => void = noop;
+  onLost: () => void = noop;
+  onReconnected: () => void = noop;
+  autoReconnect = false;
   private device: BluetoothDevice | null = null;
   private rx: BluetoothRemoteGATTCharacteristic | null = null;
   private queue: Promise<void> = Promise.resolve();
+  private closing = false;
+  private reconnecting = false;
 
   async connect() {
     this.device = await navigator.bluetooth.requestDevice({
@@ -117,8 +126,13 @@ export class BleTransport implements Transport {
       optionalServices: [NUS_SERVICE],
     });
     this.label = this.device.name ?? t('블루투스');
-    this.device.addEventListener('gattserverdisconnected', () => this.onClose());
-    const server = await this.device.gatt!.connect();
+    this.device.addEventListener('gattserverdisconnected', () => this.lost());
+    await this.open();
+  }
+
+  /** GATT 연결 + 알림 켜기 (처음 연결과 다시 연결에 함께 씀) */
+  private async open() {
+    const server = await this.device!.gatt!.connect();
     const service = await server.getPrimaryService(NUS_SERVICE);
     this.rx = await service.getCharacteristic(NUS_RX);
     const tx = await service.getCharacteristic(NUS_TX);
@@ -129,6 +143,28 @@ export class BleTransport implements Transport {
       if (v) asm.push(decoder.decode(v, { stream: true }));
     });
     await tx.startNotifications();
+  }
+
+  /** 끊김: 사용자가 끊은 게 아니고 측정 중이면 8초씩 3번까지 다시 연결 */
+  private async lost() {
+    this.rx = null;
+    if (this.reconnecting) return;
+    if (this.closing || !this.autoReconnect) { this.onClose(); return; }
+    this.reconnecting = true;
+    this.onLost();
+    for (let i = 0; i < 3 && !this.closing; i++) {
+      try {
+        await Promise.race([this.open(), new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 8000))]);
+        this.reconnecting = false;
+        this.onReconnected();
+        return;
+      } catch {
+        try { this.device?.gatt?.disconnect(); } catch { /* noop */ }
+        await new Promise((r) => setTimeout(r, 1000));
+      }
+    }
+    this.reconnecting = false;
+    this.onClose();
   }
 
   send(cmd: string) {
@@ -144,6 +180,7 @@ export class BleTransport implements Transport {
   }
 
   async disconnect() {
+    this.closing = true;
     this.device?.gatt?.disconnect();
   }
 }

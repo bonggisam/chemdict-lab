@@ -7,6 +7,7 @@ ChemDict Lab은 아래 오픈소스를 사용합니다. 각 소프트웨어의 �
 |---|---|---|
 | React, React DOM | MIT | https://github.com/facebook/react |
 | Vite, @vitejs/plugin-react, vite-plugin-pwa, Workbox | MIT | https://github.com/vitejs/vite · https://github.com/vite-pwa/vite-plugin-pwa |
+| Vitest (개발용 시험 도구, 배포 파일에는 들어가지 않음) | MIT | https://github.com/vitest-dev/vitest |
 | TypeScript | Apache-2.0 | https://github.com/microsoft/TypeScript |
 
 글꼴은 앱에 들어 있지 않습니다. 기기에 Pretendard(SIL OFL 1.1)가 있으면 쓰고, 없으면 시스템 글꼴을 씁니다.
