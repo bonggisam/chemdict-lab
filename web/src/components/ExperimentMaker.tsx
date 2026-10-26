@@ -12,12 +12,18 @@ export function ExperimentMaker({ initial, onSave, onShare, onClose }: {
   const [iv, setIv] = useState(initial?.iv ?? 1000);
   const [steps, setSteps] = useState((initial?.st ?? []).join('\n'));
   const [mode, setMode] = useState<'time' | 'event'>(initial?.m ?? 'time');
-  const [ev, setEv] = useState(initial?.ev ?? { l: t('넣은 양'), u: 'mL', s: 0, d: 1 });
+  // 숫자 칸은 글자 그대로 두고 저장할 때 바꿈 (0.5·-2 같은 값을 칠 수 있게)
+  const [ev, setEv] = useState(() => {
+    const e = initial?.ev ?? { l: t('넣은 양'), u: 'mL', s: 0, d: 1 };
+    return { l: e.l, u: e.u, s: String(e.s), d: String(e.d) };
+  });
+  const evNum = { l: ev.l.trim(), u: ev.u.trim(), s: Number(ev.s), d: Number(ev.d) };
+  const evOk = !!evNum.l && Number.isFinite(evNum.s) && Number.isFinite(evNum.d) && evNum.d > 0;
   const [q, setQ] = useState('');
   const all = useMemo(() => [...digitalTypes, ...analogTypes].filter((s) => s.type !== 'OFF'), []);
   const found = all.filter((s) => !q || `${s.name} ${s.type} ${s.unit}`.toLowerCase().includes(q.toLowerCase())).slice(0, 40);
-  const x: CustomExp = { t: title.trim(), s: sens, iv, st: steps.split('\n').map((l) => l.trim()).filter(Boolean).slice(0, 30), ...(mode === 'event' ? { m: 'event' as const, ev } : {}) };
-  const ok = x.t.length > 0 && sens.length > 0;
+  const x: CustomExp = { t: title.trim(), s: sens, iv, st: steps.split('\n').map((l) => l.trim()).filter(Boolean).slice(0, 30), ...(mode === 'event' ? { m: 'event' as const, ev: evNum } : {}) };
+  const ok = x.t.length > 0 && sens.length > 0 && (mode === 'time' || evOk);
   const toggle = (ty: string) => setSens((a) => (a.includes(ty) ? a.filter((v) => v !== ty) : a.length < 8 ? [...a, ty] : a));
   return (
     <div className="sheet-backdrop" onClick={onClose}>
@@ -53,8 +59,8 @@ export function ExperimentMaker({ initial, onSave, onShare, onClose }: {
             <>
               <label className="field"><span>{t('입력값 이름')}</span><input value={ev.l} onChange={(e) => setEv({ ...ev, l: e.target.value })} /></label>
               <label className="field"><span>{t('단위')}</span><input value={ev.u} onChange={(e) => setEv({ ...ev, u: e.target.value })} /></label>
-              <label className="field"><span>{t('시작')}</span><input inputMode="decimal" value={ev.s} onChange={(e) => setEv({ ...ev, s: Number(e.target.value) || 0 })} /></label>
-              <label className="field"><span>{t('간격')}</span><input inputMode="decimal" value={ev.d} onChange={(e) => setEv({ ...ev, d: Number(e.target.value) || 1 })} /></label>
+              <label className="field"><span>{t('시작')}</span><input inputMode="decimal" value={ev.s} onChange={(e) => setEv({ ...ev, s: e.target.value })} /></label>
+              <label className="field"><span>{t('간격')}</span><input inputMode="decimal" value={ev.d} aria-invalid={!(Number(ev.d) > 0)} onChange={(e) => setEv({ ...ev, d: e.target.value })} /></label>
             </>
           )}
         </div>

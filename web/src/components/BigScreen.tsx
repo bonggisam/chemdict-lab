@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { t } from '../lib/i18n';
 
 interface Tile { id: string; label: string; unit: string; value: string; pts: number[] }
@@ -7,16 +7,19 @@ interface Tile { id: string; label: string; unit: string; value: string; pts: nu
 export function BigScreen({ title, tiles, running, connected, onStart, onStop, onClose }: {
   title: string; tiles: Tile[]; running: boolean; connected: boolean; onStart: () => void; onStop: () => void; onClose: () => void;
 }) {
+  // 새 값이 올 때마다 화면이 다시 그려지므로 닫기 함수는 ref로 (전체 화면을 한 번만 켜고 끄기)
+  const closeRef = useRef(onClose);
+  closeRef.current = onClose;
   useEffect(() => {
     const el = document.documentElement;
     el.requestFullscreen?.().catch(() => {});
-    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') closeRef.current(); };
     window.addEventListener('keydown', onKey);
     return () => {
       window.removeEventListener('keydown', onKey);
       if (document.fullscreenElement) document.exitFullscreen?.().catch(() => {});
     };
-  }, [onClose]);
+  }, []);
   return (
     <div className="big-screen" role="dialog" aria-modal="true" aria-label={t('큰 화면')}>
       <div className="big-head">

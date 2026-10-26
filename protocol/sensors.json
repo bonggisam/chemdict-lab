@@ -1612,8 +1612,6 @@
    "unit": "",
    "decimals": 3,
    "src": "device",
-   "min": 0,
-   "max": 2,
    "stableBand": 0.005,
    "cal": {
     "kind": "one-point",
@@ -1630,8 +1628,6 @@
    "unit": "",
    "decimals": 3,
    "src": "device",
-   "min": 0,
-   "max": 2,
    "stableBand": 0.005,
    "cal": {
     "kind": "one-point",
@@ -1648,8 +1644,6 @@
    "unit": "",
    "decimals": 3,
    "src": "device",
-   "min": 0,
-   "max": 2,
    "stableBand": 0.005,
    "cal": {
     "kind": "one-point",

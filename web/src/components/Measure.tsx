@@ -27,7 +27,7 @@ import { checkFor, checkKey } from '../lib/sensorChecks';
 import { useExplore } from '../lib/prefs';
 import { BigScreen } from './BigScreen';
 import { VideoSync } from './VideoSync';
-import { liveTone, playSeries, silence } from '../lib/sonify';
+import { liveTone, playSeries, primeAudio, silence } from '../lib/sonify';
 import { SOUND } from '../lib/device';
 
 export interface Trigger { id: string; dir: 'up' | 'down'; value: number }
@@ -677,7 +677,7 @@ export function Measure(p: Props) {
         )}
         <div className="actions">
           {on('measure') && charts.length > 0 && <>
-            <button className={`ghost ${sonify ? 'on' : ''}`} aria-pressed={sonify} disabled={micBusy} title={micBusy ? t('마이크로 재는 중에는 쓸 수 없습니다') : t('값이 커지면 높은 소리, 작아지면 낮은 소리가 납니다')} onClick={() => setSonify((v) => !v)}>🔊 {t('값을 소리로 듣기')}</button>
+            <button className={`ghost ${sonify ? 'on' : ''}`} aria-pressed={sonify} disabled={micBusy} title={micBusy ? t('마이크로 재는 중에는 쓸 수 없습니다') : t('값이 커지면 높은 소리, 작아지면 낮은 소리가 납니다')} onClick={() => { primeAudio(); setSonify((v) => !v); }}>🔊 {t('값을 소리로 듣기')}</button>
             <button className="ghost" disabled={micBusy || running || rowCount < 2} onClick={() => playSeries((active?.rows ?? []).map((r) => r.v[firstId!]).filter((v): v is number => typeof v === 'number'))}>▶ {t('그래프 소리로 재생')}</button>
           </>}
           <button className="ghost" onClick={p.onOpenGuide}><Ico e={ICON.guide} />{t('연결 안내')}</button>

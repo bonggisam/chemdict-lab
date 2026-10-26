@@ -94,6 +94,8 @@ export default function App() {
   const shiftRef = useRef(0);
   const gapRef = useRef<number | null>(null);
   const lostAtRef = useRef<number | null>(null);
+  const resyncRef = useRef(false);        // 다시 연결 뒤 보드가 START를 받기 전의 줄(옛 시계)은 버림
+  const reconnectingRef = useRef(false);
   const [reconnecting, setReconnecting] = useState(false);
   const [diagOpen, setDiagOpen] = useState(false);
   // 2.0: 측정 시간 정하기 — 시간이 되면 정지하고 (다른 창을 보고 있으면) 알림
@@ -148,6 +150,7 @@ export default function App() {
           say('ok', t('조건이 맞아 기록을 시작했습니다.'));
         }
         if (tOffsetRef.current) row = { t: Number((m.t - tOffsetRef.current).toFixed(3)), v: m.v };
+        if (recordingRef.current && resyncRef.current) break;
         if (recordingRef.current) {
           const id = activeIdRef.current;
           statsRef.current.points += 1; statsRef.current.last = Date.now();
@@ -167,6 +170,7 @@ export default function App() {
         break;
       }
       case 'ack':
+        if (m.cmd === 'START') resyncRef.current = false;
         if (m.cmd === 'START' && recordingRef.current) setRunning(true);
         if (m.cmd === 'STOP') setRunning(false);
         break;
@@ -187,10 +191,12 @@ export default function App() {
     tr.onLost = () => {
       lostAtRef.current = Date.now();
       statsRef.current.drops += 1;
+      reconnectingRef.current = true;
       setReconnecting(true);
       say('err', t('블루투스 연결이 끊어졌습니다. 다시 연결하는 중… (최대 3번)'));
     };
     tr.onReconnected = () => {
+      reconnectingRef.current = false;
       setReconnecting(false);
       statsRef.current.reconnects += 1;
       const gap = lostAtRef.current ? (Date.now() - lostAtRef.current) / 1000 : 0;
@@ -199,12 +205,17 @@ export default function App() {
         const id = activeIdRef.current;
         setRunsState((rs) => rs.map((r) => (r.id === id ? { ...r, markers: [...r.markers, { t: r.rows[r.rows.length - 1]?.t ?? 0, note: t('연결 끊김 {n}초', { n: gap.toFixed(0) }) }] } : r)));
         gapRef.current = gap;
+        resyncRef.current = true;
         tr.send(`START ${intervalRef.current}`);
+      } else {
+        tr.send('STOP');   // 끊긴 동안 [정지]를 눌렀거나 정한 시간이 됨: 보드도 멈춤
       }
       tr.send('HELLO');
       say('ok', t('다시 연결했습니다. 측정을 이어 갑니다.'));
     };
     tr.onClose = () => {
+      reconnectingRef.current = false;
+      resyncRef.current = false;
       setReconnecting(false);
       if (transportRef.current !== tr) return;
       transportRef.current = null;
@@ -497,7 +508,7 @@ export default function App() {
     statsRef.current = { points: 0, last: 0, drops: 0, reconnects: 0, since: Date.now() };
     if (transportRef.current) transportRef.current.autoReconnect = true;
     if (autoStopTimer.current) clearTimeout(autoStopTimer.current);
-    if (autoStopMin > 0) autoStopTimer.current = window.setTimeout(() => {
+    if (autoStopMin > 0 && (exp.mode ?? 'time') === 'time') autoStopTimer.current = window.setTimeout(() => {
       if (!recordingRef.current) return;
       stopRef.current();
       say('ok', t('정한 시간이 되어 측정을 멈췄습니다.'));
@@ -514,6 +525,7 @@ export default function App() {
     if (transportRef.current) transportRef.current.autoReconnect = false;
     triggerRef.current = null;
     setWaiting(null);
+    if (reconnectingRef.current) { setRunning(false); return; }   // 보드에 닿지 않음: 다시 연결되면 STOP을 보냄
     send('STOP');
   };
   stopRef.current = stop;

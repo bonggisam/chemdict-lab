@@ -52,5 +52,7 @@ export function valid(x: unknown): x is CustomExp {
   const o = x as CustomExp;
   return !!o && typeof o.t === 'string' && o.t.trim().length > 0 && o.t.length <= 120 && Array.isArray(o.s) && o.s.length > 0 && o.s.length <= 8
     && o.s.every((s) => typeof s === 'string' && !!typeInfo(s)) && typeof o.iv === 'number' && o.iv >= 20 && o.iv <= 600000
-    && Array.isArray(o.st) && o.st.length <= 30 && o.st.every((s) => typeof s === 'string' && s.length <= 300);
+    && Array.isArray(o.st) && o.st.length <= 30 && o.st.every((s) => typeof s === 'string' && s.length <= 300)
+    && (o.m === undefined || o.m === 'time' || (o.m === 'event' && !!o.ev && typeof o.ev.l === 'string' && typeof o.ev.u === 'string'
+      && Number.isFinite(o.ev.s) && Number.isFinite(o.ev.d) && o.ev.d > 0));
 }

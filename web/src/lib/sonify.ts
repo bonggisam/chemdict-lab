@@ -22,6 +22,9 @@ function ensure() {
 
 export const pitch = (v: number, lo: number, hi: number) => 220 * Math.pow(4, hi > lo ? Math.min(Math.max((v - lo) / (hi - lo), 0), 1) : 0.5);
 
+/** 버튼을 누른 순간에 소리 장치를 깨움 (아이패드 사파리는 누름 없이 소리를 막음) */
+export function primeAudio() { ensure(); }
+
 /** 실시간: 지금 값에 맞춰 소리를 냄 */
 export function liveTone(v: number, lo: number, hi: number) {
   const c = ensure();

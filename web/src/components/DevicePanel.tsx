@@ -37,7 +37,8 @@ export function DeviceCamera({ dev, absorbance, running, say }: { dev: DeviceTra
     dev.onVideo = setStream;
     dev.startCamera();
     const id = window.setInterval(() => setRgb(dev.color), 250);
-    return () => { clearInterval(id); dev.onVideo = () => {}; };
+    // 이 창을 닫을 때 측정 중이 아니면 카메라를 끔 (불빛·배터리)
+    return () => { clearInterval(id); dev.onVideo = () => {}; if (!dev.running) dev.stopCamera(); };
   }, [dev]);
   useEffect(() => { if (ref.current && stream) { ref.current.srcObject = stream; ref.current.play().catch(() => {}); } }, [stream]);
   return (

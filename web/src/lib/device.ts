@@ -94,6 +94,9 @@ export class DeviceTransport implements Transport {
   private audio: { ctx: AudioContext; stream: MediaStream; an: AnalyserNode; td: Float32Array; fd: Float32Array; raf: number } | null = null;
   private video: { el: HTMLVideoElement; canvas: HTMLCanvasElement; timer: number } | null = null;
   private readonly flip = isIOS() ? -1 : 1;   // iOS Safari는 중력 방향 부호가 반대
+  private gen = 0;                               // START·STOP 차례 (권한 창을 기다리는 사이 STOP이 오면 무시)
+  private camP: Promise<void> | null = null;     // 카메라 켜는 중 (두 번 켜지 않게)
+  private micP: Promise<void> | null = null;
 
   async connect() {
     // iOS: 움직임 센서 허락은 누른 순간(연결 버튼)에만 물을 수 있음
@@ -164,12 +167,17 @@ export class DeviceTransport implements Transport {
     else if (C === 'START') {
       const ms = Math.max(20, Number(args[0]) || 1000);
       if (this.timer !== null) clearInterval(this.timer);
+      this.timer = null;
+      const g = ++this.gen;
+      this.latest = {};
       await this.startSources();
+      if (g !== this.gen) return;   // 기다리는 사이 STOP이나 다른 START가 옴
       this.start = performance.now();
       this.timer = window.setInterval(() => this.tick(), ms);
       this.emit({ type: 'ack', cmd: 'START' });
       setTimeout(() => this.tick(), 150);
     } else if (C === 'STOP') {
+      this.gen++;
       if (this.timer !== null) clearInterval(this.timer);
       this.timer = null;
       this.stopSources(true);
@@ -186,7 +194,10 @@ export class DeviceTransport implements Transport {
     } else this.emit({ type: 'ack', cmd: C });
   }
 
+  get running() { return this.timer !== null; }
+
   async disconnect() {
+    this.gen++;
     if (this.timer !== null) clearInterval(this.timer);
     this.timer = null;
     this.stopSources(false);
@@ -225,8 +236,13 @@ export class DeviceTransport implements Transport {
     this.motionOn = true;
   }
 
-  private async startMic() {
-    if (this.audio) return;
+  private startMic(): Promise<void> {
+    if (this.audio) return Promise.resolve();
+    return (this.micP ??= this.openMic().finally(() => { this.micP = null; }));
+  }
+
+  private async openMic() {
+    const g = this.gen;
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false } });
       const ctx = new AudioContext();
@@ -235,6 +251,7 @@ export class DeviceTransport implements Transport {
       an.fftSize = 4096;
       an.smoothingTimeConstant = 0;
       src.connect(an);
+      if (g !== this.gen) { stream.getTracks().forEach((tr) => tr.stop()); ctx.close().catch(noop); return; }   // 그 사이 STOP
       const td = new Float32Array(an.fftSize), fd = new Float32Array(an.frequencyBinCount);
       const loop = () => {
         if (!this.audio) return;
@@ -273,9 +290,13 @@ export class DeviceTransport implements Transport {
     this.audio = null;
   }
 
-  /** 카메라 켜기 (미리보기 창에서도 부름) */
-  async startCamera() {
-    if (this.video) return;
+  /** 카메라 켜기 (미리보기 창에서도 부름) — 켜는 중이면 같은 약속을 돌려줌 */
+  startCamera(): Promise<void> {
+    if (this.video) return Promise.resolve();
+    return (this.camP ??= this.openCamera().finally(() => { this.camP = null; }));
+  }
+
+  private async openCamera() {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: 'environment' }, width: { ideal: 640 }, height: { ideal: 480 } } });
       const el = document.createElement('video');
