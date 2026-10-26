@@ -1,0 +1,57 @@
+{
+  "id": "cur-d-elevator",
+  "order": 247,
+  "title": "엘리베이터 속 무게감",
+  "subject": "기기 센서 실험",
+  "level": "공통",
+  "course": "기기 센서 실험",
+  "area": "움직임",
+  "summary": "엘리베이터가 출발·정지할 때 바닥 방향 가속도가 9.8보다 커지고 작아지는 것을 봅니다.",
+  "standards": [],
+  "standardTexts": [],
+  "sensors": [
+    "DAZ"
+  ],
+  "mode": "time",
+  "intervalMs": 100,
+  "x": {
+    "label": "시간",
+    "unit": "s"
+  },
+  "y": [
+    {
+      "sensor": "DAZ",
+      "label": "가속도 z",
+      "unit": "m/s²"
+    }
+  ],
+  "markers": {
+    "enabled": true,
+    "label": "관찰 기록",
+    "prompt": "한 일 (예: 시약 넣음)"
+  },
+  "analysis": [
+    "stats",
+    "fit"
+  ],
+  "steps": [
+    "기기를 화면이 위로 오게 엘리베이터 바닥에 놓습니다.",
+    "측정을 시작하고 위층 버튼을 누릅니다.",
+    "출발할 때와 멈출 때 z 값이 9.8보다 커지는지·작아지는지 봅니다.",
+    "‘넓이’로 (z − 9.8)을 적분해 엘리베이터 속력을 구해 봅니다."
+  ],
+  "setup": {
+    "parts": [
+      "dev-accel3"
+    ],
+    "choose": false,
+    "materials": [
+      "아이폰·아이패드"
+    ],
+    "attach": [],
+    "cautions": [
+      "다른 사람이 타는 엘리베이터에서는 방해되지 않게 합니다."
+    ]
+  },
+  "textbooks": []
+}

@@ -28,6 +28,8 @@ import { experiments } from './lib/experiments';
 import { parseLine, type BoardMsg, type Experiment, type HelloMsg, type SensorInfo } from './lib/protocol';
 import { BleTransport, SerialTransport, SimTransport, hasBluetooth, hasSerial, type Transport } from './lib/transports';
 import { analogTypes, resolveSensor } from './lib/sensors';
+import { ABSORB, COLOR, DeviceTransport, canUseDevice, deviceTypes, kitInterval, kitPart, type DeviceKit } from './lib/device';
+import { DeviceCamera, DeviceSection, DeviceSheet } from './components/DevicePanel';
 import { isStable } from './lib/analysis';
 import { newRun, saveFile, type Row, type Run } from './lib/runs';
 
@@ -36,6 +38,11 @@ type CalMsg = { id: string; slope: number; offset: number; points: number };
 
 export default function App() {
   const transportRef = useRef<Transport | null>(null);
+  // 2.0: 이 기기 센서 (하나를 계속 씀 — 카메라 미리보기를 연결 전에도 보여 주려고)
+  const deviceRef = useRef<DeviceTransport | null>(null);
+  const dev = () => (deviceRef.current ??= new DeviceTransport());
+  const [devKit, setDevKit] = useState<DeviceKit | null>(null);
+  const isDevice = () => transportRef.current?.kind === 'device';
   const [screen, setScreen] = useState<Screen>('connect');
   const [busy, setBusy] = useState(false);
   const [connLabel, setConnLabel] = useState('');
@@ -134,8 +141,8 @@ export default function App() {
     }
   }, [say]);
 
-  const connect = async (kind: 'serial' | 'ble' | 'sim', reuse?: SerialPort) => {
-    const tr: Transport = kind === 'serial' ? new SerialTransport(reuse) : kind === 'ble' ? new BleTransport() : new SimTransport();
+  const connect = async (kind: 'serial' | 'ble' | 'sim' | 'device', reuse?: SerialPort) => {
+    const tr: Transport = kind === 'serial' ? new SerialTransport(reuse) : kind === 'ble' ? new BleTransport() : kind === 'device' ? dev() : new SimTransport();
     tr.onLine = (line) => { const m = parseLine(line); if (m) handleMsg(m); };
     tr.onClose = () => {
       if (transportRef.current !== tr) return;
@@ -241,7 +248,7 @@ export default function App() {
 
   // Esc로 열린 창 닫기
   const escRef = useRef<() => void>(() => {});
-  escRef.current = () => { if (quick) setQuick(null); else if (check) closeCheck(); else if (cal) closeCal(); else if (setupOpen) setSetupOpen(false); };
+  escRef.current = () => { if (devKit) closeDevKit(); else if (quick) setQuick(null); else if (check) closeCheck(); else if (cal) closeCal(); else if (setupOpen) setSetupOpen(false); };
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') escRef.current(); };
     window.addEventListener('keydown', onKey);
@@ -421,6 +428,7 @@ export default function App() {
     calibratingRef.current = false;
     recordingRef.current = true;
     if (transportRef.current?.kind === 'sim') send(exp.mode === 'event' ? `SIMX ${exp.event?.start ?? 0}` : 'SIMX');
+    syncWanted();
     send(`START ${exp.mode === 'event' ? exp.intervalMs : intervalMs}`);
   };
   const stop = () => {
@@ -430,6 +438,37 @@ export default function App() {
     send('STOP');
   };
 
+  // ---- 이 기기 센서: 지금 실험이 쓰는 장치만 켬 (마이크·카메라 권한을 필요할 때만)
+  function syncWanted() {
+    if (!isDevice()) return;
+    const ts = (exp?.sensors ?? []).filter((s) => s !== '*');
+    dev().wanted = new Set(ts.some((s) => deviceTypes().includes(s)) ? ts : []);
+  }
+  /** 기기 센서로 바꿔 연결 (다른 보드는 끊음) */
+  const useDevice = async () => {
+    if (isDevice()) return;
+    if (transportRef.current) await disconnect();
+    await connect('device');
+  };
+  const startDevice = async (k: DeviceKit) => {
+    setDevKit(null);
+    if (running) stop();
+    await useDevice();
+    autoStartRef.current = true;
+    pickExperiment({ ...quickExperiment(kitPart(k)), intervalMs: kitInterval(k) });
+  };
+  const closeDevKit = () => {
+    setDevKit(null);
+    if (!(isDevice() && screen === 'measure')) dev().stopCamera();
+  };
+  /** 실험 카드: 보드에 센서가 없고 이 기기로 되는 실험이면 '이 기기'로 바꿔 연결 */
+  const pickAny = async (e: Experiment) => {
+    const have = sensors.filter((x) => x.src !== 'demo' || transportRef.current?.kind === 'sim').map((x) => x.type);
+    const ready = e.sensors.includes('*') || e.sensors.every((ty) => have.includes(ty));
+    if (!ready && canUseDevice(e.sensors)) await useDevice();
+    pickExperiment(e);
+  };
+
   // ---- 보정 화면: 측정 중이 아니면 미리보기 측정을 켬
   const openCal = (id?: string) => {
     setLastCal(null);
@@ -437,6 +476,7 @@ export default function App() {
     if (!recordingRef.current) {
       calibratingRef.current = true;
       setCalRows([]);
+      syncWanted();
       send('START 500');
     }
   };
@@ -450,6 +490,7 @@ export default function App() {
     if (!recordingRef.current && !calibratingRef.current) {
       calibratingRef.current = true;
       setCalRows([]);
+      syncWanted();
       send('START 500');
     }
   };
@@ -475,7 +516,7 @@ export default function App() {
         screen={screen}
         expTitle={exp?.title}
         connected={!!hello}
-        boardName={board.name}
+        boardName={hello?.fw === 'device' ? t('이 기기') : board.name}
         running={running}
         onGo={(sc) => {
           if (running) { say('err', t('측정 중입니다. 먼저 [정지]를 누르세요.')); return; }
@@ -520,13 +561,14 @@ export default function App() {
       {screen === 'connect' && sharedTitle && (
         <p className="shared-bar" role="status">🔗 {t('공유받은 실험: ‘{title}’ — 보드를 연결하면 바로 측정 화면이 열립니다.', { title: sharedTitle })}</p>
       )}
+      {screen === 'connect' && <div className="wide connect-device"><DeviceSection compact onOpen={setDevKit} /></div>}
       {screen === 'connect' && <div className="wide connect-recent"><RecentSessions compact onOpen={openSession} say={say} /></div>}
 
       {screen === 'pick' && (
         <main className="wide">
           <div className="row-head">
             <h1><span className="step-no">2</span>{t('무엇을 잴까요?')}</h1>
-            {hello && hello.fw !== 'sim' && (
+            {hello && hello.fw !== 'sim' && hello.fw !== 'device' && (
               <label className="switch">
                 <input type="checkbox" checked={hello.demo} onChange={(e) => send(`DEMO ${e.target.checked ? 'ON' : 'OFF'}`)} />
                 <span>{t('데모 데이터')}</span>
@@ -543,6 +585,8 @@ export default function App() {
 
           <RecentSessions onOpen={openSession} say={say} />
 
+          <DeviceSection onOpen={setDevKit} activeId={isDevice() ? exp?.id : undefined} />
+
           <div data-nav={t('센서로 바로 측정')}><SensorPicker board={board} connectedTypes={sensors.filter((s) => s.src !== 'demo').map((s) => s.type)} onPick={(p) => setQuick({ part: p, status: 'idle' })} /></div>
 
           <div className="row-head sub">
@@ -551,7 +595,7 @@ export default function App() {
             <button className="ghost" disabled={!sensors.some((s) => s.spec && s.spec.cal.kind !== 'none')} onClick={() => openCal()}><Ico e={ICON.cal} />{t('센서 보정')}</button>
             <button className="ghost" disabled={!hello || !sensors.length} onClick={() => openCheck()}><Ico e={ICON.test} />{t('센서 점검')}</button>
           </div>
-          <ExperimentBrowser experiments={experiments} connectedTypes={sensors.filter((x) => x.src !== 'demo' || transportRef.current?.kind === 'sim').map((x) => x.type)} onPick={pickExperiment} />
+          <ExperimentBrowser experiments={experiments} connectedTypes={[...sensors.filter((x) => x.src !== 'demo' || transportRef.current?.kind === 'sim').map((x) => x.type), ...deviceTypes()]} onPick={pickAny} />
 
           {hello && (
             <details className="advanced" data-nav={t('포트 직접 설정 (고급)')}>
@@ -576,6 +620,13 @@ export default function App() {
         />
       )}
 
+      {devKit && <DeviceSheet kit={devKit} dev={dev()} onStart={() => startDevice(devKit)} onClose={closeDevKit} say={say} />}
+
+      {screen === 'measure' && exp && isDevice() && exp.sensors.some((s) => COLOR.includes(s)) && (
+        <div className="wide device-measure-cam">
+          <DeviceCamera dev={dev()} absorbance={exp.sensors.some((s) => ABSORB.includes(s))} running={running} say={say} />
+        </div>
+      )}
       {screen === 'measure' && exp && (
         <Measure
           exp={exp}

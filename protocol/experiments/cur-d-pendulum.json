@@ -1,0 +1,59 @@
+{
+  "id": "cur-d-pendulum",
+  "order": 246,
+  "title": "진자의 주기 (기기 가속도)",
+  "subject": "기기 센서 실험",
+  "level": "공통",
+  "course": "기기 센서 실험",
+  "area": "움직임",
+  "summary": "기기를 진자 추로 써서 가속도의 반복 주기를 재고 줄 길이와 주기의 관계를 봅니다.",
+  "standards": [],
+  "standardTexts": [],
+  "sensors": [
+    "DACC"
+  ],
+  "mode": "time",
+  "intervalMs": 100,
+  "x": {
+    "label": "시간",
+    "unit": "s"
+  },
+  "y": [
+    {
+      "sensor": "DACC",
+      "label": "가속도",
+      "unit": "m/s²"
+    }
+  ],
+  "markers": {
+    "enabled": true,
+    "label": "관찰 기록",
+    "prompt": "한 일 (예: 시약 넣음)"
+  },
+  "analysis": [
+    "stats",
+    "fit"
+  ],
+  "steps": [
+    "기기를 튼튼한 케이스에 넣고 줄 두 가닥으로 V자로 매달아 그네처럼 흔들리게 합니다.",
+    "10° 정도 당겼다 놓고 측정을 시작합니다.",
+    "가속도가 가장 큰 봉우리 사이 시간(반 주기)을 읽어 주기를 구합니다.",
+    "줄 길이를 바꿔 새 측정을 하고 주기² 와 길이를 비교합니다."
+  ],
+  "setup": {
+    "parts": [
+      "dev-accel"
+    ],
+    "choose": false,
+    "materials": [
+      "아이폰·아이패드 (케이스)",
+      "튼튼한 끈",
+      "스탠드 또는 문틀"
+    ],
+    "attach": [],
+    "cautions": [
+      "기기를 떨어뜨리지 않게 끈 매듭을 두 번 확인하고 아래에 쿠션을 둡니다."
+    ]
+  },
+  "textbooks": []
+}

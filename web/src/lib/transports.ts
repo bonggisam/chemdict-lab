@@ -1,7 +1,7 @@
 import { LineAssembler } from './protocol';
 import { t } from './i18n';
 
-export type TransportKind = 'serial' | 'ble' | 'sim';
+export type TransportKind = 'serial' | 'ble' | 'sim' | 'device';
 
 export interface Transport {
   kind: TransportKind;

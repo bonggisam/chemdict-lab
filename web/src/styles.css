@@ -746,3 +746,17 @@ button.big.alt { background: linear-gradient(160deg, var(--tint), transparent 70
 /* 앱 정보 링크 (왼쪽 목차 아래) */
 .about-link { display: flex; align-items: center; min-height: 44px; padding: 0 4px; font-size: 14px; color: inherit; opacity: 0.8; text-decoration: none; }
 .about-link:hover { opacity: 1; text-decoration: underline; }
+
+/* 2.0 이 기기 센서 */
+.device-section { margin: 18px 0; }
+.device-section.compact { max-width: 640px; margin: 18px auto 0; }
+.device-section h2 { margin: 0 0 4px; }
+.device-camera { display: flex; flex-direction: column; gap: 10px; margin: 6px 0 12px; }
+.cam-box { position: relative; width: 100%; max-width: 480px; aspect-ratio: 4 / 3; background: #000; border-radius: var(--radius); overflow: hidden; }
+.cam-box video { width: 100%; height: 100%; object-fit: contain; display: block; }
+.cam-target { position: absolute; left: 50%; top: 50%; width: 15%; aspect-ratio: 1; transform: translate(-50%, -50%); border: 3px solid #fff; border-radius: 4px; box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.6); }
+.cam-wait { position: absolute; inset: 0; display: grid; place-items: center; color: #fff; font-size: 14px; }
+.cam-row { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; }
+.cam-row .swatch { width: 44px; height: 44px; border-radius: var(--radius-sm); border: 1px solid var(--line); }
+.cam-row .mono { font-variant-numeric: tabular-nums; }
+.device-measure-cam { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 14px; margin: 12px auto 0; }

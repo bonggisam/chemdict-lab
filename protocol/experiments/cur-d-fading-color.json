@@ -1,0 +1,74 @@
+{
+  "id": "cur-d-fading-color",
+  "order": 244,
+  "title": "색이 옅어지는 반응의 빠르기",
+  "subject": "기기 센서 실험",
+  "level": "공통",
+  "course": "기기 센서 실험",
+  "area": "빛·색",
+  "summary": "색소가 표백되며 흡광도가 줄어드는 그래프로 반응 속도와 농도의 관계를 봅니다.",
+  "standards": [],
+  "standardTexts": [],
+  "sensors": [
+    "DAR",
+    "DAG",
+    "DAB"
+  ],
+  "mode": "time",
+  "intervalMs": 1000,
+  "x": {
+    "label": "시간",
+    "unit": "s"
+  },
+  "y": [
+    {
+      "sensor": "DAR",
+      "label": "흡광도(빨강 빛)",
+      "unit": ""
+    },
+    {
+      "sensor": "DAG",
+      "label": "흡광도(초록 빛)",
+      "unit": ""
+    },
+    {
+      "sensor": "DAB",
+      "label": "흡광도(파랑 빛)",
+      "unit": ""
+    }
+  ],
+  "markers": {
+    "enabled": true,
+    "label": "관찰 기록",
+    "prompt": "한 일 (예: 시약 넣음)"
+  },
+  "analysis": [
+    "stats",
+    "fit"
+  ],
+  "steps": [
+    "큐벳에 물을 넣고 [0 맞추기]를 누릅니다.",
+    "식용 색소(파랑) 용액을 넣고 표백제를 몇 방울 떨어뜨린 순간 측정을 시작합니다.",
+    "흡광도가 줄어드는 곡선을 ‘함수 찾기 → 지수’로 맞추고 반감기를 구합니다.",
+    "표백제 양을 바꿔 새 측정을 하고 기울기(접선)를 비교합니다."
+  ],
+  "setup": {
+    "parts": [
+      "dev-absorb"
+    ],
+    "choose": false,
+    "materials": [
+      "카메라가 있는 기기",
+      "식용 색소(청색 1호)",
+      "묽은 표백제(차아염소산나트륨)",
+      "큐벳",
+      "흰 종이"
+    ],
+    "attach": [],
+    "cautions": [
+      "표백제는 눈·피부에 닿지 않게 보안경과 장갑을 씁니다.",
+      "산성 용액과 섞지 않습니다 (염소 기체)."
+    ]
+  },
+  "textbooks": []
+}

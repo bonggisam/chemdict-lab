@@ -1,0 +1,67 @@
+{
+  "id": "cur-d-bottle-pitch",
+  "order": 250,
+  "title": "물 높이와 병 소리의 높이",
+  "subject": "기기 센서 실험",
+  "level": "공통",
+  "course": "기기 센서 실험",
+  "area": "소리",
+  "summary": "병에 물을 채울수록 불었을 때 나는 소리의 진동수가 어떻게 바뀌는지 봅니다.",
+  "standards": [],
+  "standardTexts": [],
+  "sensors": [
+    "DFRQ"
+  ],
+  "mode": "event",
+  "intervalMs": 500,
+  "x": {
+    "label": "물 높이",
+    "unit": "cm"
+  },
+  "y": [
+    {
+      "sensor": "DFRQ",
+      "label": "진동수",
+      "unit": "Hz",
+      "min": 0
+    }
+  ],
+  "markers": {
+    "enabled": false,
+    "label": "관찰 기록",
+    "prompt": "한 일 (예: 시약 넣음)"
+  },
+  "analysis": [
+    "stats",
+    "fit"
+  ],
+  "steps": [
+    "빈 유리병 입구를 불어 소리를 내며 ‘값 기록’을 누릅니다.",
+    "물을 2 cm씩 더 넣으며 같은 방법으로 기록합니다.",
+    "남은 공기 기둥 길이와 진동수의 관계를 ‘함수 찾기’로 봅니다."
+  ],
+  "setup": {
+    "parts": [
+      "dev-pitch"
+    ],
+    "choose": false,
+    "materials": [
+      "마이크가 있는 기기",
+      "같은 유리병",
+      "물",
+      "자"
+    ],
+    "attach": [],
+    "cautions": [
+      "조용한 곳에서 잽니다."
+    ]
+  },
+  "textbooks": [],
+  "event": {
+    "label": "물 높이",
+    "unit": "cm",
+    "start": 0,
+    "step": 2,
+    "scale": "linear"
+  }
+}

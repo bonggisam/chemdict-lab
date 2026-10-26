@@ -175,6 +175,29 @@ I2C는 Qwiic 단자(UNO R4 WiFi·Nano R4의 `Wire1`, `qwiic:`)와 SDA·SCL 핀(`
 |---|---|
 | `SIMX <값>` | 값 입력 모드 체험용: 다음에 기록할 입력값(예: NaOH 부피)을 알려 주면 pH를 그에 맞게 만듦 |
 
+## 9. 기기 센서 — 보드 없이 이 기기로 (2.0, sensors.json v5)
+
+아이패드·아이폰·맥(애플 앱)과 브라우저(웹앱: 안드로이드 태블릿·크롬북 등)의 내장 센서를 **가상 보드 "이 기기"**로 다룹니다. 앱 안의 가상 보드(애플 `DeviceBoard.swift`, 웹 `lib/device.ts`의 `DeviceTransport`)가 실제 보드와 같은 줄을 만들므로 그래프·분석·저장·반 비교는 그대로 씁니다.
+
+- hello: `fw: "device"`, `board: "이 기기"`, 센서마다 `src: "device"`. 이 기기에서 쓸 수 있는 종류만 보냄.
+- 명령: `HELLO`·`START <ms>`(최소 20)·`STOP` 그대로. `START` 때 지금 실험이 쓰는 장치만 켬(마이크·카메라 권한을 그때만 물음). 실험이 센서를 정하지 않으면 권한이 필요 없는 움직임 센서만.
+- `CAL <DAR|DAG|DAB|DCR…> OFS 0`: 지금 카메라 색을 흡광도 기준(I₀, 빈 용액)으로 → `{"type":"cal",…,"points":1}`. `CAL <id> CLEAR`로 지움. 앱의 [0 맞추기] 버튼이 같은 일을 함.
+- 카드 목록: `protocol/device_sensors.json` (`kits[]`: id·name·category·provides·platforms(ios·mac·web)·how·cautions·ideas). 센서가 없는 기기에서는 카드를 숨김. i18n 키 `device.<id>.*`.
+- 실험: `cur-d-*` (`make_experiments.py`의 "2.0 기기 내장 센서 실험", 과목 "기기 센서 실험"). 보드에 그 센서가 없고 이 기기로 되면 실험 카드를 누를 때 '이 기기'로 바꿔 연결.
+
+| type | 뜻 | 단위 | 애플(iOS·맥) | 웹 |
+|---|---|---|---|---|
+| `DACC` `DAX` `DAY` `DAZ` | 가속도 크기·x·y·z (중력 포함, 화면 위로 평평하면 z ≈ +9.8) | m/s² | iOS: CoreMotion | DeviceMotionEvent (iOS 사파리는 부호를 뒤집어 맞춤, 허락은 연결 버튼에서) |
+| `DGYR` | 회전 속도 크기 | rad/s | iOS | DeviceMotionEvent.rotationRate (°/s → rad/s) |
+| `DMAG` | 자기장 크기 | µT | iOS | — |
+| `DBAR` | 기압 | kPa | iOS: CMAltimeter | — |
+| `DSND` | 소리 크기 (dBFS + 100, 기기마다 다른 상대값) | dB | 마이크 4096점 RMS | getUserMedia + AnalyserNode |
+| `DFRQ` | 가장 센 진동수 (Hann·FFT·포물선 보간, 50 Hz 미만 제외, 40 dB 미만이면 0) | Hz | 〃 | 〃 |
+| `DCR` `DCG` `DCB` | 카메라 가운데 1/5 사각형의 평균 색 (10 Hz) | 0–255 | 뒤 카메라(맥: 기본 카메라) | getUserMedia(environment) + canvas |
+| `DAR` `DAG` `DAB` | 흡광도 −log₁₀(I/I₀), I₀ = [0 맞추기] 때의 색(없으면 255) | — | 〃 (0 맞춘 뒤 노출·화이트밸런스 고정) | 〃 (지원 브라우저만 고정) |
+
+권한 문구: 애플 `NSMicrophoneUsageDescription`·`NSMotionUsageDescription`·`NSCameraUsageDescription`(tools/make_l10n.py DISPLAY → 언어별 InfoPlist.strings), 맥 샌드박스 `com.apple.security.device.audio-input`·`device.camera`. 소리·영상은 저장하지 않고 숫자만 기록 (개인정보 처리방침 3).
+
 ## 웹앱에서 측정 프로그램 설치 (v1.4)
 
 - USB로 연결한 뒤 약 4.5초 안에 `hello`가 오지 않으면 "측정 프로그램이 없는 보드"로 봅니다 (2.5초에 `HELLO`를 한 번 더 보냄).

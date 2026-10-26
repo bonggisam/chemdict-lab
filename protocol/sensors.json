@@ -1,5 +1,5 @@
 {
- "version": 4,
+ "version": 5,
  "analog": [
   {
    "type": "pH",
@@ -1437,6 +1437,228 @@
     "kind": "none"
    },
    "note": "AS7341 680 nm 채널 (원시값). 흡광도 = log(기준값 ÷ 값)"
+  },
+  {
+   "type": "DACC",
+   "name": "가속도(크기)",
+   "unit": "m/s²",
+   "decimals": 2,
+   "src": "device",
+   "min": 0,
+   "max": 30,
+   "stableBand": 0.05,
+   "cal": {
+    "kind": "none"
+   },
+   "note": "기기 내장 가속도계. 가만히 두면 중력 때문에 약 9.8 m/s²."
+  },
+  {
+   "type": "DAX",
+   "name": "가속도 x",
+   "unit": "m/s²",
+   "decimals": 2,
+   "src": "device",
+   "min": -20,
+   "max": 20,
+   "stableBand": 0.05,
+   "cal": {
+    "kind": "none"
+   },
+   "note": "기기 내장 가속도계 x축 (화면 가로 방향)."
+  },
+  {
+   "type": "DAY",
+   "name": "가속도 y",
+   "unit": "m/s²",
+   "decimals": 2,
+   "src": "device",
+   "min": -20,
+   "max": 20,
+   "stableBand": 0.05,
+   "cal": {
+    "kind": "none"
+   },
+   "note": "기기 내장 가속도계 y축 (화면 세로 방향)."
+  },
+  {
+   "type": "DAZ",
+   "name": "가속도 z",
+   "unit": "m/s²",
+   "decimals": 2,
+   "src": "device",
+   "min": -20,
+   "max": 20,
+   "stableBand": 0.05,
+   "cal": {
+    "kind": "none"
+   },
+   "note": "기기 내장 가속도계 z축 (화면에 수직)."
+  },
+  {
+   "type": "DGYR",
+   "name": "회전 속도",
+   "unit": "rad/s",
+   "decimals": 2,
+   "src": "device",
+   "min": 0,
+   "max": 10,
+   "stableBand": 0.02,
+   "cal": {
+    "kind": "none"
+   },
+   "note": "기기 내장 자이로스코프. 세 축 회전 속도의 크기."
+  },
+  {
+   "type": "DMAG",
+   "name": "자기장",
+   "unit": "µT",
+   "decimals": 1,
+   "src": "device",
+   "min": 0,
+   "max": 200,
+   "stableBand": 0.5,
+   "cal": {
+    "kind": "none"
+   },
+   "note": "기기 내장 자기 센서. 지구 자기장은 약 25~65 µT."
+  },
+  {
+   "type": "DBAR",
+   "name": "기압(기기)",
+   "unit": "kPa",
+   "decimals": 3,
+   "src": "device",
+   "min": 80,
+   "max": 110,
+   "stableBand": 0.005,
+   "cal": {
+    "kind": "none"
+   },
+   "note": "기기 내장 기압계 (아이폰·일부 아이패드)."
+  },
+  {
+   "type": "DSND",
+   "name": "소리 크기",
+   "unit": "dB",
+   "decimals": 1,
+   "src": "device",
+   "min": 0,
+   "max": 100,
+   "stableBand": 1,
+   "cal": {
+    "kind": "none"
+   },
+   "note": "기기 마이크. 상대 dB(대략값)로, 소음계처럼 정확한 값이 아닙니다."
+  },
+  {
+   "type": "DFRQ",
+   "name": "소리 진동수",
+   "unit": "Hz",
+   "decimals": 0,
+   "src": "device",
+   "min": 0,
+   "max": 4000,
+   "stableBand": 2,
+   "cal": {
+    "kind": "none"
+   },
+   "note": "기기 마이크로 가장 센 진동수를 찾습니다. 소리굽쇠·악기 음높이."
+  },
+  {
+   "type": "DCR",
+   "name": "카메라 빨강",
+   "unit": "",
+   "decimals": 0,
+   "src": "device",
+   "min": 0,
+   "max": 255,
+   "stableBand": 1,
+   "cal": {
+    "kind": "none"
+   },
+   "note": "기기 카메라 화면 가운데의 빨강 밝기 (0~255)."
+  },
+  {
+   "type": "DCG",
+   "name": "카메라 초록",
+   "unit": "",
+   "decimals": 0,
+   "src": "device",
+   "min": 0,
+   "max": 255,
+   "stableBand": 1,
+   "cal": {
+    "kind": "none"
+   },
+   "note": "기기 카메라 화면 가운데의 초록 밝기 (0~255)."
+  },
+  {
+   "type": "DCB",
+   "name": "카메라 파랑",
+   "unit": "",
+   "decimals": 0,
+   "src": "device",
+   "min": 0,
+   "max": 255,
+   "stableBand": 1,
+   "cal": {
+    "kind": "none"
+   },
+   "note": "기기 카메라 화면 가운데의 파랑 밝기 (0~255)."
+  },
+  {
+   "type": "DAR",
+   "name": "흡광도(빨강)",
+   "unit": "",
+   "decimals": 3,
+   "src": "device",
+   "min": 0,
+   "max": 2,
+   "stableBand": 0.005,
+   "cal": {
+    "kind": "one-point",
+    "refs": [
+     0
+    ],
+    "hint": "물(빈 용액)을 비추고 0 맞추기"
+   },
+   "note": "카메라 빨강 빛 기준 흡광도 A = −log(I/I₀). 물로 0을 맞춘 뒤 잽니다."
+  },
+  {
+   "type": "DAG",
+   "name": "흡광도(초록)",
+   "unit": "",
+   "decimals": 3,
+   "src": "device",
+   "min": 0,
+   "max": 2,
+   "stableBand": 0.005,
+   "cal": {
+    "kind": "one-point",
+    "refs": [
+     0
+    ],
+    "hint": "물(빈 용액)을 비추고 0 맞추기"
+   },
+   "note": "카메라 초록 빛 기준 흡광도. 붉은·자주색 용액에 알맞습니다."
+  },
+  {
+   "type": "DAB",
+   "name": "흡광도(파랑)",
+   "unit": "",
+   "decimals": 3,
+   "src": "device",
+   "min": 0,
+   "max": 2,
+   "stableBand": 0.005,
+   "cal": {
+    "kind": "one-point",
+    "refs": [
+     0
+    ],
+    "hint": "물(빈 용액)을 비추고 0 맞추기"
+   },
+   "note": "카메라 파랑 빛 기준 흡광도. 노란·주황색 용액에 알맞습니다."
   }
  ]
 }

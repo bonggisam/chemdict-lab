@@ -1,0 +1,66 @@
+{
+  "id": "cur-d-magnet-distance",
+  "order": 251,
+  "title": "거리에 따른 자기장 세기",
+  "subject": "기기 센서 실험",
+  "level": "공통",
+  "course": "기기 센서 실험",
+  "area": "자기",
+  "summary": "자석을 기기에서 멀리할 때 자기장 세기가 어떻게 줄어드는지 봅니다.",
+  "standards": [],
+  "standardTexts": [],
+  "sensors": [
+    "DMAG"
+  ],
+  "mode": "event",
+  "intervalMs": 500,
+  "x": {
+    "label": "거리",
+    "unit": "cm"
+  },
+  "y": [
+    {
+      "sensor": "DMAG",
+      "label": "자기장",
+      "unit": "µT",
+      "min": 0
+    }
+  ],
+  "markers": {
+    "enabled": false,
+    "label": "관찰 기록",
+    "prompt": "한 일 (예: 시약 넣음)"
+  },
+  "analysis": [
+    "stats",
+    "fit"
+  ],
+  "steps": [
+    "자석이 없을 때 값(지구 자기장)을 먼저 적어 둡니다.",
+    "기기 윗부분에서 2 cm부터 1 cm씩 자석을 멀리하며 ‘값 기록’을 누릅니다.",
+    "지구 자기장을 뺀 값을 ‘함수 찾기 → 거듭제곱’으로 맞춥니다."
+  ],
+  "setup": {
+    "parts": [
+      "dev-mag"
+    ],
+    "choose": false,
+    "materials": [
+      "아이폰·아이패드",
+      "막대자석",
+      "자"
+    ],
+    "attach": [],
+    "cautions": [
+      "강한 자석을 기기에 붙이지 않습니다."
+    ]
+  },
+  "textbooks": [],
+  "event": {
+    "label": "거리",
+    "unit": "cm",
+    "start": 2,
+    "step": 1,
+    "scale": "linear"
+  }
+}

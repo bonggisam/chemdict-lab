@@ -38,7 +38,9 @@
     <h2>3. 권한을 쓰는 이유</h2>
     <ul>
       <li><b>블루투스</b>: 센서 보드(아두이노)와 연결해 측정값을 받습니다.</li>
-      <li><b>카메라·사진</b>: 실험 장면이나 배선 사진을 찍어 그 기기 안에서만 보여 줍니다. 사진은 어디에도 보내지 않습니다.</li>
+      <li><b>카메라·사진</b>: 실험 장면이나 배선 사진을 찍어 그 기기 안에서만 보여 줍니다. '카메라 색·흡광도' 측정에서는 화면 가운데의 평균 색 값만 기록하고 영상·사진은 저장하지 않습니다. 사진은 어디에도 보내지 않습니다.</li>
+      <li><b>마이크</b> (2.0, '소리 크기·진동수' 측정을 고를 때만): 소리의 크기와 가장 센 진동수 숫자만 기록합니다. 소리를 녹음하거나 저장·전송하지 않습니다.</li>
+      <li><b>움직임 센서</b> (2.0, 가속도·회전·기압 측정을 고를 때만): 기기의 가속도·회전 속도·기압 값을 실험 데이터로 기록합니다. 위치는 쓰지 않습니다.</li>
       <li><b>USB(맥)</b>: USB로 꽂은 센서 보드와 통신합니다.</li>
     </ul>
   </section>
@@ -56,7 +58,7 @@
 
   <section lang="en">
     <h2>English summary</h2>
-    <p>ChemDict Lab collects no personal data and sends nothing to any server. Measurements, photos and settings stay on your device; they leave it only when you choose to export them. Bluetooth/USB are used only to talk to your sensor board, and the camera only to take photos shown inside the app. Contact: bbongssem@naver.com</p>
+    <p>ChemDict Lab collects no personal data and sends nothing to any server. Measurements, photos and settings stay on your device; they leave it only when you choose to export them. Bluetooth/USB are used only to talk to your sensor board, the camera only to take photos shown inside the app or to read the average colour of the centre of the image, the microphone only to compute loudness and pitch (no audio is recorded), and motion sensors only to record acceleration, rotation and air pressure as experiment data. Contact: bbongssem@naver.com</p>
   </section>
 </main>
 </body>

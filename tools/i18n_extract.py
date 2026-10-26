@@ -1,7 +1,7 @@
 """
 번역할 한국어 문장 모으기 → protocol/i18n/source/content.json  (키 → 한국어)
 
-- 실행: python3 tools/i18n_extract.py   (guide.json·experiments·sensors.json·analysis_methods.json·reagents.json·sensor_checks.json을 고친 뒤 다시 실행)
+- 실행: python3 tools/i18n_extract.py   (guide.json·experiments·sensors.json·analysis_methods.json·reagents.json·sensor_checks.json·device_sensors.json을 고친 뒤 다시 실행)
 - 각 언어 번역은 protocol/i18n/<lang>/content.json 에 같은 키로 둡니다 (빠진 키는 한국어로 보임).
 - 확인: python3 tools/i18n_check.py
 """
@@ -151,6 +151,14 @@ for r in rg.get("reagents", []):
     fa = r.get("firstAid") or {}
     for fld in ("skin", "eye", "swallow", "inhale"):
         put(f"{k}.firstAid.{fld}", fa.get(fld))
+
+# ---------------------------------------------------------------- device_sensors.json (기기 내장 센서 카드, 2.0)
+dv = json.loads((P / "device_sensors.json").read_text(encoding="utf-8"))
+for kit in dv.get("kits", []):
+    k = f"device.{kit['id']}"
+    put(f"{k}.name", kit.get("name"))
+    for fld in ("how", "cautions", "ideas"):
+        walk_list(f"{k}.{fld}", kit.get(fld))
 
 # ---------------------------------------------------------------- 화면 문구: web/src 의 t('…') · tk('…')
 UI = re.compile(r"""\bt[k]?\(\s*(?:'((?:[^'\\]|\\.)*)'|"((?:[^"\\]|\\.)*)")""")

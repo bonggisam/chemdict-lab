@@ -23,7 +23,7 @@ interface Props {
   connected: boolean;
   busy: boolean;
   fw: FwState | null;
-  onConnect: (kind: 'serial' | 'ble' | 'sim') => void;
+  onConnect: (kind: 'serial' | 'ble' | 'sim' | 'device') => void;
   onInstall: (boardId: string) => void;
   onNext: () => void;
 }

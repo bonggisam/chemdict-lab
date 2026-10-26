@@ -1,0 +1,79 @@
+{
+  "id": "cur-d-iodine-clock",
+  "order": 245,
+  "title": "아이오딘 시계 반응 (카메라 색)",
+  "subject": "기기 센서 실험",
+  "level": "공통",
+  "course": "기기 센서 실험",
+  "area": "빛·색",
+  "summary": "용액이 갑자기 파래지는 순간을 카메라 색 값으로 재고 농도와 반응 시간을 비교합니다.",
+  "standards": [],
+  "standardTexts": [],
+  "sensors": [
+    "DCR",
+    "DCG",
+    "DCB"
+  ],
+  "mode": "time",
+  "intervalMs": 200,
+  "x": {
+    "label": "시간",
+    "unit": "s"
+  },
+  "y": [
+    {
+      "sensor": "DCR",
+      "label": "빨강",
+      "unit": "",
+      "min": 0,
+      "max": 255
+    },
+    {
+      "sensor": "DCG",
+      "label": "초록",
+      "unit": "",
+      "min": 0,
+      "max": 255
+    },
+    {
+      "sensor": "DCB",
+      "label": "파랑",
+      "unit": "",
+      "min": 0,
+      "max": 255
+    }
+  ],
+  "markers": {
+    "enabled": true,
+    "label": "관찰 기록",
+    "prompt": "한 일 (예: 시약 넣음)"
+  },
+  "analysis": [
+    "stats",
+    "fit"
+  ],
+  "steps": [
+    "흰 종이 앞에 비커를 두고 카메라 가운데 사각형에 비커가 들어오게 고정합니다.",
+    "두 용액을 섞는 순간 측정을 시작합니다.",
+    "빨강·초록 값이 뚝 떨어지는 시각을 반응 시간으로 읽습니다.",
+    "농도를 바꿔 새 측정을 하고 1/시간과 농도를 비교합니다."
+  ],
+  "setup": {
+    "parts": [
+      "dev-color"
+    ],
+    "choose": false,
+    "materials": [
+      "카메라가 있는 기기",
+      "아이오딘산칼륨 용액",
+      "아황산수소나트륨+녹말 용액",
+      "비커",
+      "흰 종이"
+    ],
+    "attach": [],
+    "cautions": [
+      "시약이 기기에 튀지 않게 거리를 둡니다."
+    ]
+  },
+  "textbooks": []
+}

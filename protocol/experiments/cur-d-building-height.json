@@ -1,0 +1,56 @@
+{
+  "id": "cur-d-building-height",
+  "order": 248,
+  "title": "기압으로 건물 높이 재기",
+  "subject": "기기 센서 실험",
+  "level": "공통",
+  "course": "기기 센서 실험",
+  "area": "기압",
+  "summary": "계단을 오르며 기압이 줄어드는 양으로 높이를 구합니다 (약 8 m마다 0.1 kPa).",
+  "standards": [],
+  "standardTexts": [],
+  "sensors": [
+    "DBAR"
+  ],
+  "mode": "time",
+  "intervalMs": 1000,
+  "x": {
+    "label": "시간",
+    "unit": "s"
+  },
+  "y": [
+    {
+      "sensor": "DBAR",
+      "label": "기압",
+      "unit": "kPa"
+    }
+  ],
+  "markers": {
+    "enabled": true,
+    "label": "층",
+    "prompt": "예: 3층"
+  },
+  "analysis": [
+    "stats",
+    "fit"
+  ],
+  "steps": [
+    "1층에서 측정을 시작합니다.",
+    "한 층씩 올라갈 때마다 ‘관찰 기록’에 층을 적습니다.",
+    "기압 차이(kPa) × 약 80 m로 높이를 구하고 실제 층 높이와 비교합니다."
+  ],
+  "setup": {
+    "parts": [
+      "dev-baro"
+    ],
+    "choose": false,
+    "materials": [
+      "기압계가 있는 아이폰·아이패드"
+    ],
+    "attach": [],
+    "cautions": [
+      "계단에서는 화면을 보며 걷지 않습니다."
+    ]
+  },
+  "textbooks": []
+}

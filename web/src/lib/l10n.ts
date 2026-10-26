@@ -4,6 +4,7 @@ import { c } from './i18n';
 import { boards, breadboard, commonRules, connectors, parts, planned, troubles } from './guide';
 import { experiments } from './experiments';
 import { analogTypes, digitalTypes } from './sensors';
+import { relocalizeDevice } from './device';
 
 const clone = <T,>(x: T): T => JSON.parse(JSON.stringify(x));
 const base = {
@@ -15,6 +16,7 @@ const base = {
 const list = (key: string, arr: string[] | undefined) => (arr ?? []).map((s, i) => c(`${key}.${i}`, s));
 
 export function relocalize() {
+  relocalizeDevice();
   base.common.forEach((s, i) => { commonRules[i] = c(`guide.common.${i}`, s); });
   base.planned.forEach((s, i) => { planned[i] = c(`guide.planned.${i}`, s); });
 
