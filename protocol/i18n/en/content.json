@@ -6109,5 +6109,6 @@
  "device.dev-absorb.cautions.0": "After setting zero, do not move the camera, the lighting or the cuvette.",
  "device.dev-absorb.cautions.1": "These are classroom estimates, not precision spectrophotometer values.",
  "device.dev-absorb.ideas.0": "Concentration and absorbance (Beer–Lambert law)",
- "device.dev-absorb.ideas.1": "Reaction rate (fading-color reaction)"
+ "device.dev-absorb.ideas.1": "Reaction rate (fading-color reaction)",
+ "course.내가 만든 실험": "My experiments"
 }

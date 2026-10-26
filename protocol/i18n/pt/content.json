@@ -6109,5 +6109,6 @@
  "device.dev-absorb.cautions.0": "Depois de zerar, não mude a posição da câmera, da luz nem da cubeta.",
  "device.dev-absorb.cautions.1": "Não é um espectrofotômetro de precisão: são estimativas para a aula.",
  "device.dev-absorb.ideas.0": "Concentração e absorbância (lei de Beer-Lambert)",
- "device.dev-absorb.ideas.1": "Velocidade de reação (reação em que a cor desbota)"
+ "device.dev-absorb.ideas.1": "Velocidade de reação (reação em que a cor desbota)",
+ "course.내가 만든 실험": "Meus experimentos"
 }

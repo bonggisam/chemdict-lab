@@ -6109,5 +6109,6 @@
  "device.dev-absorb.cautions.0": "Setelah atur nol, jangan ubah posisi kamera, lampu, dan kuvet.",
  "device.dev-absorb.cautions.1": "Ini bukan spektrofotometer presisi, melainkan nilai perkiraan untuk pembelajaran.",
  "device.dev-absorb.ideas.0": "Konsentrasi dan absorbansi (hukum Beer–Lambert)",
- "device.dev-absorb.ideas.1": "Laju reaksi (reaksi pemudaran warna)"
+ "device.dev-absorb.ideas.1": "Laju reaksi (reaksi pemudaran warna)",
+ "course.내가 만든 실험": "Eksperimen saya"
 }

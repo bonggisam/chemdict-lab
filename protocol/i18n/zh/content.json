@@ -6109,5 +6109,6 @@
  "device.dev-absorb.cautions.0": "调零后不要改变摄像头、光照和比色皿的位置。",
  "device.dev-absorb.cautions.1": "这是课堂用的估算值，不是精密分光光度计的数值。",
  "device.dev-absorb.ideas.0": "浓度与吸光度（朗伯-比尔定律）",
- "device.dev-absorb.ideas.1": "反应速率（褪色反应）"
+ "device.dev-absorb.ideas.1": "反应速率（褪色反应）",
+ "course.내가 만든 실험": "我的实验"
 }

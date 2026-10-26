@@ -6109,5 +6109,6 @@
  "device.dev-absorb.cautions.0": "Après avoir fait le zéro, ne déplacez plus la caméra, l’éclairage ni la cuve.",
  "device.dev-absorb.cautions.1": "Ce n’est pas un spectrophotomètre de précision : ce sont des estimations pour la classe.",
  "device.dev-absorb.ideas.0": "Concentration et absorbance (loi de Beer-Lambert)",
- "device.dev-absorb.ideas.1": "Vitesse de réaction (réaction de décoloration)"
+ "device.dev-absorb.ideas.1": "Vitesse de réaction (réaction de décoloration)",
+ "course.내가 만든 실험": "Mes expériences"
 }

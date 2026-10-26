@@ -6109,5 +6109,6 @@
  "device.dev-absorb.cautions.0": "Sau khi đặt 0, không thay đổi vị trí camera, đèn và cuvet.",
  "device.dev-absorb.cautions.1": "Không phải máy quang phổ chính xác mà là giá trị ước tính dùng trong lớp học.",
  "device.dev-absorb.ideas.0": "Nồng độ và độ hấp thụ (định luật Beer–Lambert)",
- "device.dev-absorb.ideas.1": "Tốc độ phản ứng (phản ứng làm nhạt màu)"
+ "device.dev-absorb.ideas.1": "Tốc độ phản ứng (phản ứng làm nhạt màu)",
+ "course.내가 만든 실험": "Thí nghiệm của tôi"
 }

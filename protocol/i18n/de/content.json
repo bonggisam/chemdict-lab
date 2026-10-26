@@ -6109,5 +6109,6 @@
  "device.dev-absorb.cautions.0": "Nach dem Nullpunkt-Setzen Kamera, Beleuchtung und Küvette nicht mehr verschieben.",
  "device.dev-absorb.cautions.1": "Kein Präzisionsspektralphotometer, sondern Schätzwerte für den Unterricht.",
  "device.dev-absorb.ideas.0": "Konzentration und Extinktion (Lambert-Beer-Gesetz)",
- "device.dev-absorb.ideas.1": "Reaktionsgeschwindigkeit (Entfärbungsreaktion)"
+ "device.dev-absorb.ideas.1": "Reaktionsgeschwindigkeit (Entfärbungsreaktion)",
+ "course.내가 만든 실험": "Meine Experimente"
 }

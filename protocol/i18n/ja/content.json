@@ -6109,5 +6109,6 @@
  "device.dev-absorb.cautions.0": "ゼロ点を合わせた後は、カメラ・照明・キュベットの位置を変えません。",
  "device.dev-absorb.cautions.1": "精密な分光光度計ではなく、授業用の推定値です。",
  "device.dev-absorb.ideas.0": "濃度と吸光度(ランベルト・ベールの法則)",
- "device.dev-absorb.ideas.1": "反応速度(色が薄くなる反応)"
+ "device.dev-absorb.ideas.1": "反応速度(色が薄くなる反応)",
+ "course.내가 만든 실험": "自作の実験"
 }
