@@ -65,6 +65,15 @@ function ReadingLine({ bands }: { bands: BandColor[] }) {
     : <p className="note warn">{t('이 색 조합은 저항값이 아닙니다. 띠 색을 다시 골라 보세요.')}</p>;
 }
 
+// 저항 사진 찍는 요령 (애플 앱 PartsHelperView와 같은 문장)
+const PHOTO_TIPS = [
+  tk('저항 하나만 찍고, 몸통이 화면 가로의 절반 넘게 차도록 가까이 찍습니다.'),
+  tk('흰 종이 위에 놓고 밝은 곳(창가)에서 찍습니다. 플래시는 끕니다.'),
+  tk('저항을 가로로 눕히고 바로 위에서 찍습니다. 화면을 눌러 초점을 맞춥니다.'),
+  tk('띠 위에 그림자나 반짝이는 빛이 생기면 휴대폰 각도를 조금 바꿉니다.'),
+  tk('잘못 읽으면 저항을 굴려 띠가 잘 보이게 다시 찍거나, 띠를 눌러 색을 고칩니다.'),
+];
+
 function ResistorReader() {
   const canvas = useRef<HTMLCanvasElement>(null);
   const [img, setImg] = useState<HTMLImageElement | null>(null);
@@ -121,6 +130,10 @@ function ResistorReader() {
   return (
     <div className="helper-pane">
       <p className="note"><R t={t('저항을 밝은 흰 종이 위에 놓고 가까이 찍으세요. 사진에서 저항 몸통의 [왼쪽 끝]과 [오른쪽 끝]을 차례로 누르면 색띠를 읽습니다.')} /></p>
+      <details className="bb-note photo-tips">
+        <summary>📸 {t('사진 찍는 요령')}</summary>
+        <ol>{PHOTO_TIPS.map((k) => <li key={k}>{t(k)}</li>)}</ol>
+      </details>
       <label className="primary file-btn">
         📷 {t('사진 찍기·고르기')}
         <input type="file" accept="image/*" capture="environment" onChange={(e) => load(e.target.files?.[0])} hidden />

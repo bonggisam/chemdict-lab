@@ -868,3 +868,5 @@ button.on { background: var(--brand-deep); color: #fff; }
 
 .alt-row { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
 .calc-row label.check input { width: 22px; height: 22px; min-height: 0; }
+.photo-tips ol { margin: 8px 0 2px; padding-left: 22px; }
+.photo-tips li { margin: 4px 0; line-height: 1.5; }

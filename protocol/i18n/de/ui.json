@@ -787,5 +787,11 @@
  "{a}와(과) {b}가 같은 핀({pin})을 씁니다. 둘 중 하나만 고르세요.": "{a} und {b} nutzen denselben Pin ({pin}). Wähle nur einen davon.",
  "{a}와(과) {b}는 I2C 주소({addr})가 겹쳐 함께 쓸 수 없습니다.": "{a} und {b} teilen sich die I2C-Adresse ({addr}) und können nicht zusammen verwendet werden.",
  "전류가 많이 듭니다 (약 {ma} mA). 컴퓨터 USB 대신 DC 잭(7~12 V)이나 충전기 전원을 쓰세요.": "Braucht viel Strom (etwa {ma} mA). Nutze die DC-Buchse (7–12 V) oder ein Netzteil statt des Computer-USB.",
- "사진 속 저항이 작아 색을 틀릴 수 있습니다. 저항 하나가 화면을 가득 채우도록 가까이 찍으면 더 정확합니다.": "Der Widerstand ist auf dem Foto klein, daher können Farben falsch gelesen werden. Fotografiere näher, sodass ein Widerstand den Bildschirm füllt."
+ "사진 속 저항이 작아 색을 틀릴 수 있습니다. 저항 하나가 화면을 가득 채우도록 가까이 찍으면 더 정확합니다.": "Der Widerstand ist auf dem Foto klein, daher können Farben falsch gelesen werden. Fotografiere näher, sodass ein Widerstand den Bildschirm füllt.",
+ "사진 찍는 요령": "Foto-Tipps",
+ "저항 하나만 찍고, 몸통이 화면 가로의 절반 넘게 차도록 가까이 찍습니다.": "Fotografiere nur einen Widerstand und geh so nah heran, dass der Körper mehr als die halbe Bildschirmbreite füllt.",
+ "흰 종이 위에 놓고 밝은 곳(창가)에서 찍습니다. 플래시는 끕니다.": "Leg ihn auf weißes Papier an einen hellen Ort (am Fenster). Schalte den Blitz aus.",
+ "저항을 가로로 눕히고 바로 위에서 찍습니다. 화면을 눌러 초점을 맞춥니다.": "Leg den Widerstand quer hin und fotografiere direkt von oben. Tippe auf den Bildschirm zum Scharfstellen.",
+ "띠 위에 그림자나 반짝이는 빛이 생기면 휴대폰 각도를 조금 바꿉니다.": "Wenn Schatten oder Spiegelungen auf den Ringen liegen, neige das Handy etwas.",
+ "잘못 읽으면 저항을 굴려 띠가 잘 보이게 다시 찍거나, 띠를 눌러 색을 고칩니다.": "Wenn falsch gelesen wird, rolle den Widerstand, bis die Ringe gut sichtbar sind, und fotografiere neu – oder tippe auf einen Ring, um die Farbe zu korrigieren."
 }
