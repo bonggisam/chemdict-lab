@@ -29,3 +29,7 @@ for (const [b, v] of C) {
   it(`glare ${v}`, () => expect(analyze(draw(b, { glare: true }), { x: 120, y: 100 }, { x: 480, y: 100 }).reading?.ohms).toBe(v));
   it(`slanted taps ${v}`, () => expect(analyze(draw(b), { x: 122, y: 92 }, { x: 478, y: 108 }).reading?.ohms).toBe(v));
 }
+// 어둡고 누런 실내 사진 (실제 학생 사진처럼 몸통이 갈색에 가깝게 찍힘)
+for (const [b, v] of C) {
+  it(`dim warm light ${v}`, () => expect(analyze(draw(b, { cast: [0.55, 0.5, 0.42] }), { x: 120, y: 100 }, { x: 480, y: 100 }).reading?.ohms).toBe(v));
+}

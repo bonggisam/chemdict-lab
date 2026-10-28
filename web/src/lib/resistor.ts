@@ -27,9 +27,9 @@ export const BAND: Record<BandColor, { digit?: number; exp: number; tol?: number
 
 // 사진 속 저항 띠의 대표 색 (조명이 섞인 실제 사진 기준으로 잡은 값, sRGB)
 const REF: Record<BandColor, [number, number, number][]> = {
-  black: [[30, 30, 30], [50, 45, 42]],
-  brown: [[110, 60, 35], [125, 75, 45], [90, 55, 40]],
-  red: [[200, 40, 40], [170, 30, 35]],
+  black: [[30, 30, 30], [50, 45, 42], [62, 42, 25]],
+  brown: [[110, 60, 35], [125, 75, 45], [90, 55, 40], [115, 78, 50]],
+  red: [[200, 40, 40], [170, 30, 35], [150, 72, 62]],
   orange: [[235, 120, 30], [220, 100, 35]],
   yellow: [[235, 205, 40], [220, 190, 60]],
   green: [[40, 150, 70], [50, 120, 60]],
@@ -47,6 +47,24 @@ const E96 = [100, 102, 105, 107, 110, 113, 115, 118, 121, 124, 127, 130, 133, 13
 
 // ---------- 색 공간 ----------
 function srgbToLinear(c: number) { c /= 255; return c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4; }
+function linearToSrgb(v: number) { const c = v <= 0.0031308 ? v * 12.92 : 1.055 * v ** (1 / 2.4) - 0.055; return Math.max(0, Math.min(255, c * 255)); }
+/**
+ * 조명 보정: 몸통 색을 보통 몸통 색(베이지·파랑)으로 맞추는 채널별 배수 (어두운 사진·따뜻한 조명).
+ * 배수는 0.5~6배, 채널끼리 차이는 1.6배 안으로 묶어 색이 뒤집히지 않게 함.
+ */
+const BODY_TAN: [number, number, number] = [214, 186, 142];
+const BODY_BLUE: [number, number, number] = [80, 140, 195];
+export function lightGain(body: [number, number, number]): [number, number, number] {
+  const lab = toLab(body);
+  const target = lab[2] < -4 ? BODY_BLUE : BODY_TAN;
+  let g = [0, 1, 2].map((i) => srgbToLinear(target[i]) / Math.max(1e-4, srgbToLinear(body[i])));
+  const mid = Math.cbrt(g[0] * g[1] * g[2]);
+  g = g.map((v) => Math.max(mid / 1.26, Math.min(mid * 1.26, v)));
+  return g.map((v) => Math.max(0.5, Math.min(6, v))) as [number, number, number];
+}
+export function applyGain(rgb: [number, number, number], g: [number, number, number]): [number, number, number] {
+  return [0, 1, 2].map((i) => linearToSrgb(srgbToLinear(rgb[i]) * g[i])) as [number, number, number];
+}
 export function toLab([r, g, b]: [number, number, number]): [number, number, number] {
   const R = srgbToLinear(r), G = srgbToLinear(g), B = srgbToLinear(b);
   const x = (R * 0.4124 + G * 0.3576 + B * 0.1805) / 0.95047;
@@ -137,8 +155,10 @@ export function nearestE(ohms: number, series = E12, up = false): number {
 // ---------- 사진 분석 ----------
 export interface Pixels { width: number; height: number; data: Uint8ClampedArray | Uint8Array | number[] }
 export interface Pt { x: number; y: number }
-export interface BandFound { start: number; end: number; rgb: [number, number, number]; ranked: { color: BandColor; d: number }[] }
-export interface Analysis { reading: Reading | null; alternatives: Reading[]; bands: BandFound[]; body: [number, number, number]; samples: [number, number, number][] }
+export interface BandFound { start: number; end: number; rgb: [number, number, number]; ranked: { color: BandColor; d: number }[]; L?: number }
+export interface Analysis { reading: Reading | null; alternatives: Reading[]; bands: BandFound[]; body: [number, number, number]; samples: [number, number, number][]; small: boolean }
+/** 몸통 길이가 이보다 짧으면(픽셀) 띠가 몇 픽셀뿐이라 틀리기 쉬움 → 가까이 찍으라고 알림 */
+export const SMALL_BODY_PX = 90;
 
 /** a→b 선을 따라 n개 점의 색 (선에 수직으로 ±half 픽셀 평균) */
 export function sampleLine(img: Pixels, a: Pt, b: Pt, n = 240, half = 3): [number, number, number][] {
@@ -166,7 +186,7 @@ function median3(list: [number, number, number][]): [number, number, number] {
 }
 
 /** 선을 따라 뽑은 색 → 띠 구간 */
-export function findBands(samples: [number, number, number][]): { body: [number, number, number]; bands: BandFound[] } {
+export function findBands(samples: [number, number, number][]): { body: [number, number, number]; bands: BandFound[]; span: [number, number] } {
   const n = samples.length;
   const trim = Math.max(1, Math.round(n * 0.03));
   const inner = samples.slice(trim, n - trim);
@@ -181,6 +201,7 @@ export function findBands(samples: [number, number, number][]): { body: [number,
   const bodyLab = labs[bestI];
   const bodyRgb = median3(inner.filter((_, j) => dE(labs[j], bodyLab) < 12));
   const body = toLab(bodyRgb);
+  const gain = lightGain(bodyRgb);
   // 몸통과 다른 점 표시 (밝기만 조금 다른 그림자는 덜 치도록)
   const diff = labs.map((l) => Math.hypot((l[0] - body[0]) * 0.7, l[1] - body[1], l[2] - body[2]));
   const thr = Math.max(14, percentile(diff, 0.5) * 1.8);
@@ -200,22 +221,47 @@ export function findBands(samples: [number, number, number][]): { body: [number,
       const run = inner.slice(s, i);
       const runLab = toLab(median3(run));
       // 빛 반사: 몸통보다 훨씬 밝고 색이 거의 없는 줄은 띠가 아님
-      const glare = runLab[0] > Math.max(88, body[0] + 12) && Math.hypot(runLab[1], runLab[2]) < 10;
+      const glare = runLab[0] > body[0] + 20 && Math.hypot(runLab[1], runLab[2]) < 16;
       if (i - s >= minLen && inside && !glare) {
-        const core = inner.slice(s + Math.floor((i - s) * 0.2), i - Math.floor((i - s) * 0.2));
-        const rgb = median3(core.length ? core : inner.slice(s, i));
-        bands.push({ start: (s + trim) / n, end: (i + trim) / n, rgb, ranked: rankColor(rgb) });
+        // 띠 가운데의 '가장 띠다운' 점들: 몸통과 가장 다른 40% (흐린 사진에서 몸통 색이 섞이는 것을 덜어냄)
+        const idx = Array.from({ length: i - s }, (_, q) => s + q).sort((p1, p2) => diff[p2] - diff[p1]);
+        const core = idx.slice(0, Math.max(1, Math.ceil(idx.length * 0.4))).map((q) => inner[q]);
+        const rgb = median3(core);
+        const fixed = applyGain(rgb, gain);
+        bands.push({ start: (s + trim) / n, end: (i + trim) / n, rgb, ranked: rankColor(fixed), L: toLab(fixed)[0] });
       }
       s = -1;
     }
   }
-  return { body: bodyRgb, bands };
+  return { body: bodyRgb, bands, span: [(bodyFirst + trim) / n, (bodyLast + 1 + trim) / n] };
 }
 
 function percentile(v: number[], p: number) { const s = [...v].sort((a, b) => a - b); return s[Math.floor(s.length * p)] ?? 0; }
 
+/**
+ * 작은·흐린 사진에서는 검정과 갈색이 비슷해 보임 → 한 저항 안에서 밝기 순서로 따짐:
+ * 검정이라 한 띠가 갈색이라 한 띠보다 밝으면 벌점, 같은 색이라 한 띠끼리 밝기가 크게 다르면 벌점.
+ */
+function darknessPenalty(seq: BandFound[], c: BandColor[]): number {
+  let p = 0;
+  for (let i = 0; i < seq.length; i++) for (let j = 0; j < seq.length; j++) {
+    const li = seq[i].L, lj = seq[j].L;
+    if (i === j || li === undefined || lj === undefined) continue;
+    if (c[i] === 'black' && c[j] === 'brown' && li > lj - 4) p += 8;
+    if (i < j && c[i] === c[j] && (c[i] === 'black' || c[i] === 'brown') && Math.abs(li - lj) > 10) p += 4;
+    // 갈색이라 한 띠가 다른 갈색보다 검정 띠와 더 비슷한 밝기면 벌점 (검정도 같은 식)
+    if ((c[i] === 'black' || c[i] === 'brown') && (c[j] === 'black' || c[j] === 'brown') && c[i] !== c[j]) {
+      for (let m = 0; m < seq.length; m++) {
+        const lm = seq[m].L;
+        if (m !== i && c[m] === c[i] && lm !== undefined && Math.abs(li - lj) < Math.abs(li - lm) - 2) p += 5;
+      }
+    }
+  }
+  return p;
+}
+
 /** 띠 후보 → 가장 그럴듯한 읽기 (방향·띠 수·표준값을 함께 따짐) */
-export function chooseReading(bands: BandFound[]): { best: Reading | null; alternatives: Reading[] } {
+export function chooseReading(bands: BandFound[], span?: [number, number]): { best: Reading | null; alternatives: Reading[] } {
   if (bands.length < 3) return { best: null, alternatives: [] };
   // 띠가 7개 이상이면 몸통과 가장 덜 다른(짧은) 것부터 버려 6개 이하로
   let list = [...bands];
@@ -248,6 +294,13 @@ export function chooseReading(bands: BandFound[]): { best: Reading | null; alter
         if (lastGap > firstGap * 1.3) s -= 3; else if (firstGap > lastGap * 1.3) s += 3;
       }
       if (r.ohms < 0.1 || r.ohms > 1e8) s += 20;
+      s += darknessPenalty(seq, c);
+      // 띠가 한쪽 끝에 몰려 있으면 그쪽이 첫 띠 (오차 띠를 못 찾았을 때 방향을 정함)
+      if (span && k === 3) {
+        const lead = rev ? span[1] - seq[0].end : seq[0].start - span[0];
+        const tail = rev ? seq[k - 1].start - span[0] : span[1] - seq[k - 1].end;
+        if (tail > lead * 1.3) s -= 2; else if (lead > tail * 1.3) s += 2;
+      }
       scored.push({ r, s });
     }
   }
@@ -259,12 +312,20 @@ export function chooseReading(bands: BandFound[]): { best: Reading | null; alter
 
 /** 사진 + 두 점 → 읽기 결과 */
 export function analyze(img: Pixels, a: Pt, b: Pt): Analysis {
+  const small = Math.hypot(b.x - a.x, b.y - a.y) < SMALL_BODY_PX;
+  // 누른 점보다 양쪽으로 8% 더 봄 (끝에 바짝 붙은 첫 띠를 놓치지 않게, 바깥은 몸통 범위로 잘라 냄)
+  const ex = 0.08;
+  a = { x: a.x - (b.x - a.x) * ex, y: a.y - (b.y - a.y) * ex };
+  b = { x: b.x + (b.x - a.x) * ex / (1 + ex), y: b.y + (b.y - a.y) * ex / (1 + ex) };
   const len = Math.hypot(b.x - a.x, b.y - a.y);
   const half = Math.max(1, Math.round(len * 0.012));
   const samples = sampleLine(img, a, b, Math.max(120, Math.min(400, Math.round(len))), half);
-  const { body, bands } = findBands(samples);
-  const { best, alternatives } = chooseReading(bands);
-  return { reading: best, alternatives, bands, body, samples };
+  const { body, bands, span } = findBands(samples);
+  const { best, alternatives } = chooseReading(bands, span);
+  // 띠 위치를 누른 두 점 기준(0~1)으로 되돌림
+  const back = (f: number) => f * (1 + 2 * ex) - ex;
+  for (const bd of bands) { bd.start = back(bd.start); bd.end = back(bd.end); }
+  return { reading: best, alternatives, bands, body, samples, small };
 }
 
 /** 두 점을 주지 않았을 때: 사진 가운데 가로줄에서 저항 몸통 끝을 추정 */

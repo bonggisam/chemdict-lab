@@ -131,6 +131,7 @@ function ResistorReader() {
           <p className="note">{pts.length < 2 ? t('{n}번째 점을 누르세요 (몸통 {side} 끝)', { n: pts.length + 1, side: pts.length ? t('오른쪽') : t('왼쪽') }) : t('다시 하려면 사진을 다시 누르세요.')}</p>
         </>
       )}
+      {res?.small && <p className="note warn" role="status">{t('사진 속 저항이 작아 색을 틀릴 수 있습니다. 저항 하나가 화면을 가득 채우도록 가까이 찍으면 더 정확합니다.')}</p>}
       {res && (
         res.reading ? (
           <div className="resistor-result" role="status">
