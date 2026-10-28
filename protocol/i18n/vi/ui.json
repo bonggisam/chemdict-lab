@@ -497,7 +497,6 @@
  "관찰 기록 · 저장": "Ghi chú · Lưu",
  "보드 고르기 · 연결": "Chọn · Kết nối bo mạch",
  "센서 고르기 · 측정": "Chọn cảm biến · Đo",
- "연결 그림 · 브레드보드": "Sơ đồ nối · Breadboard",
  "이 보드는 블루투스로만 측정합니다": "Bo mạch này chỉ đo qua Bluetooth",
  "기타": "Khác",
  "과정·과목": "Cấp học · môn học",
@@ -793,5 +792,6 @@
  "흰 종이 위에 놓고 밝은 곳(창가)에서 찍습니다. 플래시는 끕니다.": "Đặt trên giấy trắng ở chỗ sáng (gần cửa sổ). Tắt đèn flash.",
  "저항을 가로로 눕히고 바로 위에서 찍습니다. 화면을 눌러 초점을 맞춥니다.": "Đặt điện trở nằm ngang và chụp thẳng từ trên xuống. Chạm vào màn hình để lấy nét.",
  "띠 위에 그림자나 반짝이는 빛이 생기면 휴대폰 각도를 조금 바꿉니다.": "Nếu có bóng hoặc ánh phản chiếu trên vạch, hãy nghiêng điện thoại một chút.",
- "잘못 읽으면 저항을 굴려 띠가 잘 보이게 다시 찍거나, 띠를 눌러 색을 고칩니다.": "Nếu đọc sai, hãy lăn điện trở cho vạch hiện rõ rồi chụp lại, hoặc chạm vào vạch để sửa màu."
+ "잘못 읽으면 저항을 굴려 띠가 잘 보이게 다시 찍거나, 띠를 눌러 색을 고칩니다.": "Nếu đọc sai, hãy lăn điện trở cho vạch hiện rõ rồi chụp lại, hoặc chạm vào vạch để sửa màu.",
+ "연결 그림 · 부품 도우미": "Sơ đồ nối · Trợ lý linh kiện"
 }

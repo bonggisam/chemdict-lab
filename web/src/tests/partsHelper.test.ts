@@ -61,3 +61,8 @@ describe('센서 함께 쓰기 검사', () => {
     if (uarts.length === 2) expect(checkTogether(uno, uarts).errors.some((e) => e.key.includes('같은 핀'))).toBe(true);
   });
 });
+
+it('5 V 선을 나눠 쓰는 아날로그 센서 둘은 겹침 아님 (애플 MultiPlan과 같음)', () => {
+  expect(checkTogether(uno, [P('lm35'), P('mpx5700')]).errors).toEqual([]);
+  expect(checkTogether(uno, [P('hcsr04'), P('mq-2')]).errors).toEqual([]);
+});

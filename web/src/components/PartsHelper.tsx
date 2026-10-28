@@ -82,9 +82,11 @@ function ResistorReader() {
   const [bands, setBands] = useState<BandColor[]>([]);
   const [value, setValue] = useState('220');
   const [five, setFive] = useState(false);
+  const [tipsOpen, setTipsOpen] = useState(false);
 
   const load = (f?: File) => {
     if (!f) return;
+    setTipsOpen(false);   // 사진을 고르면 요령은 접어 사진이 바로 보이게
     const url = URL.createObjectURL(f);
     const im = new Image();
     im.onload = () => { setImg(im); setPts([]); setRes(null); setBands([]); };
@@ -130,7 +132,7 @@ function ResistorReader() {
   return (
     <div className="helper-pane">
       <p className="note"><R t={t('저항을 밝은 흰 종이 위에 놓고 가까이 찍으세요. 사진에서 저항 몸통의 [왼쪽 끝]과 [오른쪽 끝]을 차례로 누르면 색띠를 읽습니다.')} /></p>
-      <details className="bb-note photo-tips">
+      <details className="bb-note photo-tips" open={tipsOpen} onToggle={(e) => setTipsOpen((e.currentTarget as HTMLDetailsElement).open)}>
         <summary>📸 {t('사진 찍는 요령')}</summary>
         <ol>{PHOTO_TIPS.map((k) => <li key={k}>{t(k)}</li>)}</ol>
       </details>

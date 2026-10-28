@@ -124,7 +124,7 @@ export function SideNav({ screen, expTitle, connected, boardName, running, onGo,
               )}
             </>
           ))}
-          {step('guide', '3', t('연결 방법 · 문제 해결'), t('연결 그림 · 브레드보드'), false, screen === 'guide', kids('guide'))}
+          {step('guide', '3', t('연결 방법 · 문제 해결'), t('연결 그림 · 부품 도우미'), false, screen === 'guide', kids('guide'))}
         </ol>
       </nav>
       <div className="side-foot">{footer}</div>

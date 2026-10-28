@@ -497,7 +497,6 @@
  "관찰 기록 · 저장": "Notas · Guardar",
  "보드 고르기 · 연결": "Elegir · Conectar",
  "센서 고르기 · 측정": "Elegir sensor · Medir",
- "연결 그림 · 브레드보드": "Cableado · Protoboard",
  "이 보드는 블루투스로만 측정합니다": "Esta placa solo mide por Bluetooth",
  "기타": "Otros",
  "과정·과목": "Curso y asignatura",
@@ -793,5 +792,6 @@
  "흰 종이 위에 놓고 밝은 곳(창가)에서 찍습니다. 플래시는 끕니다.": "Colócala sobre papel blanco en un lugar luminoso (junto a una ventana). Apaga el flash.",
  "저항을 가로로 눕히고 바로 위에서 찍습니다. 화면을 눌러 초점을 맞춥니다.": "Coloca la resistencia en horizontal y fotografía desde arriba. Toca la pantalla para enfocar.",
  "띠 위에 그림자나 반짝이는 빛이 생기면 휴대폰 각도를 조금 바꿉니다.": "Si hay sombra o brillo sobre las bandas, inclina un poco el teléfono.",
- "잘못 읽으면 저항을 굴려 띠가 잘 보이게 다시 찍거나, 띠를 눌러 색을 고칩니다.": "Si la lectura es incorrecta, gira la resistencia para que se vean bien las bandas y vuelve a fotografiar, o toca una banda para corregir su color."
+ "잘못 읽으면 저항을 굴려 띠가 잘 보이게 다시 찍거나, 띠를 눌러 색을 고칩니다.": "Si la lectura es incorrecta, gira la resistencia para que se vean bien las bandas y vuelve a fotografiar, o toca una banda para corregir su color.",
+ "연결 그림 · 부품 도우미": "Conexiones · Ayudante"
 }

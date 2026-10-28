@@ -522,10 +522,10 @@ button.big.alt { background: linear-gradient(160deg, var(--tint), transparent 70
 /* 센서 카드: 분류 아이콘 타일 */
 .cat-chips button { background: var(--surface); }
 .cat-chips button.on { background: var(--brand-deep); border-color: var(--brand-deep); color: #fff; }
-.sensor-card { position: relative; display: grid; grid-template-columns: 44px 1fr; grid-template-areas: "ico name" "ico meas" "ico badge"; column-gap: 12px; row-gap: 2px; align-items: start; padding: 14px; border-radius: 16px; box-shadow: var(--shadow); }
+.sensor-card { position: relative; display: grid; grid-template-columns: 44px minmax(0, 1fr); min-width: 0; grid-template-areas: "ico name" "ico meas" "ico badge"; column-gap: 12px; row-gap: 2px; align-items: start; padding: 14px; border-radius: 16px; box-shadow: var(--shadow); }
 .sensor-card .sc-ico { grid-area: ico; width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center; font-size: 22px; background: var(--tint); }
-.sensor-card b { grid-area: name; }
-.sensor-card .measures { grid-area: meas; }
+.sensor-card b { grid-area: name; overflow-wrap: anywhere; hyphens: auto; }
+.sensor-card .measures { grid-area: meas; overflow-wrap: anywhere; }
 .sensor-card .badges { grid-area: badge; margin-top: 6px; }
 .sensor-card.is-on { border-color: var(--accent); }
 .sensor-card.is-on .sc-ico { background: var(--mint); }

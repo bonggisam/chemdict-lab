@@ -50,7 +50,7 @@ function srgbToLinear(c: number) { c /= 255; return c <= 0.04045 ? c / 12.92 : (
 function linearToSrgb(v: number) { const c = v <= 0.0031308 ? v * 12.92 : 1.055 * v ** (1 / 2.4) - 0.055; return Math.max(0, Math.min(255, c * 255)); }
 /**
  * 조명 보정: 몸통 색을 보통 몸통 색(베이지·파랑)으로 맞추는 채널별 배수 (어두운 사진·따뜻한 조명).
- * 배수는 0.5~6배, 채널끼리 차이는 1.6배 안으로 묶어 색이 뒤집히지 않게 함.
+ * 배수는 0.5~6배, 채널끼리 차이는 1.26배 안으로 묶어 색이 뒤집히지 않게 함.
  */
 const BODY_TAN: [number, number, number] = [214, 186, 142];
 const BODY_BLUE: [number, number, number] = [80, 140, 195];
@@ -186,7 +186,7 @@ function median3(list: [number, number, number][]): [number, number, number] {
 }
 
 /** 선을 따라 뽑은 색 → 띠 구간 */
-export function findBands(samples: [number, number, number][]): { body: [number, number, number]; bands: BandFound[]; span: [number, number] } {
+export function findBands(samples: [number, number, number][]): { body: [number, number, number]; bands: BandFound[]; span: [number, number]; noBody: boolean } {
   const n = samples.length;
   const trim = Math.max(1, Math.round(n * 0.03));
   const inner = samples.slice(trim, n - trim);
@@ -233,7 +233,11 @@ export function findBands(samples: [number, number, number][]): { body: [number,
       s = -1;
     }
   }
-  return { body: bodyRgb, bands, span: [(bodyFirst + trim) / n, (bodyLast + 1 + trim) / n] };
+  // 저항 몸통이 아닌 것 (꽃·잎·옷 등): 몸통 색 무리가 선의 30 % 미만이거나, 저항 몸통에 없는 색(빨강·자주·초록 쪽으로 진함)
+  const share = bestCount / labs.length;
+  const chroma = Math.hypot(body[1], body[2]);
+  const noBody = share < 0.3 || chroma > 45 || body[1] > 22 || body[1] < -12;
+  return { body: bodyRgb, bands, span: [(bodyFirst + trim) / n, (bodyLast + 1 + trim) / n], noBody };
 }
 
 function percentile(v: number[], p: number) { const s = [...v].sort((a, b) => a - b); return s[Math.floor(s.length * p)] ?? 0; }
@@ -320,12 +324,12 @@ export function analyze(img: Pixels, a: Pt, b: Pt): Analysis {
   const len = Math.hypot(b.x - a.x, b.y - a.y);
   const half = Math.max(1, Math.round(len * 0.012));
   const samples = sampleLine(img, a, b, Math.max(120, Math.min(400, Math.round(len))), half);
-  const { body, bands, span } = findBands(samples);
-  const { best, alternatives } = chooseReading(bands, span);
+  const { body, bands, span, noBody } = findBands(samples);
+  const { best, alternatives } = noBody ? { best: null, alternatives: [] } : chooseReading(bands, span);
   // 띠 위치를 누른 두 점 기준(0~1)으로 되돌림
   const back = (f: number) => f * (1 + 2 * ex) - ex;
   for (const bd of bands) { bd.start = back(bd.start); bd.end = back(bd.end); }
-  return { reading: best, alternatives, bands, body, samples, small };
+  return { reading: best, alternatives, bands: noBody ? [] : bands, body, samples, small };   // 저항이 아니면 띠 표시도 안 함
 }
 
 /** 두 점을 주지 않았을 때: 사진 가운데 가로줄에서 저항 몸통 끝을 추정 */

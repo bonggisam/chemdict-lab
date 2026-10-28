@@ -497,7 +497,6 @@
  "관찰 기록 · 저장": "Catatan · Simpan",
  "보드 고르기 · 연결": "Pilih · Hubungkan papan",
  "센서 고르기 · 측정": "Pilih sensor · Ukur",
- "연결 그림 · 브레드보드": "Diagram kabel · Breadboard",
  "이 보드는 블루투스로만 측정합니다": "Papan ini hanya mengukur lewat Bluetooth",
  "기타": "Lainnya",
  "과정·과목": "Jenjang · mata pelajaran",
@@ -793,5 +792,6 @@
  "흰 종이 위에 놓고 밝은 곳(창가)에서 찍습니다. 플래시는 끕니다.": "Letakkan di atas kertas putih di tempat terang (dekat jendela). Matikan lampu kilat.",
  "저항을 가로로 눕히고 바로 위에서 찍습니다. 화면을 눌러 초점을 맞춥니다.": "Baringkan resistor secara mendatar dan foto tepat dari atas. Ketuk layar untuk fokus.",
  "띠 위에 그림자나 반짝이는 빛이 생기면 휴대폰 각도를 조금 바꿉니다.": "Jika ada bayangan atau pantulan cahaya di gelang, miringkan ponsel sedikit.",
- "잘못 읽으면 저항을 굴려 띠가 잘 보이게 다시 찍거나, 띠를 눌러 색을 고칩니다.": "Jika salah baca, gulirkan resistor agar gelang terlihat jelas lalu foto ulang, atau ketuk gelang untuk memperbaiki warnanya."
+ "잘못 읽으면 저항을 굴려 띠가 잘 보이게 다시 찍거나, 띠를 눌러 색을 고칩니다.": "Jika salah baca, gulirkan resistor agar gelang terlihat jelas lalu foto ulang, atau ketuk gelang untuk memperbaiki warnanya.",
+ "연결 그림 · 부품 도우미": "Rangkaian · Asisten komponen"
 }

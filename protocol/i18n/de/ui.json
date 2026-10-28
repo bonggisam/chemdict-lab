@@ -497,7 +497,6 @@
  "관찰 기록 · 저장": "Notizen · Speichern",
  "보드 고르기 · 연결": "Wählen · Verbinden",
  "센서 고르기 · 측정": "Sensor wählen · Messen",
- "연결 그림 · 브레드보드": "Schaltplan · Steckbrett",
  "이 보드는 블루투스로만 측정합니다": "Dieses Board misst nur über Bluetooth",
  "기타": "Sonstiges",
  "과정·과목": "Bildungsgang und Fach",
@@ -793,5 +792,6 @@
  "흰 종이 위에 놓고 밝은 곳(창가)에서 찍습니다. 플래시는 끕니다.": "Leg ihn auf weißes Papier an einen hellen Ort (am Fenster). Schalte den Blitz aus.",
  "저항을 가로로 눕히고 바로 위에서 찍습니다. 화면을 눌러 초점을 맞춥니다.": "Leg den Widerstand quer hin und fotografiere direkt von oben. Tippe auf den Bildschirm zum Scharfstellen.",
  "띠 위에 그림자나 반짝이는 빛이 생기면 휴대폰 각도를 조금 바꿉니다.": "Wenn Schatten oder Spiegelungen auf den Ringen liegen, neige das Handy etwas.",
- "잘못 읽으면 저항을 굴려 띠가 잘 보이게 다시 찍거나, 띠를 눌러 색을 고칩니다.": "Wenn falsch gelesen wird, rolle den Widerstand, bis die Ringe gut sichtbar sind, und fotografiere neu – oder tippe auf einen Ring, um die Farbe zu korrigieren."
+ "잘못 읽으면 저항을 굴려 띠가 잘 보이게 다시 찍거나, 띠를 눌러 색을 고칩니다.": "Wenn falsch gelesen wird, rolle den Widerstand, bis die Ringe gut sichtbar sind, und fotografiere neu – oder tippe auf einen Ring, um die Farbe zu korrigieren.",
+ "연결 그림 · 부품 도우미": "Verdrahtung · Bauteil-Helfer"
 }
