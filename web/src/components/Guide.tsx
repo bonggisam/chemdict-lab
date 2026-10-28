@@ -11,6 +11,7 @@ import { t, tk } from '../lib/i18n';
 import { areaName, courseName, levelName } from '../lib/l10n';
 import { R } from './Rich';
 import { ReagentNotes } from './ReagentNotes';
+import { PartsHelper } from './PartsHelper';
 
 const SET_LABEL = { full: tk('모든 센서'), lite: tk('가벼운 버전'), mini: tk('가장 가벼운 버전'), none: '' } as const;
 
@@ -19,7 +20,7 @@ interface Props {
   board: Board;
   initialExpId?: string;
   initialPartId?: string;        // 바로 측정에서 온 경우 그 센서 연결을 바로 보여 줌
-  initialTab?: 'wire' | 'help';
+  initialTab?: 'wire' | 'help' | 'tools';
   sensors: ResolvedSensor[];
   connected: boolean;
   onRescan: () => void;
@@ -30,7 +31,7 @@ interface Props {
 
 /** 3단계: 센서 연결 방법 + 문제 해결 */
 export function Guide({ experiments, board, initialExpId, initialPartId, initialTab, sensors, connected, onRescan, onChangeBoard, onBack, backLabel }: Props) {
-  const [tab, setTab] = useState<'wire' | 'help'>(initialTab ?? 'wire');
+  const [tab, setTab] = useState<'wire' | 'help' | 'tools'>(initialTab ?? 'wire');
   const [by, setBy] = useState<'sensor' | 'exp' | 'bb'>(initialExpId && !initialPartId ? 'exp' : 'sensor');
   const [partId, setPartId] = useState<string | undefined>(initialPartId);
   const [expId, setExpId] = useState(initialExpId ?? experiments.find((e) => e.setup)?.id ?? experiments[0]?.id);
@@ -55,7 +56,10 @@ export function Guide({ experiments, board, initialExpId, initialPartId, initial
       <div className="seg big-seg" role="tablist" aria-label={t('도움말')}>
         <button role="tab" aria-selected={tab === 'wire'} className={tab === 'wire' ? 'on' : ''} onClick={() => setTab('wire')}>{t('센서 연결 방법')}</button>
         <button role="tab" aria-selected={tab === 'help'} className={tab === 'help' ? 'on' : ''} onClick={() => setTab('help')}>{t('문제 해결')}</button>
+        <button role="tab" aria-selected={tab === 'tools'} className={tab === 'tools' ? 'on' : ''} onClick={() => setTab('tools')}>🧰 {t('부품 도우미')}</button>
       </div>
+
+      {tab === 'tools' && <PartsHelper board={board} onOpenPart={(p) => { setTab('wire'); setBy('sensor'); setPartId(p.id); setTimeout(() => document.querySelector('.part-wiring')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 80); }} />}
 
       {tab === 'help' && (
         <section className="guide-block troubles">

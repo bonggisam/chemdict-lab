@@ -834,3 +834,37 @@ button.on { background: var(--brand-deep); color: #fff; }
 .mine-chip { display: inline-flex; border: 1px solid var(--line); border-radius: 999px; overflow: hidden; background: var(--surface); }
 .mine-chip button { border: 0; border-radius: 0; min-height: 40px; padding: 4px 10px; }
 .sync-video { width: 100%; max-height: 50vh; background: #000; border-radius: var(--radius); }
+
+/* ---------- 3단계 · 부품 도우미 ---------- */
+.parts-helper .seg { margin: 6px 0 14px; }
+.helper-pane { display: flex; flex-direction: column; gap: 10px; }
+.helper-pane h3 { margin: 14px 0 0; font-size: 17px; }
+.helper-pane hr { border: 0; border-top: 1px solid var(--line); margin: 8px 0; width: 100%; }
+.file-btn { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 16px; border-radius: 10px; cursor: pointer; align-self: flex-start; }
+.file-btn.primary { background: var(--accent); color: var(--accent-ink); font-weight: 700; }
+.file-btn.ghost { border: 1px solid var(--line); background: var(--surface); }
+.resistor-photo { width: 100%; max-width: 720px; height: auto; border-radius: 12px; cursor: crosshair; touch-action: manipulation; background: #000; }
+.resistor-result { display: flex; flex-direction: column; gap: 8px; padding: 14px; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); }
+.resistor-svg { max-width: 100%; height: auto; }
+.resistor-value { margin: 0; font-size: 15px; color: var(--muted); }
+.resistor-value b { font-size: 28px; color: var(--ink); margin-right: 8px; }
+.band-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.band-chip { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--line); border-radius: 10px; padding: 4px 8px; min-height: 44px; background: var(--surface); }
+.band-chip .sw { width: 18px; height: 28px; border-radius: 4px; border: 1px solid rgba(0,0,0,.2); }
+.band-chip select { border: 0; background: transparent; font: inherit; min-height: 36px; }
+.calc-row { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; }
+.calc-row label { display: inline-flex; align-items: center; gap: 6px; }
+.calc-row input, .calc-row select, .helper-pane input.grow { min-height: 44px; border: 1px solid var(--field); border-radius: 8px; background: var(--surface); padding: 0 10px; }
+.calc-row input { width: 110px; }
+.helper-pane input.grow, .calc-row .grow { flex: 1; min-width: 200px; width: auto; }
+.mini-table { border-collapse: collapse; width: 100%; font-size: 14px; }
+.mini-table td { border-top: 1px solid var(--line); padding: 8px 6px; vertical-align: top; }
+.check-list { margin: 0; padding-left: 0; list-style: none; display: flex; flex-direction: column; gap: 6px; }
+.check-list li { padding: 10px 12px; border-radius: 10px; }
+.check-list li.bad { background: color-mix(in srgb, #dc2626 10%, transparent); }
+.check-list li.warn { background: color-mix(in srgb, var(--mark) 12%, transparent); }
+.note.ok { color: var(--ok); font-weight: 600; }
+.helper-pane .chip { min-height: 44px; padding: 0 14px; font-size: 15px; cursor: pointer; }
+
+.alt-row { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.calc-row label.check input { width: 22px; height: 22px; min-height: 0; }
