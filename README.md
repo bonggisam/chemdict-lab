@@ -3,6 +3,9 @@
 아두이노 IDE 없이, **꽂고 → 실험 고르고 → 측정**하는 화학 실험 앱입니다.
 UNO R4 WiFi + 센서로 측정하고, 맥·윈도우(웹앱)와 아이패드·아이폰·맥(애플 앱)에서 같은 화면으로 봅니다.
 
+- 🌐 웹앱: https://bonggisam.github.io/chemdict-lab/
+- 📲 아이패드·맥 앱 (무료): [App Store](https://apps.apple.com/app/id6826865197)
+
 ```
 센서 ─ UNO R4 WiFi (펌웨어 한 번만 업로드)
           │  USB ──────── 웹앱 (크롬·엣지 / 맥·윈도우·크롬북)
@@ -53,11 +56,11 @@ npm run dev      # http://localhost:5173
 - [x] DHT 온습도 센서(D4) 실제 보드에서 인식·측정 확인 (펌웨어 0.2.2, 2026-10-17)
 - [ ] 실제 센서(Modulino Thermo, DS18B20, pH) 연결 확인, 웹앱 USB·블루투스 연결 확인
 - [x] 웹앱 0.6: 자동 저장(최근 5개)·측정 파일(.chemdict) 열기/저장, 실험 QR·링크 공유, 직접 만드는 계산 열(수식)+그래프, 조건 시작, 준비물 목록(모둠 수)
-- [x] 반 전체 결과 비교: 아이패드·맥 앱(유료)에서 .chemdict 파일을 모아 겹쳐 보기
+- [x] 반 전체 결과 비교: 아이패드·맥 앱에서 .chemdict 파일을 모아 겹쳐 보기
 
 ## 라이선스
 
 - 웹앱·펌웨어·센서 데이터: **PolyForm Noncommercial 1.0.0** — 학교·개인 비상업 사용 무료, 판매·상업적 재배포 금지. 요약은 [NOTICE.md](NOTICE.md), 정식 조건은 [LICENSE](LICENSE).
 - 펌웨어의 LGPL 라이브러리 관련 추가 허가: [firmware/LICENSE](firmware/LICENSE), 제3자 고지: [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
-- 아이패드·맥 앱은 별도 비공개 저장소의 유료 제품입니다.
+- 아이패드·맥 앱은 [App Store](https://apps.apple.com/app/id6826865197)에서 무료로 받을 수 있습니다 (소스는 별도 비공개 저장소, 이 저장소의 라이선스가 적용되지 않음).
 - Arduino는 Arduino SA의 상표이며, ChemDict Lab은 Arduino 공식 제품이 아닙니다.

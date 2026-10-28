@@ -85,7 +85,7 @@ export function BoardStep({ board, detectedId, onPickBoard, connected, busy, fw,
           </button>
         </div>
         {!hasSerial() && !hasBluetooth() && (
-          <p className="note warn">{t('사파리는 USB·블루투스 연결을 지원하지 않습니다. 맥·윈도우에서는 크롬이나 엣지로 열고, 아이패드·아이폰에서는 ChemDict Lab 앱을 쓰세요.')}</p>
+          <p className="note warn">{t('사파리는 USB·블루투스 연결을 지원하지 않습니다. 맥·윈도우에서는 크롬이나 엣지로 열고, 아이패드·아이폰에서는 ChemDict Lab 앱을 쓰세요.')} <a href="https://apps.apple.com/app/id6826865197">App Store</a></p>
         )}
       </section>
 
