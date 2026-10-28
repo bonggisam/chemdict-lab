@@ -793,5 +793,20 @@
  "저항을 가로로 눕히고 바로 위에서 찍습니다. 화면을 눌러 초점을 맞춥니다.": "Coloca la resistencia en horizontal y fotografía desde arriba. Toca la pantalla para enfocar.",
  "띠 위에 그림자나 반짝이는 빛이 생기면 휴대폰 각도를 조금 바꿉니다.": "Si hay sombra o brillo sobre las bandas, inclina un poco el teléfono.",
  "잘못 읽으면 저항을 굴려 띠가 잘 보이게 다시 찍거나, 띠를 눌러 색을 고칩니다.": "Si la lectura es incorrecta, gira la resistencia para que se vean bien las bandas y vuelve a fotografiar, o toca una banda para corregir su color.",
- "연결 그림 · 부품 도우미": "Conexiones · Ayudante"
+ "연결 그림 · 부품 도우미": "Conexiones · Ayudante",
+ "활동지": "Hoja de trabajo",
+ "📝 활동지": "📝 Hoja de trabajo",
+ "예측 → 측정 → 결론. 보고서 PDF에 함께 들어갑니다.": "Predicción → medición → conclusión. Se incluye en el informe PDF.",
+ "1. 예측 — 측정하기 전에 쓰세요": "1. Predicción — escríbela antes de medir",
+ "그래프가 어떻게 변할지, 그렇게 생각한 까닭을 씁니다.": "Escribe cómo crees que cambiará la gráfica y por qué.",
+ "2. 측정 결과는 보고서에 그래프·해석으로 자동으로 들어갑니다.": "2. Los resultados entran automáticamente en el informe como gráficas y análisis.",
+ "3. 결론": "3. Conclusión",
+ "1. 예측": "1. Predicción",
+ "보고서에 활동지 넣기 (빈 칸은 손으로 쓸 줄로)": "Añadir la hoja al informe (las respuestas vacías tendrán líneas para escribir a mano)",
+ "보드로 저항 재기": "Medir una resistencia con la placa",
+ "색띠가 지워졌거나 헷갈리면 [10 kΩ] 저항과 함께 보드에 꽂아 값을 바로 잽니다. 멀티미터가 없어도 됩니다.": "Si las bandas están borrosas o confusas, conéctala a la placa junto con una resistencia de [10 kΩ] y mide su valor al instante. No hace falta multímetro.",
+ "그래프의 모양(늘어남·줄어듦·멈춤)을 시간 순서대로 설명해 보세요.": "Describa en orden temporal la forma de la gráfica (aumenta, disminuye, se detiene).",
+ "예측과 실제 결과를 비교해 보세요. 같은 점과 다른 점은?": "Compare su predicción con el resultado real. ¿En qué coinciden y en qué difieren?",
+ "이런 결과가 나온 까닭을 과학 개념으로 설명해 보세요.": "Explique con conceptos científicos por qué se obtuvo este resultado.",
+ "오차가 생겼다면 그 까닭과 줄이는 방법은?": "Si hubo error, ¿por qué ocurrió y cómo se puede reducir?"
 }

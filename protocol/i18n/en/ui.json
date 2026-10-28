@@ -793,5 +793,20 @@
  "저항을 가로로 눕히고 바로 위에서 찍습니다. 화면을 눌러 초점을 맞춥니다.": "Lay the resistor flat and shoot straight from above. Tap the screen to focus.",
  "띠 위에 그림자나 반짝이는 빛이 생기면 휴대폰 각도를 조금 바꿉니다.": "If a shadow or shiny glare falls on the bands, tilt the phone slightly.",
  "잘못 읽으면 저항을 굴려 띠가 잘 보이게 다시 찍거나, 띠를 눌러 색을 고칩니다.": "If it reads wrong, roll the resistor so the bands show clearly and retake, or tap a band to fix its color.",
- "연결 그림 · 부품 도우미": "Wiring · Parts helper"
+ "연결 그림 · 부품 도우미": "Wiring · Parts helper",
+ "활동지": "Worksheet",
+ "📝 활동지": "📝 Worksheet",
+ "예측 → 측정 → 결론. 보고서 PDF에 함께 들어갑니다.": "Prediction → measurement → conclusion. It goes into the PDF report.",
+ "1. 예측 — 측정하기 전에 쓰세요": "1. Prediction — write before measuring",
+ "그래프가 어떻게 변할지, 그렇게 생각한 까닭을 씁니다.": "Write how you think the graph will change and why.",
+ "2. 측정 결과는 보고서에 그래프·해석으로 자동으로 들어갑니다.": "2. Results go into the report automatically as graphs and analysis.",
+ "3. 결론": "3. Conclusion",
+ "1. 예측": "1. Prediction",
+ "보고서에 활동지 넣기 (빈 칸은 손으로 쓸 줄로)": "Add the worksheet to the report (empty answers get lines for handwriting)",
+ "보드로 저항 재기": "Measure a resistor with the board",
+ "색띠가 지워졌거나 헷갈리면 [10 kΩ] 저항과 함께 보드에 꽂아 값을 바로 잽니다. 멀티미터가 없어도 됩니다.": "If the bands are worn or unclear, plug it into the board together with a [10 kΩ] resistor to measure its value right away. No multimeter needed.",
+ "그래프의 모양(늘어남·줄어듦·멈춤)을 시간 순서대로 설명해 보세요.": "Describe the shape of the graph (rising, falling, leveling off) in time order.",
+ "예측과 실제 결과를 비교해 보세요. 같은 점과 다른 점은?": "Compare your prediction with the actual result. What is the same, and what is different?",
+ "이런 결과가 나온 까닭을 과학 개념으로 설명해 보세요.": "Explain why you got this result using science concepts.",
+ "오차가 생겼다면 그 까닭과 줄이는 방법은?": "If there was error, what caused it and how could you reduce it?"
 }

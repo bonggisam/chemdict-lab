@@ -870,3 +870,16 @@ button.on { background: var(--brand-deep); color: #fff; }
 .calc-row label.check input { width: 22px; height: 22px; min-height: 0; }
 .photo-tips ol { margin: 8px 0 2px; padding-left: 22px; }
 .photo-tips li { margin: 4px 0; line-height: 1.5; }
+/* 활동지 (기록·저장): 예측 → 결론 질문, 보고서 PDF에 함께 */
+details.worksheet { border: 1px solid var(--line); border-radius: 12px; background: var(--surface); padding: 0 14px; margin: 12px 0; }
+details.worksheet > summary { cursor: pointer; font-weight: 700; min-height: 44px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+details.worksheet > summary .note { font-weight: 400; margin: 0; }
+details.worksheet[open] { padding-bottom: 14px; }
+.worksheet .ws-field { display: flex; flex-direction: column; gap: 4px; margin: 10px 0; }
+.worksheet .ws-field .note { margin: 0; }
+.worksheet textarea { width: 100%; box-sizing: border-box; min-height: 44px; border: 1px solid var(--field); border-radius: 8px; background: var(--surface); color: var(--ink); padding: 8px 10px; font: inherit; resize: vertical; }
+.worksheet .ws-head { display: block; margin-top: 12px; }
+.worksheet .ws-include { min-height: 44px; display: flex; align-items: center; gap: 8px; }
+/* 2.0 부품 도우미 계산 탭: 보드로 저항 재기 카드 */
+.ohm-card { display: flex; flex-direction: column; gap: 6px; align-items: flex-start; padding: 12px 14px; border: 1px solid var(--line); border-left: 4px solid var(--accent); border-radius: 12px; background: var(--surface); margin-bottom: 6px; }
+.ohm-card h3 { margin: 0; }

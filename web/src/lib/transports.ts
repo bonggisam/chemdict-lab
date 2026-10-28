@@ -249,6 +249,7 @@ export class SimTransport implements Transport {
       case 'L': return 50 + 10 * Math.sin(t / 10) + this.noise(0.3);
       case 'EC': return 1200 + 2 * t + this.noise(4);
       case 'V': return 1.1 + this.noise(0.004);
+      case 'OHM': return 5 * 10000 / (4700 + 10000) + this.noise(0.002); // 4.7 kΩ 저항 (앱이 저항으로 바꿈)
       case 'TL':
       case 'T': {
         let T = t < 140 ? 22 - 22 * (t / 140) : t < 220 ? 0 : -0.06 * (t - 220);

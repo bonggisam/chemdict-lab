@@ -4178,6 +4178,29 @@
         "큰 전류용입니다. 교사 시범 실험에만 씁니다."
       ],
       "analogType": "I50A"
+    },
+    {
+      "id": "ohm-meter",
+      "name": "저항 재기 (잴 저항 + 10 kΩ)",
+      "category": "전기·소리",
+      "connector": "analog-divider",
+      "provides": [
+        "OHM"
+      ],
+      "minSet": "mini",
+      "support": "firmware",
+      "items": [
+        "잴 저항 1개",
+        "10 kΩ 저항 1개",
+        "브레드보드",
+        "점퍼선 3개"
+      ],
+      "cautions": [
+        "멀티미터 없이 저항값을 잽니다. 잴 저항을 5V 쪽, 10 kΩ 저항을 GND 쪽에 둡니다.",
+        "100 Ω~1 MΩ에서 잘 맞습니다. 10 kΩ 저항의 오차(±5 %)만큼 값도 틀릴 수 있습니다.",
+        "회로에 꽂힌 저항은 빼서 잽니다. 손으로 다리를 잡으면 값이 흔들립니다."
+      ],
+      "analogType": "OHM"
     }
   ],
   "troubles": [

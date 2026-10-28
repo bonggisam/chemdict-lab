@@ -793,5 +793,20 @@
  "저항을 가로로 눕히고 바로 위에서 찍습니다. 화면을 눌러 초점을 맞춥니다.": "Đặt điện trở nằm ngang và chụp thẳng từ trên xuống. Chạm vào màn hình để lấy nét.",
  "띠 위에 그림자나 반짝이는 빛이 생기면 휴대폰 각도를 조금 바꿉니다.": "Nếu có bóng hoặc ánh phản chiếu trên vạch, hãy nghiêng điện thoại một chút.",
  "잘못 읽으면 저항을 굴려 띠가 잘 보이게 다시 찍거나, 띠를 눌러 색을 고칩니다.": "Nếu đọc sai, hãy lăn điện trở cho vạch hiện rõ rồi chụp lại, hoặc chạm vào vạch để sửa màu.",
- "연결 그림 · 부품 도우미": "Sơ đồ nối · Trợ lý linh kiện"
+ "연결 그림 · 부품 도우미": "Sơ đồ nối · Trợ lý linh kiện",
+ "활동지": "Phiếu học tập",
+ "📝 활동지": "📝 Phiếu học tập",
+ "예측 → 측정 → 결론. 보고서 PDF에 함께 들어갑니다.": "Dự đoán → đo → kết luận. Được đưa vào báo cáo PDF.",
+ "1. 예측 — 측정하기 전에 쓰세요": "1. Dự đoán — viết trước khi đo",
+ "그래프가 어떻게 변할지, 그렇게 생각한 까닭을 씁니다.": "Viết đồ thị sẽ thay đổi thế nào và vì sao em nghĩ vậy.",
+ "2. 측정 결과는 보고서에 그래프·해석으로 자동으로 들어갑니다.": "2. Kết quả đo tự động đưa vào báo cáo dưới dạng đồ thị và phân tích.",
+ "3. 결론": "3. Kết luận",
+ "1. 예측": "1. Dự đoán",
+ "보고서에 활동지 넣기 (빈 칸은 손으로 쓸 줄로)": "Đưa phiếu học tập vào báo cáo (ô trống thành dòng để viết tay)",
+ "보드로 저항 재기": "Đo điện trở bằng bo mạch",
+ "색띠가 지워졌거나 헷갈리면 [10 kΩ] 저항과 함께 보드에 꽂아 값을 바로 잽니다. 멀티미터가 없어도 됩니다.": "Nếu vạch màu bị mờ hoặc khó đọc, cắm cùng một điện trở [10 kΩ] vào bo mạch để đo ngay giá trị. Không cần đồng hồ vạn năng.",
+ "그래프의 모양(늘어남·줄어듦·멈춤)을 시간 순서대로 설명해 보세요.": "Hãy mô tả hình dạng đồ thị (tăng·giảm·đứng yên) theo thứ tự thời gian.",
+ "예측과 실제 결과를 비교해 보세요. 같은 점과 다른 점은?": "Hãy so sánh dự đoán với kết quả thực tế. Điểm giống và khác là gì?",
+ "이런 결과가 나온 까닭을 과학 개념으로 설명해 보세요.": "Hãy giải thích bằng khái niệm khoa học vì sao có kết quả này.",
+ "오차가 생겼다면 그 까닭과 줄이는 방법은?": "Nếu có sai số, nguyên nhân là gì và làm sao giảm?"
 }

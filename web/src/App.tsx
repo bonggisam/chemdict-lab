@@ -31,7 +31,7 @@ import { BUNDLED_FW, FlashError, TARGETS, boardFromUsb, flashBoard, older } from
 import { experiments } from './lib/experiments';
 import { parseLine, type BoardMsg, type Experiment, type HelloMsg, type SensorInfo } from './lib/protocol';
 import { BleTransport, SerialTransport, SimTransport, hasBluetooth, hasSerial, type Transport } from './lib/transports';
-import { analogTypes, resolveSensor } from './lib/sensors';
+import { analogTypes, applyAppConv, boardVref, resolveSensor } from './lib/sensors';
 import { ABSORB, COLOR, DeviceTransport, canUseDevice, deviceTypes, kitInterval, kitPart, type DeviceKit } from './lib/device';
 import { DeviceCamera, DeviceSection, DeviceSheet } from './components/DevicePanel';
 import { isStable } from './lib/analysis';
@@ -131,17 +131,21 @@ export default function App() {
   }, []);
 
   const helloRef = useRef<((m: HelloMsg) => void) | null>(null);
+  const lastHelloRef = useRef<HelloMsg | null>(null);   // 앱 변환 센서(저항 등)에 쓸 센서 목록·보드
   const handleMsg = useCallback((m: BoardMsg) => {
     switch (m.type) {
       case 'hello':
+        lastHelloRef.current = m;
         setHello(m);
         helloRef.current?.(m);
         break;
       case 'd': {
-        let row = { t: m.t, v: m.v };
+        const h = lastHelloRef.current;
+        const dv = applyAppConv(m.v, h?.sensors, boardVref(boardByName(h?.board)?.logic));
+        let row = { t: m.t, v: dv };
         const trig = triggerRef.current;
         if (recordingRef.current && trig) {
-          const v = m.v[trig.id];
+          const v = dv[trig.id];
           const met = typeof v === 'number' && (trig.dir === 'up' ? v >= trig.value : v <= trig.value);
           if (!met) { setWaiting({ value: typeof v === 'number' ? v : undefined }); break; }
           triggerRef.current = null;
@@ -149,7 +153,7 @@ export default function App() {
           setWaiting(null);
           say('ok', t('조건이 맞아 기록을 시작했습니다.'));
         }
-        if (tOffsetRef.current) row = { t: Number((m.t - tOffsetRef.current).toFixed(3)), v: m.v };
+        if (tOffsetRef.current) row = { t: Number((m.t - tOffsetRef.current).toFixed(3)), v: dv };
         if (recordingRef.current && resyncRef.current) break;
         if (recordingRef.current) {
           const id = activeIdRef.current;

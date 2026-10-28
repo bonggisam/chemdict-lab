@@ -19,6 +19,7 @@ import { BreadboardNote } from './PartWiring';
 import { InfoSheet } from './InfoSheet';
 import { c, t, tk } from '../lib/i18n';
 import { infoRows, infoSummary, type ExpInfo } from '../lib/info';
+import { WORKSHEET_QUESTIONS, isEmptyWorksheet, loadWorksheet, saveWorksheet, worksheetForReport, type Worksheet } from '../lib/worksheet';
 import { FORMULA_EXAMPLES, FormulaError, compile, evalColumn, type CustomCalc } from '../lib/formula';
 import { R } from './Rich';
 import { ReagentNotes } from './ReagentNotes';
@@ -117,6 +118,12 @@ export function Measure(p: Props) {
   const [big, setBig] = useState(false);
   const [sonify, setSonify] = useState(false);   // 값을 소리로 듣기
   const [videoOpen, setVideoOpen] = useState(false);   // 영상과 맞춰 보기
+  // 활동지 (예측·결론): 실험마다 이 기기에 저장, 보고서(PDF·그림)에 넣을지 고름 (기본: 쓴 내용이 있으면 넣음)
+  const [ws, setWsState] = useState<Worksheet>(() => loadWorksheet(exp.id));
+  const [wsPick, setWsPick] = useState<boolean | null>(null);
+  useEffect(() => { setWsState(loadWorksheet(exp.id)); setWsPick(null); }, [exp.id]);
+  const setWs = (w: Worksheet) => { setWsState(w); saveWorksheet(exp.id, w); };
+  const wsInReport = wsPick ?? !isEmptyWorksheet(ws);
   const micBusy = exp.sensors.some((s) => SOUND.includes(s)) && sensors.some((s) => s.src === 'device');
 
   const setXAxis = (id: string) => { setXAxisState(id); setZoom(null); setSelection(null); };
@@ -392,6 +399,7 @@ export function Measure(p: Props) {
       summary: { head: summaryHead, rows: summaryRows.filter((_, i) => dataRuns.includes((analysis ?? [])[i]?.run)) },
       notes,
       runs: rRuns,
+      ...(wsInReport ? { worksheet: worksheetForReport(ws) } : {}),
     };
   };
 
@@ -700,6 +708,27 @@ export function Measure(p: Props) {
           <button className="primary" disabled={!dataRuns.length} onClick={() => setExportOpen(true)}><Ico e={ICON.save} />{t('저장하기')}</button>
         </div>
       </div>}
+
+      {/* 활동지 */}
+      {on('record') && <details className="worksheet" data-nav={t('활동지')}>
+        <summary><span aria-hidden="true">📝</span> {t('활동지')} <span className="note">{t('예측 → 측정 → 결론. 보고서 PDF에 함께 들어갑니다.')}</span></summary>
+        <label className="ws-field">
+          <b>{t('1. 예측 — 측정하기 전에 쓰세요')}</b>
+          <span className="note">{t('그래프가 어떻게 변할지, 그렇게 생각한 까닭을 씁니다.')}</span>
+          <textarea rows={3} value={ws.prediction} onChange={(e) => setWs({ ...ws, prediction: e.target.value })} />
+        </label>
+        <p className="note">{t('2. 측정 결과는 보고서에 그래프·해석으로 자동으로 들어갑니다.')}</p>
+        <b className="ws-head">{t('3. 결론')}</b>
+        {WORKSHEET_QUESTIONS.map((q, i) => (
+          <label key={q} className="ws-field">
+            <span>{i + 1}) {t(q)}</span>
+            <textarea rows={2} value={ws.answers[i] ?? ''} onChange={(e) => setWs({ ...ws, answers: ws.answers.map((a, k) => (k === i ? e.target.value : a)) })} />
+          </label>
+        ))}
+        <label className="check ws-include">
+          <input type="checkbox" checked={wsInReport} onChange={(e) => setWsPick(e.target.checked)} /> {t('보고서에 활동지 넣기 (빈 칸은 손으로 쓸 줄로)')}
+        </label>
+      </details>}
 
       {/* 해석 */}
       {on('analysis') && !(anaChart && analysis) && <p className="note">{t('측정한 점이 2개 이상이면 분석할 수 있습니다. [측정 시작]을 누르세요.')}</p>}

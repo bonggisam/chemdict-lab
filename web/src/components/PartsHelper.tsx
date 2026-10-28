@@ -24,7 +24,7 @@ export function PartsHelper({ board, onOpenPart }: { board: Board; onOpenPart: (
       </div>
       {tab === 'read' && <ResistorReader />}
       {tab === 'find' && <PartFinder onOpenPart={onOpenPart} />}
-      {tab === 'calc' && <Calculators />}
+      {tab === 'calc' && <Calculators onOpenPart={onOpenPart} />}
       {tab === 'together' && <Together board={board} />}
     </section>
   );
@@ -212,7 +212,8 @@ function PartFinder({ onOpenPart }: { onOpenPart: (p: Part) => void }) {
 }
 
 const num = (s: string) => Number(s.replace(',', '.'));
-function Calculators() {
+function Calculators({ onOpenPart }: { onOpenPart: (p: Part) => void }) {
+  const ohm = parts.find((p) => p.id === 'ohm-meter');
   const [vs, setVs] = useState('5'), [led, setLed] = useState('red'), [ma, setMa] = useState('10');
   const [vin, setVin] = useState('5'), [vout, setVout] = useState('3.3'), [r1, setR1] = useState('10000'), [r2, setR2] = useState('20000');
   const l = ledResistor(num(vs), LED_VF[led], num(ma));
@@ -221,6 +222,13 @@ function Calculators() {
   const LED_NAMES: Record<string, string> = { red: tk('빨강'), yellow: tk('노랑'), green: tk('초록'), blue: tk('파랑'), white: tk('흰색') };
   return (
     <div className="helper-pane">
+      {ohm && (
+        <div className="ohm-card">
+          <h3>📏 {t('보드로 저항 재기')}</h3>
+          <p className="note"><R t={t('색띠가 지워졌거나 헷갈리면 [10 kΩ] 저항과 함께 보드에 꽂아 값을 바로 잽니다. 멀티미터가 없어도 됩니다.')} /></p>
+          <button className="primary" onClick={() => onOpenPart(ohm)}>{t('연결 방법 보기')} →</button>
+        </div>
+      )}
       <h3>💡 {t('LED 보호 저항')}</h3>
       <div className="calc-row">
         <label>{t('전원 (V)')} <select value={vs} onChange={(e) => setVs(e.target.value)}><option>5</option><option>3.3</option></select></label>
