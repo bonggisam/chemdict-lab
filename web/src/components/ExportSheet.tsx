@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { t, tk } from '../lib/i18n';
+import { track } from '../lib/analytics';
 
 export type ExportKind = 'png' | 'pdf' | 'excel' | 'numbers' | 'csv' | 'copy' | 'file';
 
@@ -33,7 +34,7 @@ export function ExportSheet({ onExport, onClose, runCount }: Props) {
         <p className="note">{t('그래프에 보이는 측정 {n}개를 저장합니다. 숨긴 측정은 빠집니다.', { n: runCount })}</p>
         <div className="export-grid">
           {ITEMS.map((it) => (
-            <button key={it.k} className="export-item" disabled={!!busy} onClick={() => go(it.k)}>
+            <button key={it.k} className="export-item" disabled={!!busy} onClick={() => { track('save', it.k); go(it.k); }}>
               <b>{busy === it.k ? t('만드는 중…') : t(it.title)}</b>
               <span>{t(it.desc)}</span>
             </button>

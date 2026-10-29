@@ -9,6 +9,7 @@ ChemDict Lab은 아래 오픈소스를 사용합니다. 각 소프트웨어의 �
 | Vite, @vitejs/plugin-react, vite-plugin-pwa, Workbox | MIT | https://github.com/vitejs/vite · https://github.com/vite-pwa/vite-plugin-pwa |
 | Vitest (개발용 시험 도구, 배포 파일에는 들어가지 않음) | MIT | https://github.com/vitest-dev/vitest |
 | TypeScript | Apache-2.0 | https://github.com/microsoft/TypeScript |
+| GoatCounter count.js (웹앱이 실행 중에 불러오는 익명 통계 스크립트, 저장소에는 들어 있지 않음) | EUPL-1.2 | https://github.com/arp242/goatcounter |
 
 글꼴은 앱에 들어 있지 않습니다. 기기에 Pretendard(SIL OFL 1.1)가 있으면 쓰고, 없으면 시스템 글꼴을 씁니다.
 

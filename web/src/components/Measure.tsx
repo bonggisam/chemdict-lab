@@ -30,6 +30,7 @@ import { BigScreen } from './BigScreen';
 import { VideoSync } from './VideoSync';
 import { liveTone, playSeries, primeAudio, silence } from '../lib/sonify';
 import { SOUND } from '../lib/device';
+import { track } from '../lib/analytics';
 
 export interface Trigger { id: string; dir: 'up' | 'down'; value: number }
 
@@ -122,7 +123,20 @@ export function Measure(p: Props) {
   const [ws, setWsState] = useState<Worksheet>(() => loadWorksheet(exp.id));
   const [wsPick, setWsPick] = useState<boolean | null>(null);
   useEffect(() => { setWsState(loadWorksheet(exp.id)); setWsPick(null); }, [exp.id]);
-  const setWs = (w: Worksheet) => { setWsState(w); saveWorksheet(exp.id, w); };
+  // 익명 사용 통계: 어떤 도구를 썼는지만 (값·내용은 보내지 않음)
+  useEffect(() => { if (fitSel !== 'off') track('tool', `fit-${fitSel}`); }, [fitSel]);
+  useEffect(() => { if (showArea) track('tool', 'area'); }, [showArea]);
+  useEffect(() => { if (showDeriv) track('tool', 'derivative'); }, [showDeriv]);
+  useEffect(() => { if (showEq) track('tool', 'equivalence'); }, [showEq]);
+  useEffect(() => { if (showPlateau) track('tool', 'plateau'); }, [showPlateau]);
+  useEffect(() => { if (tool !== 'select') track('tool', tool); }, [tool]);
+  useEffect(() => { if (drawing) track('tool', 'predict'); }, [drawing]);
+  useEffect(() => { if (showTable) track('tool', 'table'); }, [showTable]);
+  useEffect(() => { if (big) track('tool', 'big-screen'); }, [big]);
+  useEffect(() => { if (sonify) track('tool', 'sonify'); }, [sonify]);
+  useEffect(() => { if (videoOpen) track('tool', 'video-sync'); }, [videoOpen]);
+  useEffect(() => { if (exportOpen) track('tool', 'save-sheet'); }, [exportOpen]);
+  const setWs = (w: Worksheet) => { track('tool', 'worksheet'); setWsState(w); saveWorksheet(exp.id, w); };
   const wsInReport = wsPick ?? !isEmptyWorksheet(ws);
   const micBusy = exp.sensors.some((s) => SOUND.includes(s)) && sensors.some((s) => s.src === 'device');
 
@@ -280,6 +294,7 @@ export function Measure(p: Props) {
   };
 
   const addMarker = () => {
+    track('tool', 'marker');
     if (!active) return;
     const tNow = active.rows[active.rows.length - 1]?.t ?? 0;
     const note = markerNote.trim() || exp.markers.label;

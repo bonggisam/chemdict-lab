@@ -4,6 +4,7 @@ import { parts, type Board, type Part } from '../lib/guide';
 import { BAND, BAND_COLORS, analyze, decode, encode, formatOhms, type Analysis, type BandColor, type Pt } from '../lib/resistor';
 import { LED_VF, USB_BUDGET_MA, bestDivider, checkTogether, dividerOut, findParts, ledResistor, short } from '../lib/partsHelper';
 import { R } from './Rich';
+import { track } from '../lib/analytics';
 
 type Tab = 'read' | 'find' | 'calc' | 'together';
 const TABS: [Tab, string][] = [['read', tk('🎨 저항 색띠 읽기')], ['find', tk('🔎 부품 찾기')], ['calc', tk('🧮 저항 계산')], ['together', tk('🧩 함께 쓰기 검사')]];
@@ -19,7 +20,7 @@ export function PartsHelper({ board, onOpenPart }: { board: Board; onOpenPart: (
       <h2>🧰 {t('부품 도우미')}</h2>
       <div className="seg" role="tablist" aria-label={t('부품 도우미')}>
         {TABS.map(([id, label]) => (
-          <button key={id} role="tab" aria-selected={tab === id} className={tab === id ? 'on' : ''} onClick={() => setTab(id)}>{t(label)}</button>
+          <button key={id} role="tab" aria-selected={tab === id} className={tab === id ? 'on' : ''} onClick={() => { track('parts', id); setTab(id); }}>{t(label)}</button>
         ))}
       </div>
       {tab === 'read' && <ResistorReader />}
@@ -103,6 +104,7 @@ function ResistorReader() {
     if (pts.length === 2 && !res) {
       const r = analyze(g.getImageData(0, 0, c.width, c.height), pts[0], pts[1]);
       setRes(r);
+      track('parts', r.reading ? 'resistor-read' : 'resistor-none');
       if (r.reading) setBands(r.reading.bands);
     }
     g.lineWidth = Math.max(2, c.width / 300);

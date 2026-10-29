@@ -36,6 +36,7 @@ import { ABSORB, COLOR, DeviceTransport, canUseDevice, deviceTypes, kitInterval,
 import { DeviceCamera, DeviceSection, DeviceSheet } from './components/DevicePanel';
 import { isStable } from './lib/analysis';
 import { newRun, saveFile, type Row, type Run } from './lib/runs';
+import { expName, track } from './lib/analytics';
 
 type Screen = 'connect' | 'pick' | 'measure' | 'guide';
 type CalMsg = { id: string; slope: number; offset: number; points: number };
@@ -111,7 +112,7 @@ export default function App() {
   const statsRef = useRef({ points: 0, last: 0, drops: 0, reconnects: 0, since: Date.now() });
   // 언어: 처음에는 저장된 언어(없으면 브라우저 언어)로
   const [lang, setLangState] = useState<Lang>('ko');
-  const changeLang = async (l: Lang) => { await loadLang(l); relocalize(); setLangState(l); };
+  const changeLang = async (l: Lang) => { track('lang', l); await loadLang(l); relocalize(); setLangState(l); };
   useEffect(() => { const l = initialLang(); if (l !== 'ko') changeLang(l); else loadLang('ko'); }, []); // eslint-disable-line react-hooks/exhaustive-deps
   const setInfo = (i: ExpInfo) => { setInfoState(i); saveInfo(i); };
   const fwTimers = useRef<number[]>([]);
@@ -135,6 +136,7 @@ export default function App() {
   const handleMsg = useCallback((m: BoardMsg) => {
     switch (m.type) {
       case 'hello':
+        track('board', /^[\x20-\x7E]+$/.test(m.board ?? '') ? m.board : (transportRef.current?.kind ?? 'other')); // 시뮬레이터·이 기기는 한글 이름 → 연결 종류로
         lastHelloRef.current = m;
         setHello(m);
         helloRef.current?.(m);
@@ -190,6 +192,7 @@ export default function App() {
   }, [say]);
 
   const connect = async (kind: 'serial' | 'ble' | 'sim' | 'device', reuse?: SerialPort) => {
+    track('app', `connect-${kind}`);
     const tr: Transport = kind === 'serial' ? new SerialTransport(reuse) : kind === 'ble' ? new BleTransport() : kind === 'device' ? dev() : new SimTransport();
     tr.onLine = (line) => { const m = parseLine(line); if (m) handleMsg(m); };
     tr.onLost = () => {
@@ -444,6 +447,7 @@ export default function App() {
 
   // ---- 실험·측정
   const pickExperiment = (e: Experiment) => {
+    track('exp', expName(e.id));
     const mode = e.mode ?? 'time';
     const r = newRun(mode, 0);
     sessionIdRef.current = newSessionId();
@@ -487,6 +491,8 @@ export default function App() {
 
   const start = (trigger?: Trigger) => {
     if (!exp) return;
+    track('app', 'measure-start');
+    for (const ty of exp.sensors) track('sensor', ty);
     triggerRef.current = trigger ?? null;
     tOffsetRef.current = 0;
     setWaiting(trigger ? {} : null);
@@ -569,6 +575,7 @@ export default function App() {
 
   // ---- 보정 화면: 측정 중이 아니면 미리보기 측정을 켬
   const openCal = (id?: string) => {
+    track('tool', 'calibration');
     setLastCal(null);
     setCal({ id });
     if (!recordingRef.current) {
@@ -584,6 +591,7 @@ export default function App() {
   };
   // ---- 센서 점검 화면: 보정과 같은 미리보기 측정을 씀
   const openCheck = (id?: string) => {
+    track('tool', 'sensor-check');
     setCheck({ id });
     if (!recordingRef.current && !calibratingRef.current) {
       calibratingRef.current = true;
@@ -690,12 +698,12 @@ export default function App() {
 
           <DeviceSection onOpen={setDevKit} activeId={isDevice() ? exp?.id : undefined} collapsed={!!connLabel && !isDevice()} />
 
-          <div data-nav={t('센서로 바로 측정')}><SensorPicker board={board} connectedTypes={sensors.filter((s) => s.src !== 'demo').map((s) => s.type)} onPick={(p) => setQuick({ part: p, status: 'idle' })} /></div>
+          <div data-nav={t('센서로 바로 측정')}><SensorPicker board={board} connectedTypes={sensors.filter((s) => s.src !== 'demo').map((s) => s.type)} onPick={(p) => { track('parts', `card-${p.id}`); setQuick({ part: p, status: 'idle' }); }} /></div>
 
           <div className="row-head sub">
             <h2><Ico e={ICON.experiment} />{t('실험으로 찾기 (교육과정)')}</h2>
-            <button className="ghost" onClick={() => setMaker({})}>✏️ {t('실험 만들기')}</button>
-            <button className="ghost" onClick={() => setSupplyOpen(true)}><Ico e={ICON.supply} />{t('준비물 목록')}</button>
+            <button className="ghost" onClick={() => { track('tool', 'experiment-maker'); setMaker({}); }}>✏️ {t('실험 만들기')}</button>
+            <button className="ghost" onClick={() => { track('tool', 'supply-list'); setSupplyOpen(true); }}><Ico e={ICON.supply} />{t('준비물 목록')}</button>
             <button className="ghost" disabled={!sensors.some((s) => s.spec && s.spec.cal.kind !== 'none')} onClick={() => openCal()}><Ico e={ICON.cal} />{t('센서 보정')}</button>
             <button className="ghost" disabled={!hello || !sensors.length} onClick={() => openCheck()}><Ico e={ICON.test} />{t('센서 점검')}</button>
           </div>
@@ -763,7 +771,7 @@ export default function App() {
           waiting={waiting}
           custom={custom}
           setCustom={setCustom}
-          onShare={() => setShareOpen(true)}
+          onShare={() => { track('tool', 'qr-share'); setShareOpen(true); }}
           onSaveFile={saveSessionFile}
           onBack={() => setScreen('pick')}
           onOpenSetup={() => setSetupOpen(true)}

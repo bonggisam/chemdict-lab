@@ -13,6 +13,7 @@
 - 2.0 기기 센서: 센서 type은 `sensors.json`의 `src: "device"`, 카드는 `protocol/device_sensors.json`, 웹 `lib/device.ts`(DeviceTransport)·애플 `DeviceBoard.swift`가 같은 줄(hello·d)을 만든다. 기기 센서 실험은 `make_experiments.py`의 '기기 센서 실험'(cur-d-*). 선생님이 만든 실험의 공유 형식은 PROTOCOL.md 10장(웹 `lib/custom.ts` ↔ 애플 `CustomExperiments.swift`, id 계산이 같아야 함).
 - 2.0 보드로 저항 재기(`OHM`): 보드는 전압, 앱이 저항으로 바꿈(sensors.json `app`) — 펌웨어 변환(xform)과 달리 앱 두 곳(웹 `applyAppConv`·애플 `SensorCatalog.applyAppConv`)을 같이 고친다.
 - 2.0 부품 도우미(저항 색띠 읽기·부품 찾기·저항 계산·함께 쓰기 검사): 웹 `lib/resistor.ts`·`lib/partsHelper.ts`·`components/PartsHelper.tsx` ↔ 애플 `Resistor.swift`·`PartsHelper.swift`·`Views/PartsHelperView.swift`. 규칙은 PROTOCOL.md 11장, 둘 다 같은 시험을 통과해야 함 (화면 시험: `node e2e/parts.cjs`).
+- 익명 사용 통계(웹앱만): GoatCounter `chemdict` (index.html 스크립트 + `web/src/lib/analytics.ts`의 `track(kind, id)`). id·영문 이름만 보내고 측정값·사진·활동지·이름·입력한 제목은 보내지 않는다. 새로 세는 항목을 더하면 privacy.html 5항과 맞춘다. 애플 앱에는 넣지 않는다(앱스토어 개인정보 항목 '수집 안 함' 유지).
 - 생성 파일 이름은 영문만 (한글 파일명은 다운로드 오류가 남).
 - 화면 디자인은 `docs/DESIGN.md`가 기준이다 (색·글자·44px 터치·그래프 규칙). 측정 색을 바꾸면 dataviz 검증기를 다시 돌린다. 웹 토큰(styles.css)과 애플 Theme.swift 값을 같이 맞춘다.
 - 펌웨어를 바꾸면 web/public/firmware/*.hex 를 다시 내보내고 BUNDLED_FW 를 맞춘다 (PROTOCOL.md "웹앱에서 측정 프로그램 설치").
