@@ -808,5 +808,6 @@
  "그래프의 모양(늘어남·줄어듦·멈춤)을 시간 순서대로 설명해 보세요.": "Descreva a forma do gráfico (subida·descida·estável) em ordem de tempo.",
  "예측과 실제 결과를 비교해 보세요. 같은 점과 다른 점은?": "Compare a previsão com o resultado real. O que foi igual e o que foi diferente?",
  "이런 결과가 나온 까닭을 과학 개념으로 설명해 보세요.": "Explique com conceitos científicos por que esse resultado apareceu.",
- "오차가 생겼다면 그 까닭과 줄이는 방법은?": "Se houve erro, qual a causa e como reduzi-lo?"
+ "오차가 생겼다면 그 까닭과 줄이는 방법은?": "Se houve erro, qual a causa e como reduzi-lo?",
+ "방문 {n}": "Visitas {n}"
 }

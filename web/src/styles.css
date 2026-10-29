@@ -596,6 +596,7 @@ button.big.alt { background: linear-gradient(160deg, var(--tint), transparent 70
 .side-foot .conn-off { color: #8aa298; margin: 0; }
 .side-foot .lang-pick select { width: 100%; }
 .side-foot .lang-pick { color: #b9cdc4; }
+.side-foot .visit-count { margin: 0; color: #8aa298; font-size: 13px; font-variant-numeric: tabular-nums; }
 
 /* 좁은 화면: 목차는 위쪽 띠에 접어 둠 */
 @media (max-width: 900px) {

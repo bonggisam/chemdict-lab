@@ -808,5 +808,6 @@
  "그래프의 모양(늘어남·줄어듦·멈춤)을 시간 순서대로 설명해 보세요.": "Hãy mô tả hình dạng đồ thị (tăng·giảm·đứng yên) theo thứ tự thời gian.",
  "예측과 실제 결과를 비교해 보세요. 같은 점과 다른 점은?": "Hãy so sánh dự đoán với kết quả thực tế. Điểm giống và khác là gì?",
  "이런 결과가 나온 까닭을 과학 개념으로 설명해 보세요.": "Hãy giải thích bằng khái niệm khoa học vì sao có kết quả này.",
- "오차가 생겼다면 그 까닭과 줄이는 방법은?": "Nếu có sai số, nguyên nhân là gì và làm sao giảm?"
+ "오차가 생겼다면 그 까닭과 줄이는 방법은?": "Nếu có sai số, nguyên nhân là gì và làm sao giảm?",
+ "방문 {n}": "Lượt truy cập {n}"
 }

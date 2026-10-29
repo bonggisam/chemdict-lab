@@ -37,6 +37,7 @@ import { DeviceCamera, DeviceSection, DeviceSheet } from './components/DevicePan
 import { isStable } from './lib/analysis';
 import { newRun, saveFile, type Row, type Run } from './lib/runs';
 import { expName, track } from './lib/analytics';
+import { VisitCounter } from './components/VisitCounter';
 
 type Screen = 'connect' | 'pick' | 'measure' | 'guide';
 type CalMsg = { id: string; slope: number; offset: number; points: number };
@@ -646,6 +647,7 @@ export default function App() {
             </select>
           </label>
           <a className="about-link" href="about.html" target="_blank" rel="noopener">ℹ️ {t('앱 정보 · 사용법 · 만든 사람')}</a>
+          <VisitCounter />
         </>}
       />
       <div id="content" className="content">

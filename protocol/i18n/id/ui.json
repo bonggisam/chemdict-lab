@@ -808,5 +808,6 @@
  "그래프의 모양(늘어남·줄어듦·멈춤)을 시간 순서대로 설명해 보세요.": "Jelaskan bentuk grafik (naik·turun·tetap) menurut urutan waktu.",
  "예측과 실제 결과를 비교해 보세요. 같은 점과 다른 점은?": "Bandingkan prediksi dengan hasil sebenarnya. Apa persamaan dan perbedaannya?",
  "이런 결과가 나온 까닭을 과학 개념으로 설명해 보세요.": "Jelaskan dengan konsep sains mengapa hasil ini muncul.",
- "오차가 생겼다면 그 까닭과 줄이는 방법은?": "Jika ada galat, apa penyebabnya dan bagaimana menguranginya?"
+ "오차가 생겼다면 그 까닭과 줄이는 방법은?": "Jika ada galat, apa penyebabnya dan bagaimana menguranginya?",
+ "방문 {n}": "Kunjungan {n}"
 }
