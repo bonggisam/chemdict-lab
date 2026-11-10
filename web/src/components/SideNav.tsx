@@ -98,10 +98,10 @@ export function SideNav({ screen, expTitle, connected, boardName, running, onGo,
   return (
     <aside className={`side ${open ? 'open' : ''}`} ref={navRef}>
       <div className="side-top">
-        <div className="brand">
+        <button className="brand brand-home" title={t('처음 화면으로')} aria-label={`ChemDict Lab · ${t('처음 화면으로')}`} onClick={() => jump('connect')}>
           <img className="logo" src={`${import.meta.env.BASE_URL}logo-128.png`} alt="" width={32} height={32} />
           <span>ChemDict Lab</span>
-        </div>
+        </button>
         <button className="ghost side-toggle" aria-expanded={open} onClick={() => setOpen((o) => !o)}>
           <span aria-hidden="true">☰</span> <span className="side-now">{current}</span>
         </button>
@@ -128,6 +128,21 @@ export function SideNav({ screen, expTitle, connected, boardName, running, onGo,
         </ol>
       </nav>
       <div className="side-foot">{footer}</div>
+      {/* 좁은 화면(휴대폰): 아래쪽 단계 탭 — 처음 · 실험 · 연결 방법 · 목차 */}
+      <nav className="step-tabs" aria-label={t('단계')}>
+        <button className={screen === 'connect' ? 'on' : ''} aria-current={screen === 'connect' ? 'step' : undefined} disabled={running && screen !== 'connect'} onClick={() => jump('connect')}>
+          <span aria-hidden="true">🏠</span>{t('처음')}
+        </button>
+        <button className={screen === 'pick' || screen === 'measure' ? 'on' : ''} aria-current={screen === 'pick' || screen === 'measure' ? 'step' : undefined} disabled={running && screen !== 'measure'} onClick={() => jump(expTitle && screen !== 'measure' ? 'measure' : 'pick')}>
+          <span aria-hidden="true">{running ? '🔴' : '🧪'}</span>{t('실험')}
+        </button>
+        <button className={screen === 'guide' ? 'on' : ''} aria-current={screen === 'guide' ? 'step' : undefined} disabled={running} onClick={() => jump('guide')}>
+          <span aria-hidden="true">🔌</span>{t('연결 방법')}
+        </button>
+        <button className={open ? 'on' : ''} aria-expanded={open} onClick={() => setOpen((o) => !o)}>
+          <span aria-hidden="true">☰</span>{t('목차')}
+        </button>
+      </nav>
     </aside>
   );
 }

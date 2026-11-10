@@ -589,6 +589,9 @@ button.big.alt { background: linear-gradient(160deg, var(--tint), transparent 70
 }
 .side-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 0 4px 10px; border-bottom: 1px solid var(--chrome-line); }
 .side-toggle { display: none; }
+.brand-home { background: transparent; border: 0; padding: 4px 6px; margin: -4px -6px; border-radius: 10px; min-height: 44px; color: var(--chrome-strong); }
+.brand-home:hover { background: var(--chrome-hover); }
+.step-tabs { display: none; }
 .side-tree ol, .side-tree ul { list-style: none; margin: 0; padding: 0; }
 .side-tree > ol { display: flex; flex-direction: column; gap: 4px; padding-top: 8px; }
 .tree-head { width: 100%; display: flex; align-items: center; gap: 10px; text-align: left; background: transparent; border: 0; color: var(--chrome-muted); padding: 8px 8px; border-radius: 12px; }
@@ -632,7 +635,19 @@ button.big.alt { background: linear-gradient(160deg, var(--tint), transparent 70
   .side-toggle { display: inline-flex; align-items: center; gap: 6px; max-width: 60%; color: var(--chrome-ink); background: var(--chrome-btn); border-color: var(--chrome-btn-line); }
   .side-now { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .side:not(.open) .side-tree, .side:not(.open) .side-foot { display: none; }
-  .content { padding: 0 16px env(safe-area-inset-bottom); }
+  .content { padding: 0 16px calc(76px + env(safe-area-inset-bottom)); }
+  /* 휴대폰: 아래쪽 단계 탭 (엄지로 누르기 쉬운 곳) */
+  .step-tabs { display: grid; grid-template-columns: repeat(4, 1fr); position: fixed; left: 0; right: 0; bottom: 0; z-index: 9;
+    padding: 6px max(8px, env(safe-area-inset-right)) calc(6px + env(safe-area-inset-bottom)) max(8px, env(safe-area-inset-left));
+    background: var(--chrome-bg); border-top: 1px solid var(--chrome-line); box-shadow: 0 -6px 18px -12px rgba(15, 26, 23, 0.25); }
+  .step-tabs button { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; min-height: 56px; padding: 4px 2px;
+    background: transparent; border: 0; border-radius: 12px; color: var(--chrome-muted); font-size: 12px; font-weight: 700; }
+  .step-tabs button span { font-size: 20px; line-height: 1; }
+  .step-tabs button.on { color: var(--chrome-strong); background: rgba(0, 179, 134, 0.12); }
+  .side.open .side-tree, .side.open .side-foot { padding-bottom: 76px; }
+  .toast { bottom: calc(82px + env(safe-area-inset-bottom)); }
+  html { scroll-padding-bottom: calc(84px + env(safe-area-inset-bottom)); }
+  body:has(.sheet-backdrop, .big-screen) .step-tabs { display: none; }   /* 창·큰 화면이 열리면 탭은 숨김 */
 }
 
 /* ===== 핵심어 색 (components/Rich.tsx) ===== */

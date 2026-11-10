@@ -20,6 +20,7 @@ const URL = process.env.URL || 'http://localhost:4173/';
     await p.locator('.parts-helper input[type=file]').first().setInputFiles(path.join(__dirname, 'fixtures/resistor_10k.png'));
     await p.waitForTimeout(500);
     const cv = p.locator('.resistor-photo');
+    await cv.evaluate((e) => e.scrollIntoView({ block: 'center' })); await p.waitForTimeout(200);   // 휴대폰 아래쪽 단계 탭에 가리지 않게
     const box = await cv.boundingBox();
     const at = (x, y) => p.mouse.click(box.x + (x / 800) * box.width, box.y + (y / 400) * box.height);
     await at(205, 200); await at(595, 200); await p.waitForTimeout(400);
