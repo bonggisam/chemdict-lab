@@ -88,7 +88,8 @@ export function Chart(props: Props) {
     ro.observe(wrap);
     const mq = window.matchMedia('(prefers-color-scheme: dark)');
     mq.addEventListener('change', schedule);
-    return () => { cancelAnimationFrame(raf); ro.disconnect(); mq.removeEventListener('change', schedule); };
+    window.addEventListener('chemdict-theme', schedule);
+    return () => { cancelAnimationFrame(raf); ro.disconnect(); mq.removeEventListener('change', schedule); window.removeEventListener('chemdict-theme', schedule); };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [series, selection, overlays, prediction, markers, hover, pin, tick, height, yMin, yMax, xLog, xRange, drawing, tool, tangentPts, view, startedAt]);
 

@@ -19,8 +19,9 @@
   font-family: "Pretendard Variable", "Pretendard", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
   color-scheme: light;
 }
+/* 화면 모드: 기본은 밝게(A안). data-theme="dark"면 어둡게, "system"이면 기기 설정을 따름 (lib/theme.ts) */
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root[data-theme="system"] {
     --bg: #0b1411; --surface: #13211c; --ink: #e3eee9; --muted: #93a89f; --line: #24362f;
     --field: #5f7770;
     --accent: #2ee6b0; --accent-ink: #06231a; --tint: rgba(46, 230, 176, 0.12);
@@ -33,6 +34,19 @@
     --sel-bg: #0f1a17; --sel-ink: #ffffff; --badge-bg: #0f1a17; --badge-ink: #00d49a;
     color-scheme: dark;
   }
+}
+:root[data-theme="dark"] {
+    --bg: #0b1411; --surface: #13211c; --ink: #e3eee9; --muted: #93a89f; --line: #24362f;
+    --field: #5f7770;
+    --accent: #2ee6b0; --accent-ink: #06231a; --tint: rgba(46, 230, 176, 0.12);
+    --mark: #ff8a52; --danger: #f87171; --danger-ink: #0f1a17; --ok: #4ade80;
+    --s1: #3987e5; --s2: #d95926; --s3: #199e70; --s4: #c98500; --s5: #d55181;
+    --shadow: 0 1px 0 rgba(0, 0, 0, 0.3), 0 8px 22px -10px rgba(0, 0, 0, 0.6);
+    --chrome-bg: #0f1a17; --chrome-bg-2: #17271f; --chrome-ink: #e8f3ee; --chrome-strong: #ffffff;
+    --chrome-muted: #b9cdc4; --chrome-faint: #8aa298; --chrome-hover: rgba(255, 255, 255, 0.05);
+    --chrome-line: rgba(255, 255, 255, 0.08); --chrome-btn: rgba(255, 255, 255, 0.06); --chrome-btn-line: rgba(255, 255, 255, 0.16); --chrome-n-ink: #d6efe5;
+    --sel-bg: #0f1a17; --sel-ink: #ffffff; --badge-bg: #0f1a17; --badge-ink: #00d49a;
+    color-scheme: dark;
 }
 * { box-sizing: border-box; }
 html, body { margin: 0; background: var(--bg); color: var(--ink); }
@@ -379,7 +393,8 @@ details.bb-note summary { cursor: pointer; min-height: 32px; }
 .bb-exps { padding-left: 0; list-style: none; display: flex; flex-direction: column; gap: 6px; font-size: 14px; }
 .badge.need { color: var(--mark); font-weight: 600; }
 .badge.bb { color: var(--mark); }
-@media (prefers-color-scheme: dark) { .bb-body { fill: #e9e4d8; } .bb-pin-text, .bb-label, .bb-board + text { fill: #e4ebf2; } .bb-probe + text, .bb-bat + text { fill: #111; } }
+@media (prefers-color-scheme: dark) { :root[data-theme="system"] .bb-body { fill: #e9e4d8; } :root[data-theme="system"] .bb-pin-text, :root[data-theme="system"] .bb-label, :root[data-theme="system"] .bb-board + text { fill: #e4ebf2; } :root[data-theme="system"] .bb-probe + text, :root[data-theme="system"] .bb-bat + text { fill: #111; } }
+:root[data-theme="dark"] .bb-body { fill: #e9e4d8; } :root[data-theme="dark"] .bb-pin-text, :root[data-theme="dark"] .bb-label, :root[data-theme="dark"] .bb-board + text { fill: #e4ebf2; } :root[data-theme="dark"] .bb-probe + text, :root[data-theme="dark"] .bb-bat + text { fill: #111; }
 
 /* ---- 실험 정보 */
 .info-bar { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; border: 1px dashed var(--field); border-radius: var(--radius); padding: 6px 6px 6px 14px; margin: 10px 0; font-size: 14px; }
@@ -557,7 +572,8 @@ button.big.alt { background: linear-gradient(160deg, var(--tint), transparent 70
 
 /* ===== v0.8 왼쪽 목차(나무 구조) + 오른쪽 본문 ===== */
 :root { --side-w: 280px; --pin: #1d5fb0; }
-@media (prefers-color-scheme: dark) { :root { --pin: #8cbcff; } }
+@media (prefers-color-scheme: dark) { :root[data-theme="system"] { --pin: #8cbcff; } }
+:root[data-theme="dark"] { --pin: #8cbcff; }
 .app.layout { display: grid; grid-template-columns: var(--side-w) minmax(0, 1fr); padding: 0; min-height: 100vh; }
 .content { min-width: 0; padding: 0 max(28px, env(safe-area-inset-right)) env(safe-area-inset-bottom) 32px; }
 .content main { margin: 0; max-width: 1080px; }
@@ -828,7 +844,10 @@ details.device-section[open] > summary { margin-bottom: 10px; }
   .sensor-card, .guide-block, .chart, .card, .tabs3, .status-strip { border-width: 2px; border-color: var(--field); }
 }
 @media (prefers-contrast: more) and (prefers-color-scheme: dark) {
-  :root { --muted: #c9d8d1; }
+  :root[data-theme="system"] { --muted: #c9d8d1; }
+}
+@media (prefers-contrast: more) {
+  :root[data-theme="dark"] { --muted: #c9d8d1; }
 }
 button.on { background: var(--sel-bg); color: var(--sel-ink); }
 :focus-visible { outline: 3px solid var(--atom); outline-offset: 2px; }

@@ -809,5 +809,9 @@
  "예측과 실제 결과를 비교해 보세요. 같은 점과 다른 점은?": "Comparez votre prédiction au résultat réel. Points communs et différences ?",
  "이런 결과가 나온 까닭을 과학 개념으로 설명해 보세요.": "Expliquez ce résultat à l’aide de notions scientifiques.",
  "오차가 생겼다면 그 까닭과 줄이는 방법은?": "S’il y a eu des erreurs, pourquoi, et comment les réduire ?",
- "방문 {n}": "Visites {n}"
+ "방문 {n}": "Visites {n}",
+ "화면 모드": "Mode d'affichage",
+ "밝게": "Clair",
+ "어둡게": "Sombre",
+ "기기 설정 따르기": "Suivre le réglage de l'appareil"
 }

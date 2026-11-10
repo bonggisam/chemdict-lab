@@ -38,6 +38,7 @@ import { isStable } from './lib/analysis';
 import { newRun, saveFile, type Row, type Run } from './lib/runs';
 import { expName, track } from './lib/analytics';
 import { VisitCounter } from './components/VisitCounter';
+import { ThemePick } from './components/ThemePick';
 
 type Screen = 'connect' | 'pick' | 'measure' | 'guide';
 type CalMsg = { id: string; slope: number; offset: number; points: number };
@@ -646,6 +647,7 @@ export default function App() {
               {LANGS.map((l) => <option key={l.code} value={l.code}>{l.name}</option>)}
             </select>
           </label>
+          <ThemePick />
           <a className="about-link" href="about.html" target="_blank" rel="noopener">ℹ️ {t('앱 정보 · 사용법 · 만든 사람')}</a>
           <VisitCounter />
         </>}
