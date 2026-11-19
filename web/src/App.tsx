@@ -31,14 +31,16 @@ import { BUNDLED_FW, FlashError, TARGETS, boardFromUsb, flashBoard, older } from
 import { experiments } from './lib/experiments';
 import { parseLine, type BoardMsg, type Experiment, type HelloMsg, type SensorInfo } from './lib/protocol';
 import { BleTransport, SerialTransport, SimTransport, hasBluetooth, hasSerial, type Transport } from './lib/transports';
-import { analogTypes, applyAppConv, boardVref, resolveSensor } from './lib/sensors';
-import { ABSORB, COLOR, DeviceTransport, canUseDevice, deviceTypes, kitInterval, kitPart, type DeviceKit } from './lib/device';
+import { analogTypes, applyAppConv, boardVref, resolveSensor, typeInfo } from './lib/sensors';
+import { ABSORB, COLOR, MOTION, DeviceTransport, availableKits, canUseDevice, deviceTypes, isDeviceExperiment, kitInterval, kitPart, kitUsesCamera, type DeviceKit } from './lib/device';
 import { DeviceCamera, DeviceSection, DeviceSheet } from './components/DevicePanel';
 import { isStable } from './lib/analysis';
 import { newRun, saveFile, type Row, type Run } from './lib/runs';
 import { expName, track } from './lib/analytics';
 import { VisitCounter } from './components/VisitCounter';
 import { ThemePick } from './components/ThemePick';
+import { keepAwake } from './lib/wake';
+import { WORKSHEET_QUESTIONS, isEmptyWorksheet, loadWorksheet, saveWorksheet } from './lib/worksheet';
 
 type Screen = 'connect' | 'pick' | 'measure' | 'guide';
 type CalMsg = { id: string; slope: number; offset: number; points: number };
@@ -57,6 +59,11 @@ export default function App() {
   const keepMine = (x: CustomExp) => setMine((list) => { const n = [...list.filter((y) => customId(y) !== customId(x)), x]; saveCustom(n); return n; });
   const dropMine = (x: CustomExp) => setMine((list) => { const n = list.filter((y) => customId(y) !== customId(x)); saveCustom(n); return n; });
   const isDevice = () => transportRef.current?.kind === 'device';
+  // 2.1 보드 센서 + 이 기기 센서 함께 재기: 보드로 재는 동안 이 기기의 센서 값도 같은 시각에 맞춰 기록 (PROTOCOL.md 13장)
+  const [companion, setCompanionState] = useState<{ kit: string; types: string[] } | null>(null);
+  const companionRef = useRef<string[]>([]);
+  companionRef.current = companion?.types ?? [];
+  const baseExpRef = useRef<Experiment | null>(null);   // 함께 재기를 켜기 전의 실험 (끄면 되돌림)
   const [screen, setScreen] = useState<Screen>('connect');
   const [busy, setBusy] = useState(false);
   const [connLabel, setConnLabel] = useState('');
@@ -145,7 +152,10 @@ export default function App() {
         break;
       case 'd': {
         const h = lastHelloRef.current;
-        const dv = applyAppConv(m.v, h?.sensors, boardVref(boardByName(h?.board)?.logic));
+        let dv = applyAppConv(m.v, h?.sensors, boardVref(boardByName(h?.board)?.logic));
+        // 2.1 함께 재기: 보드 데이터 줄에 이 기기 센서의 지금 값을 끼워 넣음
+        const comp = companionRef.current;
+        if (comp.length && recordingRef.current && transportRef.current?.kind !== 'device' && deviceRef.current) dv = { ...dv, ...deviceRef.current.snapshot(comp) };
         let row = { t: m.t, v: dv };
         const trig = triggerRef.current;
         if (recordingRef.current && trig) {
@@ -230,6 +240,7 @@ export default function App() {
       transportRef.current = null;
       recordingRef.current = false;
       calibratingRef.current = false;
+      if (tr.kind !== 'device' && companionRef.current.length) deviceRef.current?.stopCompanion(false);
       setRunning(false);
       setHello(null);
       setConnLabel('');
@@ -319,6 +330,7 @@ export default function App() {
     transportRef.current = null;
     recordingRef.current = false;
     calibratingRef.current = false;
+    if (tr && tr.kind !== 'device' && companionRef.current.length) deviceRef.current?.stopCompanion(false);
     setRunning(false);
     setHello(null);
     setConnLabel('');
@@ -372,15 +384,31 @@ export default function App() {
 
   const detectedBoard = boardByName(hello?.board);
   const board = detectedBoard ?? boards.find((b) => b.id === boardId) ?? boards[0];
-  const sensors = useMemo(() => (hello?.sensors ?? (exp ? savedSensors : [])).map(resolveSensor), [hello, exp, savedSensors]);
+  // 보드가 알려 준 센서 + (함께 재기) 이 기기 센서
+  const rawSensors = useMemo(() => {
+    const base = hello?.sensors ?? (exp ? savedSensors : []);
+    const extra = hello && hello.fw !== 'device' && companion
+      ? companion.types.filter((ty) => !base.some((s) => s.id === ty)).map((ty) => ({ id: ty, type: ty, name: ty, unit: '', src: 'device', cal: false }))
+      : [];
+    return [...base, ...extra];
+  }, [hello, exp, savedSensors, companion]);
+  const sensors = useMemo(() => rawSensors.map(resolveSensor), [rawSensors]);
   const allExperiments = useMemo(() => [...experiments, ...mine.map(toExperiment)], [mine, lang]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // ---- 2.1 긴 측정: 측정 중에는 화면이 꺼지지 않게
+  useEffect(() => { keepAwake(running); return () => keepAwake(false); }, [running]);
 
   // ---- 자동 저장: 측정 데이터가 바뀌면 3초 안에 이 기기에 저장 (최근 5개)
   const saveTimer = useRef<number | null>(null);
-  const currentSession = (): Session | null => (exp ? {
-    app: 'chemdict-lab', v: 1, id: sessionIdRef.current, savedAt: new Date().toISOString(),
-    exp, runs, intervalMs, sensors: hello?.sensors ?? savedSensors, info, custom,
-  } : null);
+  const currentSession = (): Session | null => {
+    if (!exp) return null;
+    const ws = loadWorksheet(exp.id);   // 2.1: 활동지도 측정 파일에 담음 (쓴 것이 있을 때만)
+    return {
+      app: 'chemdict-lab', v: 1, id: sessionIdRef.current, savedAt: new Date().toISOString(),
+      exp, runs, intervalMs, sensors: hello ? rawSensors : savedSensors, info, custom,
+      ...(isEmptyWorksheet(ws) ? {} : { worksheet: ws }),
+    };
+  };
   const sessionRef = useRef(currentSession);
   sessionRef.current = currentSession;
   useEffect(() => {
@@ -400,6 +428,13 @@ export default function App() {
   const openSession = (s: Session) => {
     if (running) { say('err', t('측정 중입니다. 먼저 [정지]를 누르세요.')); return; }
     sessionIdRef.current = s.id;
+    clearCompanion();
+    // 2.1: 파일에 담긴 활동지 — 이 기기에 쓰던 것이 없을 때만 되살림 (내 초안을 덮어쓰지 않게)
+    const w = s.worksheet as { prediction?: unknown; answers?: unknown } | undefined;
+    if (w && typeof w === 'object' && isEmptyWorksheet(loadWorksheet(s.exp.id))) {
+      const a = Array.isArray(w.answers) ? w.answers : [];
+      saveWorksheet(s.exp.id, { prediction: typeof w.prediction === 'string' ? w.prediction : '', answers: WORKSHEET_QUESTIONS.map((_, i) => (typeof a[i] === 'string' ? a[i] : '')) });
+    }
     setSavedSensors(s.sensors);
     setExp(s.exp);
     setIntervalMs(s.intervalMs);
@@ -427,8 +462,10 @@ export default function App() {
     if (!e) { say('err', t('공유받은 실험을 찾지 못했습니다. 앱을 새로고침해 보세요.')); return; }
     if (sp.b && boards.some((b) => b.id === sp.b)) pickBoard(sp.b);
     pickExperiment(e);
-    if (sp.i) setIntervalMs(sp.i);
-    if (sp.c) setCustom(sp.c);
+    // 2.1: 주소에 담긴 값이 깨져 있어도 화면이 죽지 않게 모양을 확인하고 씀
+    if (typeof sp.i === 'number' && Number.isFinite(sp.i) && sp.i >= 20 && sp.i <= 3_600_000) setIntervalMs(Math.round(sp.i));
+    const sc = sp.c as { name?: unknown; unit?: unknown; expr?: unknown } | undefined;
+    if (sc && typeof sc === 'object' && typeof sc.expr === 'string' && typeof sc.name === 'string' && typeof sc.unit === 'string') setCustom({ name: sc.name, unit: sc.unit, expr: sc.expr });
     setScreen('connect');
     setSharedTitle(e.title);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
@@ -452,6 +489,7 @@ export default function App() {
     track('exp', expName(e.id));
     const mode = e.mode ?? 'time';
     const r = newRun(mode, 0);
+    clearCompanion();
     sessionIdRef.current = newSessionId();
     setSavedSensors([]);
     setCustom(null);
@@ -528,6 +566,8 @@ export default function App() {
     }, autoStopMin * 60000);
     if (transportRef.current?.kind === 'sim') send(exp.mode === 'event' ? `SIMX ${exp.event?.start ?? 0}` : 'SIMX');
     syncWanted();
+    // 2.1 함께 재기: 이 기기 센서를 켬 (값은 보드 데이터 줄마다 끼워 넣음)
+    if (companionRef.current.length && !isDevice()) void dev().startCompanion(new Set(companionRef.current));
     send(`START ${exp.mode === 'event' ? exp.intervalMs : intervalMs}`);
   };
   const stopRef = useRef<() => void>(() => {});
@@ -537,6 +577,7 @@ export default function App() {
     if (transportRef.current) transportRef.current.autoReconnect = false;
     triggerRef.current = null;
     setWaiting(null);
+    if (companionRef.current.length && !isDevice()) deviceRef.current?.stopCompanion(true);   // 카메라 미리보기는 둠
     if (reconnectingRef.current) { setRunning(false); return; }   // 보드에 닿지 않음: 다시 연결되면 STOP을 보냄
     send('STOP');
   };
@@ -548,6 +589,40 @@ export default function App() {
     const ts = (exp?.sensors ?? []).filter((s) => s !== '*');
     dev().wanted = new Set(ts.some((s) => deviceTypes().includes(s)) ? ts : []);
   }
+  /** 2.1 함께 재기 끄기: 이 기기 센서를 끄고 원래 실험으로 되돌림 */
+  function clearCompanion() {
+    if (!companionRef.current.length && !baseExpRef.current) return;
+    if (!isDevice()) { deviceRef.current?.stopCompanion(false); if (deviceRef.current) deviceRef.current.wanted = new Set(); }
+    const base = baseExpRef.current;
+    baseExpRef.current = null;
+    companionRef.current = [];
+    setCompanionState(null);
+    if (base) setExp((e) => (e && e.id === base.id ? base : e));
+  }
+  /** 2.1 함께 재기: 이 기기 센서 카드 하나를 보드 센서와 함께 기록 (''이면 끔). 측정 중에는 바꾸지 않음 */
+  const setCompanion = async (kitId: string) => {
+    if (running || !exp || isDevice()) return;
+    const k = availableKits().find((x) => x.id === kitId);
+    if (!k) { clearCompanion(); return; }
+    track('tool', 'companion');
+    const d = dev();
+    if (k.provides.some((p) => MOTION.includes(p) || p === 'DGYR')) await d.requestMotion();
+    // 보드로 재는 동안에는 이 기기 센서의 오류(마이크·카메라 허락)만 알림 — hello·데이터 줄은 보드 것을 씀
+    d.onLine = (line) => { const m = parseLine(line); if (m?.type === 'err') handleMsg(m); };
+    const base = baseExpRef.current ?? exp;
+    baseExpRef.current = base;
+    // 그래프에 이 기기 센서 축을 더한 실험으로 바꿈 (저장 파일에도 남아 다시 열어도 보임). y가 빈 실험은 모든 센서를 그리므로 그대로
+    const extra = k.provides.filter((ty) => !base.y.some((y) => y.sensor === ty)).map((ty) => { const s = typeInfo(ty); return { sensor: ty, label: s?.name ?? ty, unit: s?.unit, min: s?.min, max: s?.max }; });
+    setExp(base.y.length ? { ...base, y: [...base.y, ...extra] } : base);
+    d.wanted = new Set(k.provides);
+    if (!kitUsesCamera(k)) d.stopCamera();
+    setCompanionState({ kit: k.id, types: k.provides });
+    say('ok', t('‘{name}’을(를) 보드 센서와 함께 잽니다.', { name: k.name }));
+  };
+  // 함께 잴 수 있는 카드: 보드(또는 체험)로 연결돼 있고, 실험이 이 기기 센서 실험이 아닐 때
+  const companionKits = hello && hello.fw !== 'device' && exp && (exp.mode ?? 'time') === 'time' && !isDeviceExperiment((baseExpRef.current ?? exp).sensors) ? availableKits() : [];
+  const camTypes = isDevice() ? (exp?.sensors ?? []) : (companion?.types ?? []);
+
   /** 기기 센서로 바꿔 연결 (다른 보드는 끊음) */
   const useDevice = async () => {
     if (isDevice()) return;
@@ -751,9 +826,9 @@ export default function App() {
 
       {devKit && <DeviceSheet kit={devKit} dev={dev()} onStart={() => startDevice(devKit)} onClose={closeDevKit} say={say} />}
 
-      {screen === 'measure' && exp && isDevice() && exp.sensors.some((s) => COLOR.includes(s)) && (
+      {screen === 'measure' && exp && camTypes.some((s) => COLOR.includes(s)) && (
         <div className="wide device-measure-cam">
-          <DeviceCamera dev={dev()} absorbance={exp.sensors.some((s) => ABSORB.includes(s))} running={running} say={say} />
+          <DeviceCamera dev={dev()} absorbance={camTypes.some((s) => ABSORB.includes(s))} running={running} say={say} />
         </div>
       )}
       {screen === 'measure' && exp && (
@@ -769,6 +844,9 @@ export default function App() {
           setIntervalMs={setIntervalMs}
           autoStopMin={autoStopMin}
           setAutoStopMin={setAutoStopMin}
+          companionKits={companionKits}
+          companionKit={companion?.kit ?? ''}
+          onCompanion={setCompanion}
           onStart={start}
           onStop={stop}
           connected={!!hello}

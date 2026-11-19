@@ -816,5 +816,16 @@
  "기기 설정 따르기": "Ikuti pengaturan perangkat",
  "처음 화면으로": "Ke layar awal",
  "처음": "Awal",
- "목차": "Daftar isi"
+ "목차": "Daftar isi",
+ "‘{name}’을(를) 보드 센서와 함께 잽니다.": "‘{name}’ diukur bersama sensor papan.",
+ "화면을 표시하다 문제가 생겼습니다": "Terjadi masalah saat menampilkan layar",
+ "측정한 데이터는 자동으로 저장되어 있습니다. 다시 열면 ‘이어서 하기’에서 볼 수 있습니다.": "Data pengukuran sudah tersimpan otomatis. Buka lagi dan lihat di ‘Lanjutkan’.",
+ "다시 열기": "Buka lagi",
+ "{n}시간 뒤 끝내기": "Berhenti setelah {n} jam",
+ "측정 중에는 화면이 꺼지지 않습니다.": "Layar tetap menyala selama pengukuran.",
+ "이 브라우저는 화면 켜 두기를 지원하지 않습니다. 화면이 꺼지면 측정이 멈출 수 있습니다.": "Peramban ini tidak dapat menjaga layar tetap menyala. Jika layar mati, pengukuran bisa berhenti.",
+ "이 기기 센서 함께 재기": "Ukur juga dengan sensor perangkat ini",
+ "함께 재지 않음": "Tidak ikut diukur",
+ "보드 센서와 같은 시각에 맞춰 함께 기록합니다.": "Direkam pada sumbu waktu yang sama dengan sensor papan.",
+ "예: 온도 센서 + 카메라 색, 힘 센서 + 소리": "Mis.: sensor suhu + warna kamera, sensor gaya + suara"
 }

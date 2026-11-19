@@ -816,5 +816,16 @@
  "기기 설정 따르기": "Geräteeinstellung folgen",
  "처음 화면으로": "Zum Start",
  "처음": "Start",
- "목차": "Inhalt"
+ "목차": "Inhalt",
+ "‘{name}’을(를) 보드 센서와 함께 잽니다.": "„{name}“ wird zusammen mit den Board-Sensoren gemessen.",
+ "화면을 표시하다 문제가 생겼습니다": "Beim Anzeigen ist ein Problem aufgetreten",
+ "측정한 데이터는 자동으로 저장되어 있습니다. 다시 열면 ‘이어서 하기’에서 볼 수 있습니다.": "Deine Messdaten wurden automatisch gespeichert. Nach dem erneuten Öffnen findest du sie unter „Fortsetzen“.",
+ "다시 열기": "Neu öffnen",
+ "{n}시간 뒤 끝내기": "Stopp nach {n} h",
+ "측정 중에는 화면이 꺼지지 않습니다.": "Der Bildschirm bleibt während der Messung an.",
+ "이 브라우저는 화면 켜 두기를 지원하지 않습니다. 화면이 꺼지면 측정이 멈출 수 있습니다.": "Dieser Browser kann den Bildschirm nicht anlassen. Wenn er ausgeht, kann die Messung stoppen.",
+ "이 기기 센서 함께 재기": "Sensor dieses Geräts mitmessen",
+ "함께 재지 않음": "Nicht mitmessen",
+ "보드 센서와 같은 시각에 맞춰 함께 기록합니다.": "Wird auf derselben Zeitachse wie die Board-Sensoren aufgezeichnet.",
+ "예: 온도 센서 + 카메라 색, 힘 센서 + 소리": "Z. B. Temperatursensor + Kamerafarbe, Kraftsensor + Schall"
 }

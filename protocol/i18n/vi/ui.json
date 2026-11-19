@@ -816,5 +816,16 @@
  "기기 설정 따르기": "Theo cài đặt thiết bị",
  "처음 화면으로": "Về màn hình đầu",
  "처음": "Đầu",
- "목차": "Mục lục"
+ "목차": "Mục lục",
+ "‘{name}’을(를) 보드 센서와 함께 잽니다.": "Đo ‘{name}’ cùng với cảm biến của bo mạch.",
+ "화면을 표시하다 문제가 생겼습니다": "Đã xảy ra sự cố khi hiển thị màn hình",
+ "측정한 데이터는 자동으로 저장되어 있습니다. 다시 열면 ‘이어서 하기’에서 볼 수 있습니다.": "Dữ liệu đo đã được lưu tự động. Mở lại và xem trong ‘Làm tiếp’.",
+ "다시 열기": "Mở lại",
+ "{n}시간 뒤 끝내기": "Dừng sau {n} giờ",
+ "측정 중에는 화면이 꺼지지 않습니다.": "Màn hình luôn bật trong khi đo.",
+ "이 브라우저는 화면 켜 두기를 지원하지 않습니다. 화면이 꺼지면 측정이 멈출 수 있습니다.": "Trình duyệt này không giữ được màn hình luôn bật. Nếu màn hình tắt, phép đo có thể dừng.",
+ "이 기기 센서 함께 재기": "Đo kèm cảm biến của thiết bị này",
+ "함께 재지 않음": "Không đo kèm",
+ "보드 센서와 같은 시각에 맞춰 함께 기록합니다.": "Được ghi cùng trục thời gian với cảm biến của bo mạch.",
+ "예: 온도 센서 + 카메라 색, 힘 센서 + 소리": "VD: cảm biến nhiệt độ + màu camera, cảm biến lực + âm thanh"
 }

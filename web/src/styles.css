@@ -816,6 +816,13 @@ details.device-section[open] > summary { margin-bottom: 10px; }
 .status-strip .dot.on { background: var(--accent); }
 .status-strip .dot.rec { background: var(--danger); }
 .status-strip .grow { flex: 1; }
+/* 2.1: 측정 중 화면 안내 한 줄 · 이 기기 센서 함께 재기 · 오류 화면 */
+.note.longrun { margin: -4px 0 8px; }
+.companion-bar { display: flex; align-items: center; gap: 8px 10px; flex-wrap: wrap; margin: 8px 0; font-size: 14px; }
+.companion-bar label { font-weight: 600; white-space: nowrap; }
+.companion-bar select { min-height: var(--target); border: 1px solid var(--field); border-radius: 8px; background: var(--surface); color: var(--ink); padding: 0 8px; max-width: 100%; }
+main.crash { padding: 32px 16px; }
+main.crash h1 { font-size: 22px; }
 .tabs3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 4px; margin: 0 0 14px; }
 .tabs3 button { border: 0; background: transparent; font-weight: 600; min-height: var(--target); }
 .tabs3 button.on { background: var(--sel-bg); color: var(--sel-ink); }

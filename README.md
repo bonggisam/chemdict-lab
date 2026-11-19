@@ -4,7 +4,7 @@
 UNO R4 WiFi + 센서로 측정하고, 맥·윈도우(웹앱)와 아이패드·아이폰·맥(애플 앱)에서 같은 화면으로 봅니다.
 
 - 🌐 웹앱: https://bonggisam.github.io/chemdict-lab/
-- 📲 아이패드·맥 앱 (무료): [App Store](https://apps.apple.com/app/id6826865197)
+- 📲 아이폰·아이패드·맥 앱 (무료): [App Store](https://apps.apple.com/app/id6826865197)
 
 ```
 센서 ─ UNO R4 WiFi (펌웨어 한 번만 업로드)
@@ -62,5 +62,5 @@ npm run dev      # http://localhost:5173
 
 - 웹앱·펌웨어·센서 데이터: **PolyForm Noncommercial 1.0.0** — 학교·개인 비상업 사용 무료, 판매·상업적 재배포 금지. 요약은 [NOTICE.md](NOTICE.md), 정식 조건은 [LICENSE](LICENSE).
 - 펌웨어의 LGPL 라이브러리 관련 추가 허가: [firmware/LICENSE](firmware/LICENSE), 제3자 고지: [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
-- 아이패드·맥 앱은 [App Store](https://apps.apple.com/app/id6826865197)에서 무료로 받을 수 있습니다 (소스는 별도 비공개 저장소, 이 저장소의 라이선스가 적용되지 않음).
+- 아이폰·아이패드·맥 앱은 [App Store](https://apps.apple.com/app/id6826865197)에서 무료로 받을 수 있습니다 (소스는 별도 비공개 저장소, 이 저장소의 라이선스가 적용되지 않음).
 - Arduino는 Arduino SA의 상표이며, ChemDict Lab은 Arduino 공식 제품이 아닙니다.

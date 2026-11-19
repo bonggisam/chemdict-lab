@@ -99,12 +99,44 @@ export class DeviceTransport implements Transport {
   private micP: Promise<void> | null = null;
 
   async connect() {
-    // iOS: 움직임 센서 허락은 누른 순간(연결 버튼)에만 물을 수 있음
+    await this.requestMotion();
+    setTimeout(() => this.hello(), 50);
+  }
+
+  /** iOS: 움직임 센서 허락은 누른 순간(연결·고르기 버튼)에만 물을 수 있음 */
+  async requestMotion() {
     const DM = (window as unknown as { DeviceMotionEvent?: { requestPermission?: () => Promise<string> } }).DeviceMotionEvent;
     if (hasMotion() && DM?.requestPermission) {
       try { await DM.requestPermission(); } catch { /* 거절해도 소리·카메라는 씀 */ }
     }
-    setTimeout(() => this.hello(), 50);
+  }
+
+  // ---- 2.1 보드와 함께 재기: 타이머 없이 장치만 켜 두고, 보드 데이터 줄마다 지금 값을 건네줌
+  private companionOn = false;
+
+  async startCompanion(types: Set<string>) {
+    this.gen++;
+    if (this.timer !== null) { clearInterval(this.timer); this.timer = null; }
+    this.wanted = types;
+    this.latest = {};
+    this.companionOn = true;
+    await this.startSources();
+  }
+
+  stopCompanion(keepCamera: boolean) {
+    this.gen++;
+    this.companionOn = false;
+    this.stopSources(keepCamera);
+  }
+
+  /** 지금 값 (센서가 아직 값을 내지 않았으면 빠짐) */
+  snapshot(types: string[]): Record<string, number> {
+    const out: Record<string, number> = {};
+    for (const ty of types) {
+      const x = this.value(ty);
+      if (typeof x === 'number' && Number.isFinite(x)) out[ty] = Number(x.toFixed(4));
+    }
+    return out;
   }
 
   private emit(obj: unknown) { this.onLine(JSON.stringify(obj)); }
@@ -194,7 +226,7 @@ export class DeviceTransport implements Transport {
     } else this.emit({ type: 'ack', cmd: C });
   }
 
-  get running() { return this.timer !== null; }
+  get running() { return this.timer !== null || this.companionOn; }
 
   async disconnect() {
     this.gen++;

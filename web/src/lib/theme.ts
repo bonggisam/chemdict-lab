@@ -14,6 +14,9 @@ export function getTheme(): ThemeMode {
 export function applyTheme(mode: ThemeMode = getTheme()) {
   if (typeof document === 'undefined') return;
   document.documentElement.dataset.theme = mode;
+  // 2.1: 주소창·설치 앱 위쪽 색도 화면 모드에 맞춤 (밝게: 흰색, 어둡게: 짙은 색)
+  const dark = mode === 'dark' || (mode === 'system' && typeof matchMedia === 'function' && matchMedia('(prefers-color-scheme: dark)').matches);
+  document.querySelector('meta[name="theme-color"]')?.setAttribute('content', dark ? '#0f1a17' : '#ffffff');
   window.dispatchEvent(new Event('chemdict-theme'));
 }
 

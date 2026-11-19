@@ -21,8 +21,8 @@ export default defineConfig({
         start_url: '.',
         scope: '.',
         display: 'standalone',
-        background_color: '#0f1a17',
-        theme_color: '#0f1a17',
+        background_color: '#f7f8f7',   // 2.1: 기본 화면이 밝은 색 (A안)
+        theme_color: '#ffffff',
         icons: [
           { src: 'logo-180.png', sizes: '180x180', type: 'image/png' },
           { src: 'logo-256.png', sizes: '256x256', type: 'image/png' },

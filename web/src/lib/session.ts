@@ -16,6 +16,8 @@ export interface Session {
   sensors: SensorInfo[];     // 측정할 때 연결돼 있던 센서 (보드 없이 다시 열 때 그래프용)
   info?: ExpInfo;
   custom?: CustomCalc | null;
+  /** 2.1: 활동지(예측·결론 답) — 애플 앱과 같은 칸. 애플 앱이 담는 photos·strokes는 웹앱이 읽지 않음 (PROTOCOL.md 12장) */
+  worksheet?: { prediction: string; answers: string[] };
 }
 
 const KEY = 'chemdict.sessions.v1';

@@ -30,6 +30,7 @@ import { BigScreen } from './BigScreen';
 import { VideoSync } from './VideoSync';
 import { liveTone, playSeries, primeAudio, silence } from '../lib/sonify';
 import { SOUND } from '../lib/device';
+import { wakeSupported } from '../lib/wake';
 import { track } from '../lib/analytics';
 
 export interface Trigger { id: string; dir: 'up' | 'down'; value: number }
@@ -46,6 +47,10 @@ interface Props {
   setIntervalMs: (ms: number) => void;
   autoStopMin: number;
   setAutoStopMin: (m: number) => void;
+  /** 2.1 함께 재기: 보드 센서와 함께 잴 수 있는 이 기기 센서 카드 (없으면 빈 배열), 고른 카드 id ('' = 안 함) */
+  companionKits: { id: string; name: string }[];
+  companionKit: string;
+  onCompanion: (kitId: string) => void;
   onStart: (trigger?: Trigger) => void;
   connected: boolean;
   waiting: { value?: number } | null;     // 조건 시작을 기다리는 중
@@ -138,7 +143,8 @@ export function Measure(p: Props) {
   useEffect(() => { if (exportOpen) track('tool', 'save-sheet'); }, [exportOpen]);
   const setWs = (w: Worksheet) => { track('tool', 'worksheet'); setWsState(w); saveWorksheet(exp.id, w); };
   const wsInReport = wsPick ?? !isEmptyWorksheet(ws);
-  const micBusy = exp.sensors.some((s) => SOUND.includes(s)) && sensors.some((s) => s.src === 'device');
+  // 마이크로 재는 중(이 기기 센서 실험이거나 보드와 함께 재는 소리)에는 '소리로 듣기'를 숨김
+  const micBusy = (exp.sensors.some((s) => SOUND.includes(s)) || exp.y.some((y) => SOUND.includes(y.sensor))) && sensors.some((s) => s.src === 'device');
 
   const setXAxis = (id: string) => { setXAxisState(id); setZoom(null); setSelection(null); };
 
@@ -479,7 +485,7 @@ export function Measure(p: Props) {
           {mode === 'time' && (
             <select className="autostop" aria-label={t('끝내기')} title={t('정한 시간이 되면 측정을 멈추고 알림을 보냅니다')} value={p.autoStopMin} disabled={running} onChange={(e) => p.setAutoStopMin(Number(e.target.value))}>
               <option value={0}>{t('시간 정하지 않음')}</option>
-              {[1, 5, 10, 30, 60, 120].map((m) => <option key={m} value={m}>{t('{n}분 뒤 끝내기', { n: m })}</option>)}
+              {[1, 5, 10, 30, 60, 120, 180, 360, 720, 1440].map((m) => <option key={m} value={m}>{m >= 180 ? t('{n}시간 뒤 끝내기', { n: m / 60 }) : t('{n}분 뒤 끝내기', { n: m })}</option>)}
             </select>
           )}
           {!running
@@ -497,11 +503,26 @@ export function Measure(p: Props) {
         <button className="ghost" disabled={charts.length === 0} onClick={() => setBig(true)}>⛶ {t('큰 화면')}</button>
       </div>
 
+      {running && (
+        <p className="note longrun" role="note">🔆 {wakeSupported() ? t('측정 중에는 화면이 꺼지지 않습니다.') : t('이 브라우저는 화면 켜 두기를 지원하지 않습니다. 화면이 꺼지면 측정이 멈출 수 있습니다.')}</p>
+      )}
+
       <div className="tabs3" role="tablist" aria-label={t('측정 화면 칸')}>
         {([['measure', tk('📈 측정')], ['analysis', tk('🔍 분석')], ['record', tk('📝 기록·저장')]] as const).map(([k, l]) => (
           <button key={k} role="tab" aria-selected={tab === k} className={tab === k ? 'on' : ''} onClick={() => setTab(k)}>{t(l)}</button>
         ))}
       </div>
+
+      {on('measure') && mode === 'time' && p.companionKits.length > 0 && (
+        <div className="companion-bar" data-nav={t('이 기기 센서 함께 재기')}>
+          <label htmlFor="companion">📱 {t('이 기기 센서 함께 재기')}</label>
+          <select id="companion" value={p.companionKit} disabled={running} onChange={(e) => p.onCompanion(e.target.value)}>
+            <option value="">{t('함께 재지 않음')}</option>
+            {p.companionKits.map((k) => <option key={k.id} value={k.id}>{k.name}</option>)}
+          </select>
+          <span className="note">{p.companionKit ? t('보드 센서와 같은 시각에 맞춰 함께 기록합니다.') : t('예: 온도 센서 + 카메라 색, 힘 센서 + 소리')}</span>
+        </div>
+      )}
 
       {on('measure') && explore && mode === 'time' && charts.length > 0 && (
         <details className="trigger" open={trigOn}>

@@ -816,5 +816,16 @@
  "기기 설정 따르기": "Follow device setting",
  "처음 화면으로": "Go to start",
  "처음": "Start",
- "목차": "Contents"
+ "목차": "Contents",
+ "‘{name}’을(를) 보드 센서와 함께 잽니다.": "Recording ‘{name}’ together with the board sensors.",
+ "화면을 표시하다 문제가 생겼습니다": "Something went wrong while showing this screen",
+ "측정한 데이터는 자동으로 저장되어 있습니다. 다시 열면 ‘이어서 하기’에서 볼 수 있습니다.": "Your measurements were saved automatically. Reopen the app and find them under ‘Continue’.",
+ "다시 열기": "Reopen",
+ "{n}시간 뒤 끝내기": "Stop after {n} h",
+ "측정 중에는 화면이 꺼지지 않습니다.": "The screen stays on while recording.",
+ "이 브라우저는 화면 켜 두기를 지원하지 않습니다. 화면이 꺼지면 측정이 멈출 수 있습니다.": "This browser can’t keep the screen on. Recording may stop if the screen turns off.",
+ "이 기기 센서 함께 재기": "Also record this device’s sensor",
+ "함께 재지 않음": "Don’t add",
+ "보드 센서와 같은 시각에 맞춰 함께 기록합니다.": "Recorded on the same time axis as the board sensors.",
+ "예: 온도 센서 + 카메라 색, 힘 센서 + 소리": "E.g. temperature sensor + camera color, force sensor + sound"
 }
