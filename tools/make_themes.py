@@ -45,24 +45,24 @@ LIGHT = [
          accent="#2f3542", glow="#8b93a7", mid="#5f6779", badgeInk="#2b303b"),
 ]
 
-# ---- 어두운 디자인 4가지
+# ---- 어두운 디자인 4가지 (fill: 애플 앱의 채운 버튼 바탕 — 글자가 늘 흰색이라 강조색보다 어두운 색을 따로 둠. 웹은 --accent + --accent-ink)
 DARK = [
     dict(id="dark", name="숲", bg="#0b1411", surface="#13211c", ink="#e3eee9", muted="#93a89f", line="#24362f", field="#5f7770",
          accent="#2ee6b0", accentInk="#06231a", glow="#00d49a", mid="#00b386",
          chromeBg="#0f1a17", chromeBg2="#17271f", chromeInk="#e8f3ee", chromeMuted="#b9cdc4", chromeFaint="#8aa298", chromeNInk="#d6efe5",
-         selBg="#0f1a17", badgeBg="#0f1a17", badgeInk="#00d49a", mutedHc="#c9d8d1"),
+         selBg="#0f1a17", badgeBg="#0f1a17", badgeInk="#00d49a", mutedHc="#c9d8d1", fill="#007a5e"),
     dict(id="board", name="칠판", bg="#16291f", surface="#1d3528", ink="#f1f5ea", muted="#a9bfae", line="#31503e", field="#6f8d79",
          accent="#ffd866", accentInk="#2a2203", glow="#ffd866", mid="#e6bd45",
          chromeBg="#11221a", chromeBg2="#193025", chromeInk="#f1f5ea", chromeMuted="#bfd0c2", chromeFaint="#93ab99", chromeNInk="#ffe9a8",
-         selBg="#0c1a13", badgeBg="#0c1a13", badgeInk="#ffd866"),
+         selBg="#0c1a13", badgeBg="#0c1a13", badgeInk="#ffd866", fill="#8c6a00"),
     dict(id="navy", name="밤바다", bg="#0b1220", surface="#131d31", ink="#e3eaf6", muted="#94a3ba", line="#24314a", field="#5f7191",
          accent="#6cb6ff", accentInk="#06182b", glow="#4aa3ff", mid="#2f8be6",
          chromeBg="#0d1526", chromeBg2="#162238", chromeInk="#e8eef8", chromeMuted="#b9c6da", chromeFaint="#8798b3", chromeNInk="#d6e6fb",
-         selBg="#0a1120", badgeBg="#0a1120", badgeInk="#6cb6ff"),
+         selBg="#0a1120", badgeBg="#0a1120", badgeInk="#6cb6ff", fill="#1f6fd1"),
     dict(id="contrast", name="고대비", bg="#000000", surface="#101010", ink="#ffffff", muted="#c8c8c8", line="#3d3d3d", field="#8f8f8f",
          accent="#ffd60a", accentInk="#000000", glow="#ffd60a", mid="#e6c009",
          chromeBg="#000000", chromeBg2="#151515", chromeInk="#ffffff", chromeMuted="#d0d0d0", chromeFaint="#a8a8a8", chromeNInk="#ffe566",
-         selBg="#262626", badgeBg="#1c1c1c", badgeInk="#ffd60a"),
+         selBg="#262626", badgeBg="#1c1c1c", badgeInk="#ffd60a", fill="#1456d9"),
 ]
 
 
@@ -124,6 +124,7 @@ def fill_light(p):
     t["selBg"] = p["accent"]
     t["selInk"] = WHITE
     t["badgeBg"] = mix(p["mid"], s, 0.14)
+    t["fill"] = p["accent"]
     t.setdefault("mutedHc", mix(p["ink"], p["muted"], 0.7))
     t["css"] = {
         "--tint": rgba(p["mid"], "0.10"),
@@ -178,6 +179,8 @@ def check(t):
         need(f"입력칸 테두리/{where}", t["field"], base, 3)
     need("강조 버튼 글자", t["accentInk"], t["accent"], 4.5)
     need("고른 칩 글자", t["selInk"], t["selBg"], 4.5)
+    need("채운 버튼 글자(애플)", WHITE, t["fill"], 4.5)
+    need("채운 버튼/카드(애플)", t["fill"], t["surface"], 1.5)
     need("배지 글자", t["badgeInk"], t["badgeBg"], 4.5)
     need("강조/옅은 강조 바탕", t["accent"], t["tint"], 4.5)
     need("글자/옅은 강조 바탕", t["ink"], t["tint"], 7)
@@ -219,7 +222,7 @@ def css_block(t):
 
 JSON_KEYS = ["bg", "surface", "ink", "muted", "line", "field", "accent", "accentInk", "tint", "glow", "mid",
              "chromeBg", "chromeBg2", "chromeInk", "chromeStrong", "chromeMuted", "chromeFaint", "chromeLine",
-             "chromeBtn", "chromeBtnLine", "chromeNInk", "selBg", "selInk", "badgeBg", "badgeInk"]
+             "chromeBtn", "chromeBtnLine", "chromeNInk", "selBg", "selInk", "badgeBg", "badgeInk", "fill"]
 
 
 def main():

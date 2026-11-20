@@ -72,7 +72,8 @@
     "selBg": "#007a5e",
     "selInk": "#ffffff",
     "badgeBg": "#dbf4ee",
-    "badgeInk": "#00664e"
+    "badgeInk": "#00664e",
+    "fill": "#007a5e"
    }
   },
   {
@@ -109,7 +110,8 @@
     "selBg": "#0a67a3",
     "selInk": "#ffffff",
     "badgeBg": "#dff0fa",
-    "badgeInk": "#08507f"
+    "badgeInk": "#08507f",
+    "fill": "#0a67a3"
    }
   },
   {
@@ -146,7 +148,8 @@
     "selBg": "#6941c6",
     "selInk": "#ffffff",
     "badgeBg": "#efe8fe",
-    "badgeInk": "#53329e"
+    "badgeInk": "#53329e",
+    "fill": "#6941c6"
    }
   },
   {
@@ -183,7 +186,8 @@
     "selBg": "#b0306a",
     "selInk": "#ffffff",
     "badgeBg": "#fbe6f0",
-    "badgeInk": "#8c2354"
+    "badgeInk": "#8c2354",
+    "fill": "#b0306a"
    }
   },
   {
@@ -220,7 +224,8 @@
     "selBg": "#7a4b12",
     "selInk": "#ffffff",
     "badgeBg": "#f5ecdc",
-    "badgeInk": "#5f3a0d"
+    "badgeInk": "#5f3a0d",
+    "fill": "#7a4b12"
    }
   },
   {
@@ -257,7 +262,8 @@
     "selBg": "#2f3542",
     "selInk": "#ffffff",
     "badgeBg": "#e9eaec",
-    "badgeInk": "#2b303b"
+    "badgeInk": "#2b303b",
+    "fill": "#2f3542"
    }
   },
   {
@@ -294,7 +300,8 @@
     "selBg": "#0f1a17",
     "selInk": "#ffffff",
     "badgeBg": "#0f1a17",
-    "badgeInk": "#00d49a"
+    "badgeInk": "#00d49a",
+    "fill": "#007a5e"
    }
   },
   {
@@ -331,7 +338,8 @@
     "selBg": "#0c1a13",
     "selInk": "#ffffff",
     "badgeBg": "#0c1a13",
-    "badgeInk": "#ffd866"
+    "badgeInk": "#ffd866",
+    "fill": "#8c6a00"
    }
   },
   {
@@ -368,7 +376,8 @@
     "selBg": "#0a1120",
     "selInk": "#ffffff",
     "badgeBg": "#0a1120",
-    "badgeInk": "#6cb6ff"
+    "badgeInk": "#6cb6ff",
+    "fill": "#1f6fd1"
    }
   },
   {
@@ -405,7 +414,8 @@
     "selBg": "#262626",
     "selInk": "#ffffff",
     "badgeBg": "#1c1c1c",
-    "badgeInk": "#ffd60a"
+    "badgeInk": "#ffd60a",
+    "fill": "#1456d9"
    }
   }
  ]
