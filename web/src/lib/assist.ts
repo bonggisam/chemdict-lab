@@ -57,7 +57,8 @@ function live(text: string) {
   const el = typeof document !== 'undefined' ? document.getElementById(LIVE_ID) : null;
   if (!el) return;
   el.textContent = '';
-  window.setTimeout(() => { el.textContent = text; }, 60);
+  // 버튼이 바뀌는 순간에는 화면 읽기 프로그램이 새 버튼 이름을 읽느라 알림을 놓침 → 잠깐 뒤에
+  window.setTimeout(() => { el.textContent = text; }, 600);
 }
 
 const VOICE_LANG: Record<string, string> = { ko: 'ko-KR', en: 'en-US', ja: 'ja-JP', zh: 'zh-CN', es: 'es-ES', fr: 'fr-FR', de: 'de-DE', pt: 'pt-BR', vi: 'vi-VN', id: 'id-ID' };
@@ -126,7 +127,8 @@ export function raise(kind: AlertKind, text: string, speakIt = true) {
   if (prefOn(A11Y.haptic) && typeof navigator !== 'undefined' && 'vibrate' in navigator) {
     try { navigator.vibrate(kind === 'warn' ? [120, 80, 120, 80, 120] : kind === 'stop' ? [60] : [80, 60, 80]); } catch { /* 진동이 없는 기기 */ }
   }
-  if (speakIt) announce(text);
+  // 큰 버튼 화면에서는 '알림을 음성으로'가 꺼져 있어도 시작·정지를 소리로 (읽는 방법 설정을 따름)
+  if (speakIt) announce(text, prefOn(A11Y.big));
 }
 
 // ---------- 색 이름 (색을 구별하기 어려운 사람) ----------
