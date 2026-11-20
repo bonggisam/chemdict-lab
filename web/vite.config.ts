@@ -16,7 +16,7 @@ export default defineConfig({
       manifest: {
         name: 'ChemDict Lab',
         short_name: 'ChemDict Lab',
-        description: '아두이노 센서로 하는 과학 실험·센서 실험 — 코딩 없이 바로 측정하고 그래프로 해석하는 무료 MBL 앱',
+        description: '아두이노 센서로 하는 과학실험·과학센서실험 — 코딩 없이 바로 측정하고 그래프로 해석하는 무료 MBL 앱',
         categories: ['education', 'science'],
         lang: 'ko',
         start_url: '.',
