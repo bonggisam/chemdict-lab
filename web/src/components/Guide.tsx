@@ -10,6 +10,7 @@ import { ExperimentBrowser } from './ExperimentBrowser';
 import { t, tk } from '../lib/i18n';
 import { areaName, courseName, levelName } from '../lib/l10n';
 import { R } from './Rich';
+import { Ico } from './Ico';
 import { ReagentNotes } from './ReagentNotes';
 import { PartsHelper } from './PartsHelper';
 
@@ -76,7 +77,7 @@ export function Guide({ experiments, board, initialExpId, initialPartId, initial
       {tab === 'wire' && <>
       <section className="guide-block">
         <div className="row-head sub">
-          <h2>{t('보드: {name}', { name: board.name })}</h2>
+          <h2><Ico e="🧩" />{t('보드: {name}', { name: board.name })}</h2>
           <button className="ghost" onClick={onChangeBoard}>{t('보드 바꾸기 (1단계)')}</button>
         </div>
         <details className="advanced">
@@ -97,13 +98,13 @@ export function Guide({ experiments, board, initialExpId, initialPartId, initial
       </section>
 
       <section className="guide-block">
-        <h2>{t('연결 전 공통 규칙')}</h2>
+        <h2><Ico e="📌" />{t('연결 전 공통 규칙')}</h2>
         <ul className="rules">{commonRules.map((r) => <li key={r}><R t={r} /></li>)}</ul>
       </section>
 
       <section className="guide-block">
         <div className="row-head sub">
-          <h2>{t('센서 고르기')}</h2>
+          <h2><Ico e="🎛️" />{t('센서 고르기')}</h2>
           <div className="seg" role="tablist" aria-label={t('찾는 방법')}>
             <button role="tab" aria-selected={by === 'sensor'} className={by === 'sensor' ? 'on' : ''} onClick={() => setBy('sensor')}>{t('센서로 찾기')}</button>
             <button role="tab" aria-selected={by === 'exp'} className={by === 'exp' ? 'on' : ''} onClick={() => setBy('exp')}>{t('실험으로 찾기')}</button>
@@ -147,7 +148,7 @@ export function Guide({ experiments, board, initialExpId, initialPartId, initial
         const found = p.analogType ? null : p.provides.every((ty) => connectedTypes.includes(ty));
         return (
           <section key={p.id} className="guide-block" id={`part-${p.id}`}>
-            <h2>{t('{name} 연결', { name: p.name })}</h2>
+            <h2><Ico e="🔗" />{t('{name} 연결', { name: p.name })}</h2>
             <PartWiring board={board} part={p} />
             {found !== null && (
               <div className="detect">
@@ -164,7 +165,7 @@ export function Guide({ experiments, board, initialExpId, initialPartId, initial
 
       {by === 'exp' && setup && (
         <section className="guide-block">
-          <h2>{t('실험 장치에 붙이기')}</h2>
+          <h2><Ico e="🧪" />{t('실험 장치에 붙이기')}</h2>
           {setup.materials.length > 0 && <><h3>{t('준비물')}</h3><ul>{setup.materials.map((m) => <li key={m}><R t={m} /></li>)}</ul><ReagentNotes materials={setup.materials} /></>}
           <ol>{setup.attach.map((s) => <li key={s}><R t={s} /></li>)}</ol>
           {setup.cautions.length > 0 && (

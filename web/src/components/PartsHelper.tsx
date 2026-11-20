@@ -16,7 +16,7 @@ tk('검정'); tk('갈색'); tk('빨강'); tk('주황'); tk('노랑'); tk('초록
 export function PartsHelper({ board, onOpenPart }: { board: Board; onOpenPart: (p: Part) => void }) {
   const [tab, setTab] = useState<Tab>('read');
   return (
-    <section className="guide-block parts-helper" data-nav={t('부품 도우미')}>
+    <section className="guide-block parts-helper" data-nav={t('부품 도우미')} data-nav-ico="🧰">
       <h2>🧰 {t('부품 도우미')}</h2>
       <div className="seg" role="tablist" aria-label={t('부품 도우미')}>
         {TABS.map(([id, label]) => (

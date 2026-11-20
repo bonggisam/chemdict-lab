@@ -9,7 +9,7 @@ export function ReagentNotes({ materials }: { materials: string[] }) {
   const [openId, setOpenId] = useState<string | null>(null);
   if (!list.length) return null;
   return (
-    <section className="reagents" data-nav={t('시약·약품')}>
+    <section className="reagents" data-nav={t('시약·약품')} data-nav-ico="⚗️">
       <h2><span className="ico" aria-hidden="true">🧪</span>{t('시약·약품')} <small className="note">{t('{n}가지 · 교사용: 위험·조제·보관·폐기', { n: list.length })}</small></h2>
       <div className="reagent-chips" role="tablist">
         {list.map((r) => (

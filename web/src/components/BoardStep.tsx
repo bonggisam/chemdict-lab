@@ -50,7 +50,7 @@ export function BoardStep({ board, detectedId, onPickBoard, connected, busy, fw,
       <h1><span className="step-no">1</span>{t('어떻게 잴까요?')}</h1>
       <p className="lede">{t('하나를 고르세요. 언제든 바꿀 수 있습니다.')}</p>
       {/* 2.0 첫 화면: 큰 버튼 3개 (이 기기 · 보드 · 체험) */}
-      <div className="home-tiles" data-nav={t('어떻게 잴까요?')}>
+      <div className="home-tiles" data-nav={t('어떻게 잴까요?')} data-nav-ico="🚀">
         {availableKits().length > 0 && (
           <button className="t-dev" onClick={() => document.querySelector('.connect-device')?.scrollIntoView({ behavior: scrollBehavior() })}>
             <span className="ico" aria-hidden="true">📱</span><b>{t('이 기기로 바로 재기')}</b><span className="note">{t('선 없이 기기 센서로 (소리·빛·움직임)')}</span>
@@ -95,7 +95,7 @@ export function BoardStep({ board, detectedId, onPickBoard, connected, busy, fw,
 
       {fw?.status === 'missing' && (
         <section className="guide-block fw-panel" role="alert">
-          <h2>{t('이 보드에는 측정 프로그램이 없습니다')}</h2>
+          <h2><Ico e="📦" />{t('이 보드에는 측정 프로그램이 없습니다')}</h2>
           {ideOnly ? (
             <>
               <p>{t('{board}은(는) 아직 웹에서 설치할 수 없습니다. Arduino IDE로 한 번만 올리면 그 뒤로는 바로 쓸 수 있습니다.', { board: board.name })}</p>
@@ -117,7 +117,7 @@ export function BoardStep({ board, detectedId, onPickBoard, connected, busy, fw,
 
       {fw?.status === 'outdated' && (
         <section className="guide-block fw-panel">
-          <h2>{t('새 측정 프로그램이 있습니다')}</h2>
+          <h2><Ico e="✨" />{t('새 측정 프로그램이 있습니다')}</h2>
           <p>{t('보드: {v} → 새 버전: {w}. 설치하면 새 센서와 고친 점이 적용됩니다.', { v: fw.version, w: BUNDLED_FW })}</p>
           <div className="sheet-actions">
             <button className="ghost" onClick={onNext}>{t('나중에')}</button>
@@ -128,7 +128,7 @@ export function BoardStep({ board, detectedId, onPickBoard, connected, busy, fw,
 
       {fw?.status === 'installing' && (
         <section className="guide-block fw-panel" aria-live="polite">
-          <h2>{t('설치 중 — USB를 뽑지 마세요')}</h2>
+          <h2><Ico e="⏳" />{t('설치 중 — USB를 뽑지 마세요')}</h2>
           <p>{t(STAGE[fw.stage])}{fw.stage === 'write' || fw.stage === 'verify' ? ` ${Math.round(fw.ratio * 100)}%` : '…'}</p>
           <div className="progress"><span style={{ width: `${Math.round((fw.stage === 'write' ? fw.ratio * 0.7 : fw.stage === 'verify' ? 0.7 + fw.ratio * 0.3 : fw.stage === 'done' ? 1 : 0.02) * 100)}%` }} /></div>
         </section>
@@ -140,7 +140,7 @@ export function BoardStep({ board, detectedId, onPickBoard, connected, busy, fw,
 
       {fw?.status === 'failed' && (
         <section className="guide-block fw-panel" role="alert">
-          <h2>{t('설치하지 못했습니다')}</h2>
+          <h2><Ico e="⚠️" />{t('설치하지 못했습니다')}</h2>
           <p className="warn-text">{fw.message}</p>
           {failTips && <ol>{failTips.steps.map((s) => <li key={s}><R t={s} /></li>)}</ol>}
           <p className="note"><R t={t('USB를 뽑았다 꽂은 뒤 [USB로 연결]부터 다시 하세요.')} /></p>

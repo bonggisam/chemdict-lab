@@ -474,7 +474,7 @@ export function Measure(p: Props) {
 
   return (
     <main className="wide measure">
-      <div className="row-head" data-nav={t('측정 시작 · 정지')}>
+      <div className="row-head" data-nav={t('측정 시작 · 정지')} data-nav-ico="⏯️">
         <div>
           <button className="ghost back" disabled={running} onClick={p.onBack}>← {t('실험 목록')}</button>
           <h1>{exp.title}</h1>
@@ -514,7 +514,7 @@ export function Measure(p: Props) {
       </div>
 
       {on('measure') && mode === 'time' && p.companionKits.length > 0 && (
-        <div className="companion-bar" data-nav={t('이 기기 센서 함께 재기')}>
+        <div className="companion-bar" data-nav={t('이 기기 센서 함께 재기')} data-nav-ico="📲">
           <label htmlFor="companion">📱 {t('이 기기 센서 함께 재기')}</label>
           <select id="companion" value={p.companionKit} disabled={running} onChange={(e) => p.onCompanion(e.target.value)}>
             <option value="">{t('함께 재지 않음')}</option>
@@ -555,7 +555,7 @@ export function Measure(p: Props) {
       </div>}
 
       {/* 측정 목록 */}
-      {on('measure', 'record') && <div className="runs" data-nav={t('측정 목록')}>
+      {on('measure', 'record') && <div className="runs" data-nav={t('측정 목록')} data-nav-ico="🗂️">
         {runs.map((r) => (
           <div key={r.id} className={`run ${r.id === active?.id ? 'active' : ''}`}>
             <input type="checkbox" aria-label={t('{name} 그래프에 표시', { name: r.name })} checked={r.visible} onChange={(e) => patchRun(r.id, { visible: e.target.checked })} />
@@ -576,7 +576,7 @@ export function Measure(p: Props) {
         <button className="ghost add-run" disabled={running} onClick={addRun}>+ {t('새 측정')}</button>
       </div>}
 
-      {on('measure', 'record') && <details className="steps" data-nav={t('실험 순서 보기')} data-nav-level="3">
+      {on('measure', 'record') && <details className="steps" data-nav={t('실험 순서 보기')} data-nav-ico="🧑‍🔬" data-nav-level="3">
         <summary><Ico e="🧑‍🔬" />{t('실험 순서 보기')}</summary>
         <ol>{exp.steps.map((s, i) => <li key={i}><R t={s} /></li>)}</ol>
       </details>}
@@ -643,7 +643,7 @@ export function Measure(p: Props) {
         </div>
       )}
 
-      {on('measure', 'analysis') && <div className="charts" data-nav={t('그래프')}>
+      {on('measure', 'analysis') && <div className="charts" data-nav={t('그래프')} data-nav-ico="📈">
         {charts.map((c, i) => (
           <Chart
             key={c.sensor.id}
@@ -714,7 +714,7 @@ export function Measure(p: Props) {
       </div>}
 
       {/* 도구 막대 */}
-      {on('measure', 'record') && <div className="toolbar" data-nav={t('관찰 기록 · 저장')}>
+      {on('measure', 'record') && <div className="toolbar" data-nav={t('관찰 기록 · 저장')} data-nav-ico="📝">
         {on('measure') && mode === 'time' && exp.markers.enabled && (
           <div className="marker">
             <input id="marker-note" aria-label={exp.markers.label} value={markerNote} placeholder={exp.markers.prompt} onChange={(e) => setMarkerNote(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter') addMarker(); }} />
@@ -746,7 +746,7 @@ export function Measure(p: Props) {
       </div>}
 
       {/* 활동지 */}
-      {on('record') && <details className="worksheet" data-nav={t('활동지')}>
+      {on('record') && <details className="worksheet" data-nav={t('활동지')} data-nav-ico="📒">
         <summary><span aria-hidden="true">📝</span> {t('활동지')} <span className="note">{t('예측 → 측정 → 결론. 보고서 PDF에 함께 들어갑니다.')}</span></summary>
         <label className="ws-field">
           <b>{t('1. 예측 — 측정하기 전에 쓰세요')}</b>
@@ -859,7 +859,7 @@ export function Measure(p: Props) {
       {(showTable || on('analysis')) && active && (
         <section className="data-table">
           <div className="ana-head">
-            <h2>{t('{name} 표', { name: active.name })}</h2>
+            <h2><Ico e="🔢" />{t('{name} 표', { name: active.name })}</h2>
             <label className="mini">{t('계산 열')}
               <select value={calc} onChange={(e) => setCalc(e.target.value as CalcId)}>
                 {CALCS.filter((c) => !c.tempOnly || isTemp).map((c) => <option key={c.id} value={c.id}>{t(c.name)}</option>)}
@@ -967,7 +967,7 @@ function CompareRef({ unit, decimals, source, value, sd, accuracy }: { unit: str
   const f = (x: number) => fmtValue(x, decimals);
   const srcName = source === 'sel' ? t('선택 구간 평균') : source === 'plateau' ? t('평탄 구간 평균') : t('마지막 값');
   return (
-    <div className="compare-ref" data-nav={t('기준값과 비교')}>
+    <div className="compare-ref" data-nav={t('기준값과 비교')} data-nav-ico="🎯">
       <b>{t('기준값과 비교')}</b>
       <span className="note">{srcName}: <b className="k-num">{f(value)} {unit}</b>{sd ? ` ±${f(sd)}` : ''}</span>
       <label className="mini">{t('이론값·문헌값')} <input inputMode="decimal" value={ref} onChange={(e) => setRef(e.target.value)} placeholder={unit} aria-label={t('이론값·문헌값')} /></label>

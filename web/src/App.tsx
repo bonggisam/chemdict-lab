@@ -755,8 +755,8 @@ export default function App() {
           <div className="row-head">
             <h1><span className="step-no">2</span>{t('무엇을 잴까요?')}</h1>
             <div className="mode-switch" role="radiogroup" aria-label={t('화면')}>
-              <button role="radio" aria-checked={!explore} className={!explore ? 'on' : ''} onClick={() => setExplore(false)}>{t('쉬운 화면')}</button>
-              <button role="radio" aria-checked={explore} className={explore ? 'on' : ''} onClick={() => setExplore(true)} title={t('탐구 화면은 조건 시작·예측 그리기·그래프 보기 같은 도구를 더 보여 줍니다')}>{t('탐구 화면')}</button>
+              <button role="radio" aria-checked={!explore} className={!explore ? 'on' : ''} onClick={() => setExplore(false)}><Ico e="🌱" />{t('쉬운 화면')}</button>
+              <button role="radio" aria-checked={explore} className={explore ? 'on' : ''} onClick={() => setExplore(true)} title={t('탐구 화면은 조건 시작·예측 그리기·그래프 보기 같은 도구를 더 보여 줍니다')}><Ico e="🔭" />{t('탐구 화면')}</button>
             </div>
             {hello && hello.fw !== 'sim' && hello.fw !== 'device' && (
               <label className="switch">
@@ -777,7 +777,7 @@ export default function App() {
 
           <DeviceSection onOpen={setDevKit} activeId={isDevice() ? exp?.id : undefined} collapsed={!!connLabel && !isDevice()} />
 
-          <div data-nav={t('센서로 바로 측정')}><SensorPicker board={board} connectedTypes={sensors.filter((s) => s.src !== 'demo').map((s) => s.type)} onPick={(p) => { track('parts', `card-${p.id}`); setQuick({ part: p, status: 'idle' }); }} /></div>
+          <div data-nav={t('센서로 바로 측정')} data-nav-ico="🎛️"><SensorPicker board={board} connectedTypes={sensors.filter((s) => s.src !== 'demo').map((s) => s.type)} onPick={(p) => { track('parts', `card-${p.id}`); setQuick({ part: p, status: 'idle' }); }} /></div>
 
           <div className="row-head sub">
             <h2><Ico e={ICON.experiment} />{t('실험으로 찾기 (교육과정)')}</h2>
@@ -802,7 +802,7 @@ export default function App() {
           <ExperimentBrowser experiments={allExperiments} connectedTypes={[...sensors.filter((x) => x.src !== 'demo' || transportRef.current?.kind === 'sim').map((x) => x.type), ...deviceTypes()]} onPick={pickAny} />
 
           {hello && explore && (
-            <details className="advanced" data-nav={t('포트 직접 설정 (고급)')}>
+            <details className="advanced" data-nav={t('포트 직접 설정 (고급)')} data-nav-ico="⚙️">
               <summary>{t('포트 직접 설정 (고급)')}</summary>
               <SensorSetup sensors={sensors} disabled={false} onSetPort={setPort} onRescan={rescan} pulse={board.sensorSet === 'full'} />
             </details>

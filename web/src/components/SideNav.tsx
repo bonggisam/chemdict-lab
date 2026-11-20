@@ -3,7 +3,7 @@ import { t } from '../lib/i18n';
 
 export type NavScreen = 'connect' | 'pick' | 'measure' | 'guide';
 
-interface Section { id: string; label: string; level: 2 | 3 }
+interface Section { id: string; label: string; level: 2 | 3; ico?: string }
 
 interface Props {
   screen: NavScreen;
@@ -34,7 +34,9 @@ function useSections(screen: NavScreen) {
         if (!host.id) host.id = `sec-${screen}-${i}`;
         seen.add(host.id);
         const label = el.dataset.nav ?? Array.from(el.childNodes).filter((n) => !(n instanceof HTMLElement && n.matches('[aria-hidden="true"], button, select, .seg'))).map((n) => n.textContent).join('').trim();
-        if (label) next.push({ id: host.id, label, level: el.dataset.navLevel === '3' ? 3 : 2 });
+        // 가지 앞 이모지: data-nav-ico 또는 제목의 장식 아이콘(.ico)
+        const ico = el.dataset.navIco ?? el.querySelector(':scope > .ico')?.textContent ?? undefined;
+        if (label) next.push({ id: host.id, label, level: el.dataset.navLevel === '3' ? 3 : 2, ico: ico || undefined });
       });
       setList((cur) => (JSON.stringify(cur) === JSON.stringify(next) ? cur : next));
     };
@@ -77,17 +79,17 @@ export function SideNav({ screen, expTitle, connected, boardName, running, onGo,
     <ul className="tree-kids">
       {list.map((x) => (
         <li key={x.id} className={x.level === 3 ? 'lv3' : ''}>
-          <button className={active === x.id ? 'on' : ''} aria-current={active === x.id ? 'location' : undefined} onClick={() => go(x.id)}>{x.label}</button>
+          <button className={active === x.id ? 'on' : ''} aria-current={active === x.id ? 'location' : undefined} onClick={() => go(x.id)}>{x.ico && <span className="k-ico" aria-hidden="true">{x.ico}</span>}{x.label}</button>
         </li>
       ))}
     </ul>
   ) : null);
 
-  const step = (s: NavScreen, n: string, label: string, sub: string, done: boolean, on: boolean, children?: ReactNode) => (
+  const step = (s: NavScreen, n: string, ico: string, label: string, sub: string, done: boolean, on: boolean, children?: ReactNode) => (
     <li className={`tree-step ${on ? 'on' : ''} ${done ? 'done' : ''}`}>
       <button className="tree-head" aria-current={on ? 'step' : undefined} disabled={running && !on} onClick={() => jump(s)}>
         <span className="n" aria-hidden="true">{done ? '✓' : n}</span>
-        <span className="tt"><b>{label}</b><small>{sub}</small></span>
+        <span className="tt"><b><span className="k-ico" aria-hidden="true">{ico}</span>{label}</b><small>{sub}</small></span>
       </button>
       {children}
     </li>
@@ -99,7 +101,7 @@ export function SideNav({ screen, expTitle, connected, boardName, running, onGo,
     <aside className={`side ${open ? 'open' : ''}`} ref={navRef}>
       <div className="side-top">
         <button className="brand brand-home" title={t('처음 화면으로')} aria-label={`ChemDict Lab · ${t('처음 화면으로')}`} onClick={() => jump('connect')}>
-          <img className="logo" src={`${import.meta.env.BASE_URL}logo-128.png`} alt="" width={32} height={32} />
+          <span className="logo-orbit"><img className="logo" src={`${import.meta.env.BASE_URL}logo-128.png`} alt="" width={32} height={32} /><i aria-hidden="true" /></span>
           <span>ChemDict Lab</span>
         </button>
         <button className="ghost side-toggle" aria-expanded={open} onClick={() => setOpen((o) => !o)}>
@@ -108,8 +110,8 @@ export function SideNav({ screen, expTitle, connected, boardName, running, onGo,
       </div>
       <nav className="side-tree" aria-label={t('단계')}>
         <ol>
-          {step('connect', '1', t('보드 연결'), connected ? `✓ ${boardName}` : t('보드 고르기 · 연결'), connected && screen !== 'connect', screen === 'connect', kids('connect'))}
-          {step('pick', '2', t('실험'), expTitle ? t('센서 고르기 · 측정') : t('센서 고르기 · 측정'), false, screen === 'pick' || screen === 'measure', (
+          {step('connect', '1', '🔌', t('보드 연결'), connected ? `✓ ${boardName}` : t('보드 고르기 · 연결'), connected && screen !== 'connect', screen === 'connect', kids('connect'))}
+          {step('pick', '2', '🧪', t('실험'), expTitle ? t('센서 고르기 · 측정') : t('센서 고르기 · 측정'), false, screen === 'pick' || screen === 'measure', (
             <>
               {kids('pick')}
               {expTitle && (
@@ -124,7 +126,7 @@ export function SideNav({ screen, expTitle, connected, boardName, running, onGo,
               )}
             </>
           ))}
-          {step('guide', '3', t('연결 방법 · 문제 해결'), t('연결 그림 · 부품 도우미'), false, screen === 'guide', kids('guide'))}
+          {step('guide', '3', '🧭', t('연결 방법 · 문제 해결'), t('연결 그림 · 부품 도우미'), false, screen === 'guide', kids('guide'))}
         </ol>
       </nav>
       <div className="side-foot">{footer}</div>

@@ -24,7 +24,7 @@ export function DeviceSection({ onOpen, activeId, compact, collapsed }: { onOpen
   // 보드가 연결된 동안: 한 줄로 접어 두고 필요할 때만 펼침 (화면을 덜 어지럽게)
   if (collapsed) {
     return (
-      <details className="device-section" data-nav={t('이 기기 센서')}>
+      <details className="device-section" data-nav={t('이 기기 센서')} data-nav-ico="📱">
         <summary>📱 {t('이 기기 센서로 측정')} <span className="note">({kits.length})</span></summary>
         <p className="note"><R t={t('보드가 없어도 됩니다. 카드를 누르고 [측정 시작]을 누르면 이 기기의 센서로 바로 기록합니다.')} /></p>
         {cards}
@@ -32,7 +32,7 @@ export function DeviceSection({ onOpen, activeId, compact, collapsed }: { onOpen
     );
   }
   return (
-    <section className={`device-section ${compact ? 'compact' : ''}`} data-nav={t('이 기기 센서')}>
+    <section className={`device-section ${compact ? 'compact' : ''}`} data-nav={t('이 기기 센서')} data-nav-ico="📱">
       <h2>📱 {t('이 기기 센서로 측정')}</h2>
       <p className="note"><R t={t('보드가 없어도 됩니다. 카드를 누르고 [측정 시작]을 누르면 이 기기의 센서로 바로 기록합니다.')} /></p>
       {cards}
