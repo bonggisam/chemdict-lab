@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { hasQwiic, wiring, type Board, type Part } from '../lib/guide';
 import { t } from '../lib/i18n';
 import { wireLine } from '../lib/assist';
@@ -38,8 +39,9 @@ export function WiringDiagram({ board, part }: Props) {
   const rb = res ? shown.findIndex((w) => w.pin === res.between[1]) : -1;
   const rY = by + 40;
 
+  const [big, setBig] = useState(false);   // 2.2: 그림 크게 보기 (핀 이름이 작아 안 보일 때)
   return (
-    <figure className="wiring">
+    <figure className={`wiring${big ? ' big' : ''}`}>
       <svg viewBox={`0 0 640 ${H}`} role="img" aria-label={[t('{board}에 {part} 연결 그림', { board: board.name, part: part.name }), ...(cable ? [t('보드의 Qwiic 단자 ↔ 센서의 Qwiic 단자 (Qwiic 케이블)')] : wires.map(wireLine))].join('. ')}>
         {/* 보드 */}
         <rect x={bx} y={by} width={bw} height={bh} rx="14" fill="#0e7c86" />
@@ -99,7 +101,7 @@ export function WiringDiagram({ board, part }: Props) {
           </g>
         )}
       </svg>
-      <figcaption>{t('개념도입니다. 실제 핀 위치는 보드에 인쇄된 이름을 보고 찾으세요.')}</figcaption>
+      <figcaption>{t('개념도입니다. 실제 핀 위치는 보드에 인쇄된 이름을 보고 찾으세요.')} <button type="button" className="link" aria-pressed={big} onClick={() => setBig((v) => !v)}>🔍 {big ? t('그림 원래 크기') : t('그림 크게 보기')}</button></figcaption>
     </figure>
   );
 }

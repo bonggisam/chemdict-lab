@@ -60,6 +60,7 @@ export function AssistSettings() {
   const [haptic, setHaptic] = usePref(A11Y.haptic);
   const [flash, setFlash] = usePref(A11Y.flash);
   const [big, setBig] = usePref(A11Y.big);
+  const [reader, setReader] = usePref(A11Y.reader);
   const check = (label: string, v: string, set: (x: string) => void) => (
     <label className="check a11y-row"><input type="checkbox" checked={v === '1'} onChange={(e) => set(e.target.checked ? '1' : '0')} /> {label}</label>
   );
@@ -76,6 +77,12 @@ export function AssistSettings() {
           <label className="a11y-row">{t('측정 중 값 읽어 주기')}
             <select value={every} onChange={(e) => setEvery(e.target.value)}>
               {SPEAK_CHOICES.map((s) => <option key={s} value={String(s)}>{s === 0 ? t('끄기') : s < 60 ? t('{n}초마다', { n: s }) : t('1분마다')}</option>)}
+            </select>
+          </label>
+          <label className="a11y-row">{t('값을 읽는 방법')}
+            <select value={reader} onChange={(e) => setReader(e.target.value)}>
+              <option value="voice">{t('기기 음성')}</option>
+              <option value="sr">{t('화면 읽기 프로그램 (VoiceOver·NVDA 등)')}</option>
             </select>
           </label>
           {check(t('알림을 음성으로 (화면 읽기 프로그램을 쓰지 않을 때)'), voice, setVoice)}

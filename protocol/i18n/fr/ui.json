@@ -889,5 +889,12 @@
  "연한": "Clair",
  "어두운 {color}": "{color} foncé",
  "연한 {color}": "{color} clair",
- "브레드보드 그림": "Schéma de la plaque d'essai"
+ "브레드보드 그림": "Schéma de la plaque d'essai",
+ "값을 읽는 방법": "Mode de lecture des valeurs",
+ "기기 음성": "Voix de l'appareil",
+ "화면 읽기 프로그램 (VoiceOver·NVDA 등)": "Lecteur d'écran (VoiceOver, NVDA, etc.)",
+ "마이크로 재는 중에는 소리로 읽지 않습니다 (측정값에 섞임). 화면의 값을 보세요.": "Pas de lecture à voix haute pendant une mesure au micro (la voix se mélangerait aux données). Regardez la valeur à l'écran.",
+ "기록했습니다": "Enregistré",
+ "그림 원래 크기": "Taille d'origine",
+ "그림 크게 보기": "Agrandir le schéma"
 }

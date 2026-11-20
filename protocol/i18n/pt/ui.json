@@ -889,5 +889,12 @@
  "연한": "Claro",
  "어두운 {color}": "{color} escuro",
  "연한 {color}": "{color} claro",
- "브레드보드 그림": "Diagrama da protoboard"
+ "브레드보드 그림": "Diagrama da protoboard",
+ "값을 읽는 방법": "Como os valores são lidos",
+ "기기 음성": "Voz do dispositivo",
+ "화면 읽기 프로그램 (VoiceOver·NVDA 등)": "Leitor de tela (VoiceOver, NVDA etc.)",
+ "마이크로 재는 중에는 소리로 읽지 않습니다 (측정값에 섞임). 화면의 값을 보세요.": "Não há leitura em voz alta durante a medição com o microfone (a voz se misturaria aos dados). Veja o valor na tela.",
+ "기록했습니다": "Registrado",
+ "그림 원래 크기": "Tamanho original",
+ "그림 크게 보기": "Ampliar diagrama"
 }

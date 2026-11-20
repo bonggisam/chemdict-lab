@@ -18,8 +18,11 @@ const URL = process.env.URL || 'http://localhost:4173/';
     if (vp.name === 'desktop') {
       await p.locator('.a11y-open').click();
       check(await p.locator('#a11y-list input[type=checkbox]').count() >= 3, `${vp.name}: 손쉬운 사용 설정 칸 열림`);
-      await p.locator('#a11y-list select').selectOption('10');
+      await p.locator('#a11y-list select').first().selectOption('10');
       check(await p.evaluate(() => localStorage.getItem('chemdict.a11y.speakEvery')) === '10', `${vp.name}: 값 읽어 주기 간격 저장`);
+      check(await p.locator('#a11y-list select').count() === 2, `${vp.name}: 값을 읽는 방법 고르기`);
+      await p.locator('#a11y-list select').nth(1).selectOption('sr');
+      check(await p.evaluate(() => localStorage.getItem('chemdict.a11y.reader')) === 'sr', `${vp.name}: 읽는 방법 저장 (화면 읽기 프로그램)`);
       await p.locator('#a11y-list label', { hasText: '큰 버튼 화면' }).locator('input').check();
       check(await p.evaluate(() => localStorage.getItem('chemdict.a11y.big')) === '1', `${vp.name}: 큰 버튼 화면 저장`);
     } else {
@@ -42,6 +45,7 @@ const URL = process.env.URL || 'http://localhost:4173/';
     check(sawStart, `${vp.name}: 시작 알림 띠(● 측정을 시작했습니다)`);
     check(await p.locator('.a11y-flash').count() > 0, `${vp.name}: 화면 테두리 번쩍`);
     check(await p.locator('main.big-buttons').count() === 1, `${vp.name}: 큰 버튼 화면`);
+    check(await p.locator('main.big-buttons [data-nav]').count() >= 2, `${vp.name}: 큰 버튼 화면도 목차에 나옴`);
     await p.waitForTimeout(1500);
     const num = await p.locator('main.big-buttons .big-value .num').first().innerText();
     check(/\d/.test(num), `${vp.name}: 큰 숫자에 값 (${num.replace(/\s+/g, ' ')})`);

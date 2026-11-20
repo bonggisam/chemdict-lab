@@ -889,5 +889,12 @@
  "연한": "Muda",
  "어두운 {color}": "{color} gelap",
  "연한 {color}": "{color} muda",
- "브레드보드 그림": "Gambar breadboard"
+ "브레드보드 그림": "Gambar breadboard",
+ "값을 읽는 방법": "Cara membaca nilai",
+ "기기 음성": "Suara perangkat",
+ "화면 읽기 프로그램 (VoiceOver·NVDA 등)": "Pembaca layar (VoiceOver, NVDA, dll.)",
+ "마이크로 재는 중에는 소리로 읽지 않습니다 (측정값에 섞임). 화면의 값을 보세요.": "Tidak dibacakan saat mengukur dengan mikrofon (suara akan tercampur ke data). Lihat nilai di layar.",
+ "기록했습니다": "Tercatat",
+ "그림 원래 크기": "Ukuran asli",
+ "그림 크게 보기": "Perbesar gambar"
 }

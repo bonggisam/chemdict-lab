@@ -889,5 +889,12 @@
  "연한": "Hell",
  "어두운 {color}": "Dunkel-{color}",
  "연한 {color}": "Hell-{color}",
- "브레드보드 그림": "Steckbrett-Abbildung"
+ "브레드보드 그림": "Steckbrett-Abbildung",
+ "값을 읽는 방법": "Wie Werte vorgelesen werden",
+ "기기 음성": "Gerätestimme",
+ "화면 읽기 프로그램 (VoiceOver·NVDA 등)": "Screenreader (VoiceOver, NVDA usw.)",
+ "마이크로 재는 중에는 소리로 읽지 않습니다 (측정값에 섞임). 화면의 값을 보세요.": "Während der Messung mit dem Mikrofon wird nicht vorgelesen (die Stimme würde die Messwerte stören). Wert auf dem Bildschirm ansehen.",
+ "기록했습니다": "Erfasst",
+ "그림 원래 크기": "Originalgröße",
+ "그림 크게 보기": "Abbildung vergrößern"
 }

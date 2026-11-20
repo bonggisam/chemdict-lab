@@ -9,11 +9,12 @@ export const A11Y = {
   haptic: 'chemdict.a11y.haptic',         // 알림 때 진동 (안드로이드 휴대폰·태블릿)
   flash: 'chemdict.a11y.flash',           // 알림 때 화면 테두리 번쩍
   big: 'chemdict.a11y.big',               // 큰 버튼 화면
+  reader: 'chemdict.a11y.reader',         // 값을 읽는 방법: voice(기기 음성) · sr(화면 읽기 프로그램) — 웹은 화면 읽기 프로그램을 켰는지 알 수 없음
 } as const;
 type Key = (typeof A11Y)[keyof typeof A11Y];
 
 const DEFAULTS: Record<Key, string> = {
-  [A11Y.speakEvery]: '0', [A11Y.voice]: '0', [A11Y.haptic]: '1', [A11Y.flash]: '1', [A11Y.big]: '0',
+  [A11Y.speakEvery]: '0', [A11Y.voice]: '0', [A11Y.haptic]: '1', [A11Y.flash]: '1', [A11Y.big]: '0', [A11Y.reader]: 'voice',
 };
 export const SPEAK_CHOICES = [0, 5, 10, 30, 60];
 const EVT = 'chemdict-a11y';
@@ -66,9 +67,14 @@ let speakingId: string | null = null;
 const speakers = new Set<() => void>();
 const setSpeaking = (id: string | null) => { speakingId = id; speakers.forEach((f) => f()); };
 
+/** 마이크로 재는 중: 기기 음성이 측정값에 섞이므로 소리 내어 읽지 않음 (화면 읽기 칸·알림 띠는 그대로) */
+let micBusy = false;
+export const setMicBusy = (v: boolean) => { micBusy = v; if (v && canSpeak()) window.speechSynthesis.cancel(); };
+export const isMicBusy = () => micBusy;
+
 /** 기기 음성으로 읽기 (interrupt: 읽던 것을 끊고) */
 export function speak(lines: string[], id: string | null = null, interrupt = true) {
-  if (!canSpeak()) return;
+  if (!canSpeak() || micBusy) return;
   const ss = window.speechSynthesis;
   if (interrupt) ss.cancel();
   const list = lines.map((l) => plain(l).trim()).filter(Boolean);
@@ -95,11 +101,13 @@ export function useSpeaking(): string | null {
   return v;
 }
 
-/** 알림 읽기: '알림을 음성으로'(또는 force)면 기기 음성, 아니면 화면 읽기 프로그램 칸 */
+/** 알림 읽기: '알림을 음성으로'(또는 force — 값 읽기)면 기기 음성, 아니면 화면 읽기 프로그램 칸.
+ *  '읽는 방법'을 화면 읽기 프로그램으로 고르면 값 읽기도 그 칸으로 (두 번 읽지 않게). 마이크로 재는 중에는 늘 칸으로. */
 export function announce(text: string, force = false) {
   const s = plain(text);
   if (!s) return;
-  if ((force || prefOn(A11Y.voice)) && canSpeak()) speak([s], null, false);
+  const wantVoice = force ? getPref(A11Y.reader) !== 'sr' : prefOn(A11Y.voice);
+  if (wantVoice && canSpeak() && !micBusy) speak([s], null, false);
   else live(s);
 }
 

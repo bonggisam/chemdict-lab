@@ -889,5 +889,12 @@
  "연한": "Nhạt",
  "어두운 {color}": "{color} đậm",
  "연한 {color}": "{color} nhạt",
- "브레드보드 그림": "Hình bảng mạch thử"
+ "브레드보드 그림": "Hình bảng mạch thử",
+ "값을 읽는 방법": "Cách đọc giá trị",
+ "기기 음성": "Giọng thiết bị",
+ "화면 읽기 프로그램 (VoiceOver·NVDA 등)": "Trình đọc màn hình (VoiceOver, NVDA…)",
+ "마이크로 재는 중에는 소리로 읽지 않습니다 (측정값에 섞임). 화면의 값을 보세요.": "Không đọc to khi đang đo bằng micrô (giọng nói sẽ lẫn vào dữ liệu). Hãy xem giá trị trên màn hình.",
+ "기록했습니다": "Đã ghi",
+ "그림 원래 크기": "Kích thước gốc",
+ "그림 크게 보기": "Phóng to hình"
 }

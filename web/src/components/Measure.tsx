@@ -32,8 +32,9 @@ import { liveTone, playSeries, primeAudio, silence } from '../lib/sonify';
 import { SOUND } from '../lib/device';
 import { wakeSupported } from '../lib/wake';
 import { track } from '../lib/analytics';
-import { A11Y, announce, usePref } from '../lib/assist';
+import { A11Y, announce, setMicBusy, usePref } from '../lib/assist';
 import { ReadAloud } from './Assist';
+import { BigButtons } from './BigButtons';
 
 export interface Trigger { id: string; dir: 'up' | 'down'; value: number }
 
@@ -322,7 +323,11 @@ export function Measure(p: Props) {
     }).filter(Boolean).slice(0, 4);
     return parts.length ? parts.join(', ') : t('아직 측정값이 없습니다');
   };
-  const speakNow = () => announce(valueSentence(), true);
+  const speakNow = () => {
+    if (running && micBusy) { p.say('err', t('마이크로 재는 중에는 소리로 읽지 않습니다 (측정값에 섞임). 화면의 값을 보세요.')); return; }
+    announce(valueSentence(), true);
+  };
+  useEffect(() => { setMicBusy(running && micBusy); return () => setMicBusy(false); }, [running, micBusy]);
   const lastSpoken = useRef(0);
   useEffect(() => {
     const every = Number(speakEvery);
@@ -514,25 +519,21 @@ export function Measure(p: Props) {
   const onDevice = sensors.length > 0 && sensors.every((s) => s.src === 'device');
 
   if (bigButtons) return (
-    <main className="wide measure big-buttons">
-      <button className="ghost back" disabled={running} onClick={p.onBack}>← {t('실험 목록')}</button>
-      <h1>{exp.title}</h1>
-      <div className="big-values">
-        {charts.map((c) => (
-          <div key={c.sensor.id} className="big-value" role="group" aria-label={c.label}>
-            <span className="lbl">{c.label}</span>
-            <span className="num" aria-live="off">{fmtValue(latest(c.sensor.id), c.sensor.decimals)}<small> {c.unit}</small></span>
-          </div>
-        ))}
-      </div>
-      {!running
-        ? <button className="primary rec big" disabled={!p.connected} onClick={startClick}>● {t('측정 시작')}</button>
-        : <button className="danger big" onClick={p.onStop}>■ {t('정지')}</button>}
-      <button className="primary big" disabled={!rowCount} onClick={speakNow}>🔊 {t('지금 값 듣기')}</button>
-      <button className="primary big" disabled={!dataRuns.length || running} onClick={() => void doExport('csv')}>⬇ {t('CSV 저장')}</button>
-      {!p.connected && <p className="note warn">{t('저장된 측정을 보는 중입니다. 새로 측정하려면 보드를 연결하세요.')}</p>}
-      <button className="ghost" onClick={() => setBigPref('0')}>{t('보통 화면으로')}</button>
-    </main>
+    <BigButtons
+      title={exp.title}
+      values={charts.map((c) => ({ id: c.sensor.id, label: c.label, value: fmtValue(latest(c.sensor.id), c.sensor.decimals), unit: c.unit }))}
+      running={running}
+      connected={p.connected}
+      canSpeak={!!rowCount}
+      canSave={dataRuns.length > 0}
+      event={mode === 'event' && ev ? { label: ev.label, unit: ev.unit ?? '', x: eventX, setX: setEventX, onRecord: () => { recordEvent(); announce(t('기록했습니다')); } } : undefined}
+      onBack={p.onBack}
+      onStart={startClick}
+      onStop={p.onStop}
+      onSpeak={speakNow}
+      onSave={() => void doExport('csv')}
+      onNormal={() => setBigPref('0')}
+    />
   );
 
   return (

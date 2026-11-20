@@ -1180,3 +1180,9 @@ main.big-buttons button.big { min-height: 72px; font-size: 22px; font-weight: 80
 .a11y-list label.check.a11y-row { flex-wrap: nowrap; align-items: flex-start; line-height: 1.35; padding: 4px 0; word-break: keep-all; }
 .a11y-list label.check.a11y-row input { flex: none; margin-top: 2px; }
 main.big-buttons > .back, main.big-buttons > h1 { justify-self: start; }
+main.big-buttons .big-actions { display: grid; gap: 14px; }
+main.big-buttons .big-event { display: grid; gap: 8px; padding: 14px 16px; border-radius: 16px; border: 1px solid var(--line); background: var(--surface); }
+main.big-buttons .big-event label { font-size: 20px; font-weight: 700; }
+main.big-buttons .big-event input { font-size: 32px; padding: 10px 14px; min-height: 60px; }
+.wiring.big { overflow: auto; }
+.wiring.big svg { width: 200%; max-width: none; }

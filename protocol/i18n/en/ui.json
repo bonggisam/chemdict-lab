@@ -889,5 +889,12 @@
  "연한": "Light",
  "어두운 {color}": "Dark {color}",
  "연한 {color}": "Light {color}",
- "브레드보드 그림": "Breadboard diagram"
+ "브레드보드 그림": "Breadboard diagram",
+ "값을 읽는 방법": "How values are read",
+ "기기 음성": "Device voice",
+ "화면 읽기 프로그램 (VoiceOver·NVDA 등)": "Screen reader (VoiceOver, NVDA, etc.)",
+ "마이크로 재는 중에는 소리로 읽지 않습니다 (측정값에 섞임). 화면의 값을 보세요.": "Values aren't read aloud while measuring with the microphone (the voice would mix into the data). Check the value on screen.",
+ "기록했습니다": "Recorded",
+ "그림 원래 크기": "Original size",
+ "그림 크게 보기": "Enlarge diagram"
 }
