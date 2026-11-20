@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { breadboard, type BBCircuit } from '../lib/guide';
 import { t } from '../lib/i18n';
+import { bbText } from '../lib/assist';
 import { courseName } from '../lib/l10n';
 import { R } from './Rich';
 
@@ -53,7 +54,7 @@ export function BreadboardDiagram({ circuit, highlight, title }: Props) {
 
   return (
     <figure className="bb-figure">
-      <svg viewBox={`0 0 720 ${H}`} role="img" aria-label={title}>
+      <svg viewBox={`0 0 720 ${H}`} role="img" aria-label={circuit ? `${title ?? ''}. ${bbText(circuit)}` : title}>
         {/* 보드 핀 */}
         {pins.length > 0 && (
           <g>

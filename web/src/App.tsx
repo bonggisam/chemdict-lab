@@ -38,6 +38,8 @@ import { isStable } from './lib/analysis';
 import { newRun, saveFile, type Row, type Run } from './lib/runs';
 import { expName, track } from './lib/analytics';
 import { VisitCounter } from './components/VisitCounter';
+import { AlertOverlay, AssistSettings, LiveRegion } from './components/Assist';
+import { raise } from './lib/assist';
 import { ThemePick } from './components/ThemePick';
 import { keepAwake } from './lib/wake';
 import { WORKSHEET_QUESTIONS, isEmptyWorksheet, loadWorksheet, saveWorksheet } from './lib/worksheet';
@@ -212,6 +214,7 @@ export default function App() {
       statsRef.current.drops += 1;
       reconnectingRef.current = true;
       setReconnecting(true);
+      raise('warn', t('연결이 끊겨 다시 연결하는 중입니다'), false);   // 2.2: 띠·번쩍·진동 (읽기는 아래 안내 글)
       say('err', t('블루투스 연결이 끊어졌습니다. 다시 연결하는 중… (최대 3번)'));
     };
     tr.onReconnected = () => {
@@ -230,6 +233,7 @@ export default function App() {
         tr.send('STOP');   // 끊긴 동안 [정지]를 눌렀거나 정한 시간이 됨: 보드도 멈춤
       }
       tr.send('HELLO');
+      raise('ok', t('다시 연결했습니다'), false);
       say('ok', t('다시 연결했습니다. 측정을 이어 갑니다.'));
     };
     tr.onClose = () => {
@@ -249,6 +253,7 @@ export default function App() {
       setFw((f) => (f?.status === 'installing' || f?.status === 'failed' ? f : null));
       setScreen((sc) => (sc === 'guide' ? sc : 'connect'));
       setGuideFrom((g) => ({ ...g, screen: 'connect' }));
+      raise('warn', runningRef.current ? t('측정 중에 연결이 끊어졌습니다') : t('연결이 끊어졌습니다'), false);
       say('err', t('연결이 끊어졌습니다. 케이블이나 블루투스를 확인하고 다시 연결하세요.'));
       if (runningRef.current) notify(t('측정 중 연결이 끊어졌습니다'), t('지금까지 기록은 ‘이어서 하기’에 저장했습니다. 보드 전원과 케이블을 확인하세요.'));
     };
@@ -397,6 +402,13 @@ export default function App() {
 
   // ---- 2.1 긴 측정: 측정 중에는 화면이 꺼지지 않게
   useEffect(() => { keepAwake(running); return () => keepAwake(false); }, [running]);
+  // 2.2 손쉬운 사용: 시작·정지를 띠·화면 번쩍·진동·읽기로 (연결이 끊겨 멈춘 것은 onClose가 따로 알림)
+  const firstRun = useRef(true);
+  useEffect(() => {
+    if (firstRun.current) { firstRun.current = false; return; }
+    if (running) raise('start', t('측정을 시작했습니다'));
+    else if (transportRef.current) raise('stop', t('측정을 멈췄습니다'));
+  }, [running]);
 
   // ---- 자동 저장: 측정 데이터가 바뀌면 3초 안에 이 기기에 저장 (최근 5개)
   const saveTimer = useRef<number | null>(null);
@@ -710,7 +722,7 @@ export default function App() {
         footer={<>
           {connLabel ? (
             <div className="conn">
-              <span className="dot" aria-hidden="true" />
+              <span className={`dot sym ${reconnecting ? 'warn' : running ? 'rec' : 'on'}`} aria-hidden="true">{reconnecting ? '▲' : running ? '●' : '✓'}</span>
               <span className="conn-t">{reconnecting ? t('다시 연결하는 중…') : connLabel}{hello?.station ? ` · ${t('모둠 {n}', { n: hello.station })}` : ''}</span>
               <button className="ghost" aria-label={t('연결 진단')} title={t('연결 진단')} onClick={() => setDiagOpen(true)}>🩺</button>
               <button className="ghost" onClick={disconnect}>{t('연결 끊기')}</button>
@@ -723,6 +735,7 @@ export default function App() {
             </select>
           </label>
           <ThemePick />
+          <AssistSettings />
           <a className="about-link" href="about.html" target="_blank" rel="noopener">ℹ️ {t('앱 정보 · 사용법 · 만든 사람')}</a>
           <VisitCounter />
         </>}
@@ -941,6 +954,8 @@ export default function App() {
       </Fragment>
       </div>
       {toast && <div className={`toast ${toast.kind}`} role="status">{toast.text}</div>}
+      <LiveRegion />
+      <AlertOverlay />
     </div>
   );
 }

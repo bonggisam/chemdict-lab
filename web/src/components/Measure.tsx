@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Ico } from './Ico';
 import { ICON } from '../lib/icons';
 import { Chart, fmt, type ChartTool, type ChartView, type Overlays, type Series } from './Chart';
@@ -32,6 +32,8 @@ import { liveTone, playSeries, primeAudio, silence } from '../lib/sonify';
 import { SOUND } from '../lib/device';
 import { wakeSupported } from '../lib/wake';
 import { track } from '../lib/analytics';
+import { A11Y, announce, usePref } from '../lib/assist';
+import { ReadAloud } from './Assist';
 
 export interface Trigger { id: string; dir: 'up' | 'down'; value: number }
 
@@ -306,7 +308,46 @@ export function Measure(p: Props) {
     const note = markerNote.trim() || exp.markers.label;
     setRuns((rs) => rs.map((r) => (r.id === active.id ? { ...r, markers: [...r.markers, { t: tNow, note }] } : r)));
     setMarkerNote('');
+    announce(t('표시했습니다'));
   };
+
+  // ---- 2.2 손쉬운 사용: 지금 값 읽기 · 정한 간격마다 읽기 · 키보드 단축키 · 큰 버튼 화면
+  const [speakEvery] = usePref(A11Y.speakEvery);
+  const [bigPref, setBigPref] = usePref(A11Y.big);
+  const bigButtons = bigPref === '1';
+  const valueSentence = () => {
+    const parts = charts.map((c) => {
+      const v = latest(c.sensor.id);
+      return v === undefined ? '' : `${c.label} ${fmtValue(v, c.sensor.decimals)}${c.unit ? ` ${c.unit}` : ''}`;
+    }).filter(Boolean).slice(0, 4);
+    return parts.length ? parts.join(', ') : t('아직 측정값이 없습니다');
+  };
+  const speakNow = () => announce(valueSentence(), true);
+  const lastSpoken = useRef(0);
+  useEffect(() => {
+    const every = Number(speakEvery);
+    if (!running || !every || Date.now() - lastSpoken.current < every * 1000) return;
+    lastSpoken.current = Date.now();
+    announce(valueSentence(), true);
+  }, [rowCount]); // eslint-disable-line react-hooks/exhaustive-deps
+  const keyRef = useRef<(e: KeyboardEvent) => void>(() => {});
+  keyRef.current = (e: KeyboardEvent) => {
+    if (!e.altKey || e.ctrlKey || e.metaKey) return;
+    const k = e.code;
+    if (k === 'KeyR') { if (running) p.onStop(); else if (p.connected) startClick(); }
+    else if (k === 'KeyD') { if (running) addMarker(); }
+    else if (k === 'KeyL') speakNow();
+    else if (k === 'Digit1') setTab('measure');
+    else if (k === 'Digit2') setTab('analysis');
+    else if (k === 'Digit3') setTab('record');
+    else return;
+    e.preventDefault();
+  };
+  useEffect(() => {
+    const on = (e: KeyboardEvent) => keyRef.current(e);
+    window.addEventListener('keydown', on);
+    return () => window.removeEventListener('keydown', on);
+  }, []);
 
   // ---- 측정(run) 관리
   const addRun = () => {
@@ -472,6 +513,28 @@ export function Measure(p: Props) {
   // 이 기기 센서로 재는 중: 연결할 선이 없으므로 '연결 안내'를 숨김
   const onDevice = sensors.length > 0 && sensors.every((s) => s.src === 'device');
 
+  if (bigButtons) return (
+    <main className="wide measure big-buttons">
+      <button className="ghost back" disabled={running} onClick={p.onBack}>← {t('실험 목록')}</button>
+      <h1>{exp.title}</h1>
+      <div className="big-values">
+        {charts.map((c) => (
+          <div key={c.sensor.id} className="big-value" role="group" aria-label={c.label}>
+            <span className="lbl">{c.label}</span>
+            <span className="num" aria-live="off">{fmtValue(latest(c.sensor.id), c.sensor.decimals)}<small> {c.unit}</small></span>
+          </div>
+        ))}
+      </div>
+      {!running
+        ? <button className="primary rec big" disabled={!p.connected} onClick={startClick}>● {t('측정 시작')}</button>
+        : <button className="danger big" onClick={p.onStop}>■ {t('정지')}</button>}
+      <button className="primary big" disabled={!rowCount} onClick={speakNow}>🔊 {t('지금 값 듣기')}</button>
+      <button className="primary big" disabled={!dataRuns.length || running} onClick={() => void doExport('csv')}>⬇ {t('CSV 저장')}</button>
+      {!p.connected && <p className="note warn">{t('저장된 측정을 보는 중입니다. 새로 측정하려면 보드를 연결하세요.')}</p>}
+      <button className="ghost" onClick={() => setBigPref('0')}>{t('보통 화면으로')}</button>
+    </main>
+  );
+
   return (
     <main className="wide measure">
       <div className="row-head" data-nav={t('측정 시작 · 정지')} data-nav-ico="⏯️">
@@ -496,7 +559,7 @@ export function Measure(p: Props) {
       {!p.connected && <p className="note warn">{t('저장된 측정을 보는 중입니다. 새로 측정하려면 보드를 연결하세요.')}</p>}
 
       <div className="status-strip" role="status">
-        <span className={`dot ${running ? 'rec' : p.connected ? 'on' : ''}`} aria-hidden="true" />
+        <span className={`dot sym ${running ? 'rec' : p.connected ? 'on' : ''}`} aria-hidden="true">{running ? '●' : p.connected ? '✓' : '○'}</span>
         <b>{running ? t('측정 중') : (active?.rows.length || active?.events.length) ? t('멈춤') : t('대기')}</b>
         <span className="note">{active ? (active.mode === 'event' ? t('{n}점', { n: active.events.length }) : t('{n}개', { n: active.rows.length })) : ''}{mode === 'time' ? ` · ${intervalText(p.intervalMs)}` : ''}</span>
         <span className="grow" />
@@ -578,6 +641,7 @@ export function Measure(p: Props) {
 
       {on('measure', 'record') && <details className="steps" data-nav={t('실험 순서 보기')} data-nav-ico="🧑‍🔬" data-nav-level="3">
         <summary><Ico e="🧑‍🔬" />{t('실험 순서 보기')}</summary>
+        <ReadAloud id={`steps-${exp.id}`} label={tk('실험 순서 읽어 주기')} lines={exp.steps.map((x, i) => `${i + 1}. ${x}`)} />
         <ol>{exp.steps.map((s, i) => <li key={i}><R t={s} /></li>)}</ol>
       </details>}
       {on('record') && bb && <BreadboardNote need={bb.need} why={bb.why} circuit={bb.circuit} />}
@@ -722,6 +786,8 @@ export function Measure(p: Props) {
           </div>
         )}
         <div className="actions">
+          {on('measure') && charts.length > 0 && <button className="ghost" disabled={!rowCount} onClick={speakNow} title="Alt+L">〰 {t('지금 값 듣기')}</button>}
+          {on('measure') && <button className={`ghost ${bigButtons ? 'on' : ''}`} aria-pressed={bigButtons} onClick={() => setBigPref(bigButtons ? '0' : '1')}>▣ {t('큰 버튼 화면')}</button>}
           {/* 소리로 듣기: 마이크로 재는 중에는 숨김, 재생은 멈춘 뒤 기록이 있을 때만 */}
           {on('measure') && charts.length > 0 && !micBusy && <>
             <button className={`ghost ${sonify ? 'on' : ''}`} aria-pressed={sonify} title={t('값이 커지면 높은 소리, 작아지면 낮은 소리가 납니다')} onClick={() => { primeAudio(); setSonify((v) => !v); }}>🔊 {t('값을 소리로 듣기')}</button>
@@ -748,6 +814,8 @@ export function Measure(p: Props) {
       {/* 활동지 */}
       {on('record') && <details className="worksheet" data-nav={t('활동지')} data-nav-ico="📒">
         <summary><span aria-hidden="true">📝</span> {t('활동지')} <span className="note">{t('예측 → 측정 → 결론. 보고서 PDF에 함께 들어갑니다.')}</span></summary>
+        <ReadAloud id="worksheet-all" label={tk('활동지 문항 읽어 주기')}
+          lines={[t('1. 예측 — 측정하기 전에 쓰세요'), t('그래프가 어떻게 변할지, 그렇게 생각한 까닭을 씁니다.'), t('3. 결론'), ...WORKSHEET_QUESTIONS.map((q, i) => `${i + 1}) ${t(q)}`)]} />
         <label className="ws-field">
           <b>{t('1. 예측 — 측정하기 전에 쓰세요')}</b>
           <span className="note">{t('그래프가 어떻게 변할지, 그렇게 생각한 까닭을 씁니다.')}</span>

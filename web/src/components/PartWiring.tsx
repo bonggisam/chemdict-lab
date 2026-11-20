@@ -1,9 +1,11 @@
 import { breadboard, partSupported, v33Warning, wiring, type Board, type Part } from '../lib/guide';
 import { BreadboardDiagram } from './Breadboard';
-import { t } from '../lib/i18n';
+import { t, tk } from '../lib/i18n';
 import { WiringDiagram } from './WiringDiagram';
 import { PhotoCheck } from './PhotoCheck';
 import { R } from './Rich';
+import { ReadAloud } from './Assist';
+import { wireLine, wireName } from '../lib/assist';
 
 interface Props {
   board: Board;
@@ -45,8 +47,8 @@ export function PartWiring({ board, part, port, compact }: Props) {
                 <tr><td colSpan={3}>{t('보드의 Qwiic 단자 ↔ 센서의 Qwiic 단자 (Qwiic 케이블)')}</td></tr>
               ) : (
                 wires.map((w) => (
-                  <tr key={w.term}>
-                    <td><i className={`wire-dot ${w.color}`} aria-hidden="true" />{t('센서')} <b>{w.term}</b></td>
+                  <tr key={w.term} aria-label={wireLine(w)}>
+                    <td><i className={`wire-dot ${w.color}`} aria-hidden="true" /><span className="wire-name">{t(wireName(w.color))}</span> {t('센서')} <b>{w.term}</b></td>
                     <td aria-hidden="true">→</td>
                     <td>{t('보드')} <b>{w.boardPin}</b></td>
                   </tr>
@@ -57,6 +59,8 @@ export function PartWiring({ board, part, port, compact }: Props) {
               )}
             </tbody>
           </table>
+          {connector.steps.length > 0 && <ReadAloud id={`wiring-${board.id}-${part.id}`} label={tk('연결 방법 읽어 주기')}
+            lines={[...(cable ? [t('보드의 Qwiic 단자 ↔ 센서의 Qwiic 단자 (Qwiic 케이블)')] : wires.map(wireLine)), ...connector.steps]} />}
           {connector.steps.length > 0 && <ul className="wire-steps">{connector.steps.map((s) => <li key={s}><R t={s} /></li>)}</ul>}
           {!compact && (
             <>

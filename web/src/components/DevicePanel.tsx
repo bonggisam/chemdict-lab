@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { colorName, tColor } from '../lib/assist';
 import { catIcon } from '../lib/icons';
 import { typeInfo } from '../lib/sensors';
 import { t } from '../lib/i18n';
@@ -63,6 +64,7 @@ export function DeviceCamera({ dev, absorbance, running, say }: { dev: DeviceTra
       </div>
       <div className="cam-row">
         {rgb && <span className="swatch" style={{ background: `rgb(${rgb.r},${rgb.g},${rgb.b})` }} aria-hidden="true" />}
+        {rgb && <b className="color-name">{tColor(colorName(rgb.r, rgb.g, rgb.b))}</b>}
         {rgb && <span className="mono">R {rgb.r.toFixed(0)} · G {rgb.g.toFixed(0)} · B {rgb.b.toFixed(0)}</span>}
         {absorbance && (
           <button className="ghost" disabled={running} onClick={() => {

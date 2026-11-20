@@ -1,5 +1,6 @@
 import { hasQwiic, wiring, type Board, type Part } from '../lib/guide';
 import { t } from '../lib/i18n';
+import { wireLine } from '../lib/assist';
 
 /** 보드 × 센서 배선 개념도 (protocol/guide.json의 연결 방식으로 그림, 실제 핀 위치와 다를 수 있음) */
 
@@ -39,7 +40,7 @@ export function WiringDiagram({ board, part }: Props) {
 
   return (
     <figure className="wiring">
-      <svg viewBox={`0 0 640 ${H}`} role="img" aria-label={t('{board}에 {part} 연결 그림', { board: board.name, part: part.name })}>
+      <svg viewBox={`0 0 640 ${H}`} role="img" aria-label={[t('{board}에 {part} 연결 그림', { board: board.name, part: part.name }), ...(cable ? [t('보드의 Qwiic 단자 ↔ 센서의 Qwiic 단자 (Qwiic 케이블)')] : wires.map(wireLine))].join('. ')}>
         {/* 보드 */}
         <rect x={bx} y={by} width={bw} height={bh} rx="14" fill="#0e7c86" />
         <rect x={bx - 14} y={by + 76} width="26" height="44" rx="4" fill="#9aa5b1" />

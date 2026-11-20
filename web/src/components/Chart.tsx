@@ -55,6 +55,48 @@ export function Chart(props: Props) {
 
   useEffect(() => { if (tool !== 'tangent') setPin(null); }, [tool]);
 
+  // ---- 2.2 키보드로 점 하나씩 (화면 읽기 프로그램·스위치·키보드만 쓰는 사람): ←→ 이동 · Home/End · PageUp 최댓값 · PageDown 최솟값 · [ ] 구간
+  const [kbd, setKbd] = useState<number | null>(null);
+  const [liveText, setLiveText] = useState('');
+  const kpts = ((tool === 'tangent' && tangentPts ? tangentPts : series[0]?.pts) ?? []).filter((q) => Number.isFinite(q[0]) && Number.isFinite(q[1]));
+  const moveTo = (i: number) => {
+    const sc = scaleRef.current;
+    if (!sc || !kpts.length) return;
+    const k = Math.max(0, Math.min(kpts.length - 1, i));
+    const [x, y] = kpts[k];
+    setKbd(k);
+    setHover({ px: sc.x(x), py: sc.y(y) });
+    if (tool === 'tangent') setPin(x);
+    const tan2 = tool === 'tangent' && tangentPts ? tangentAt(tangentPts, x) : null;
+    setLiveText(`${fmt(x)} ${xUnit}, ${fmt(y)} ${unit ?? ''}${tan2 ? ` · ${t('기울기')} ${fmt(tan2.slope)}` : ''} (${k + 1}/${kpts.length})`);
+  };
+  const onKey = (e: React.KeyboardEvent) => {
+    if (!kpts.length || drawing) return;
+    const step = e.altKey ? 1 : Math.max(1, Math.round(kpts.length / 40));
+    const cur = kbd;
+    const ys = kpts.map((q) => q[1]);
+    switch (e.key) {
+      case 'ArrowRight': moveTo(cur === null ? 0 : cur + step); break;
+      case 'ArrowLeft': moveTo(cur === null ? kpts.length - 1 : cur - step); break;
+      case 'Home': moveTo(0); break;
+      case 'End': moveTo(kpts.length - 1); break;
+      case 'PageUp': moveTo(ys.indexOf(Math.max(...ys))); break;
+      case 'PageDown': moveTo(ys.indexOf(Math.min(...ys))); break;
+      case '[': case ']': {
+        if (cur === null || tool !== 'select') return;
+        const x = kpts[cur][0];
+        const lo = selection ? Math.min(...selection) : kpts[0][0], hi = selection ? Math.max(...selection) : kpts[kpts.length - 1][0];
+        const r: [number, number] = e.key === '[' ? [x, Math.max(x, hi)] : [Math.min(lo, x), x];
+        onSelect(r);
+        setLiveText(t('구간 {a}~{b}', { a: fmt(r[0]), b: fmt(r[1]) }));
+        break;
+      }
+      case 'Escape': setKbd(null); setHover(null); setLiveText(''); break;
+      default: return;
+    }
+    e.preventDefault();
+  };
+
   // 접선 (마우스 위치 또는 짚은 곳)
   const tx = tool === 'tangent' ? (hover && scaleRef.current ? scaleRef.current.ix(hover.px) : pin) : null;
   const tan = tx !== null && tangentPts ? tangentAt(tangentPts, tx) : null;
@@ -174,8 +216,11 @@ export function Chart(props: Props) {
         <canvas
           ref={canvasRef}
           role="img"
+          tabIndex={0}
           aria-label={t('{title} 그래프', { title })}
-          aria-description={summarize(series, unit)}
+          aria-description={`${summarize(series, unit)}. ${t('←→로 점을 하나씩 듣고, Home·End는 처음·끝, PageUp·PageDown은 최댓값·최솟값, [ ]로 구간을 고릅니다.')}`}
+          onKeyDown={onKey}
+          onBlur={() => { if (kbd !== null) { setKbd(null); setHover(null); } }}
           onPointerDown={onDown}
           onPointerMove={onMove}
           onPointerUp={onUp}
@@ -183,6 +228,7 @@ export function Chart(props: Props) {
           onPointerLeave={(e) => { if (e.pointerType === 'mouse') setHover(null); }}
         />
       </div>
+      <span className="sr-only" aria-live="polite">{liveText}</span>
       <div className="chart-foot">
         <span className="hint">{hint}</span>
         <button className="link" onClick={exportPNG}>{t('그림 저장')}</button>
