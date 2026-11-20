@@ -17,6 +17,7 @@
 - 익명 사용 통계(웹앱만): GoatCounter `chemdict` (index.html 스크립트 + `web/src/lib/analytics.ts`의 `track(kind, id)`). id·영문 이름만 보내고 측정값·사진·활동지·이름·입력한 제목은 보내지 않는다. 새로 세는 항목을 더하면 privacy.html 5항과 맞춘다. 애플 앱에는 넣지 않는다(앱스토어 개인정보 항목 '수집 안 함' 유지).
 - 생성 파일 이름은 영문만 (한글 파일명은 다운로드 오류가 남).
 - 화면 디자인은 `docs/DESIGN.md`가 기준이다 (색·글자·44px 터치·그래프 규칙). 측정 색을 바꾸면 dataviz 검증기를 다시 돌린다. 웹 토큰(styles.css)과 애플 Theme.swift 값을 같이 맞춘다.
+- 화면 디자인 10가지(2.1): 색은 `tools/make_themes.py`를 고치고 실행해 `protocol/themes.json`과 styles.css의 THEMES 구간을 만든다 (직접 수정 금지, 대비 검사를 통과해야 써짐). 웹 `lib/theme.ts`·`components/ThemePick.tsx` ↔ 애플 `tools/make_palettes.py` → `Palettes.swift`·`Theme.swift`의 `Design`. 어두운 화면 전용 CSS는 `:root[data-scheme="dark"]`에 넣는다 (화면 시험: `node e2e/themes.cjs`).
 - 펌웨어를 바꾸면 web/public/firmware/*.hex 를 다시 내보내고 BUNDLED_FW 를 맞춘다 (PROTOCOL.md "웹앱에서 측정 프로그램 설치").
 - 화면 흐름은 3단계: 1 보드 연결(고르기·연결·설치) → 2 실험(센서 카드·측정) → 3 연결 방법·문제 해결. 화면 틀은 왼쪽 목차(SideNav, 나무 구조) + 오른쪽 내용. 새 칸을 만들면 `h2`나 `data-nav`를 달아 목차에 나오게 하고, 안내 문장은 `<R t={…} />`로 감싸 핵심어 색을 넣는다.
 - 목표: 학생·교사가 클릭만으로 센서를 고르고 바로 데이터를 얻는 것. 새 기능은 준비 단계를 늘리지 않는다 (센서 카드 → 연결 그림 → 측정 시작).
